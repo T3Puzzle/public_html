@@ -14,7 +14,7 @@ let urls = [
 ]; 
 let me=document.currentScript;
 let name='svgconfig';
-me.insertAdjacentHTML('afterend',`<output class="${name}" style="position:fixed;background-color:#dddddd;"></output>`);
+me.insertAdjacentHTML('afterend',`<output class="${name}" style="position:fixed;bottom:0;background-color:#dddddd;"></output>`);
 document.addEventListener('DOMContentLoaded',()=>{
    document.body.querySelector(`output.${name}`).insertAdjacentHTML('beforeend',getHtml());
 });
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 (()=>{
 let dblclickTimeout = 300;
 let height=30;
-let width=600;
+let width=400;
 let head=15;
 let colors = [
   {'basic':['#000000','#ffffff','#ff0000','#00ff00','#0000ff','#ffff00', '#00ffff','#ff00ff']},
