@@ -1,7 +1,7 @@
 (()=>{
 let dblclickTimeout = 300;
-let height=50;
-let width=400;
+let height=45;
+let width=370;
 let head=15;
 let inputhidden='display:none;';
 let colors = [
