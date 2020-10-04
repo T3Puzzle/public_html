@@ -5,7 +5,6 @@ let me=document.currentScript;
 let name='svginput';
 let x=30;
 let y=Math.sqrt(3)*x;
-let color = getColor();
 me.insertAdjacentHTML('afterend',`<output class="${name}"></output>`);
 document.addEventListener('DOMContentLoaded',()=>{
   let configoptions = document.body.querySelectorAll(`output.${config} select option`);
@@ -54,31 +53,5 @@ function puz(col) {
 }
 function getCol(col,toggle) {
   return '#dddddd';
-  if (toggle) {
-    col=!col;
-  }
-  if (col) {
-    return '#ffffff';
-  } else {
-    return getColor();
-  }
-}
-function getColor () {
-  let colorIndex = localStorage.getItem('colorIndex');
-  if (colorIndex) {
-    colorIndex = (++colorIndex)%4;
-  } else {
-    colorIndex = (new Date()).getTime()%4;
-  }
-  localStorage.setItem('colorIndex',colorIndex);
-  if (colorIndex===0) {
-    return '#00cc00';
-  } else if (colorIndex===1) {
-    return '#00ccff';
-  } else if (colorIndex===2) {
-    return '#88ffdd';
-  } else if (colorIndex===3) {
-    return '#ff99ff';
-  }
 }
 })();
