@@ -198,6 +198,7 @@ function loadSvg(url) {
 function getColor () {
   let colorIndex = localStorage.getItem('colorIndex');
   if (colorIndex) {
+    colorIndex = parseInt(colorIndex,10);
     colorIndex = (++colorIndex)%4;
   } else {
     colorIndex = (new Date()).getTime()%4;
