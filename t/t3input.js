@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded',()=>{
         xmlns="http://www.w3.org/2000/svg"
         width="400"
         height="400"
-        viewBox="0 0 800 1200"
+        viewBox="0 0 400 400"
         preserveAspectRatio="xMidYMid meet"
-        style="background-color: #eee;">
- <g transform="translate(-200,-100)scale(2,2)">
+        style="top:0;left:0;width:100%;height:100%;background-color: #eee;">
+ <g transform="translate(-150,0)scale(0.5,0.5)">
     ${tess()}
  </g>
 </svg>
@@ -42,13 +42,13 @@ function tess() {
 function puz(col) {
   return `
      <g transform="translate(${-2*x},0)">
-      <polygon name="p3" points="0,0 ${4*x},0 ${2*x},${2*y}" style="fill:${getCol(false,(col/4<1))};stroke:#aaaaaa;stroke-width:5;"/></g>
+      <polygon name="p3" points="0,0 ${4*x},0 ${2*x},${2*y}" style="fill:${getCol(false,(col/4<1))};stroke:#aaaaaa;stroke-width:1.5;stroke-linejoin:round;"/></g>
      <g transform="translate(0,0)">
-      <polygon name="p0" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===0),(col/4<1))};"/></g>
+      <polygon name="p0" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===0),(col/4<1))};stroke:none;"/></g>
      <g transform="translate(${-2*x},0)">
-      <polygon name="p1" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===1),(col/4<1))};"/></g>
+      <polygon name="p1" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===1),(col/4<1))};stroke:none;"/></g>
      <g transform="translate(${-x},${y})">
-      <polygon name="p2" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===2),(col/4<1))};"/></g>
+      <polygon name="p2" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===2),(col/4<1))};stroke:none;"/></g>
 `;
 }
 function getCol(col,toggle) {
