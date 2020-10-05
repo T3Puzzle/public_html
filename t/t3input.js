@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   let col=5;
   document.body.querySelector(`output.${svgoutput}`).insertAdjacentHTML('beforeend',`
-<svg
+<svg    version="1.1"
         id="svg"
         xmlns="http://www.w3.org/2000/svg"
-        width="400"
-        height="400"
+        width="400px"
+        height="400px"
         viewBox="0 0 400 400"
         preserveAspectRatio="xMidYMid meet"
-        style="top:0;left:0;width:100%;max-width:800;height:100%;background-color: #eee;">
+        style="top:0;left:0;width:100%;max-width:800px;height:100%;background-color: #eee;">
  <g transform="translate(-150,0)scale(0.5,0.5)">
     ${tess()}
  </g>
