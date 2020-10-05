@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         height="400"
         viewBox="0 0 400 400"
         preserveAspectRatio="xMidYMid meet"
-        style="top:0;left:0;width:100%;height:100%;background-color: #eee;">
+        style="top:0;left:0;width:100%;max-width:800;height:100%;background-color: #eee;">
  <g transform="translate(-150,0)scale(0.5,0.5)">
     ${tess()}
  </g>
