@@ -7,11 +7,34 @@
 </head>
 <body style="text-size-adjust:100%;">
   <script>
-  let url = decodeURIComponent(window.location.search.replace('?',''));
-  document.currentScript.insertAdjacentHTML('afterend',`
-  <h3>Tap to download</h3>
-  <img src="${url}">
+  let qs = decodeURIComponent(window.location.search.replace('?',''));
+  let kv = qs.split('&');
+  let hash = '';
+  let fieldId = '';
+  for (let ki=0;ki<kv.length;ki++) {
+    let kvs = kv[ki].split('=');
+    if (kvs[0]==='hash') {
+      if (kvs.length>=2 && kvs[1]) {
+        hash = decodeURIComponent(kvs[1]);
+      }
+    } else if (kvs[1]==='fileId') {
+      if (kvs.length>=2 && kvs[1]) {
+        fileId = decodeURIComponent(kvs[1]);
+      }
+    }
+  }
+  let html='';
+  if (fileId==='') {
+    html = 'fileId is not specified';
+  } else {
+    let url = `https://drive.google.com/uc?export=download&id=${fileId}`
+    let text = encodeURIComponent(`https://drive.google.com/file/d/${fileId}/view #FMS特別講義 ${hash}`);
+    html = `<h3>Tap to download</h3>
+<img src="${url}"><br/>
+<a target="_top" href="https://twitter.com/intent/tweet?text=${text}">Click to tweet</a>
   `);
+  }
+  document.currentScript.insertAdjacentHTML('afterend',html);
   </script>
 </body>
 </html>
