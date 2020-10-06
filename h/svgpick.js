@@ -5,8 +5,10 @@ let width=370;
 let head=15;
 let inputhidden='display:none;';
 let colors = [
-  {'basic':['#000000','#ffffff','#ff0000','#00ff00','#0000ff','#ffff00', '#00ffff','#ff00ff']},
-//  {'dark':['#333333','#aaaaaa','#aa3333','#33aa33','#3333aa','#aaaa33', '#33aaaa','#aa33aa']},
+{'0':['#ffffff','#000000','#ff77aa','#ff99cc','#ffbbee','#ff5588','#ff3377']},
+{'1':['#ffffff','#000000','#ee4035','#f37736','#fdf498','#7bc043','#0392cf']},
+{'2':['#ffffff','#000000','#a8e6cf','#dcedc1','#ffd3b6','#ffaaa5','#ff8b94']},
+{'3':['#ffffff','#000000','#ebf4f6','#bdeaee','#76b4bd','#58668b','#5e5656']},
 ];
 let colorType = null;
 let radius= null;
@@ -25,41 +27,53 @@ document.addEventListener('DOMContentLoaded',()=>{
 ${select}
 <input class="${name}" type="color" value="#ff0000"  style="${inputhidden};vertical-align:0.3em;margin-left:0.5em;margin-top:0.3em;">
 <svg class="${name}" width="${width}" height="${height}" style="vertical-align:-0.2em;"></svg><br/>
-  `);
+  `); 
   svg = document.body.querySelector(`output.${config} svg.${name}`);
-  initCircles();
   picker = document.body.querySelector(`input.${name}`);
+  let initColor = initCircles();
+  picker.value = initColor;
   // TODO: addCircle when actually used.
   picker.addEventListener('change',event=>addCircle(conv(event.target.value)));
-  selector = document.body.querySelector(`select.${name}`);
-  if (selector) {
-    selector.addEventListener('change',event=>{
-      colorType = event.target.value;
-      initCircles();
-    });
-  }
 });
 function initCircles() {
   svg.innerHTML = '';
   let cols = getCols();
   for(let ci=0;ci<cols.length;ci++) {
     addCircle(conv(cols[ci]));
-  }
-}
-function getSelect() {
+  }   
+  if (cols.length>2) {
+    return conv(cols[2]);
+  } else {
+    return conv(cols[1]);
+  } 
+} 
+function getSelect() { 
+  // for now
+  return ''; 
   if (colors.length<=1){
     return '';
-  }
+  } 
   let opt=[];
   for(let ci=0;ci<colors.length;ci++) {
     for(let ck in colors[ci]) {
       opt.push(`<option value="${ck}">${ck}</option>`);
       continue;
     }
-  }
+  }  
   return `<select class="${name}" style="vertical-align:0.6em;margin-left:0.5em;"><`+opt.join('')+'</select>';
 }
+function getCols2() {
+  let colorPallete = localStorage.getItem('colorPallete');
+  if (colorPallete && colorPallete.length>0) {
+    colorPallete = (parseInt(colorPallete,10)+1)%colors.length;
+  } else {
+    colorPallete = (new Date()).getTime()%colors.length;
+  }
+  localStorage.setItem('colorPallete',colorPallete);
+  return colors[colorPallete][colorPallete];
+}
 function getCols() {
+  return getCols2();
   if (colorType) {
     for(let ci=0;ci<colors.length;ci++) {
       for(let ck in colors[ci]) {
