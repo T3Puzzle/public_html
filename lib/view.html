@@ -10,7 +10,7 @@
   let qs = decodeURIComponent(window.location.search.replace('?',''));
   let kv = qs.split('&');
   let hash = '';
-  let fieldId = '';
+  let fileId = '';
   for (let ki=0;ki<kv.length;ki++) {
     let kvs = kv[ki].split('=');
     if (kvs[0]==='hash') {
