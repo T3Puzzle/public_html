@@ -7,7 +7,7 @@
 </head>
 <body style="text-size-adjust:100%;">
   <script>
-  let url = decodeURIComponent()(window.location.search.replace('?',''));
+  let url = decodeURIComponent(window.location.search.replace('?',''));
   document.currentScript.insertAdjacentHTML('afterend',`
   <h3>Tap to download</h3>
   <img src="${url}">
