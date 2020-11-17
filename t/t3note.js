@@ -3,7 +3,7 @@ let config='svgconfig';
 let size = 100;
 let text = `
 <button style="height:50px;">
-チャットは全員宛へ<br/> 
+チャットは全員宛へ<br/>xx
 <a href="https://forms.gle/KGSthgPT5zvkwbVn8">アンケート</a>
 </button>
 `;
