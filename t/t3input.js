@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     ${tess()}
  </g>
 </svg>
-`)});
+`);
+});
 function tess() {
   let col=0;
   let array=[];

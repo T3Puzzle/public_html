@@ -2,6 +2,7 @@
 let color = '#000000';
 let history=[];
 let lastunredo=0;
+localStorage.setItem('lastunredo',lastunredo);
 let config='svgconfig';
 let pick='svgpick';
 let me=document.currentScript;
@@ -42,10 +43,14 @@ document.addEventListener('DOMContentLoaded',()=>{
       n = directState(p,xindex);
     }
     setState(xid,n);
+    if (p===n) {
+      return;
+    }
     history.push({i:xid, p:p,n:n});
     unredo.max = history.length+1;
     unredo.value = unredo.max;
     lastunredo = unredo.max;
+    localStorage.setItem('lastunredo',lastunredo);
   });
   unredo.addEventListener('change',event=>{
     let nowunredo = event.target.value;
@@ -79,7 +84,7 @@ function directState(s,index) {
   } else {
     if (s/4<1) {
       return index;
-    } else { 
+    } else {
       return index+4;
     }
   }
@@ -169,6 +174,7 @@ function processUndo(i) {
   let h = history[i-1];
   setState(h.i,h.p);
   lastunredo--;
+  localStorage.setItem('lastunredo',lastunredo);
 }
 function processRedo(i) {
   if (history.length<i ||(i-1)<0) {
@@ -177,6 +183,7 @@ function processRedo(i) {
   let h = history[i-1];
   setState(h.i,h.n);
   lastunredo++;
+  localStorage.setItem('lastunredo',lastunredo);
 }
 function getId(target) {
   let id = target.id;
@@ -197,8 +204,7 @@ function loadSvg(url) {
 }
 function getColor () {
   let colorIndex = localStorage.getItem('colorIndex');
-  if (colorIndex) {
-    colorIndex = parseInt(colorIndex,10);
+  if (colorIndex!==null) {
     colorIndex = (++colorIndex)%4;
   } else {
     colorIndex = (new Date()).getTime()%4;

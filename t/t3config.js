@@ -1,10 +1,10 @@
 (()=>{
 let urls = [
-//{'sample':'https://script.google.com/macros/s/AKfycbz59zmsVf6XS4eCOIg26TnjcxiSQmfqc2Obc17iEsl6VcziOPkf/exec'},
-];
+//{'sample':'https://script.google.com/a/tessellation.jp/macros/s/AKfycbz59zmsVf6XS4eCOIg26TnjcxiSQmfqc2Obc17iEsl6VcziOPkf/exec'},
+]; 
 let me=document.currentScript;
 let name='svgconfig';
-me.insertAdjacentHTML('afterend',`<output class="${name}" style="position:fixed;bottom:0;background-color:#dddddd;"></output>`);
+me.insertAdjacentHTML('afterend',`<output class="${name}" style="position:fixed;bottom:0;background-color:#bbbbbb;"></output>`);
 document.addEventListener('DOMContentLoaded',()=>{
    document.body.querySelector(`output.${name}`).insertAdjacentHTML('beforeend',getHtml());
 });
@@ -23,6 +23,6 @@ function getHtml() {
       }
     }
   }
-  return `<select name="${name}" ${hidden} style="vertical-align:0.6em;margin-left:0.5em;">${options.join('')}</select>`;
+  return `<select name="${name}" ${hidden} style="vertical-align:0.6em;margin-left:0.5em;">${options.join('')}</select>`; 
 }
 })();
