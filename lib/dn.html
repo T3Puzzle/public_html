@@ -13,11 +13,7 @@
   let fileId = '';
   for (let ki=0;ki<kv.length;ki++) {
     let kvs = kv[ki].split('=');
-    if (kvs[0]==='hash') {
-      if (kvs.length>=2 && kvs[1]) {
-        hash = decodeURIComponent(kvs[1]);
-      }
-    } else if (kvs[0]==='fileId') {
+    if (kvs[0]==='fileId') {
       if (kvs.length>=2 && kvs[1]) {
         fileId = decodeURIComponent(kvs[1]);
       }
@@ -28,8 +24,7 @@
     html = 'fileId is not specified';
   } else {
     let url = `https://drive.google.com/uc?export=download&id=${fileId}`
-    let text = encodeURIComponent(`https://drive.google.com/file/d/${fileId}/view #FMS特別講義 ${hash}`);
-    html = `<h3>Tap to download</h3>
+    html = `<h3>画像を長押しして保存</h3>
 <img src="${url}"><br/>
   `;
   }
