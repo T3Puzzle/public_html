@@ -15,6 +15,7 @@
   padding: 8px 16px;
   font-size: 16px;">
 </form>
+<a href="javascript:history.back();">戻る</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
