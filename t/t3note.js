@@ -3,7 +3,7 @@ let config='svgconfig';
 let size = 100;
 let text = `
 <a href="https://forms.gle/KGSthgPT5zvkwbVn8">アンケート</a> / 
-<a href="./upload.html">画像</a> 
+<a href="./upload.html">写真</a> 
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
