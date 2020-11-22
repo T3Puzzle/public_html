@@ -8,7 +8,8 @@ if (!artist) {
 let url = 'https://docs.google.com/forms/d/e/1FAIpQLScO2CcSVsqd1a1LYUdVUA3oamnmEHkzee3seSs0v3IqCjvD1Q/viewform?usp=pp_url&entry.241675505='+artist;
 let text = `
 <a href="${url}">アンケート</a> / 
-<a href="./upload.html">写真</a> 
+<a href="./upload.html">写真</a> /
+<a href="./confirm.html">？</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
