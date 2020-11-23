@@ -8,8 +8,8 @@ if (!artist) {
 let url = 'https://www.t3puzzle.com';
 let tw = 'https://twitter.com/t3puzzle';
 let text = `
-<a href="${url}">パズル購入</a> / 
-<a href="${tw}">作品例</a>
+<a target="_blank" href="${url}">パズル購入</a> / 
+<a target="_blank" href="${tw}">作品例</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
