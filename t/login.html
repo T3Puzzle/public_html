@@ -39,18 +39,9 @@ SNSなどでT3パズルの事例として紹介させていただくことがあ
 ご記入いただいたメールアドレス宛に本アプリのURLを送付しますので、ご確認ください。<br/>
 またメールアドレスは、T3パズルに関連したイベントなどのご紹介に利用します。<br/>
 <p>
-<script>
-function setAndRun() {
-  let artist = localStorage.getItem('artist');
-  if (!(artist && artist.toString().trim().length>0)) {
-    artist = Math.random().toString(32).substring(2);
-    localStorage.setItem('artist',artist);
-  }
-  document.location.href = './index.html';
-}
-</script>
 <form action="https://script.google.com/a/tessellation.jp/macros/s/AKfycbzXHFifycf7nwG1XihLgqlUbA3HaaPUu8iuvN8DQaHgEVC02J8/exec">
 メールアドレス: <input type="email" name="email" required="required" size="50">
+<input type="hidden" name="artist">
 <br/>
 <input type="submit" value="了承" style="appearance: none;
   border: 0;
@@ -60,5 +51,16 @@ function setAndRun() {
   padding: 8px 16px;
   font-size: 16px;" >
 </form>
+<script>
+function setAndRun() {
+  let artist = localStorage.getItem('artist');
+  if (!(artist && artist.toString().trim().length>0)) {
+    localStorage.setItem('artist',artist);
+    let input = document.querySelector('input[name="artist"]').value = artist;;
+  } else {
+    document.location.href = './index.html';
+  }
+}
+</script>
 </body>
 </html>
