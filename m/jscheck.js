@@ -1,7 +1,5 @@
 (function(){
-  try {
-    eval('e=>e');
-  } catch (e) {
+  if (!('customElements' in window)) {
     document.location.href = './support.html';
   }
 })();
