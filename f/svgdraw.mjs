@@ -1,6 +1,7 @@
 import {__svgdraw_data} from './svgdraw_data.mjs';
 import {__svgdraw_init} from './svgdraw_oper.mjs';
 import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
+import {__artist_hasOne, __artist_one} from  './artist.mjs';
 (()=>{
   let APP = {
     parent: null,
@@ -33,7 +34,6 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
   customElements.define('svgdraw-app',SvgdrawApp);
 
   function indexUpdated (index) {
-    console.log(index);
     enableAnchor(APP.save.anchor,(index>3));
   }
   function svgdraw_draw(tag,anchor) {
@@ -69,11 +69,7 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
       if (!APP.save.enabled) {
         return false;
       }
-      let artist = localStorage.getItem('artist');
-      if (!(artist && artist.toString().trim().length>0)) {
-        artist = Math.random().toString(32).substring(2);
-        localStorage.setItem('artist',artist);
-      }
+      let artist = __artist_one();
       __svgToImageDataB64(svg, formData=>{
         if (!isiOS()) {
           APP.save.download.download = formData.filename;
@@ -97,7 +93,6 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
         })
         .then(r=>r.json())
         .then(j=>{
-          console.log('sucess');
         }).catch(e=>{
           console.error(e);
         });
@@ -199,7 +194,6 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
       APP.save.download = download;
       APP.parent.appendChild(download);
       APP.img = new Image();
-      APP.img.addEventListener('error',()=>alert(333));
       APP.img.style.display = 'none';
       APP.parent.appendChild(APP.img);
     }
@@ -213,8 +207,7 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
     if (!href) {
       return false;
     }
-    let artist = localStorage.getItem('artist');
-    if (!(artist && artist.toString().trim().length>0)) {
+    if (!__artist_hasOne()) {
       document.location.href = href;
       return true;
     }

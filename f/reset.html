@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=400,height=500,initial-scale=1,user-scalable=yes">
 </head>
 <body style="text-size-adjust:100%;">
-  <script><!--
-  localStorage.removeItem('artist');
-  document.location.href = './index.html';
-  //-->
-  </script>
+<script type="module">
+import {__artist_clear} from  './artist.mjs';
+__artist_clear();
+document.location.href = './index.html';
+</script>
 </body>
 </html>

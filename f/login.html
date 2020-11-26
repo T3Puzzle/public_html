@@ -51,17 +51,13 @@ SNSなどでT3パズルの事例として紹介させていただくことがあ
   padding: 8px 16px;
   font-size: 16px;" >
 </form>
-<script>
-setAndRun();
-function setAndRun() {
-  let artist = localStorage.getItem('artist');
-  if (!(artist && artist.toString().trim().length>0)) {
-    artist = Math.random().toString(32).substring(2);
-    localStorage.setItem('artist',artist);
-    document.querySelector('input[name="artist"]').value = artist;
-  } else {
-    document.location.href = './index.html';
-  }
+<script type="module">
+import {__artist_hasOne, __artist_one} from  './artist.mjs';
+if (__artist_hasOne()) {
+  document.location.href = './index.html';
+} else {
+  let artist = __artist_one();
+  document.querySelector('input[name="artist"]').value = artist;
 }
 </script>
 </body>

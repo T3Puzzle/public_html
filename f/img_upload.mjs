@@ -1,3 +1,4 @@
+import {__artist_hasOne, __artist_one} from  './artist.mjs';
 (()=>{
   let APP = {
     parent: null,
@@ -71,13 +72,6 @@
       APP.button.innerText = 'アップロード失敗';
     });
   }
-  function getArtist () {
-    let artist = localStorage.getItem('artist');
-    if (!artist) {
-      artist = 'tmp';
-    }
-    return artist;
-  }
   function convWidthHeight(image) {
     let max = 400;
     let width = image.width;
@@ -105,7 +99,7 @@
       image.src = e.target.result;
     });
     reader.readAsDataURL(e.target.files[0]);
-    let filename = getArtist()+'_'+e.target.files[0].name;
+    let filename = __artist_one()+'_'+e.target.files[0].name;
     APP.filename = filename.replace(/\.[^\.]+$/,'.png');
   }
 })();

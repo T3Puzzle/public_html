@@ -42,17 +42,12 @@
   SNSなどでT3パズルの事例として紹介させていただくことがあります。</dd>
 
 <p>
-<script>
-<!--
+<script type="module">
+import {__artist_hasOne, __artist_one} from  './artist.mjs';
 function setAndRun() {
-  let artist = localStorage.getItem('artist');
-  if (!(artist && artist.toString().trim().length>0)) {
-    artist = Math.random().toString(32).substring(2);
-    localStorage.setItem('artist',artist);
-  }
+  __artist_one();
   document.location.href = './index.html';
 }
-//-->
 </script>
 <button style="appearance: none;
   border: 0;
