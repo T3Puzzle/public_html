@@ -3,33 +3,18 @@ export function __svgdraw_data() {
 let x=30;
 let y=Math.sqrt(3)*x;
 
-
-  // TODO: node.js without dom
-  let xmlns = 'http://www.w3.org/2000/svg';
-  let boxWidth = 400;
-  let boxHeight = 400;
-  let svg = document.createElementNS(xmlns, 'svg');
-  svg.setAttributeNS(null, 'version', '1.1');
-  svg.setAttributeNS(null, 'viewBox', '0 0 ' + boxWidth + ' ' + boxHeight);
-  svg.setAttributeNS(null, 'width', boxWidth);
-  svg.setAttributeNS(null, 'height', boxHeight);
-  svg.setAttributeNS(null, 'preserveAspectRatio', 'xMidYMid meet');
-  svg.style.display = 'block';
-  svg.style.top = '0';
-  svg.style.left = '0';
-  svg.style.width = '100%';
-  svg.style['max-width'] = '800px';
-  svg.style.height = '100%';
-  svg.style['background-color'] = '#eee';
-
-  svg.innerHTML = `
+let svgStr =`<svg    version="1.1"
+        id="svg"
+        xmlns="http://www.w3.org/2000/svg"
+        width="400px"
+        height="400px"
+        style="background-color: #eee;">
  <g transform="translate(-150,0)scale(0.5,0.5)">
     ${tess()}
  </g>
-`;
-  
-  return svg;
-
+</svg>
+  `;
+  return svgStr;
 
 function tess() {
   let col=0;
@@ -60,4 +45,7 @@ function getCol(col,toggle) {
   return '#dddddd';
 }
 
+}
+if (typeof(process)!=='undefined') {
+  console.log(__svgdraw_data());
 }

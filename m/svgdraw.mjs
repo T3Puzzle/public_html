@@ -1,9 +1,8 @@
 import {__svgdraw_data} from './svgdraw_data.mjs';
 import {__svgdraw_init} from './svgdraw_oper.mjs';
-import {__svgdraw_save} from  './svgdraw_save.mjs';
+import {__svgToImageDataB64} from  './svgtoImageDataB64.mjs';
 (()=>{
   let APP = {
-    name: 't3',
     parent: null,
     svg: null,
     command: {
@@ -16,22 +15,70 @@ import {__svgdraw_save} from  './svgdraw_save.mjs';
   class SvgdrawApp extends HTMLElement {
     connectedCallback() {
       APP.parent = this.attachShadow({mode:'open'});
-      setTimeout(()=>processTags(this),0);
+      setTimeout(()=>processTag(this),0);
     }
   }
   customElements.define('svgdraw-app',SvgdrawApp);
 
-  function processCmd(tag) {
-    let tagName = tag.tagName;
-    let tagText = tag.innerText;
+  function __svgdraw_save(tag,anchor,app) {
+    // TODO: API
+    let url = tag.getAttribute('api');
+    return uploadAsPng(url, anchor, app.svg,
+      ()=>(app.command.current.index>2)
+    );
+
+    function uploadAsPng(__url,__anchor,__svg,__callback) {
+      let url='https://script.google.com/macros/s/AKfycby6dVAXJv9HB0Ke7zgXg3rpymLlSDXRmhjxGQmt2Mr2gZiYIPqn/exec';
+    if (__url) {
+      url = __url;
+    }
+    let form = createForm(url);
+    __svg.insertAdjacentElement('afterend',form);
+    __anchor.href = '#';
+    __anchor.target = '_self';
+    __anchor.addEventListener('click',e=>click(e,form,__svg,__callback));
+    return;
+
+  function click(e,form,svg,callback) {
+    if (callback && !callback()) {
+      return;
+    }
+    __svgToImageDataB64(svg, formData=>{
+      form.querySelector(`input[name="filename"]`).value = formData.filename;
+      form.querySelector(`input[name="type"]`).value = formData.type;
+      form.querySelector(`input[name="touch"]`).value = formData.touch;
+      form.querySelector(`input[name="content"]`).value = formData.content;
+      form.submit();
+      return;
+    });
+  }
+  function createForm (url) {
+    let form = document.createElement('form');
+    form.target='_top';
+    form.action=url;
+    form.method='post';
+    form.style.display='none';
+    form.innerHTML =`
+<input name="filename">
+<input name="touch">
+<input name="type">
+<input name="content">
+`;
+  return form;
+      }
+    }
+  }
+  function processCmd(cmd) {
+    let tagName = cmd.tagName;
+    let tagText = cmd.innerText;
     let res = wrapAnchor(wrapSpan(tagText,300,0.2));
     if (false) {
     } else if (tagName === 'SVGDRAW-COMMAND-SAVE') {
-      __svgdraw_save(tag,res,APP);
+      __svgdraw_save(cmd,res,APP);
     } else if (tagName === 'SVGDRAW-COMMAND-UNDO') {
-      APP.command.handler.undo(tag,res,APP);
+      APP.command.handler.undo(cmd,res,APP);
     } else if (tagName === 'SVGDRAW-COMMAND-REDO') {
-      APP.command.handler.redo(tag,res,APP);
+      APP.command.handler.redo(cmd,res,APP);
     }
     return res;
   }
@@ -71,26 +118,41 @@ import {__svgdraw_save} from  './svgdraw_save.mjs';
     anchor.appendChild(tag);
     return anchor;
   }
-  function processTags(svgdraw_app) {
-    if(moveToEntry (svgdraw_app)) {
+  function processTag(tag) {
+    if(moveToEntry (tag)) {
       return;
     }
-    APP.svg = __svgdraw_data();
-    APP.parent.appendChild(APP.svg);//.insertAdjacentElement('afterend',APP.svg);
-    APP.command.handler = __svgdraw_init(APP);
-
-    let menu = svgdraw_app.querySelector('svgdraw-menu');
-    let bgcolor = menu.getAttribute('bgcolor') || '#bbbbbb';
-    let output = document.createElement('output');
-    for (let i=0;i<menu.children.length;i++) {
-      let child = createSvgdrawTag(menu.children[i]);
-      output.appendChild(child);
+    {
+      let output = document.createElement('output');
+      output.innerHTML = __svgdraw_data();
+      APP.svg = output.querySelector('svg');
+      let width = APP.svg.width.baseVal.value;;
+      let height = APP.svg.height.baseVal.value;
+      APP.svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+      APP.svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+      APP.svg.style.display = 'block';
+      APP.svg.style.top = '0';
+      APP.svg.style.left = '0';
+      APP.svg.style.width = '100%';
+      APP.svg.style['max-width'] = `${2*width}px`;
+      APP.svg.style.height = '100%';
     }
-    output.style = `position:fixed;bottom:0;background-color:${bgcolor};`;
-    APP.parent.appendChild(output);//insertAdjacentElement('afterend',output);
+    APP.parent.appendChild(APP.svg);
+    APP.command.handler = __svgdraw_init(APP);
+    {
+      let menu = tag.querySelector('svgdraw-menu');
+      let bgcolor = menu.getAttribute('bgcolor') || '#bbbbbb';
+      let output = document.createElement('output');
+      for (let i=0;i<menu.children.length;i++) {
+        let child = createSvgdrawTag(menu.children[i]);
+        output.appendChild(child);
+      }
+      output.style = `position:fixed;bottom:0;background-color:${bgcolor};`;
+      APP.parent.appendChild(output);
+    }
   }
-  function moveToEntry (svgdraw_app) {
-    let entry = svgdraw_app.querySelector('svgdraw-entry');
+  function moveToEntry (tag) {
+    let entry = tag.querySelector('svgdraw-entry');
     if (!entry) {
       return false;
     }
