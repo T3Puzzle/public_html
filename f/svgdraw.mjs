@@ -79,10 +79,6 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
           APP.save.download.download = formData.filename;
           APP.save.download.href = formData.dataurl;
           APP.save.download.click();
-        } else {
-          APP.svg.style.display = 'none';
-          APP.img.src = formData.dataurl;
-          APP.img.style.display = '';
         }
 
         let body = new FormData();
@@ -98,6 +94,11 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
         .then(r=>r.json())
         .then(j=>{
           console.log('sucess');
+          if (isiOS()) {
+            APP.svg.style.display = 'none';
+            APP.img.src = json.url;
+            APP.img.style.display = '';
+          }
         }).catch(e=>{
           console.error(e);
         });
