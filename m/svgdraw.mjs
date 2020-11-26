@@ -43,10 +43,15 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
     if (callback && !callback()) {
       return;
     }
+    let artist = localStorage.getItem('artist');
+    if (!(artist && artist.toString().trim().length>0)) {
+      artist = Math.random().toString(32).substring(2);
+      localStorage.setItem('artist',artist);
+    }
     __svgToImageDataB64(svg, formData=>{
-      form.querySelector(`input[name="filename"]`).value = formData.filename;
+      form.querySelector(`input[name="filename"]`).value = artist + '_' + formData.filename;
       form.querySelector(`input[name="type"]`).value = formData.type;
-      form.querySelector(`input[name="touch"]`).value = formData.touch;
+      form.querySelector(`input[name="touch"]`).value = ('ontouchend' in document)?'true':'';
       form.querySelector(`input[name="content"]`).value = formData.content;
       form.submit();
       return;
