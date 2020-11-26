@@ -26,6 +26,7 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
   
   class SvgdrawApp extends HTMLElement {
     connectedCallback() {
+      this.style.display = 'block';
       APP.parent = this.attachShadow({mode:'open'});
       setTimeout(()=>processTag(this),0);
     }
