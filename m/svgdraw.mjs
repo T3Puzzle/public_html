@@ -1,6 +1,6 @@
 import {__svgdraw_data} from './svgdraw_data.mjs';
 import {__svgdraw_init} from './svgdraw_oper.mjs';
-import {__svgToImageDataB64} from  './svgtoImageDataB64.mjs';
+import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
 (()=>{
   let APP = {
     parent: null,
