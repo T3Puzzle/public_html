@@ -25,7 +25,6 @@ function getFormData (data) {
   return {
     filename: getFileName(),
     type: 'image/png',
-    touch:  ('ontouchend' in document)?'true':'',
     content: data
   };
 }
@@ -38,12 +37,7 @@ function getFileName() {
        name = RegExp.$1;
     }
   }
-  let artist = localStorage.getItem('artist');
-  if (!(artist && artist.toString().trim().length>0)) {
-    artist = Math.random().toString(32).substring(2);
-    localStorage.setItem('artist',artist);
-  }
-  return artist+'_'+name+getDateStr()+'.png';
+  return name+getDateStr()+'.png';
 }
 function getDateStr() {
   let date = new Date();
