@@ -97,8 +97,8 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
           if (isiOS()) {
             APP.svg.style.display = 'none';
             APP.img.src = j.url;
-            APP.img.style.display = '';
-alert(1);
+            APP.img.style.display = 'block';
+alert(2);
           }
         }).catch(e=>{
           console.error(e);
