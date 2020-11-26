@@ -1,5 +1,5 @@
-import {__svgdraw_data} from './svgdraw_data_t3.mjs';
-import {__svgdraw_init} from './svgdraw_oper_t3.mjs';
+import {__svgdraw_data} from './svgdraw_data.mjs';
+import {__svgdraw_init} from './svgdraw_oper.mjs';
 import {__svgdraw_save} from  './svgdraw_save.mjs';
 (()=>{
   let APP = {
