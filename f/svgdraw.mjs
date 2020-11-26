@@ -98,7 +98,7 @@ import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
             APP.svg.style.display = 'none';
             APP.img.src = j.url;
             APP.img.style.display = 'block';
-alert(2);
+alert(3);
           }
         }).catch(e=>{
           console.error(e);
@@ -201,6 +201,7 @@ alert(2);
       APP.save.download = download;
       APP.parent.appendChild(download);
       APP.img = new Image();
+      APP.img.addEventListener('error',()=>alert(333));
       APP.img.style.display = 'none';
       APP.parent.appendChild(APP.img);
     }
