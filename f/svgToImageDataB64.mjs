@@ -18,9 +18,9 @@ export function __svgToImageDataB64(svgElement, callback) {
 }
 function toB64(canvas,callback,type) {
   let dataurl = canvas.toDataURL(type);
-  callback(getFormData(dataurl));
+  callback(getParam(dataurl));
 }
-function getFormData (dataurl) {
+function getParam (dataurl) {
   return {
     filename: getFileName(),
     type: 'image/png',

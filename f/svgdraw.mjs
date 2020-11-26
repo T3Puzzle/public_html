@@ -1,6 +1,6 @@
 import {__svgdraw_data} from './svgdraw_data.mjs';
 import {__svgdraw_init} from './svgdraw_oper.mjs';
-import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
+import {__enableAnchor,__svgdraw_draw,__svgdraw_save} from './svgdraw_save.mjs';
 import {__artist_hasOne, __artist_one} from  './artist.mjs';
 (()=>{
   let APP = {
@@ -22,7 +22,6 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
         edit: '',
       }
     },
-    url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbyTAABGkacaN4mBGzA1oO7fYMZukpF_lMt6kUtvrg/exec',
   };
   
   class SvgdrawApp extends HTMLElement {
@@ -32,73 +31,10 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
     }
   }
   customElements.define('svgdraw-app',SvgdrawApp);
+  return;
 
   function indexUpdated (index) {
-    enableAnchor(APP.save.anchor,(index>3));
-  }
-  function svgdraw_draw(tag,anchor) {
-    APP.save.icon.draw = tag.innerText;
-  }
-  function enableAnchor (anchor,flag) {
-    APP.save.enabled = flag;
-    if (flag) {
-      anchor.style.filter = '';
-      anchor.disabled = '';
-    } else {
-      anchor.style.filter = 'contrast(40%) grayscale(100%)';
-      anchor.disabled = 'disabled';
-    }
-  }
-  function isiOS () {
-     const ua = window.navigator.userAgent.toLowerCase();
-     return ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document;
-  }
-  function svgdraw_save(tag,anchor) {
-    APP.save.anchor = anchor;
-    APP.save.icon.save = tag.innerText;
-    anchor.href = '#';
-    anchor.target = '_self';
-    anchor.addEventListener('click',e=>click(e,APP.svg));
-    enableAnchor(anchor,false);
-    return;
-
-    function click(e,svg) {
-      if (APP.command.current.index<3) {
-        return false;
-      }
-      if (!APP.save.enabled) {
-        return false;
-      }
-      let artist = __artist_one();
-      __svgToImageDataB64(svg, formData=>{
-        if (!isiOS()) {
-          APP.save.download.download = formData.filename;
-          APP.save.download.href = formData.dataurl;
-          APP.save.download.click();
-        } else {
-          APP.svg.style.display = 'none';
-          APP.img.src = formData.dataurl;
-          APP.img.style.display = 'block';
-        }
-
-        let body = new FormData();
-        body.append('filename',artist + '_' + formData.filename);
-        body.append('type',formData.type);
-        body.append('content',formData.content);
-        fetch(APP.url,{
-          method: 'POST',
-          body: body,
-          mode: 'cors',
-          redirect: 'follow',
-        })
-        .then(r=>r.json())
-        .then(j=>{
-        }).catch(e=>{
-          console.error(e);
-        });
-        return;
-      });
-    }
+    __enableAnchor(APP.save.anchor,(index>3),APP);
   }
   function processCmd(cmd) {
     let tagName = cmd.tagName;
@@ -106,9 +42,9 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
     let res = wrapAnchor(wrapSpan(tagText,300,0.2));
     if (false) {
     } else if (tagName === 'SVGDRAW-COMMAND-SAVE') {
-      svgdraw_save(cmd,res);
+      __svgdraw_save(cmd,res,APP);
     } else if (tagName === 'SVGDRAW-COMMAND-DRAW') {
-      svgdraw_draw(cmd,res);
+      __svgdraw_draw(cmd,res,APP);
       res = null;
     } else if (tagName === 'SVGDRAW-COMMAND-UNDO') {
       APP.command.handler.undo(cmd,res,APP);

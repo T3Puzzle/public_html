@@ -1,4 +1,5 @@
 import {__artist_hasOne, __artist_one} from  './artist.mjs';
+import {__fetch_upload} from  './utilities.mjs';
 (()=>{
   let APP = {
     parent: null,
@@ -60,17 +61,15 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
   function doPost () {
     APP.button.disabled = 'disabled';
     APP.button.innerText = 'アップロード中…';
-    fetch(APP.url,{
-      method: 'POST',
-      body: APP.body,
-      mode: 'cors',
-      redirect: 'follow', 
-    }).then(r=>r.json()).then(j=>{
-      APP.button.innerText = 'アップロード完了';
-    }).catch(e=>{
-      console.error(e);
-      APP.button.innerText = 'アップロード失敗';
-    });
+    __fetch_upload(APP.url, APP.body,
+      j=>{
+	APP.button.innerText = 'アップロード完了';
+      },
+      e=>{
+        console.error(e);
+        APP.button.innerText = 'アップロード失敗';
+      }
+    );
   }
   function convWidthHeight(image) {
     let max = 400;
