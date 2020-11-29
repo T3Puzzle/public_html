@@ -2,6 +2,7 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
 import {__enable_emoji} from  './utilities.mjs';
 (()=>{
   let APP = {
+    debug: true,
     root: null,
     svg: null,
     menu: {
@@ -25,8 +26,7 @@ import {__enable_emoji} from  './utilities.mjs';
     let cmd = command.toLowerCase();
     APP.menu.commands[cmd] = button;
   }
-  function processButton(button,bgcolor) {
-    button.style['background-color']=bgcolor;
+  function processButton(button) {
     let command = button.getAttribute('x-cmd');
     if (command) {
        processCommand(button,command);
@@ -43,7 +43,7 @@ import {__enable_emoji} from  './utilities.mjs';
     }
     let buttons = menu.querySelectorAll('button');
     for (let bi=0;bi<buttons.length;bi++) {
-      processButton(buttons[bi],bgcolor);
+      processButton(buttons[bi]);
     }
     output.style = `position:fixed;bottom:0;background-color:${bgcolor};`;
     output.innerHTML = menu.innerHTML;
@@ -102,13 +102,15 @@ import {__enable_emoji} from  './utilities.mjs';
         return;
       }
     }
+    if (APP.debug) {
+      src += '?'+Date.now();
+    }
     import(src)
     .then(module=>{
        if (!output.id || output.id.trim().length===0) {
-         output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\//,'');
+         output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw_/,'');
        }
-console.log(output.id);
-       let ret  = module.setup(APP,output);
+       let ret  = module.setup(APP,output,insertButton,bindMenuCallback);
        if (callback) {
          callback(ret);
        }
@@ -116,6 +118,27 @@ console.log(output.id);
       console.error(e);
       importFailed(output,callback);
     });
+
+    function bindMenuCallback(cmd,callback) {
+      let button = APP.menu.commands[cmd];
+      if (!button) { return; }
+      button.addEventListener('click',_=>callback(button,_));
+      return button;
+    }
+    function insertButton (cmd, emoji, append) {
+      if (!(cmd in APP.menu.commands)) {
+        let button = document.createElement('button');
+        __enable_emoji(button,true);
+        button['x-cmd'] = cmd;
+        button.innerHTML = emoji;
+        APP.menu.commands[cmd] = button;
+        let position = 'afterbegin';
+        if (append) {
+          position = 'beforeend';
+        }
+        APP.root.querySelector('output#menu').insertAdjacentElement(position,button);
+      }
+    }
 
     function importFailed (output,callback) {
       output.remove();
@@ -140,7 +163,7 @@ console.log(output.id);
     }
     return false;
   }
-  function processElement(tag,modifier,callback) {
+  function processElement(tag,modifier,cascadeCall) {
     let element = tag.querySelector('svgdraw-'+modifier);
     if (!element) {
       return null;
@@ -160,8 +183,8 @@ console.log(output.id);
     } if (modifier==='extensions') {
        processExtensions(element, output);
     }
-    if (callback) {
-      callback();
+    if (cascadeCall) {
+      cascadeCall();
     }
   }
   function processTag(tag) {

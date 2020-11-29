@@ -1,7 +1,19 @@
 // comment 'export' if no module supported
 export
-function setup(app,output) {
+function setup(app,output,
+               insertButton,bindMenuCallback) {
 return build;
+
+  function addButton (app, cmd, emoji) {
+    if (!(cmd in app.menu.commands)) {
+      let button = document.createElement('button');
+      __enable_emoji(button,true);
+      button['x-cmd'] = cmd;
+      button.innerHTML = emoji;
+      app.menu.commands[cmd] = button;
+      app.root.querySelector('output#menu').insertAdjacentElement('afterbegin',button);
+    }
+  }
 
 function build (param) {
 let x=30;

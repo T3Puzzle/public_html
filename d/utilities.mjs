@@ -4,6 +4,7 @@ export function __enable_emoji(tag,flag) {
     filter = 'contrast(40%) grayscale(100%)';
   }
   //tag.style['border-style'] = 'none';
+  tag.style['background-color'] = 'Transparent';
   tag.style['filter'] =filter;
   tag.style['font-size']='300%';
   tag.style['text-decoration'] ='none';

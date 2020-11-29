@@ -1,5 +1,6 @@
 // comment 'export' if no module supported
-export function setup(app,output) {
+export function setup(app,output,
+                      insertButton, bindMenuCallback) {
   let OPERATION = {
     current: { index: 0 },
     history: [],
@@ -59,24 +60,13 @@ export function setup(app,output) {
       }
     }
   });
-  bindMenuCallback(app.menu.commands);
+  insertButton('operation/redo','↪️');
+  insertButton('operation/undo','↩️');
+  bindMenuCallback('operation/redo',svgdraw_redo);
+  bindMenuCallback('operation/undo',svgdraw_undo);
   return build;
 
 function build (param) {
-}
-function bindMenuCallback(commands) {
-    for (let ck in commands) {
-      let button = commands[ck];
-      if (!button) { continue; }
-      if (false) {
-      } else if (ck === 'operation/undo') {
-        button.addEventListener('click',svgdraw_undo);
-        IMAGE.undo.button = button;
-      } else if (ck === 'operation/reeo') {
-        button.addEventListener('click',svgdraw_redo);
-        IMAGE.redo.button = button;
-      }
-    }
 }
 function callback(key,value) {
   if (OPERATION.callback) {
@@ -94,10 +84,10 @@ function getUnredo (root) {
   output.appendChild(unredo);
   return unredo;
 }
-function __svgdraw_undo (undo) {
+function svgdraw_undo (undo) {
   undo.addEventListener('click',_=>processUndo(OPERATION.current.index-1));
 }
-function __svgdraw_redo (redo) {
+function svgdraw_redo (redo) {
   redo.addEventListener('click',_=>processRedo(OPERATION.current.index));
 }
 function directState(s,index) {

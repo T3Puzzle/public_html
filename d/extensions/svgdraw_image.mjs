@@ -1,10 +1,13 @@
 import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
 import {__artist_hasOne, __artist_one} from  '../artist.mjs';
-import {__fetch_upload,__checkif_iOS} from  '../utilities.mjs';
+import {__fetch_upload,__checkif_iOS,__enable_emoji} from  '../utilities.mjs';
 
 // commment 'export if no module supported
 export
-function setup(app,output) {
+function setup(app,output,
+               insertButton,bindMenuCallback) {
+
+console.log(1111);
   let IMAGE = {
     svg: app.svg,
     save: {
@@ -22,22 +25,17 @@ function setup(app,output) {
   };
   IMAGE.output = output;
 
-  bindMenuCallback(app.menu.commands);
+  insertButton ('image/draw','🖍');
+  insertButton ('image/save','⬇️');
+
+  IMAGE.save.button = bindMenuCallback('image/save',click);
+  IMAGE.draw.button = bindMenuCallback('image/draw',null);
+
   bindOperationCallback(app.menu.commands);
-  return;
+  return build;
   
-  function bindMenuCallback (commands) {
-    for (let ck in commands) {
-      let button = commands[ck];
-      if (!button) { continue; }
-      if (false) {
-      } else if (ck === 'image/save') {
-        button.addEventListener('click',click);
-        IMAGE.save.button = button;
-      } else if (ck === 'image/draw') {
-        IMAGE.draw.button = button;
-      }
-    }
+  function build (param) {
+    return;
   }
   function bindOperationCallback (key, value) {
     if (key==='index') {
@@ -50,9 +48,6 @@ function setup(app,output) {
   }
 
   function click(e) {
-      if (app.command.current.index<3) {
-        return false;
-      }
       if (!IMAGE.enabled) {
         return false;
       }
