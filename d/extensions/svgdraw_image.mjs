@@ -4,15 +4,15 @@ import {__fetch_upload,__checkif_iOS,__enable_emoji} from  '../utilities.mjs';
 
 // commment 'export if no module supported
 export
-function setup(app,output,
+function setup(app,tag,output,
                insertButton,bindMenuCallback) {
 
-console.log(1111);
   let IMAGE = {
     svg: app.svg,
     save: {
       download: null,
       button: null, 
+      savedIndex: null,
     },
     upload: {
       enabled: true,
@@ -23,34 +23,64 @@ console.log(1111);
       button: null,
     },
   };
+  let url = tag.getAttribute('url');
+  if (url) {
+    IMAGE.upload.url = url;
+    if (url.length===0) {
+       IMAGE.upload.enabled = false;
+    }
+  }
   IMAGE.output = output;
 
   insertButton ('image/draw','🖍');
   insertButton ('image/save','⬇️');
 
-  IMAGE.save.button = bindMenuCallback('image/save',click);
-  IMAGE.draw.button = bindMenuCallback('image/draw',null);
 
-  bindOperationCallback(app.menu.commands);
+  IMAGE.save.button = bindMenuCallback('image/save',processSave);
+  IMAGE.draw.button = bindMenuCallback('image/draw',processDraw);
+
+  showDrawButton(false);
+
+  __enable_emoji(IMAGE.save.button,false);
+
+  if ('operation' in app.providers ) {
+    app.providers.operation.register(output, operationCallback);
+  }
   return build;
   
+  function showDrawButton(flag) {
+    if (flag) {
+      IMAGE.save.button.style.display = 'none';
+      IMAGE.draw.button.style.display = '';
+    } else {
+      IMAGE.save.button.style.display = '';
+      IMAGE.draw.button.style.display = 'none';
+    }
+  }
   function build (param) {
     return;
   }
-  function bindOperationCallback (key, value) {
+  function operationCallback (key, value) {
     if (key==='index') {
       let disabled = '';
-      if (value<3) {
+      let flag = (value>3);
+      if (!flag) {
         disabled = 'disabled';
       }
-      IMAGE.save.button.disabled = disabled;
+      let button = IMAGE.save.button;
+      button.disabled = disabled;
+      __enable_emoji(button,flag);
     }
   }
 
-  function click(e) {
-      if (!IMAGE.enabled) {
-        return false;
-      }
+  function processDraw(e) {
+    if (__checkif_iOS()) {
+      showDrawButton(false);
+      IMAGE.draw.image.style.display = 'none';
+      IMAGE.svg.style.display = 'block';
+    }
+  }
+  function processSave(e) {
       __svgToImageDataB64(IMAGE.svg, param=>{
         if (!__checkif_iOS()) {
           if (!IMAGE.download) {
@@ -69,9 +99,10 @@ console.log(1111);
             image.style.display = 'none';
             IMAGE.output.appendChild(image);
           }
-          image,src = param.dataurl;
+          image.src = param.dataurl;
           image.style.display = 'block';
           IMAGE.svg.style.display = 'none';
+          showDrawButton(true);
         }
         if (IMAGE.upload.enabled) {
           fetch_upload(param);

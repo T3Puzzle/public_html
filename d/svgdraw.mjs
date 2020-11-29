@@ -5,9 +5,8 @@ import {__enable_emoji} from  './utilities.mjs';
     debug: true,
     root: null,
     svg: null,
-    menu: {
-      commands:{},
-    },
+    commands:{},
+    providers: {},
   };
   
   class SvgdrawApp extends HTMLElement {
@@ -24,7 +23,7 @@ import {__enable_emoji} from  './utilities.mjs';
   function processCommand(button, command) {
     __enable_emoji(button,true);
     let cmd = command.toLowerCase();
-    APP.menu.commands[cmd] = button;
+    APP.commands[cmd] = button;
   }
   function processButton(button) {
     let command = button.getAttribute('x-cmd');
@@ -36,31 +35,37 @@ import {__enable_emoji} from  './utilities.mjs';
     anchor.target = '_blank';
   }
   function processMenu (menu,output) {
-    let bgcolor = menu.getAttribute('bgcolor') || '#bbbbbb';
-    let anchors = menu.querySelectorAll('a');
-    for (let ai=0;ai<anchors.length;ai++) {
-      processAnchor(anchors[ai]);
-    }
-    let buttons = menu.querySelectorAll('button');
-    for (let bi=0;bi<buttons.length;bi++) {
-      processButton(buttons[bi]);
+    let bgcolor = '#bbbbbb';
+    if (menu) {
+      bgcolor = menu.getAttribute('bgcolor') || bgcolor;
+      let anchors = menu.querySelectorAll('a');
+      for (let ai=0;ai<anchors.length;ai++) {
+        processAnchor(anchors[ai]);
+      }
+      let buttons = menu.querySelectorAll('button');
+      for (let bi=0;bi<buttons.length;bi++) {
+        processButton(buttons[bi]);
+      }
     }
     output.style = `position:fixed;bottom:0;background-color:${bgcolor};`;
     output.innerHTML = menu.innerHTML;
   }
   function processBoard (board,output){
-    let type = board.getAttribute('type') || 'module';
+    let type = 'module';
+    if (board) {
+      type = board.getAttribute('type') || type;
+    }
     if (type==='module') {
       importModule (board,output,'./svgdraw_board.mjs',
         build=>{
-           initBoard(build,board,output);
+           buildBoard(build,board,output);
         });
     } else {
       // TODO:  support type=svg src
     }
     return;
 
-    function initBoard (build,board,output) {
+    function buildBoard (build,board,output) {
       // TODO:  support to read svgdraw-t3-board
       let param ={x:30}; 
       output.innerHTML = build(param);
@@ -79,6 +84,9 @@ import {__enable_emoji} from  './utilities.mjs';
     }
   }
   function processExtensions (extensions,output) {
+    if (!extensions) {
+      return;
+    }
     for (let ei=0;ei<extensions.children.length;ei++) {
       let ext = extensions.children[ei];
       let exoutput = document.createElement('output');
@@ -110,7 +118,7 @@ import {__enable_emoji} from  './utilities.mjs';
        if (!output.id || output.id.trim().length===0) {
          output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw_/,'');
        }
-       let ret  = module.setup(APP,output,insertButton,bindMenuCallback);
+       let ret  = module.setup(APP,tag,output,insertButton,bindMenuCallback);
        if (callback) {
          callback(ret);
        }
@@ -120,18 +128,18 @@ import {__enable_emoji} from  './utilities.mjs';
     });
 
     function bindMenuCallback(cmd,callback) {
-      let button = APP.menu.commands[cmd];
+      let button = APP.commands[cmd];
       if (!button) { return; }
       button.addEventListener('click',_=>callback(button,_));
       return button;
     }
     function insertButton (cmd, emoji, append) {
-      if (!(cmd in APP.menu.commands)) {
+      if (!(cmd in APP.commands)) {
         let button = document.createElement('button');
         __enable_emoji(button,true);
         button['x-cmd'] = cmd;
         button.innerHTML = emoji;
-        APP.menu.commands[cmd] = button;
+        APP.commands[cmd] = button;
         let position = 'afterbegin';
         if (append) {
           position = 'beforeend';
@@ -147,7 +155,7 @@ import {__enable_emoji} from  './utilities.mjs';
       }
     }
   }
-  function processEntry (entry,output) {
+  function processEntry (entry) {
     if (!entry) {
       return false;
     }
@@ -168,12 +176,13 @@ import {__enable_emoji} from  './utilities.mjs';
     if (!element) {
       return null;
     }
+    if (modifier==='entry') {
+      return processEntry(element);
+    }
     let output = document.createElement('output');
     output.id = modifier;
     APP.root.appendChild(output);
     if (false) {
-    } if (modifier==='entry') {
-       processEntry(element, output);
     } if (modifier==='board') {
        processBoard(element, output);
     } if (modifier==='menu') {
@@ -188,7 +197,7 @@ import {__enable_emoji} from  './utilities.mjs';
     }
   }
   function processTag(tag) {
-    if(processElement(tag,'entry',null)) {
+    if(processElement(tag,'entry')){
       return;
     }
     processElement(tag,'board',()=>

@@ -1,13 +1,12 @@
 // comment 'export' if no module supported
-export function setup(app,output,
+export function setup(app,tag,output,
                       insertButton, bindMenuCallback) {
   let OPERATION = {
-    current: { index: 0 },
+    current: { index: 0},
     history: [],
     svg: app.svg,
-    callback: null,
+    callbacks: new Map(),
     color: '#000000',
-    input: null,
     undo: {
       button: null,
     },
@@ -16,10 +15,9 @@ export function setup(app,output,
     }
   };
   OPERATION.color = getColor();
-  OPERATION.input = getUnredo(app.root);
   OPERATION.svg.addEventListener('click',event=>{
-    if (OPERATION.input.max!==OPERATION.input.value) {
-      OPERATION.history.length = OPERATION.input.value-1;
+    if (OPERATION.history.length < OPERATION.current.index) {
+      OPERATION.history.length = OPERATION.current.index-1;
     }
     let target = event.target;
     let id = getId(target);
@@ -41,54 +39,38 @@ export function setup(app,output,
       return;
     }
     OPERATION.history.push({i:xid, p:p,n:n});
-    OPERATION.input.max = OPERATION.history.length+1;
-    OPERATION.input.value = OPERATION.input.max;
-    OPERATION.current.index = OPERATION.input.max;
-    callback('index',OPERATION.current.index);
-  });
-  OPERATION.input.addEventListener('change',event=>{
-    let nowunredo = event.target.value;
-    if (nowunredo===lastunredo) {
-      // nop
-    } else if (nowunredo<lastunredo) {
-      for (let i=lastunredo-1;i>=nowunredo;i--) {
-        processUndo(i);
-      }
-    } else if (nowunredo>lastunredo) {
-      for (let i=lastunredo;i<nowunredo;i++) {
-        processRedo(i);
-      }
-    }
+    OPERATION.current.index = OPERATION.history.length;
+    propagate('index',OPERATION.current.index);
   });
   insertButton('operation/redo','↪️');
   insertButton('operation/undo','↩️');
-  bindMenuCallback('operation/redo',svgdraw_redo);
-  bindMenuCallback('operation/undo',svgdraw_undo);
+  bindMenuCallback('operation/redo',(build)=>processRedo());
+  bindMenuCallback('operation/undo',(build)=>processUndo());
+  
+  app.providers['operation'] = {
+     register: register,
+     unregister: unregister,
+  };
   return build;
 
+function register (obj, callback){
+  OPERATION.callbacks.set(obj,callback);
+}
+function unregister (obj){
+  OPERATION.callbacks.delete(obj);
+}
 function build (param) {
 }
-function callback(key,value) {
-  if (OPERATION.callback) {
-    OPERATION.callback(key, value);
+function propagate(key,value) {
+  let callbacks = OPERATION.callbacks.values();
+  while(true) {
+    let callback = callbacks.next();
+    if (callback.done) {
+      break;
+    } else {
+      callback.value(key, value);
+    }
   }
-}
-function getUnredo (root) {
-  let unredo = document.createElement('input');
-  unredo.type = 'range';
-  unredo.width = '100%';
-  unredo.value = '1';
-  unredo.min = '1';
-  unredo.max = '1';
-  unredo.style = 'display:none;vertical-align:0.3em;margin-right:0.2em;';
-  output.appendChild(unredo);
-  return unredo;
-}
-function svgdraw_undo (undo) {
-  undo.addEventListener('click',_=>processUndo(OPERATION.current.index-1));
-}
-function svgdraw_redo (redo) {
-  redo.addEventListener('click',_=>processRedo(OPERATION.current.index));
 }
 function directState(s,index) {
   if (s%4===index) {
@@ -181,23 +163,31 @@ function coltoggle (col) {
   }
 }
 function processUndo(i) {
-  if (OPERATION.history.length<i ||(i-1)<0) {
+  let j=i;
+  if (!j) {
+    j=OPERATION.current.index-1;
+  }
+  if (OPERATION.history.length<=j ||(j)<0) {
     return;
   }
-  let h = OPERATION.history[i-1];
+  let h = OPERATION.history[j];
   setState(h.i,h.p);
   OPERATION.current.index--;
-  callback('index',OPERATION.current.index);
+  propagate('index',OPERATION.current.index);
   
 }
 function processRedo(i) {
-  if (OPERATION.history.length<i ||(i-1)<0) {
+  let j=i;
+  if (!j) {
+    j=OPERATION.current.index;
+  }
+  if (OPERATION.history.length<=j||(j)<0) {
     return;
   }
-  let h = OPERATION.history[i-1];
+  let h = OPERATION.history[j];
   setState(h.i,h.n);
   OPERATION.current.index++;
-  callback('index',OPERATION.current.index);
+  propagate('index',OPERATION.current.index);
 }
 function getId(target) {
   let id = target.id;
