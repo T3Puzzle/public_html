@@ -56,7 +56,7 @@ import {__enable_emoji} from  './utilities.mjs';
       type = board.getAttribute('type') || type;
     }
     if (type==='module') {
-      importModule (board,output,'./svgdraw_board.mjs',
+      importModule (board,output,'./svgdraw-board.mjs',
         build=>{
            buildBoard(build,board,output);
         });
@@ -97,7 +97,7 @@ import {__enable_emoji} from  './utilities.mjs';
     }
   }
   function processOperation (operation,output) {
-    importModule (operation,output,'./svgdraw_operation.mjs',null);
+    importModule (operation,output,'./svgdraw-operation.mjs',null);
   }
   function importModule (tag,output,_src,callback) {
     let ret  = true; 
@@ -116,7 +116,7 @@ import {__enable_emoji} from  './utilities.mjs';
     import(src)
     .then(module=>{
        if (!output.id || output.id.trim().length===0) {
-         output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw_/,'');
+         output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw-/,'');
        }
        let ret  = module.setup(APP,tag,output,insertButton,bindMenuCallback);
        if (callback) {
