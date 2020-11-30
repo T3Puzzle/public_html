@@ -1,11 +1,9 @@
 // comment 'export' if no module supported
-export function setup(app,tag,output,
-                      insertButton, bindMenuCallback) {
+export function setup(app,tag,output,base) {
   let OPERATION = {
     current: { index: 0},
     history: [],
     svg: app.svg,
-    callbacks: new Map(),
     color: '#000000',
     undo: {
       button: null,
@@ -40,37 +38,16 @@ export function setup(app,tag,output,
     }
     OPERATION.history.push({i:xid, p:p,n:n});
     OPERATION.current.index = OPERATION.history.length;
-    propagate('index',OPERATION.current.index);
+    base.callHooks(OPERATION,'index',OPERATION.current.index);
   });
-  insertButton('operation/redo','↪️');
-  insertButton('operation/undo','↩️');
-  bindMenuCallback('operation/redo',(build)=>processRedo());
-  bindMenuCallback('operation/undo',(build)=>processUndo());
-  
-  app.providers['operation'] = {
-     register: register,
-     unregister: unregister,
-  };
+  base.insertButton('operation/redo','↪️');
+  base.insertButton('operation/undo','↩️');
+  base.bindMenuCallback('operation/redo',(build)=>processRedo());
+  base.bindMenuCallback('operation/undo',(build)=>processUndo());
+  base.exposeHook('operation',OPERATION);
   return build;
 
-function register (obj, callback){
-  OPERATION.callbacks.set(obj,callback);
-}
-function unregister (obj){
-  OPERATION.callbacks.delete(obj);
-}
 function build (param) {
-}
-function propagate(key,value) {
-  let callbacks = OPERATION.callbacks.values();
-  while(true) {
-    let callback = callbacks.next();
-    if (callback.done) {
-      break;
-    } else {
-      callback.value(key, value);
-    }
-  }
 }
 function directState(s,index) {
   if (s%4===index) {
@@ -173,7 +150,7 @@ function processUndo(i) {
   let h = OPERATION.history[j];
   setState(h.i,h.p);
   OPERATION.current.index--;
-  propagate('index',OPERATION.current.index);
+  base.callHooks(OPERATION,'index',OPERATION.current.index);
   
 }
 function processRedo(i) {
@@ -187,7 +164,7 @@ function processRedo(i) {
   let h = OPERATION.history[j];
   setState(h.i,h.n);
   OPERATION.current.index++;
-  propagate('index',OPERATION.current.index);
+  base.callHooks(OPERATION,'index',OPERATION.current.index);
 }
 function getId(target) {
   let id = target.id;

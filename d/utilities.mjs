@@ -24,6 +24,7 @@ export function __fetch_upload (url,body, successCallback,errorCallback) {
   .then(r=>r.json())
   .then(j=>{
     if (successCallback) {
+      console.log('success');
       successCallback(j);
     }
   }).catch(e=>{

@@ -4,8 +4,7 @@ import {__fetch_upload,__checkif_iOS,__enable_emoji} from  '../utilities.mjs';
 
 // commment 'export if no module supported
 export
-function setup(app,tag,output,
-               insertButton,bindMenuCallback) {
+function setup(app,tag,output,base) {
 
   let IMAGE = {
     svg: app.svg,
@@ -13,14 +12,6 @@ function setup(app,tag,output,
       download: null,
       button: null, 
       savedIndex: null,
-    },
-    upload: {
-      enabled: true,
-      url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbyTAABGkacaN4mBGzA1oO7fYMZukpF_lMt6kUtvrg/exec'
-    },
-    draw: {
-      image: null,
-      button: null,
     },
   };
   let url = tag.getAttribute('url');
@@ -31,36 +22,17 @@ function setup(app,tag,output,
     }
   }
   IMAGE.output = output;
-
-  insertButton ('image/draw','🖍');
-  insertButton ('image/save','⬇️');
-
-
-  IMAGE.save.button = bindMenuCallback('image/save',processSave);
-  IMAGE.draw.button = bindMenuCallback('image/draw',processDraw);
-
-  showDrawButton(false);
-
+  base.insertButton ('image/save','⬇️','image');
+  IMAGE.save.button = base.bindMenuCallback('image/save',processSave);
   __enable_emoji(IMAGE.save.button,false);
-
-  if ('operation' in app.providers ) {
-    app.providers.operation.register(output, operationCallback);
-  }
+  base.bindHook('operation', output, operationHook);
+  base.exposeHook('image',IMAGE);
   return build;
   
-  function showDrawButton(flag) {
-    if (flag) {
-      IMAGE.save.button.style.display = 'none';
-      IMAGE.draw.button.style.display = '';
-    } else {
-      IMAGE.save.button.style.display = '';
-      IMAGE.draw.button.style.display = 'none';
-    }
-  }
   function build (param) {
     return;
   }
-  function operationCallback (key, value) {
+  function operationHook (key, value) {
     if (key==='index') {
       let disabled = '';
       let flag = (value>3);
@@ -72,17 +44,12 @@ function setup(app,tag,output,
       __enable_emoji(button,flag);
     }
   }
-
-  function processDraw(e) {
-    if (__checkif_iOS()) {
-      showDrawButton(false);
-      IMAGE.draw.image.style.display = 'none';
-      IMAGE.svg.style.display = 'block';
-    }
-  }
   function processSave(e) {
       __svgToImageDataB64(IMAGE.svg, param=>{
-        if (!__checkif_iOS()) {
+
+        base.callHooks(IMAGE,'preProcessSave',param, false);
+
+        if (!base.callHooks(IMAGE,'processSave',param, true)) {
           if (!IMAGE.download) {
             let download = document.createElement('a');
             IMAGE.download = download;
@@ -91,22 +58,9 @@ function setup(app,tag,output,
           IMAGE.download.download = param.filename;
           IMAGE.download.href = param.dataurl;
           IMAGE.download.click();
-        } else {
-          let image = IMAGE.draw.image;
-          if (!image) {
-            image = new Image();
-            IMAGE.draw.image = image;
-            image.style.display = 'none';
-            IMAGE.output.appendChild(image);
-          }
-          image.src = param.dataurl;
-          image.style.display = 'block';
-          IMAGE.svg.style.display = 'none';
-          showDrawButton(true);
         }
-        if (IMAGE.upload.enabled) {
-          fetch_upload(param);
-        }
+
+        base.callHooks(IMAGE,'postProcessSave',param, false);
         return;
       });
   }

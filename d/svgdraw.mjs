@@ -20,15 +20,19 @@ import {__enable_emoji} from  './utilities.mjs';
   customElements.define('svgdraw-app',SvgdrawApp);
   return;
 
-  function processCommand(button, command) {
+  function processCommand(button, className, command) {
     __enable_emoji(button,true);
     let cmd = command.toLowerCase();
     APP.commands[cmd] = button;
+    if (!button.classList.contains(className)){
+      button.classList.add(className);
+    }
   }
   function processButton(button) {
     let command = button.getAttribute('x-cmd');
-    if (command) {
-       processCommand(button,command);
+    if (/^([^\/]+)\//.test(command)) {
+      let className = RegExp.$1; 
+      processCommand(button,className,command);
     }
   }
   function processAnchor(anchor) {
@@ -118,7 +122,15 @@ import {__enable_emoji} from  './utilities.mjs';
        if (!output.id || output.id.trim().length===0) {
          output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw-/,'');
        }
-       let ret  = module.setup(APP,tag,output,insertButton,bindMenuCallback);
+       let ret  = module.setup(APP,tag,output, {
+	 insertButton: insertButton,
+         bindMenuCallback: bindMenuCallback,
+         bindHook: bindHook,
+         unbindHook: unbindHook,
+         exposeHook: exposeHook,
+         callHooks: callHooks,
+       }
+       );
        if (callback) {
          callback(ret);
        }
@@ -127,19 +139,64 @@ import {__enable_emoji} from  './utilities.mjs';
       importFailed(output,callback);
     });
 
+    function callHooks (ENV, key, value, once) {
+      if (!('hooks' in ENV)) {
+        ENV.hooks = new Map();
+      }
+      let hooks = ENV.hooks.values();
+      let res = false;
+      while(true) {
+        let callback = hooks.next();
+        if (callback.done) {
+          break;
+        } else {
+          res = res || callback.value(key, value);
+          if (res && once) {
+            return true;
+          }
+        }
+      }
+      return res;
+    }
+    function exposeHook (module,ENV) {
+      if (!('hooks' in ENV)) {
+          ENV.hooks = new Map();
+      }
+      APP.providers[module] = {
+        bind: (obj, hook)=>{
+          ENV.hooks.set(obj,hook);
+        },
+        unbind: (obj)=>{
+          ENV.hooks.delete(obj);
+        }
+      };
+    }
+    function bindHook (module,outout,hook) {
+      if (module in APP.providers ) {
+        APP.providers[module].bind(output,hook);
+      }
+    }
+    function unbindHook () {
+      if (module in APP.providers ) {
+        APP.providers[module].unbind(output,hook);
+      }
+    }
     function bindMenuCallback(cmd,callback) {
       let button = APP.commands[cmd];
-      if (!button) { return; }
+      if (!button) { return null; }
       button.addEventListener('click',_=>callback(button,_));
       return button;
     }
-    function insertButton (cmd, emoji, append) {
+    function insertButton (cmd, emoji, className, append) {
       if (!(cmd in APP.commands)) {
         let button = document.createElement('button');
         __enable_emoji(button,true);
         button['x-cmd'] = cmd;
         button.innerHTML = emoji;
         APP.commands[cmd] = button;
+        if (className) {
+          button.className = className;
+        }
         let position = 'afterbegin';
         if (append) {
           position = 'beforeend';

@@ -1,7 +1,6 @@
 // comment 'export' if no module supported
 export
-function setup(app,tag,output,
-               insertButton,bindMenuCallback) {
+function setup(app,tag,output, base ) {
 return build;
 
 function build (param) {
