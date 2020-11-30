@@ -26,7 +26,7 @@ function setup(app,tag,output,base) {
   }
   IMAGE.output = output;
   base.insertButton ('image/save','⬇️','image');
-  IMAGE.save.button = base.bindMenuCallback('image/save',processSave);
+  base.bindHook('menu',output,'image/save',processSave,IMAGE.save);
   __enable_emoji(IMAGE.save.button,false);
   base.bindHook('operation', output,'index', operationHook);
   base.exposeHook('image',IMAGE);

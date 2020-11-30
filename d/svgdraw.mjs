@@ -124,7 +124,6 @@ import {__enable_emoji} from  './utilities.mjs';
        }
        let ret  = module.setup(APP,tag,output, {
 	 insertButton: insertButton,
-         bindMenuCallback: bindMenuCallback,
          bindHook: bindHook,
          unbindHook: unbindHook,
          exposeHook: exposeHook,
@@ -169,7 +168,7 @@ import {__enable_emoji} from  './utilities.mjs';
         ENV.hooks.overwrite = [];
       }
       APP.providers[module] = {
-        bind: (obj, subkey, hook)=>{
+        bind: (obj, subkey, hook,outobj)=>{
           if (ENV.overwrite) {
             if (ENV.hooks.map.size>=1) {
               return false;
@@ -195,22 +194,27 @@ import {__enable_emoji} from  './utilities.mjs';
         }
       };
     }
-    function bindHook (module,outout,subkey,hook) {
-      if (module in APP.providers ) {
-        return APP.providers[module].bind(output,subkey,hook);
+    function bindHook (module,key,subkey,hook,outobj) {
+      if (module === 'menu') {
+        return bindHookMenu(subkey,hook,outobj);
+      } else if (module in APP.providers ) {
+        return APP.providers[module].bind(key,subkey,hook);
       }
       return false;
     }
-    function unbindHook (output,subkey) {
+    function unbindHook (key,subkey) {
       if (module in APP.providers ) {
-        APP.providers[module].unbind(output,subkey,hook);
+        APP.providers[module].unbind(key,subkey,hook);
       }
     }
-    function bindMenuCallback(cmd,callback) {
+    function bindHookMenu(cmd,callback,outobj) {
       let button = APP.commands[cmd];
-      if (!button) { return null; }
+      if (!button) { return false; }
       button.addEventListener('click',_=>callback(button,_));
-      return button;
+      if (outobj) {
+        outobj.button = button;
+      }
+      return true;
     }
     function insertButton (cmd, emoji, className, append) {
       if (!(cmd in APP.commands)) {

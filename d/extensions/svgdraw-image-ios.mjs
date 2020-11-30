@@ -4,14 +4,14 @@ import {__checkif_iOS} from  '../utilities.mjs';
 export
 function setup(app,tag,output,base){
   let IMAGE_IOS = {
-    image: null,
-    button: null,
-    output: output,
     root: app.root,
     svg: app.svg,
+    image: null,
+    output: output,
+    button: null,
   };
   base.insertButton ('image/draw','🖍 ','image');
-  IMAGE_IOS.button = base.bindMenuCallback('image/draw',processDraw);
+  base.bindHook('menu',output,'image/draw',processDraw,IMAGE_IOS);
   showDrawButton(false);
   base.bindHook('image',output,'processSave',processSave);
   return build;

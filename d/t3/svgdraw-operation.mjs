@@ -42,8 +42,8 @@ export function setup(app,tag,output,base) {
   });
   base.insertButton('operation/redo','↪️');
   base.insertButton('operation/undo','↩️');
-  base.bindMenuCallback('operation/redo',(build)=>processRedo());
-  base.bindMenuCallback('operation/undo',(build)=>processUndo());
+  base.bindHook('menu',output,'operation/redo',(build)=>processRedo(null));
+  base.bindHook('menu',output,'operation/undo',(build)=>processUndo(null));
   base.exposeHook('operation',OPERATION);
   return build;
 
