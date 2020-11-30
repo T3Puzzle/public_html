@@ -150,7 +150,10 @@ import {__enable_emoji} from  './utilities.mjs';
         if (hooks.done) {
           break;
         } else {
-          res = res || hooks.value(key, value);
+          let hook = hooks.value.get(key);
+          if (hook) {
+            res = res || hook(value);
+          }
         }
       }
       return res;
@@ -166,27 +169,41 @@ import {__enable_emoji} from  './utilities.mjs';
         ENV.hooks.overwrite = [];
       }
       APP.providers[module] = {
-        bind: (obj, hook)=>{
-          if (ENV.hooks.map.values().next().done) {
-            ENV.hooks.map.set(obj,hook);
-            return true;
+        bind: (obj, subkey, hook)=>{
+          if (ENV.overwrite) {
+            if (ENV.hooks.map.size>=1) {
+              return false;
+            }
           }
-          return false;
+          let submap = ENV.hooks.map.get(obj);
+          if (!submap) {
+            submap = new Map();
+            ENV.hooks.map.set(obj,submap);
+          }
+          submap.set(subkey,hook);
+          return true;
         },
-        unbind: (obj)=>{
-          ENV.hooks.map.delete(obj);
+        unbind: (obj,subkey)=>{
+          if (!subkey) {
+            ENV.hooks.map.delete(obj);
+          } else {
+            let submap = ENV.hooks.map.get(obj);
+            if (submap) {
+              submap.delete(subkey);
+            }
+          }
         }
       };
     }
-    function bindHook (module,outout,hook) {
+    function bindHook (module,outout,subkey,hook) {
       if (module in APP.providers ) {
-        return APP.providers[module].bind(output,hook);
+        return APP.providers[module].bind(output,subkey,hook);
       }
       return false;
     }
-    function unbindHook () {
+    function unbindHook (output,subkey) {
       if (module in APP.providers ) {
-        APP.providers[module].unbind(output,hook);
+        APP.providers[module].unbind(output,subkey,hook);
       }
     }
     function bindMenuCallback(cmd,callback) {

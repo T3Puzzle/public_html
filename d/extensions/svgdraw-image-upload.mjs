@@ -17,18 +17,11 @@ function setup(app,tag,output,base) {
        IMAGE_UPLOAD.enabled = false;
     }
   }
-  base.bindHook('image',processHook);
+  base.bindHook('image',output,'postProcessSave',fetch_upload);
   return build;
   
   function build (param) {
     return;
-  }
-  function processHook (key, value) {
-    if (key==='postProcessSave') {
-      fetch_upload(value);
-      return true;
-    }
-    return false;
   }
   function fetch_upload (param) {
     if (IMAGE_UPLOAD.upload.enabled) {
@@ -40,5 +33,6 @@ function setup(app,tag,output,base) {
     body.append('type',param.type);
     body.append('content',param.content);
     __fetch_upload(IMAGE_UPLOAD.url, body,null,e=>{console.error(e)});
+    return true;
   }
 }

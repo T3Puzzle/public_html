@@ -13,7 +13,7 @@ function setup(app,tag,output,base){
   base.insertButton ('image/draw','🖍 ','image');
   IMAGE_IOS.button = base.bindMenuCallback('image/draw',processDraw);
   showDrawButton(false);
-  base.bindHook('image',output,processHook);
+  base.bindHook('image',output,'processSave',processSave);
   return build;
   
   function build (param) {
@@ -44,17 +44,10 @@ function setup(app,tag,output,base){
       IMAGE.svg.style.display = 'block';
     }
   }
-  function processHook (key, value) {
+  function processSave (param) {
     if (!__checkif_iOS()) {
        return false;
     }
-    if (key==='processSave') {
-       processSave(value);
-       return true;
-    }
-    return false;
-  }
-  function processSave (param) {
     let image = IMAGE_IOS.image;
     if (!image) {
       image = new Image();
@@ -66,5 +59,6 @@ function setup(app,tag,output,base){
     image.style.display = 'block';
     IMAGE_IOS.svg.style.display = 'none';
     showDrawButton(true);
+    return true;
   }
 }

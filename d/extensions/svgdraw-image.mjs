@@ -9,7 +9,6 @@ function setup(app,tag,output,base) {
   let IMAGE = {
     svg: app.svg,
     hooks: {
-      map: new Map(),
       overwrite: ['processSave']
     },
     save: {
@@ -29,24 +28,22 @@ function setup(app,tag,output,base) {
   base.insertButton ('image/save','⬇️','image');
   IMAGE.save.button = base.bindMenuCallback('image/save',processSave);
   __enable_emoji(IMAGE.save.button,false);
-  base.bindHook('operation', output, operationHook);
+  base.bindHook('operation', output,'index', operationHook);
   base.exposeHook('image',IMAGE);
   return build;
   
   function build (param) {
     return;
   }
-  function operationHook (key, value) {
-    if (key==='index') {
-      let disabled = '';
-      let flag = (value>3);
-      if (!flag) {
-        disabled = 'disabled';
-      }
-      let button = IMAGE.save.button;
-      button.disabled = disabled;
-      __enable_emoji(button,flag);
+  function operationHook (value) {
+    let disabled = '';
+    let flag = (value>3);
+    if (!flag) {
+      disabled = 'disabled';
     }
+    let button = IMAGE.save.button;
+    button.disabled = disabled;
+    __enable_emoji(button,flag);
   }
   function processSave(e) {
       __svgToImageDataB64(IMAGE.svg, param=>{
