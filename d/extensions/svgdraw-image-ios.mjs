@@ -8,10 +8,12 @@ function setup(app,tag,output,base){
     svg: app.svg,
     image: null,
     output: output,
-    button: null,
+    draw: {
+      button: null,
+    },
   };
   base.insertButton ('image/draw','🖍 ','image');
-  base.bindHook('menu',output,'image/draw',processDraw,IMAGE_IOS);
+  base.bindHook('menu',output,'image/draw',processDraw,IMAGE_IOS.draw);
   showDrawButton(false);
   base.bindHook('image',output,'processSave',processSave);
   return build;
@@ -34,7 +36,7 @@ function setup(app,tag,output,base){
       if (flag) {
         value = '';
       }
-      IMAGE_IOS.button.style.display = value;
+      IMAGE_IOS.draw.button.style.display = value;
     }
   }
   function processDraw(e) {

@@ -7,6 +7,12 @@ import {__enable_emoji} from  './utilities.mjs';
     svg: null,
     commands:{},
     providers: {},
+    board: {
+      src: './svgdraw-board.mjs', // const
+    },
+    operation: {
+      src: './svgdraw-operation.mjs', // const
+    },
   };
   
   class SvgdrawApp extends HTMLElement {
@@ -55,17 +61,32 @@ import {__enable_emoji} from  './utilities.mjs';
     output.innerHTML = menu.innerHTML;
   }
   function processBoard (board,output){
-    let type = 'module';
+    let type = '';
+    let src = '';
+    let innerHTML = '';
     if (board) {
       type = board.getAttribute('type') || type;
+      src = board.getAttribute('src') || type;
+      innerHTML = board.innerHTML.trim();
+    }
+    if (type==='' && src==='' && innnerHTML.length>0) {
+      // TODO:  innerHTML
+    }
+    if (type==='') {
+      type = 'module';
+    }
+    if (src==='') {
+      src = APP.board.src;
     }
     if (type==='module') {
-      importModule (board,output,'./svgdraw-board.mjs',
+      importModule (board,output,src,
         build=>{
            buildBoard(build,board,output);
         });
-    } else {
+    } else if (type==='svg') {
       // TODO:  support type=svg src
+    } else {
+      // nop
     }
     return;
 
@@ -101,7 +122,7 @@ import {__enable_emoji} from  './utilities.mjs';
     }
   }
   function processOperation (operation,output) {
-    importModule (operation,output,'./svgdraw-operation.mjs',null);
+    importModule (operation,output,APP.operation.src,null);
   }
   function importModule (tag,output,_src,callback) {
     let ret  = true; 
@@ -114,30 +135,39 @@ import {__enable_emoji} from  './utilities.mjs';
         return;
       }
     }
-    if (APP.debug) {
-      src += '?'+Date.now();
-    }
-    import(src)
-    .then(module=>{
-       if (!output.id || output.id.trim().length===0) {
-         output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw-/,'');
-       }
-       let ret  = module.setup(APP,tag,output, {
-	 insertButton: insertButton,
-         bindHook: bindHook,
-         unbindHook: unbindHook,
-         exposeHook: exposeHook,
-         callHooks: callHooks,
-       }
-       );
-       if (callback) {
-         callback(ret);
-       }
-    }).catch(e=>{
+    importModuleSub(tag,output,src,callback,e=>{
       console.error(e);
-      importFailed(output,callback);
+      if (_src!=='' && _src!==src) {
+        importModuleSub(tag,output,_src,callback,()=>{});
+      } else {
+        importFailed(output,callback);
+      }
     });
-
+    function importModuleSub (tag,output,src,successCallback,errorCallback) {
+      if (APP.debug) {
+        src += '?'+Date.now();
+      }
+      import(src)
+      .then(module=>{
+        if (!output.id || output.id.trim().length===0) {
+          output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw-/,'');
+        }
+        let ret  = module.setup(APP,tag,output, {
+          insertButton: insertButton,
+          bindHook: bindHook,
+          unbindHook: unbindHook,
+          exposeHook: exposeHook,
+          callHooks: callHooks,
+        });
+        if (successCallback) {
+           successCallback(ret);
+        }
+      }).catch(e=>{
+        if (errorCallback) {
+           errorCallback(e);
+        }
+      });
+    }
     function callHooks (ENV, key, value) {
       if (!('hooks' in ENV)) {
         return;
@@ -245,14 +275,14 @@ import {__enable_emoji} from  './utilities.mjs';
     if (!entry) {
       return false;
     }
-    let src = entry.getAttribute('src');
-    if (!src) {
+    let href = entry.getAttribute('href');
+    if (!href) {
       let html = entry.innerHTML;
       // TODO: somehow dialog?
       return false;
     }
     if (!__artist_hasOne()) {
-      document.location.href = src;
+      document.location.href = href;
       return true;
     }
     return false;

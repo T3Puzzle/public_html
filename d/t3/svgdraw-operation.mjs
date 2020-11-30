@@ -1,5 +1,6 @@
 // comment 'export' if no module supported
-export function setup(app,tag,output,base) {
+export
+function setup(app,tag,output,base) {
   let OPERATION = {
     current: { index: 0},
     history: [],
@@ -149,7 +150,7 @@ function processUndo(i) {
   }
   let h = OPERATION.history[j];
   setState(h.i,h.p);
-  OPERATION.current.index--;
+  OPERATION.current.index=j;
   base.callHooks(OPERATION,'index',OPERATION.current.index);
   
 }
@@ -163,7 +164,7 @@ function processRedo(i) {
   }
   let h = OPERATION.history[j];
   setState(h.i,h.n);
-  OPERATION.current.index++;
+  OPERATION.current.index=j+1;
   base.callHooks(OPERATION,'index',OPERATION.current.index);
 }
 function getId(target) {
