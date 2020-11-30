@@ -7,35 +7,32 @@ export
 function setup(app,tag,output,base) {
 
   let IMAGE = {
-    svg: app.svg,
+    shared: {
+      debug: app.debug, // to be update
+      root: app.root,
+      svg: app.svg,
+    },
     hooks: {
       overwrite: ['processSave']
     },
     save: {
       download: null,
       button: null, 
-      savedIndex: null,
+      savedIndex: null, // TODO
     },
   };
-  let url = tag.getAttribute('url');
-  if (url) {
-    IMAGE.upload.url = url;
-    if (url.length===0) {
-       IMAGE.upload.enabled = false;
-    }
-  }
   IMAGE.output = output;
   base.insertButton ('image/save','⬇️','image');
   base.bindHook('menu',output,'image/save',processSave,IMAGE.save);
   __enable_emoji(IMAGE.save.button,false);
-  base.bindHook('operation', output,'index', operationHook);
+  base.bindHook('operation', output,'index', processIndex);
   base.exposeHook('image',IMAGE);
   return build;
   
   function build (param) {
     return;
   }
-  function operationHook (value) {
+  function processIndex (operation,value) {
     let disabled = '';
     let flag = (value>3);
     if (!flag) {
@@ -45,8 +42,8 @@ function setup(app,tag,output,base) {
     button.disabled = disabled;
     __enable_emoji(button,flag);
   }
-  function processSave(e) {
-      __svgToImageDataB64(IMAGE.svg, param=>{
+  function processSave(menu,e) {
+      __svgToImageDataB64(IMAGE.shared.svg, param=>{
 
         base.callHooks(IMAGE,'preProcessSave',param);
 
@@ -64,13 +61,5 @@ function setup(app,tag,output,base) {
         base.callHooks(IMAGE,'postProcessSave',param);
         return;
       });
-  }
-  function fetch_upload (param) {
-    let body = new FormData();
-    let artist = __artist_one();
-    body.append('filename',artist + '_' + param.filename);
-    body.append('type',param.type);
-    body.append('content',param.content);
-    __fetch_upload(IMAGE.upload.url, body,null,e=>{console.error(e)});
   }
 }

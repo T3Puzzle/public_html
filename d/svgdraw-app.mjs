@@ -1,12 +1,14 @@
 import {__artist_hasOne, __artist_one} from  './artist.mjs';
 import {__enable_emoji} from  './utilities.mjs';
+import { setup_operation } from  './svgdraw-operation.mjs';
 export
 function runApp (app) {
-  console.log(11);
   let APP = {
-    debug: true,
-    root: null,
-    svg: null,
+    shared: {
+      debug: true,
+      root: null,
+      svg: null,
+    },
     commands:{},
     providers: {},
     board: {
@@ -17,7 +19,7 @@ function runApp (app) {
     },
   };
   
-  APP.root = app.attachShadow({mode:'open'});
+  APP.shared.root = app.attachShadow({mode:'open'});
   setTimeout(()=>processTag(app),0);
   // unhide shadowdom
   app.style.display = 'block';
@@ -102,7 +104,7 @@ function runApp (app) {
       svg.style.width = '100%';
       svg.style['max-width'] = `${2*width}px`;
       svg.style.height = '100%';
-      APP.svg = svg;
+      APP.shared.svg = svg;
     }
   }
   function processExtensions (extensions,output) {
@@ -141,7 +143,7 @@ function runApp (app) {
       }
     });
     function importModuleSub (tag,output,src,successCallback,errorCallback) {
-      if (APP.debug) {
+      if (APP.shared.debug) {
         src += '?'+Date.now();
       }
       import(src)
@@ -149,7 +151,7 @@ function runApp (app) {
         if (!output.id || output.id.trim().length===0) {
           output.id = src.replace(/\.[^\.]+$/,'').replace(/^\.\//,'').replace(/^extensions\/svgdraw-/,'');
         }
-        let ret  = module.setup(APP,tag,output, {
+        let ret  = module.setup(APP.shared,tag,output, {
           insertButton: insertButton,
           bindHook: bindHook,
           unbindHook: unbindHook,
@@ -178,7 +180,8 @@ function runApp (app) {
         } else {
           let hook = hooks.value.get(key);
           if (hook) {
-            res = res || hook(value);
+            hook(ENV.shared,value);
+            res = true;
           }
         }
       }
@@ -257,7 +260,7 @@ function runApp (app) {
         if (append) {
           position = 'beforeend';
         }
-        APP.root.querySelector('output#menu').insertAdjacentElement(position,button);
+        APP.shared.root.querySelector('output#menu').insertAdjacentElement(position,button);
       }
     }
 
@@ -294,7 +297,7 @@ function runApp (app) {
     }
     let output = document.createElement('output');
     output.id = modifier;
-    APP.root.appendChild(output);
+    APP.shared.root.appendChild(output);
     if (false) {
     } if (modifier==='board') {
        processBoard(element, output);

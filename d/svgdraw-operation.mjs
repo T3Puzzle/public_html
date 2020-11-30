@@ -2,28 +2,35 @@
 export
 function setup(app,tag,output,base) {
   let OPERATION = {
+    shared: {
+      debug: app.debug,
+      history: [],
+      svg: app.svg,
+    },
     current: { index: 0},
-    history: [],
-    svg: app.svg,
-    color: '#000000',
+    color: '#00cc00',
     undo: {
       button: null,
     },
     redo: {
       button: null,
-    }
+    },
+    hooks: {
+      overwrite: ['processTarget','processUndo','processRedo'],
+    },
   };
-  OPERATION.color = getColor();
-  OPERATION.svg.addEventListener('click',event=>{
-    if (OPERATION.history.length < OPERATION.current.index) {
-      OPERATION.history.length = OPERATION.current.index-1;
+  OPERATION.shared.svg.addEventListener('click',event=>{
+    if (OPERATION.shared.history.length < OPERATION.current.index) {
+      OPERATION.shared.history.length = OPERATION.current.index-1;
     }
     let target = event.target;
-    {
-      OPERATION.history.push({i:target, p:target.style.fill,n:OPERATION.color});
+
+    if (!base.callHooks(OPERATION,'processTarget',target)) {
+      OPERATION.shared.history.push({i:target, p:target.style.fill,n:OPERATION.color});
       target.style.fill = OPERATION.color;
     }
-    OPERATION.current.index = OPERATION.history.length;
+
+    OPERATION.current.index = OPERATION.shared.history.length;
     base.callHooks(OPERATION,'index',OPERATION.current.index);
   });
   base.insertButton('operation/redo','↪️');
@@ -40,11 +47,12 @@ function processUndo(i) {
   if (!j) {
     j=OPERATION.current.index-1;
   }
-  if (OPERATION.history.length<=j ||(j)<0) {
+  if (OPERATION.shared.history.length<=j ||(j)<0) {
     return;
   }
-  let h = OPERATION.history[j];
-  {
+  let h = OPERATION.shared.history[j];
+
+  if (!base.callHooks(OPERATION,'processUndo',h)){
     h.i.style.fill = h.p;
   }
   OPERATION.current.index=j;
@@ -56,17 +64,16 @@ function processRedo(i) {
   if (!j) {
     j=OPERATION.current.index;
   }
-  if (OPERATION.history.length<=j||(j)<0) {
+  if (OPERATION.shared.history.length<=j||(j)<0) {
     return;
   }
-  let h = OPERATION.history[j];
-  {
+  let h = OPERATION.shared.history[j];
+
+  if (!base.callHooks(OPERATION,'processRedo',h)){
     h.i.style.fill = h.n;
   }
+
   OPERATION.current.index=j+1;
   base.callHooks(OPERATION,'index',OPERATION.current.index);
-}
-function getColor () {
-  return '#00cc00';
 }
 }

@@ -4,8 +4,11 @@ import {__checkif_iOS} from  '../utilities.mjs';
 export
 function setup(app,tag,output,base){
   let IMAGE_IOS = {
-    root: app.root,
-    svg: app.svg,
+    shared: {
+      debug: app.debug,
+      root: app.root,
+      svg: app.svg,
+    },
     image: null,
     output: output,
     draw: {
@@ -22,7 +25,7 @@ function setup(app,tag,output,base){
     return;
   }
   function showDrawButton(flag) {
-    let buttons = IMAGE_IOS.root.querySelectorAll('button.image');
+    let buttons = IMAGE_IOS.shared.root.querySelectorAll('button.image');
     for (let bi=0;bi<buttons.length;bi++) {
       let button = buttons[bi];
       let value = ''
@@ -39,27 +42,27 @@ function setup(app,tag,output,base){
       IMAGE_IOS.draw.button.style.display = value;
     }
   }
-  function processDraw(e) {
+  function processDraw(menu,e) {
     if (__checkif_iOS()) {
       showDrawButton(false);
-      IMAGE.image.style.display = 'none';
-      IMAGE.svg.style.display = 'block';
+      IMAGE_IOS.image.style.display = 'none';
+      IMAGE_IOS.shared.svg.style.display = 'block';
     }
   }
-  function processSave (param) {
+  function processSave (image,param) {
     if (!__checkif_iOS()) {
        return false;
     }
-    let image = IMAGE_IOS.image;
-    if (!image) {
-      image = new Image();
-      IMAGE_IOS.image = image;
-      image.style.display = 'none';
-      IMAGE_IOS.output.appendChild(image);
+    let saveimage= IMAGE_IOS.image;
+    if (!saveimage) {
+      saveimage = new Image();
+      IMAGE_IOS.image = saveimage;
+      saveimage.style.display = 'none';
+      IMAGE_IOS.output.appendChild(saveimage);
     }
     image.src = param.dataurl;
     image.style.display = 'block';
-    IMAGE_IOS.svg.style.display = 'none';
+    IMAGE_IOS.shared.svg.style.display = 'none';
     showDrawButton(true);
     return true;
   }

@@ -5,8 +5,12 @@ export
 function setup(app,tag,output,base) {
 
   let IMAGE_UPLOAD = {
+    shared: {
+      debug: app.debug, 
+      root: app.root,
+      svg: app.svg,
+    },
     output: output,
-    svg: app.svg,
     enabled: true,
     url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbyTAABGkacaN4mBGzA1oO7fYMZukpF_lMt6kUtvrg/exec'
   };
@@ -23,7 +27,7 @@ function setup(app,tag,output,base) {
   function build (param) {
     return;
   }
-  function fetch_upload (param) {
+  function fetch_upload (image,param) {
     if (IMAGE_UPLOAD.upload.enabled) {
       return;
     }
