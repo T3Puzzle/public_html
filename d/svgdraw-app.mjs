@@ -1,6 +1,5 @@
 import {__artist_hasOne, __artist_one} from  './artist.mjs';
 import {__enable_emoji} from  './utilities.mjs';
-import { setup_operation } from  './svgdraw-operation.mjs';
 export
 function runApp (app) {
   let APP = {
