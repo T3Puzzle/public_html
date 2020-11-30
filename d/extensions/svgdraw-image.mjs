@@ -1,6 +1,6 @@
 import {__svgToImageDataB64} from  './svgToImageDataB64.mjs';
 import {__artist_hasOne, __artist_one} from  '../artist.mjs';
-import {__fetch_upload,__checkif_iOS,__enable_emoji} from  '../utilities.mjs';
+import {__checkif_iOS,__enable_emoji} from  '../utilities.mjs';
 
 // commment 'export if no module supported
 export
