@@ -139,42 +139,50 @@ import {__enable_emoji} from  './utilities.mjs';
       importFailed(output,callback);
     });
 
-    function callHooks (ENV, key, value, once) {
+    function callHooks (ENV, key, value) {
       if (!('hooks' in ENV)) {
-        ENV.hooks = new Map();
+        return;
       }
-      let hooks = ENV.hooks.values();
+      let hooksMap = ENV.hooks.map.values();
       let res = false;
       while(true) {
-        let callback = hooks.next();
-        if (callback.done) {
+        let hooks = hooksMap.next();
+        if (hooks.done) {
           break;
         } else {
-          res = res || callback.value(key, value);
-          if (res && once) {
-            return true;
-          }
+          res = res || hooks.value(key, value);
         }
       }
       return res;
     }
     function exposeHook (module,ENV) {
       if (!('hooks' in ENV)) {
-          ENV.hooks = new Map();
+        ENV.hooks = { map: new Map()};
+      }
+      if (!('map' in ENV.hooks)) {
+        ENV.hooks.map = new Map();
+      }
+      if (!('overwrite' in ENV.hooks)) {
+        ENV.hooks.overwrite = [];
       }
       APP.providers[module] = {
         bind: (obj, hook)=>{
-          ENV.hooks.set(obj,hook);
+          if (ENV.hooks.map.values().next().done) {
+            ENV.hooks.map.set(obj,hook);
+            return true;
+          }
+          return false;
         },
         unbind: (obj)=>{
-          ENV.hooks.delete(obj);
+          ENV.hooks.map.delete(obj);
         }
       };
     }
     function bindHook (module,outout,hook) {
       if (module in APP.providers ) {
-        APP.providers[module].bind(output,hook);
+        return APP.providers[module].bind(output,hook);
       }
+      return false;
     }
     function unbindHook () {
       if (module in APP.providers ) {

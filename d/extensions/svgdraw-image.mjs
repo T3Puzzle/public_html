@@ -8,6 +8,10 @@ function setup(app,tag,output,base) {
 
   let IMAGE = {
     svg: app.svg,
+    hooks: {
+      map: new Map(),
+      overwrite: ['processSave']
+    },
     save: {
       download: null,
       button: null, 
@@ -47,9 +51,9 @@ function setup(app,tag,output,base) {
   function processSave(e) {
       __svgToImageDataB64(IMAGE.svg, param=>{
 
-        base.callHooks(IMAGE,'preProcessSave',param, false);
+        base.callHooks(IMAGE,'preProcessSave',param);
 
-        if (!base.callHooks(IMAGE,'processSave',param, true)) {
+        if (!base.callHooks(IMAGE,'processSave',param)) {
           if (!IMAGE.download) {
             let download = document.createElement('a');
             IMAGE.download = download;
@@ -60,7 +64,7 @@ function setup(app,tag,output,base) {
           IMAGE.download.click();
         }
 
-        base.callHooks(IMAGE,'postProcessSave',param, false);
+        base.callHooks(IMAGE,'postProcessSave',param);
         return;
       });
   }
