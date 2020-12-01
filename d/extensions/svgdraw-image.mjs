@@ -27,11 +27,8 @@ function setup(app,tag,output,base) {
   __enable_emoji(IMAGE.save.button,false);
   base.bindHook('operation', output,'index', processIndex);
   base.exposeHook('image',IMAGE);
-  return build;
+  return;
   
-  function build (param) {
-    return;
-  }
   function processIndex (operation,value) {
     let disabled = '';
     let flag = (value>3);

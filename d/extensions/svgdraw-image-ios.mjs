@@ -19,11 +19,8 @@ function setup(app,tag,output,base){
   base.bindHook('menu',output,'image/draw',processDraw,IMAGE_IOS.draw);
   showDrawButton(false);
   base.bindHook('image',output,'processSave',processSave);
-  return build;
-  
-  function build (param) {
-    return;
-  }
+  return;
+
   function showDrawButton(flag) {
     let buttons = IMAGE_IOS.shared.root.querySelectorAll('button.image');
     for (let bi=0;bi<buttons.length;bi++) {

@@ -1,6 +1,10 @@
+// TODO:?? support custom element to recieve event from external nodes?
 // comment 'export' if no module supported
 export
 function setup(app,tag,output,base) {
+  if (!app.svg) {
+    return;
+  }
   let OPERATION = {
     shared: {
       debug: app.debug,
@@ -35,18 +39,13 @@ function setup(app,tag,output,base) {
   });
   base.insertButton('operation/redo','↪️');
   base.insertButton('operation/undo','↩️');
-  base.bindHook('menu',output,'operation/redo',(build)=>processRedo(null));
-  base.bindHook('menu',output,'operation/undo',(build)=>processUndo(null));
+  base.bindHook('menu',output,'operation/redo',(button,e)=>processRedo(null));
+  base.bindHook('menu',output,'operation/undo',(button,e)=>processUndo(null));
   base.exposeHook('operation',OPERATION);
-  return build;
+  return;
 
-function build (param) {
-}
-function processUndo(i) {
-  let j=i;
-  if (!j) {
-    j=OPERATION.current.index-1;
-  }
+function processUndo() {
+  let j=OPERATION.current.index-1;
   if (OPERATION.shared.history.length<=j ||(j)<0) {
     return;
   }
@@ -59,11 +58,8 @@ function processUndo(i) {
   base.callHooks(OPERATION,'index',OPERATION.current.index);
   
 }
-function processRedo(i) {
-  let j=i;
-  if (!j) {
-    j=OPERATION.current.index;
-  }
+function processRedo() {
+  let j=OPERATION.current.index;
   if (OPERATION.shared.history.length<=j||(j)<0) {
     return;
   }

@@ -13,11 +13,8 @@ function setup(app,tag,output,base) {
   base.bindHook('operation',output,'processTarget',processTarget);
   base.bindHook('operation',output,'processUndo',processUndo);
   base.bindHook('operation',output,'processRedo',processRedo);
-  return build;
-
-function build (param) {
   return;
-}
+
 function processTarget (operation,target) {
   let id = getId(target);
   let xid = target.parentNode.parentNode.id;

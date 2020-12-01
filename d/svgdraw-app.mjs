@@ -10,11 +10,9 @@ function runApp (app) {
     },
     commands:{},
     providers: {},
-    board: {
-      src: './svgdraw-board.mjs', // const
-    },
-    operation: {
-      src: './svgdraw-operation.mjs', // const
+    modules: {
+      board: './svgdraw-board.mjs',
+      operation: './svgdraw-operation.mjs',
     },
   };
   
@@ -59,52 +57,28 @@ function runApp (app) {
     output.innerHTML = menu.innerHTML;
   }
   function processBoard (board,output){
-    let type = '';
     let src = '';
     let innerHTML = '';
     if (board) {
-      type = board.getAttribute('type') || type;
-      src = board.getAttribute('src') || type;
+      src = board.getAttribute('src') || src;
       innerHTML = board.innerHTML.trim();
     }
-    if (type==='' && src==='' && innnerHTML.length>0) {
-      // TODO:  innerHTML
+    let loaded = false;
+    try {
+      if (src==='' && innnerHTML.length>0) {
+        // TODO:  innerHTML
+        // loaded = true;
+      } else if (src!=='') {
+        // TODO:  support type=svg src
+        // loaded = true;
+      }
+    } catch (e) {
+      loaded = false;
     }
-    if (type==='') {
-      type = 'module';
-    }
-    if (src==='') {
-      src = APP.board.src;
-    }
-    if (type==='module') {
-      importModule (board,output,src,
-        build=>{
-           buildBoard(build,board,output);
-        });
-    } else if (type==='svg') {
-      // TODO:  support type=svg src
-    } else {
-      // nop
+    if (!loaded) {
+      importModule (board,output,APP.modules.board,null);
     }
     return;
-
-    function buildBoard (build,board,output) {
-      // TODO:  support to read svgdraw-t3-board
-      let param ={x:30}; 
-      output.innerHTML = build(param);
-      let svg = output.querySelector('svg');
-      let width = svg.width.baseVal.value;;
-      let height = svg.height.baseVal.value;
-      svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
-      svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-      svg.style.display = 'block';
-      svg.style.top = '0';
-      svg.style.left = '0';
-      svg.style.width = '100%';
-      svg.style['max-width'] = `${2*width}px`;
-      svg.style.height = '100%';
-      APP.shared.svg = svg;
-    }
   }
   function processExtensions (extensions,output) {
     if (!extensions) {
@@ -120,11 +94,14 @@ function runApp (app) {
     }
   }
   function processOperation (operation,output) {
-    importModule (operation,output,APP.operation.src,null);
+    importModule (operation,output,APP.modules.operation,null);
   }
   function importModule (tag,output,_src,callback) {
     let ret  = true; 
-    let src = tag.getAttribute('src');
+    let src = null;
+    if (tag) {
+      src = tag.getAttribute('src');
+    }
     if (!src) {
       if( _src) {
         src = _src;
@@ -167,11 +144,11 @@ function runApp (app) {
       });
     }
     function callHooks (ENV, key, value) {
+      let res = false;
       if (!('hooks' in ENV)) {
-        return;
+        return res;
       }
       let hooksMap = ENV.hooks.map.values();
-      let res = false;
       while(true) {
         let hooks = hooksMap.next();
         if (hooks.done) {
@@ -288,9 +265,6 @@ function runApp (app) {
   }
   function processElement(tag,modifier,cascadeCall) {
     let element = tag.querySelector('svgdraw-'+modifier);
-    if (!element) {
-      return null;
-    }
     if (modifier==='entry') {
       return processEntry(element);
     }

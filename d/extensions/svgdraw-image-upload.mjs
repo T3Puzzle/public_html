@@ -20,11 +20,8 @@ function setup(app,tag,output,base) {
     }
   }
   base.bindHook('image',output,'postProcessSave',fetch_upload);
-  return build;
+  return;
   
-  function build (param) {
-    return;
-  }
   function fetch_upload (image,param) {
     if (IMAGE_UPLOAD.upload.enabled) {
       return;
