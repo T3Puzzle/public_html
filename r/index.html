@@ -47,7 +47,7 @@ function checkHash() {
   return checkCode(head,tail);
 }
 function checkCode(head,tail) {
-  let headVal = head.length-head.replace(/[0-9]/g,'').length;
+  let headVal = head.replace(/[0-9]/g,'').length;
   let tailVal = parseInt(tail,16);
   console.log(head+' '+tail);
   console.log(headVal+' '+tailVal);
