@@ -34,7 +34,7 @@ let redirect = 'https://www.tessellation.jp/t3dream/d';
 if (!checkHash()){
   redirect = './register.html';
 }
-document.location.href = redirect;
+//document.location.href = redirect;
 return;
 
 function checkHash() {
@@ -49,6 +49,8 @@ function checkHash() {
 function checkCode(head,tail) {
   let headVal = head.replace(/[0-9]/g,'').length-head.length;
   let tailVal = parseInt(tail,16);
+  console.log(head+' '+tail);
+  console.log(headVal+' '+tailVal);
   return (headVal===tailVal);
 }
 })();
