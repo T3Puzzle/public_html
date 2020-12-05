@@ -30,15 +30,16 @@
 <script type="text/javascript" src="./jscheck.js"></script>
 <script type="text/javascript">
 (()=>{
+let hash = document.location.hash;
 let redirect = 'https://www.tessellation.jp/t3dream/r';
-if (!checkHash()){
+if (!checkHash(hash)){
   redirect = './register.html';
 }
+localStorage.setItem('artist',hash.substr(1,hash.length-1));
 document.location.href = redirect;
 return;
 
-function checkHash() {
-  let hash = document.location.hash;
+function checkHash(hash) {
   if (!hash) {
     return false;
   }
