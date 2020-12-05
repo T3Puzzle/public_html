@@ -35,8 +35,7 @@ let redirect = 'https://www.tessellation.jp/t3dream/r';
 if (!checkHash(hash)){
   redirect = './register.html';
 }
-let payload = hash.substr(1,hash.length-1);
-localStorage.setItem('artist',payload);
+localStorage.setItem('artist',hash);
 document.location.href = redirect;
 return;
 
@@ -44,9 +43,8 @@ function checkHash(hash) {
   if (!hash) {
     return false;
   }
-  let payload = hash.substr(1,hash.length-1);
-  let head = payload.substr(0,hash.length-1);
-  let tail = payload.substr(hash.length-1,1);
+  let head = hash.substr(1,hash.length-2);
+  let tail = hash.substr(hash.length-1,1);
   return checkCode(head,tail);
 }
 function checkCode(head,tail) {
