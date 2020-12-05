@@ -1,12 +1,26 @@
 (()=>{
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw15zZBqu10fdJZ16D7SgVF2duq4pqHtQyLNA-Dbg/exec';
+  let input = `
+<dd>ねんれい：<input name="age" required>
+<dd>題名：<input name="title" required>
+<dd>工夫した点：<textarea name="text" required></textarea>
+  `;
+  if (!checkRegistered()) {
+    input = `
+<dd>おなまえ: <input type="name">
+<dd>メールアドレス：<input type="email">
+${input}
+`;    
+  }
   document.body.insertAdjacentHTML('beforeend',`
+<h2>T3初夢コンテスト 作品応募フォーム</h2>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
 <form method="POST" action="${url}">
 <input type="hidden" name="filename" style="display:none;"/>
 <input type="hidden" name="type" style="display:none;"/>
 <input type="hidden" name="content" style="display:none;"/>
+${input}
 <input type="submit" disabled="disabled" value="アップロード" style="appearance: none;
   border: 0;
   border-radius: 5px;
@@ -23,6 +37,25 @@
     document.querySelector('input#ui').addEventListener('change', 
       (e)=>drawImage(e,disp,callback));
   });
+  return;
+
+  function checkRegistered () {
+    let artist = getArtist();
+    return checkHash(artist);
+  }
+  function checkHash(hash) {
+    if (!hash) {
+      return false;
+    }
+    let head = hash.substr(1,hash.length-2);
+    let tail = hash.substr(hash.length-1,1);
+    return checkCode(head,tail);
+  }
+  function checkCode(head,tail) {
+    let headVal = head.replace(/[0-9]/g,'').length;
+    let tailVal = parseInt(tail,16);
+    return (headVal===tailVal);
+  }
   function callback(canvas) {
     let type = 'image/png';
     let dataurl = canvas.toDataURL(type);
