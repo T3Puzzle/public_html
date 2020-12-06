@@ -55,7 +55,7 @@ ${input}
 <input type="submit" disabled="disabled" value="作品を応募" style="appearance: none;
   border: 0;
   border-radius: 5px;
-  background-color: #4676D7;
+  -webkit-appearance: none;
   background: #4676D7;
   color: #fff;
   padding: 8px 16px;
