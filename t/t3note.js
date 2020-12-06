@@ -5,13 +5,11 @@ let artist = localStorage.getItem('artist');
 if (!artist) {
    artist = '';
 }
-let url = 'https://www.t3puzzle.com';
-let tw = 'https://twitter.com/t3puzzle';
-let yt = 'https://www.youtube.com/watch?v=9J_gAmeo-Gk&t=16m05s';
+let url = 'https://www.tessellation.jp/t3dream/r';
+let sub = 'https://www.t3puzzle.com/r/u';
 let text = `
-<a target="_blank" href="${url}">パズル購入</a> / 
-<a target="_blank" href="${tw}">作品例</a> /
-<a target="_blank" href="${yt}">説明動画</a>
+<a target="_blank" href="${url}">コンテスト</a> / 
+<a target="_blank" href="${sub}">応募</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
