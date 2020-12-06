@@ -42,10 +42,8 @@ form dl dd{
 <dd>作品の画像ファイルを選択の上、</dd>
 <dd>必須事項を記入して下さい。</dd>
 <p/>
-<dd>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
-</dd>
 
 <form method="POST" action="${url}">
 <dl>
