@@ -62,6 +62,8 @@ ${input}
   padding: 8px 16px;
   font-size: 16px;">
 </form>
+<p/>
+<li><a href="#" onclick="history.back();">戻る</a>
 <li><a href="https://www.t3puzzle.com/t">T3パズル ウェブ版</a>
 <li><a href="https://www.tessellation.jp/t3dream/r">T3初夢コンテスト参加者向けページ</a>
 `);
