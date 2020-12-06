@@ -1,27 +1,60 @@
 (()=>{
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw15zZBqu10fdJZ16D7SgVF2duq4pqHtQyLNA-Dbg/exec';
-  let input = `
-<dd>ねんれい：<input name="age" required>
-<dd>題名：<input name="title" required>
-<dd>工夫した点：<textarea name="text" required></textarea>
-  `;
+  let reg = '';
   if (!checkRegistered()) {
-    input = `
-<dd>おなまえ: <input type="name">
-<dd>メールアドレス：<input type="email">
-${input}
+    reg = `
+<dt>おなまえ</dt>
+<dd><input type="name" size="15" required></dd>
+<dt>メールアドレス</dt>
+<dd><input type="email" size="34" required></dd>
 `;    
+  } else {
+    reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
   }
+  let input = `
+<dt>ねんれい</dt>
+<dd><input name="age" type="number" size="3" max="115" min="2" required></dd>
+${reg}
+<dt>だいめい</dt>
+<dd><input name="title" size="34" required></dd>
+<dt>工夫した点</dt>
+<dd><textarea cols="33" rows="3" name="text" required></textarea></dd>
+  `;
   document.body.insertAdjacentHTML('beforeend',`
+<style>
+form{
+  background-color: #eaeaea;
+  padding:30px 50px;
+}
+
+form dl dt{
+  width: 125px;
+  padding:5px 0;
+  float:left;
+  clear:both;
+}
+
+form dl dd{
+  padding:5px 0;
+}
+</style>
 <h2>T3初夢コンテスト 作品応募フォーム</h2>
+<dd>作品の画像ファイルを選択の上、</dd>
+<dd>必須事項を記入して「作品を応募」ボタンを押して下さい。</dd>
+<p/>
+<dd>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
+</dd>
+
 <form method="POST" action="${url}">
+<dl>
 <input type="hidden" name="filename" style="display:none;"/>
 <input type="hidden" name="type" style="display:none;"/>
 <input type="hidden" name="content" style="display:none;"/>
 ${input}
-<input type="submit" disabled="disabled" value="アップロード" style="appearance: none;
+</dl>
+<input type="submit" disabled="disabled" value="作品を応募" style="appearance: none;
   border: 0;
   border-radius: 5px;
   background: #4676D7;
@@ -29,7 +62,6 @@ ${input}
   padding: 8px 16px;
   font-size: 16px;">
 </form>
-<a href="javascript:history.back();">戻る</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
