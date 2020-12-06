@@ -4,9 +4,9 @@
   if (!checkRegistered()) {
     reg = `
 <dt>おなまえ</dt>
-<dd><input type="name" size="15" required></dd>
+<dd><input name="name" size="15" required></dd>
 <dt>メールアドレス</dt>
-<dd><input type="email" size="34" required></dd>
+<dd><input name="email" type="email" size="34" required></dd>
 `;    
   } else {
     reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
