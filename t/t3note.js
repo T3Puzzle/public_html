@@ -8,8 +8,8 @@ if (!artist) {
 let url = 'https://www.tessellation.jp/t3dream/r';
 let sub = 'https://www.t3puzzle.com/r/u';
 let text = `
-<a target="_blank" href="${url}">コンテスト</a> / 
-<a target="_blank" href="${sub}">応募</a>
+<a target="_blank" href="${url}">コンテスト情報</a> / 
+<a target="_blank" href="${sub}">画像を応募</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
