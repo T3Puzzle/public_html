@@ -55,6 +55,7 @@ ${input}
 <input type="submit" disabled="disabled" value="作品を応募" style="appearance: none;
   border: 0;
   border-radius: 5px;
+  background-color: #4676D7;
   background: #4676D7;
   color: #fff;
   padding: 8px 16px;
@@ -62,6 +63,7 @@ ${input}
 </form>
 <p/>
 <li><a href="#" onclick="javascript:history.go(-1); return false;">戻る</a>
+<p/>
 <li><a href="https://www.t3puzzle.com/t">T3パズル ウェブ版</a>
 <li><a href="https://www.tessellation.jp/t3dream/r">T3初夢コンテスト参加者向けページ</a>
 `);
