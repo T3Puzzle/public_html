@@ -24,21 +24,21 @@ ${reg}
 <style>
 form{
   background-color: #eaeaea;
-  padding:30px 50px;
+  padding:20px 50px;
 }
 
 form dl dt{
   width: 125px;
-  padding:5px 0;
+  padding:3px 0;
   float:left;
   clear:both;
 }
 
 form dl dd{
-  padding:5px 0;
+  padding:3px 0;
 }
 </style>
-<h2>T3初夢コンテスト 作品応募フォーム</h2>
+<h2>T3初夢コンテスト 応募フォーム</h2>
 <dd>作品の画像ファイルを選択の上、</dd>
 <dd>必須事項を記入して「作品を応募」ボタンを押して下さい。</dd>
 <p/>
