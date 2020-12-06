@@ -52,10 +52,9 @@ form dl dd{
 <input type="hidden" name="content" style="display:none;"/>
 ${input}
 </dl>
-<input type="submit" disabled="disabled" value="作品を応募" style="appearance: none;
+<input type="submit" disabled="disabled" value="作品を応募" style="-webkit-appearance: none; appearance: none;
   border: 0;
   border-radius: 5px;
-  -webkit-appearance: none;
   background: #4676D7;
   color: #fff;
   padding: 8px 16px;
