@@ -79,7 +79,7 @@ ${input}
     if (!hash) {
       return false;
     }
-    let head = hash.substr(1,hash.length-2);
+    let head = hash.substr(0,hash.length-1);
     let tail = hash.substr(hash.length-1,1);
     return checkCode(head,tail);
   }
