@@ -40,7 +40,7 @@ form dl dd{
 </style>
 <h2>T3初夢コンテスト 応募フォーム</h2>
 <dd>作品の画像ファイルを選択の上、</dd>
-<dd>必須事項を記入して「作品を応募」ボタンを押して下さい。</dd>
+<dd>必須事項を記入して下さい。</dd>
 <p/>
 <dd>
 <input id="ui" type="file" accept="image/*"/><br/>
