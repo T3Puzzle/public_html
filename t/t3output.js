@@ -37,7 +37,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     let xindex = parseInt(xname.replace(/[a-zA-Z]/g,''),10);
     let p = getState(xid,target);
     let n = p;
-    if (xname==='p3') {
+    if (xname==='p3' && n === 8) {
+      let xxname = target.getAttribute('xxname');
+      xindex = parseInt(xxname,10);
+    }
+    if (xname==='p3' && n !== 8) {
       n = 8;
     } else {
       n = directState(p,xindex);
@@ -98,15 +102,19 @@ function setState(xid,s) {
   setFill(xid,'p1',s%4==1,(s/4<1),s);
   setFill(xid,'p2',s%4==2,(s/4<1),s);
 }
-function setFill(xid,xname,v,toggle,s) {
- let p0 = document.body.querySelector(`output.${name} g#${xid} polygon[name=${xname}]`);
- if (s===8) {
-   p0.style.fill = '#dddddd';
- } else {
-   if (toggle) {
-     v = !v;
+function setFill(xid,xname,_v,toggle,s) {
+ let p0s = document.body.querySelectorAll(`output.${name} g#${xid} polygon[name=${xname}]`);
+ let v = _v;
+ for (let pi=0;pi<p0s.length;pi++) {
+   let p0 = p0s[pi];
+   if (s===8) {
+     p0.style.fill = '#dddddd';
+   } else {
+     if (toggle) {
+       v = !_v;
+     }
+     p0.style.fill = colval(v);
    }
-   p0.style.fill = colval(v);
  }
 }
 function getState(xid,target){
