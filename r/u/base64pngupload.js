@@ -15,7 +15,7 @@
 <dt>メールアドレス</dt>
 <dd><input name="email" type="email" size="34" ${emailreq}></dd>
 <dt>ねんれい</dt>
-<dd><input name="age" type="number" size="3" max="115" min="2" required></dd>
+<dd><input name="age" type="number" size="3"></dd>
 ${reg}
 <dt>だいめい</dt>
 <dd><input name="title" size="34" required></dd>
