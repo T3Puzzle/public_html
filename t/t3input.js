@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         viewBox="0 0 400 400"
         preserveAspectRatio="xMidYMid meet"
         style="top:0;left:0;width:100%;max-width:800px;height:100%;background-color: #eee;">
- <g transform="translate(-150,0)scale(0.65,0.65)">
+ <g transform="translate(-150,0)scale(0.5,0.5)">
     ${tess()}
  </g>
 </svg>
