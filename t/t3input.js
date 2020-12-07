@@ -43,8 +43,12 @@ function tess() {
 function puz(col) {
   return `
      <g transform="translate(${-2*x},0)">
-      <polygon name="p3" points="0,0 ${4*x},0 ${2*x},${2*y}" style="fill:${getCol(false,(col/4<1))};stroke:#aaaaaa;stroke-width:1.5;stroke-linejoin:round;"/></g>
-     <g transform="translate(0,0)">
+      <polygon points="0,0 ${4*x},0 ${2*x},${2*y}" style="fill:none;stroke:#aaaaaa;stroke-width:1.5;stroke-linejoin:round;"/>
+      <polygon name="p3" xxname="0" points="${2*x},${2*y/3} ${2*x},0 ${4*x},0 ${3*x},${y}" style="fill:${getCol(false,(col/4<1))};stroke:none;"/>
+      <polygon name="p3" xxname="1" points="0,0 ${2*x},0 ${2*x},${2*y/3} ${x},${y}" style="fill:${getCol(false,(col/4<1))};stroke:none;"/>
+      <polygon name="p3" xxname="2" points="${2*x},${2*y/3} ${3*x},${y} ${2*x},${2*y} ${x},${y}" style="fill:${getCol(false,(col/4<1))};stroke:none;"/>
+     </g>
+    <g transform="translate(0,0)">
       <polygon name="p0" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===0),(col/4<1))};stroke:none;"/></g>
      <g transform="translate(${-2*x},0)">
       <polygon name="p1" points="0,0 ${2*x},0 ${x},${y}" style="fill:${getCol((col%4===1),(col/4<1))};stroke:none;"/></g>
