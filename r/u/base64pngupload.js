@@ -1,17 +1,21 @@
 (()=>{
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbwZVOK-Ns13e1Y93iCFBZ5yqIJW28umKUXmR-N0Out4kVgLeyE/exec';
   let reg = '';
+  let emailreq = '';
+  let emailreqtext = '';
   if (!checkRegistered()) {
     reg = `
 <dt>おなまえ</dt>
 <dd><input name="name" size="15" required></dd>
-<dt>メールアドレス</dt>
-<dd><input name="email" type="email" size="34" required></dd>
-`;    
+`;
+    emailreq = 'required';
   } else {
     reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
+    emailreqtext = ' (任意)';
   }
   let input = `
+<dt>メールアドレス${emailreqtext}</dt>
+<dd><input name="email" type="email" size="34" ${emailreq}></dd>
 <dt>ねんれい</dt>
 <dd><input name="age" type="number" size="3" max="115" min="2" required></dd>
 ${reg}
