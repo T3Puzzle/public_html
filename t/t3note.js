@@ -9,7 +9,7 @@ let url = 'https://www.tessellation.jp/t3dream/r';
 let sub = 'https://www.t3puzzle.com/r/u';
 let text = `
 <a target="_blank" href="${url}">コンテスト</a> / 
-<a style="display:inline;" id="save" href="#">画像を保存</a>
+<a class="pngview" style="display:inline;" id="save" href="#">画像を保存</a>
 <a style="display:none;" id="submit" href="${sub}">画像を応募</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
