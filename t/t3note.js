@@ -1,6 +1,6 @@
 (()=>{
 let config='svgconfig';
-let size = 100;
+let size = 150;
 let artist = localStorage.getItem('artist');
 if (!artist) {
    artist = '';
