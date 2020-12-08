@@ -63,7 +63,7 @@ ${input}
   font-size: 16px;">
 </form>
 <p/>
-<li><a href="javascript:window.close();">ウインドウを閉じる</a>
+<li><a href="javascript:window.close();">戻る(ウインドウを閉じる)</a>
 <p/>
 <li><a href="https://www.tessellation.jp/t3dream/r">コンテスト参加者向けページ</a>
 `);
