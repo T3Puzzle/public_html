@@ -6,6 +6,7 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
   let APP = {
     parent: null,
     svg: null,
+    imgdiv: null,
     img: null,
     command: {
       history: [],
@@ -130,9 +131,11 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
       let download = document.createElement('a');
       APP.save.download = download;
       APP.parent.appendChild(download);
+      APP.imgdiv = document.createElement('div');
       APP.img = new Image();
-      APP.img.style.display = 'none';
-      APP.parent.appendChild(APP.img);
+      APP.imgdiv.style.display = 'none';
+      APP.imgdiv.appendChild(APP.img);
+      APP.parent.appendChild(APP.imgdiv);
     }
   }
   function moveToEntry (tag) {
