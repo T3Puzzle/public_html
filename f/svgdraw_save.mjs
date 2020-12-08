@@ -45,7 +45,7 @@ export function __svgdraw_save(tag,anchor,app) {
         } else {
           app.svg.style.display = 'none';
           app.img.src = 'https://drive.google.com/uc?export=download&id=1C34LfXLMvNoHsu2-qbGJK57xTkEIQVcx';//param.dataurl;
-          app.imgdiv.style.display = 'block';
+          app.img.style.display = 'block';
         }
         if (SAVE.fetch.enabled) {
           fetch_upload(param);
