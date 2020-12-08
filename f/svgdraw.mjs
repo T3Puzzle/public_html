@@ -30,6 +30,7 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
       this.style.display = 'block';
       APP.parent = this.attachShadow({mode:'open'});
       setTimeout(()=>processTag(this),0);
+      APP.imgdiv = this;
     }
   }
   customElements.define('svgdraw-app',SvgdrawApp);
@@ -133,9 +134,10 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
       APP.parent.appendChild(download);
       APP.imgdiv = document.createElement('div');
       APP.img = new Image();
-      APP.imgdiv.style.display = 'none';
-      APP.imgdiv.appendChild(APP.img);
-      APP.parent.appendChild(APP.imgdiv);
+      APP.imgdiv.insertAdjacentElement('afterend',APP.img);
+      //APP.imgdiv.style.display = 'none';
+      //APP.imgdiv.appendChild(APP.img);
+      //APP.parent.appendChild(APP.imgdiv);
     }
   }
   function moveToEntry (tag) {
