@@ -65,7 +65,7 @@ ${input}
 <p/>
 <li><a href="javascript:window.close();">ウインドウを閉じる</a>
 <p/>
-<li><a href="https://www.tessellation.jp/t3dream/r">T3初夢コンテスト参加者向けページ</a>
+<li><a href="https://www.tessellation.jp/t3dream/r">コンテスト参加者向けページ</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
