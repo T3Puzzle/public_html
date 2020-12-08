@@ -11,6 +11,13 @@
   } else {
     reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
   }
+  let back = '';
+  let hash = document.location.hash;
+  if (hash && hash==='#pop') {
+    back = '<p/><li><a href="#" onclick="javascript:window.close();">戻る</a>';
+  } else {
+    back = '<p/><li><a href="#" onclick="javascript:history.go(-1);return false;">戻る</a>';
+  }
   let input = `
 <dt>メールアドレス</dt>
 <dd><input name="email" type="email" size="34" ${emailreq}></dd>
@@ -62,8 +69,7 @@ ${input}
   padding: 8px 16px;
   font-size: 16px;">
 </form>
-<p/>
-<li><a href="javascript:window.close();">戻る(ウインドウを閉じる)</a>
+${back}
 <p/>
 <li><a href="https://www.tessellation.jp/t3dream/r">コンテスト参加者向けページ</a>
 `);
