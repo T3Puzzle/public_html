@@ -12,11 +12,11 @@
     reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
   }
   let back = '';
-  let hash = document.location.hash;
-  if (hash && hash==='#pop') {
+  let search = document.location.search;
+  if (search && search==='?pop') {
     back = '<p/><li><a href="#" onclick="javascript:window.close();">戻る</a>';
-  } else if (hash && hash==='#back'){
-    back = '<p/><li><a href="#" onclick="javascript:history.go(-2);return false;">戻る</a>';
+  } else if (search && search==='?back'){
+    back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
   }
   let input = `
 <dt>メールアドレス</dt>
