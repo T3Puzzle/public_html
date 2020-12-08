@@ -16,7 +16,7 @@
   if (hash && hash==='#pop') {
     back = '<p/><li><a href="#" onclick="javascript:window.close();">戻る</a>';
   } else if (hash && hash==='#back'){
-    back = '<p/><li><a href="#" onclick="javascript:history.go(-1);return false;">戻る</a>';
+    back = '<p/><li><a href="#" onclick="javascript:history.go(-2);return false;">戻る</a>';
   }
   let input = `
 <dt>メールアドレス</dt>
