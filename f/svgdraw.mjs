@@ -30,7 +30,7 @@ import {__artist_hasOne, __artist_one} from  './artist.mjs';
       this.style.display = 'block';
       APP.parent = this.attachShadow({mode:'open'});
       setTimeout(()=>processTag(this),0);
-      APP.imgdiv = this;
+      APP.me = this;
     }
   }
   customElements.define('svgdraw-app',SvgdrawApp);
