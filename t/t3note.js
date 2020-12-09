@@ -5,10 +5,10 @@ let artist = localStorage.getItem('artist');
 if (!artist) {
    artist = '';
 }
-let url = 'https://www.tessellation.jp/t3dream/r';
+let url = 'https://www.tessellation.jp/t3dream/r#h.3c5fq13t8htb';
 let sub = 'https://www.t3puzzle.com/r/u?pop';
 let text = `
-<a target="_blank" href="${url}">コンテスト</a> / 
+<a target="_blank" href="${url}">利用方法</a> / 
 <a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">画像に保存</a> /
 <a target="_blank" href="${sub}">画像を応募</a>
 `;
