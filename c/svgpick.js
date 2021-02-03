@@ -110,11 +110,13 @@ function addCircle(color) {
   padding = radius*0.3;
   let cx = getCx(cmax);
   let id = 'c'+color.replace('#','');
-  svg.insertAdjacentHTML('beforeend',`<circle r="${radius}" cy="${radius+padding}" cx="${cx}" style="fill:${color};" class="${name}" id="${id}">`);
+  svg.insertAdjacentHTML('beforeend',`<circle r="${radius}" cy="${radius+padding}" cx="${cx}" style="fill:${color};stroke:#ffffff;stroke-width:0" class="${name}" id="${id}">`);
   svg.querySelector(`circle#${id}`).addEventListener('click',processClick);
 }
 let pendingClick=0;
 let backupColor=null;
+let backupTarget=null;
+let lastTarget=null;
 function processClick (e) {
   if (pendingClick) {
     window.clearTimeout(pendingClick);
@@ -122,11 +124,15 @@ function processClick (e) {
   }
   if(e.detail === 1){
     backupColor = conv(picker.value);
+    backupTarget = lastTarget;
+    lastTarget = e.target;
     pendingClick=window.setTimeout(()=>{
     },dblclickTimeout);
     picker.value = conv(e.target.style.fill);
+    setFocus (e.target);
   } else if (e.detail === 2) {
     picker.value = backupColor;
+    setFocus (backupTarget);
     let fill = conv(e.target.style.fill);
     if (true || fill==='#000000' || fill==='#ffffff') {
       return;
@@ -134,6 +140,13 @@ function processClick (e) {
     e.target.remove();
     rearrangeCircles();
   }
+}
+function setFocus (target){
+  let circles = document.body.querySelectorAll(`output.${config} svg.${name} circle.${name}`);
+  for (let ci=0;ci<circles.length;ci++){
+    circles[ci].style['stroke-width'] = 0;
+  }
+  target.style['stroke-width'] = 2.5;
 }
 function getCx(index) {
   return (2*radius+padding)*(index+1);
