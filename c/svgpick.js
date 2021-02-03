@@ -36,7 +36,10 @@ function initCircles() {
   svg.innerHTML = '';
   let cols = getCols();
   for(let ci=0;ci<cols.length;ci++) {
-    addCircle(conv(cols[ci]));
+    let circle = addCircle(conv(cols[ci]));
+    if (ci===0) {
+      setFocus(circle);
+    }
   }   
   return conv(cols[0]);
 } 
@@ -55,27 +58,7 @@ function getSelect() {
   }  
   return `<select class="${name}" style="vertical-align:0.6em;margin-left:0.5em;"><`+opt.join('')+'</select>';
 }
-function getCols2() {
-  let colorPallete = localStorage.getItem('colorPallete');
-  if (colorPallete && colorPallete.length>0) {
-    colorPallete = (parseInt(colorPallete,10)+1)%colors.length;
-  } else {
-    colorPallete = (new Date()).getTime()%colors.length;
-  }
-  localStorage.setItem('colorPallete',colorPallete);
-  return colors[colorPallete][colorPallete];
-}
 function getCols() {
-  return getCols2();
-  if (colorType) {
-    for(let ci=0;ci<colors.length;ci++) {
-      for(let ck in colors[ci]) {
-        if (ck===colorType) {
-          return colors[ci][ck];
-        }
-      }
-    }
-  }
   if (colors.length>0) {
     for(let ck in colors[0]) {
       return colors[0][ck];
@@ -111,7 +94,9 @@ function addCircle(color) {
   let cx = getCx(cmax);
   let id = 'c'+color.replace('#','');
   svg.insertAdjacentHTML('beforeend',`<circle r="${radius}" cy="${radius+padding}" cx="${cx}" style="fill:${color};stroke:#ffffff;stroke-width:0" class="${name}" id="${id}">`);
-  svg.querySelector(`circle#${id}`).addEventListener('click',processClick);
+  let circle = svg.querySelector(`circle#${id}`);
+  circle.addEventListener('click',processClick);
+  return circle;
 }
 let pendingClick=0;
 let backupColor=null;
