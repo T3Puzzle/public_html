@@ -1,0 +1,124 @@
+18,19c18,19
+< <a class="undo" href="#" style="display:xnone;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.2em;">↩</a>
+< <a class="redo" href="#" style="display:xnone;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.2em;">↪</a>
+---
+> <a class="undo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.2em;">↩</a>
+> <a class="redo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.2em;">↪</a>
+38c38
+<     let p = getState(xid);
+---
+>     let p = getState(xid,target);
+40c40
+<     if (xname==='p3' && n%9 === 8) {
+---
+>     if (xname==='p3' && n === 8) {
+44c44
+<     if (xname==='p3' && n%9 !== 8) {
+---
+>     if (xname==='p3' && n !== 8) {
+86d85
+<   let ret = 0;
+88c87
+<     ret = reverseState(s);
+---
+>     return reverseState(s);
+91c90
+<       ret = index;
+---
+>       return index;
+93c92
+<       ret = index+4;
+---
+>       return index+4;
+96,100d94
+<   return ret + colorFromState(s);
+< 
+<   function reverseState(s) {
+<     return (s+4)%8;
+<   }
+102,103c96,97
+< function colorFromState(s) {
+<   return Math.floor(s/4);
+---
+> function reverseState(s) {
+>   return (s+4)%8;
+106,109c100,103
+<   setFill(xid,'p3',false,((s%9)/4<1),s);
+<   setFill(xid,'p0',s%4==0,((s%9)/4<1),s);
+<   setFill(xid,'p1',s%4==1,((s%9)/4<1),s);
+<   setFill(xid,'p2',s%4==2,((s%9)/4<1),s);
+---
+>   setFill(xid,'p3',false,(s/4<1),s);
+>   setFill(xid,'p0',s%4==0,(s/4<1),s);
+>   setFill(xid,'p1',s%4==1,(s/4<1),s);
+>   setFill(xid,'p2',s%4==2,(s/4<1),s);
+126,136c120,125
+< function getState(xid){
+<  let t0 = document.body.querySelector(`output.${name} g#${xid} polygon[name=p0]`).style.fill;
+<  let t1 = document.body.querySelector(`output.${name} g#${xid} polygon[name=p1]`).style.fill;
+<  let t2 = document.body.querySelector(`output.${name} g#${xid} polygon[name=p2]`).style.fill;
+<  let t3 = document.body.querySelector(`output.${name} g#${xid} polygon[name=p3]`).style.fill;
+<  let colorIndex = getColorIndex(t0,t1,t2,t3);
+<  let c0 = colbin(t0);
+<  let c1 = colbin(t1);
+<  let c2 = colbin(t2);
+<  let c3 = colbin(t3);
+<  let ret = 0;
+---
+> function getState(xid,target){
+>  let col = colbin(target.style.fill);
+>  let c0 = colbin(document.body.querySelector(`output.${name} g#${xid} polygon[name=p0]`).style.fill);
+>  let c1 = colbin(document.body.querySelector(`output.${name} g#${xid} polygon[name=p1]`).style.fill);
+>  let c2 = colbin(document.body.querySelector(`output.${name} g#${xid} polygon[name=p2]`).style.fill);
+>  let c3 = colbin(document.body.querySelector(`output.${name} g#${xid} polygon[name=p3]`).style.fill);
+138c127
+<    ret = 8;
+---
+>    return 8;
+141c130
+<      ret = 0+4*c3;
+---
+>      return 0+4*c3;
+143c132
+<      ret = 1+4*c3;
+---
+>      return 1+4*c3;
+145c134
+<      ret = 2+4*c3;
+---
+>      return 2+4*c3;
+147c136
+<      ret = 3;
+---
+>      return 3;
+150d138
+<  return ret+ colorIndex*9;
+243,268d230
+< function getColorIndex (t0,t1,t2,t3) {
+<   if (t0!=='#ffffff') {
+<     return getColIndex(t0);
+<   }
+<   if (t1!=='#ffffff') {
+<     return getColIndex(t1);
+<   }
+<   if (t2!=='#ffffff') {
+<     return getColIndex(t2);
+<   }
+<   if (t3!=='#ffffff') {
+<     return getColIndex(t3);
+<   }
+<   return 0;
+<   function getColIndex (t) {
+<     if (t==='#00cc00') {
+<       return 0;
+<     } else if (t==='#00ccff') {
+<       return 1;
+<     } else if (t==='#88ffdd') {
+<       return 2;
+<     } else if (t==='#ff99ff') {
+<       return 3;
+<     }
+<   }
+< }
+269a232
+> 
