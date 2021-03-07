@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   let svgconfig = document.body.querySelector(`output.${config}`);
   let hidden = 'display:none;';
   svgconfig.insertAdjacentHTML('beforeend',`
-<a class="undo" href="#" style="text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↩</a>
-<a class="redo" href="#" style="text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↪</a>
+<a class="undo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↩</a>
+<a class="redo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↪</a>
 <input class="${name}" type="range" width="100%" value="1" min="1" max="1"  style="${hidden}vertical-align:0.3em;margin-right:0.5em;">
 `);
-  let picker = document.body.querySelector(`output.${config} input.${pick}`);
   let unredo = document.body.querySelector(`output.${config} input.${name}`);
   let undo = document.body.querySelector(`output.${config} a.undo`);
   let redo = document.body.querySelector(`output.${config} a.redo`);
@@ -25,8 +24,11 @@ document.addEventListener('DOMContentLoaded',()=>{
       history.length = unredo.value-1;
     }
     let id = getId(event.target);
-    history.push({i:id, p:event.target.style.fill,n:picker.value});
-    event.target.style.fill = picker.value;
+    let currentColor = getColor(event.target.style.fill);
+    let nextColor = toggleColor(currentColor);
+console.log(currentColor+' '+nextColor);
+    history.push({i:id, p:currentColor,n:nextColor});
+    event.target.style.fill = nextColor;
     unredo.max = history.length+1;
     unredo.value = unredo.max;
     lastunredo = unredo.max;
@@ -57,6 +59,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     );
   }
 });
+function getColor (c) {
+  c = c.replace(/ /g,'');
+  if (c!=='#000000' && c!=='rgb(0,0,0)') {
+    return '#ffffff';
+  }
+  return c;
+}
+function toggleColor (c) {
+  c = c.replace(/ /g,'');
+  if (c==='#000000' || c==='rgb(0,0,0)') {
+    return '#ffffff';
+  } else {
+    return '#000000';
+  }
+}
 function processUndo(i) {
   if (history.length<i ||(i-1)<0) {
     return;
