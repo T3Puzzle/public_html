@@ -74,6 +74,7 @@ function getCols2() {
   return colors[colorPallete][colorPallete];
 }
 function getCols() {
+ return ['#ffffff','#000000','#ee4035','#c3a736','#fdf498','#7bc043','#0392cf'];
   return getCols2();
   if (colorType) {
     for(let ci=0;ci<colors.length;ci++) {
