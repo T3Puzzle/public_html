@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   let svgconfig = document.body.querySelector(`output.${config}`);
   let hidden = 'display:none;';
   svgconfig.insertAdjacentHTML('beforeend',`
-<a class="undo" href="#" style="text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↩</a>
-<a class="redo" href="#" style="text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↪</a>
+<a class="undo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↩</a>
+<a class="redo" href="#" style="display:none;text-decoration:none;vertical-align:0.2em;font-size:300%;margin-right:0.5em;">↪</a>
 <input class="${name}" type="range" width="100%" value="1" min="1" max="1"  style="${hidden}vertical-align:0.3em;margin-right:0.5em;">
 `);
   let picker = document.body.querySelector(`output.${config} input.${pick}`);
