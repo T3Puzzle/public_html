@@ -6,7 +6,6 @@ let head=15;
 let inputhidden='display:none;';
 let colors = [
 {'0':['#ffffff','#000000','#ee4035','#c3a736','#fdf498','#7bc043','#0392cf']},
-{'1':['#ffffff','#000000','#ee4035','#c3a736','#fdf498','#7bc043','#0392cf']},
 //{'1':['#ffffff','#000000','#ff77aa','#ff99cc','#ffbbee','#ff5588','#ff3377']},
 //{'2':['#ffffff','#000000','#a8e6cf','#dcedc1','#ffd3b6','#ffaaa5','#ff8b94']},
 //{'3':['#ffffff','#000000','#ebf4f6','#bdeaee','#76b4bd','#58668b','#5e5656']},
@@ -70,6 +69,7 @@ function getCols2() {
   } else {
     colorPallete = (new Date()).getTime()%colors.length;
   }
+  colorPallete = 0;
   localStorage.setItem('colorPallete',colorPallete);
   return colors[colorPallete][colorPallete];
 }
