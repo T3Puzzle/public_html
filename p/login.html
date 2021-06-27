@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127386967-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-127386967-1');
+  </script>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400,height=500,initial-scale=1,user-scalable=yes">
+<style>
+.box6 {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    background: #f0f7ff;
+    border: dashed 2px #5b8bd0;/*点線*/
+}
+.box6 p {
+    margin: 0; 
+    padding: 0;
+}
+</style>
+</head>
+<body style="text-size-adjust:100%;">
+<script type="text/javascript" src="./jscheck.js"></script>
+<h2>T3アプリへようこそ</h2>
+本アプリをご利用いただくにあたり、
+下記の事項をご確認の上、ご了承をお願いいたします。
+
+<h4>1) 制作いただく作品の公開にご協力ください</h4>
+本アプリで制作した作品は、
+SNSなどでT3パズルの事例として紹介させていただくことがあります。
+<h4>2) メールアドレスをご記入ください</h4>
+ご記入いただいたメールアドレス宛に本アプリのURLを送付しますので、ご確認ください。<br/>
+またメールアドレスは、T3パズルに関連したイベントなどのご紹介に利用します。<br/>
+<p>
+<form action="https://script.google.com/a/tessellation.jp/macros/s/AKfycbzXHFifycf7nwG1XihLgqlUbA3HaaPUu8iuvN8DQaHgEVC02J8/exec">
+メールアドレス: <input type="email" name="email" required="required" size="50">
+<input type="hidden" name="artist" value="">
+<br/>
+<input type="submit" value="了承" style="appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: #4676D7;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 16px;" >
+</form>
+<script>
+setAndRun();
+function setAndRun() {
+  let artist = localStorage.getItem('artist');
+  if (!(artist && artist.toString().trim().length>0)) {
+    artist = Math.random().toString(32).substring(2);
+    localStorage.setItem('artist',artist);
+    document.querySelector('input[name="artist"]').value = artist;
+  } else {
+    document.location.href = './index.html';
+  }
+}
+</script>
+</body>
+</html>
