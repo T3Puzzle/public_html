@@ -9,7 +9,7 @@ let url = 'https://www.tessellation.jp/online/t3web';
 let sub = 'https://www.t3puzzle.com/r/u?pop';
 let text = `
 <a target="_blank" href="${url}">使い方</a> / 
-<a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">T3サマー事前申請する</a>
+T3を並べたら→<a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">事前申請へ</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
