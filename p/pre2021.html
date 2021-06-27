@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400,height=450,initial-scale=1,user-scalable=yes">
+</head>
+<body style="text-size-adjust:100%;-webkit-text-size-adjust:100%;">
+  <script>
+(()=>{
+  let qs = location.search;
+  if (qs.indexOf('?')!==0) {
+    return;
+  }
+  let qss = qs.replace(/^\?/,'').split('&');
+  let token = null;
+  let fileId = null;
+  for (let qsi=0;qsi<qss.length;qsi++) {
+    if (qss[qsi].indexOf('token=')===0){ 
+      token = qss[qsi].replace(/^token=/,''); 
+    } else if (qss[qsi].indexOf('fileId=')===0) {
+      fileId = qss[qsi].replace(/^fileId=/,''); 
+    }
+  }
+  if (token===null || fileId===null) {
+console.log(fileId);
+    return;
+  }
+  let iurl = 'https://drive.google.com/uc?export=download&id='+fileId+'&access_token='+token;
+let aurl = 'https://docs.google.com/forms/d/e/1FAIpQLSfENDYmLchNNxTqO6ew4hcboFplkWQFJuXWmNUsuJexURRavg/viewform?usp=pp_url&entry.84931985='+fileId;
+document.write(`<img src="${iurl}"/>
+  <dd><a target="_top" href="${aurl}">
+これでT3サマー事前申請する</a>
+`);
+})();</script>
+<p/>
+<dd><a href="#" onclick="history.go(-2);">やりなおし</a>
+</body>
+</html>
