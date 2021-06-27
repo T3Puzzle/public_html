@@ -8,7 +8,7 @@ if (!artist) {
 let url = 'https://www.tessellation.jp/online/t3web';
 let text = `
 <a target="_blank" href="${url}">使い方</a> / 
-並べたら→<a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">T3サマー事前申請へ</a>
+<a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">T3サマー事前申請へ</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
