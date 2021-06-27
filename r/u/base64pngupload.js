@@ -75,6 +75,7 @@ ${input}
 ${back}
 <p/>
 <li><a href="https://www.tessellation.jp/t3summer">コンテストページ</a>
+<li><a href="https://www.t3puzzle.com/c">T3パズル ウェブ版</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
