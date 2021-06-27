@@ -5,7 +5,7 @@ let artist = localStorage.getItem('artist');
 if (!artist) {
    artist = '';
 }
-let url = 'https://www.tessellation.jp/t3dream/r#h.3c5fq13t8htb';
+let url = 'https://www.tessellation.jp/online/t3web';
 let sub = 'https://www.t3puzzle.com/r/u?pop';
 let text = `
 <a target="_blank" href="${url}">使い方</a> / 
