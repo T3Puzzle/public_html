@@ -2,15 +2,15 @@
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbwZVOK-Ns13e1Y93iCFBZ5yqIJW28umKUXmR-N0Out4kVgLeyE/exec';
   let reg = '';
   let emailreq = '';
-  if (!checkRegistered()) {
+  //if (!checkRegistered()) {
     reg = `
 <dt>おなまえ</dt>
 <dd><input name="name" size="15" required></dd>
 `;
     emailreq = 'required';
-  } else {
-    reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
-  }
+  //} else {
+  //  reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
+  //}
   let back = '';
   let search = document.location.search;
   if (search && search==='?pop') {
@@ -47,7 +47,7 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<h2>T3初夢コンテスト 応募フォーム</h2>
+<h2>T3サマーコンテスト2021 応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
 応募作品、ねんれい、だいめい、工夫した点は、<br/>
@@ -116,7 +116,7 @@ ${back}
     return artist;
   }
   function convWidthHeight(image) {
-    let max = 400;
+    let max = 800;
     let width = image.width;
     let height = image.height;
     if (width<height) {
