@@ -6,7 +6,7 @@ if (!artist) {
    artist = '';
 }
 let url = 'https://www.tessellation.jp/online/t3web';
-let sub = './upload.html';
+let sub = '/r/u?pop';
 let text = `
 <a target="_blank" href="${url}">使い方</a> / 
 <a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">画像に保存</a> /
