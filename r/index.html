@@ -30,34 +30,8 @@
 <script type="text/javascript" src="./jscheck.js"></script>
 <script type="text/javascript">
 (()=>{
-let hash = document.location.hash;
-if (!hash) {
-  document.location.href = './register.html';
+  document.location.href = './u/index.html';
   return;
-}
-// without heading #
-hash = hash.substr(1,hash.length-1);
-if (!checkHash(hash)){
-  document.location.href = './register.html';
-  return;
-}
-localStorage.setItem('artist',hash);
-document.location.href = 'https://www.tessellation.jp/t3dream/r';
-return;
-
-function checkHash(hash) {
-  if (!hash) {
-    return false;
-  }
-  let head = hash.substr(0,hash.length-1);
-  let tail = hash.substr(hash.length-1,1);
-  return checkCode(head,tail);
-}
-function checkCode(head,tail) {
-  let headVal = head.replace(/[0-9]/g,'').length;
-  let tailVal = parseInt(tail,16);
-  return (headVal===tailVal);
-}
 })();
 </script>
 </body>
