@@ -74,7 +74,7 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.tessellation.jp/t3dream/r">コンテスト参加者向けページ</a>
+<li><a href="https://www.tessellation.jp/t3summer">コンテストページ</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
