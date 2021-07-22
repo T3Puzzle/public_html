@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400,height=450,initial-scale=1,user-scalable=yes">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127386967-1"></script>
   <script>
   window.dataLayer = window.dataLayer || [];
@@ -21,49 +24,24 @@
     border: dashed 2px #5b8bd0;/*点線*/
 }
 .box6 p {
-    margin: 0; 
+    margin: 0;
     padding: 0;
 }
 </style>
 </head>
 <body style="text-size-adjust:100%;-webkit-text-size-adjust:100%;">
-<script type="text/javascript" src="./jscheck.js"></script>
-<h2>T3サマーコンテスト事前登録</h2>
-本ページはT3サマーコンテスト2021の事前登録です。<br/>
-[延長] 2021/07/25 までに参加登録いただくと、30名の方にT3パズル 紙版をプレゼントいたします。<br/>
-<br/>
-事前登録は次の２つのステップでおこないます<br/>
-1) T3パズル ウェッブ版で作品※1 づくり体験<br/>
-2) 登録フォームに記入<br/>
-  
-<br/>
-<p>
-<script>
-<!--
-function setAndRun() {
-  let artist = localStorage.getItem('artist');
-  if (!(artist && artist.toString().trim().length>0)) {
-    artist = Math.random().toString(32).substring(2);
-    localStorage.setItem('artist',artist);
-  }
-  document.location.href = './step1.html';
-}
-//-->
-</script>
-<button style="appearance: none;
-  border: 0;
-  border-radius: 5px;
-  background: #4676D7;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 16px;" onclick="javascript:setAndRun();">
-了承</button>
-<br/>
-  <p style="font-size: 80%;">※1. この作品は、SNSなどで事例として紹介させていただくことがあります</p>
-  <br/>
-  <a href="http://www.tessellation.jp/t3summer">T3サマーコンテスト2021</a>
-  <br/>
-  
-<img width="200" src="./beetle.png"/>
+<h2>T3サマー2021事前登録</h2>
+<p style="font-size='80%'">
+登録はつぎの2ステップ<br/>
+【ステップ1】下のマス目を押して作品づくり体験<br/>
+【ステップ2】登録情報記入へ
+</p>
+  <script type="text/javascript" src="./jscheck.js"></script>
+  <script src="./t3config.js"></script>
+  <script src="./t3input.js"></script>
+  <script src="../lib/pre2021.js?xx"></script>
+  <script src="./t3output.js"></script>
+  <script src="./t3note.js?zz"></script>
+  <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
 </html>
