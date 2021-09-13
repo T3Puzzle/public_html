@@ -85,6 +85,7 @@
       }
     }
     view.translate(view.atMid(), g.getHull().atMid());
+    view.fitScale(g);
     view.scale(view.atMid(),2);
     var tView = new tapspace.Touchable(view, view);
     tView.start({
