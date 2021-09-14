@@ -103,12 +103,12 @@
             }
             */
             if (checkHash(px)) {
-              //console.log("dup"+genKey(px));
+              console.log("dup"+genKey(px));
               px._T.tx = prevX;
               px._T.ty = prevY;
               px.snap(px.atMid(), grid);
             } else {
-              //console.log("safe"+genKey(px));
+              console.log("safe"+genKey(px));
             }
             setHash(px);
           });
@@ -133,71 +133,77 @@
     let ar = obj._T;
     let downsideup = /downsideup/.test(obj.html);
     let out = [];
-    let prec = 10000;
-    let a = {
-      s: 10000,
-      r: 0,
-      tx: 500000,
-      ty: 866025
+    let prec = 1000;
+  let a ={
+    "s": 1,
+    "r": 0,
+    "tx": 50.00000000000002,
+    "ty": 86.60254037844388,
+  };
+  let b = {
+    "s": -0.4999999999999994,
+    "r": 0.8660254037844389,
+    "tx": 99.99999999999999,
+    "ty": -7.105427357600994e-15,
+  };
+   let c = {
+    "s": -0.4999999999999996,
+    "r": -0.8660254037844388,
+    "tx": 150.00000000000003,
+    "ty": 86.60254037844388,
     };
-    let b = {
-      s: -5000,
-      r: 8660,
-      tx: 1000000,
-      ty: 0
+  let xa = {
+    "s": 1,
+    "r": 0,
+    "tx": 0,
+    "ty": 0,
+  };
+  let xb = {
+    "s": -0.4999999999999994,
+    "r": 0.8660254037844389,
+    "tx": 99.99999999999999,
+    "ty": -7.105427357600994e-15,
+  };
+  let xc = {
+    "s": -0.4999999999999996,
+    "r": -0.8660254037844388,
+    "tx": 50.00000000000014,
+    "ty": 86.60254037844388,
     };
-    let c = {
-      s: -5000,
-      r: -8660,
-      tx: 1500000,
-      ty: 866025
-    };
-    let xa = {
-      s: 10000,
-      r: 0,
-      tx: 1000000,
-      ty: 0
-    };
-    let xb = {
-      s: -5000,
-      r: 8660,
-      tx: 2000000,
-      ty: 0
-    };
-    let xc = {
-      s: -5000,
-      r: -8660,
-      tx: 1500000,
-      ty: 866025
-    };
-
-    let ret = {};
-    for (let k in ar) {
-      let v = Math.round(ar[k] * prec);
-      if (v === -0) {
-        v = 0;
-      }
-      ret[k] = v;
+  let ret = {};
+  for(let k in ar){
+    let v = ar[k];
+    if (v===-0) {
+      v = 0;
     }
-    if (downsideup) {
-      if (a.s === ret.s && a.r === ret.r) {
-        out.push([ret.tx - a.tx, ret.ty - a.ty]);
-      } else if (b.s === ret.s && b.r === ret.r) {
-        out.push([ret.tx - b.tx, ret.ty - b.ty]);
-      } else if (c.s === ret.s && c.r === ret.r) {
-        out.push([ret.tx - c.tx, ret.ty - c.ty]);
-      }
-    } else {
-      if (xa.s === ret.s && xa.r === ret.r) {
-        out.push([ret.tx - xa.tx, ret.ty - xa.ty]);
-      } else if (xb.s === ret.s && xb.r === ret.r) {
-        out.push([ret.tx - xb.tx, ret.ty - xb.ty]);
-      } else if (xc.s === ret.s && xc.r === ret.r) {
-        out.push([ret.tx - xc.tx, ret.ty - xc.ty]);
-      }
+    ret[k]=v;
+  }
+  if (downsideup) {
+    if (near(a.s,ret.s,a.r,ret.r)) {
+      outpush(prec,out,[ret.tx-a.tx, ret.ty-a.ty]);
+    } else if (near(b.s,ret.s,b.r,ret.r)) {
+      outpush(prec,out,[ret.tx-b.tx, ret.ty-b.ty]);
+    } else if (near(c.s,ret.s,c.r,ret.r)) {
+      outpush(prec,out,[ret.tx-c.tx, ret.ty-c.ty]);
     }
+  } else {
+    if (near(xa.s,ret.s,xa.r,ret.r)) {
+      outpush(prec,out,[ret.tx-xa.tx, ret.ty-xa.ty]);
+    } else if (near(xb.s,ret.s,xb.r,ret.r)) {
+      outpush(prec,out,[ret.tx-xb.tx, ret.ty-xb.ty]);
+    } else if (near(xc.s,ret.s,xc.r,ret.r)) {
+      outpush(prec,out,[ret.tx-xc.tx, ret.ty-xc.ty]);
+    }
+  }
     return JSON.stringify([downsideup,out]);
   }
+  function outpush (prec,out,val) {
+  out.push(Math.round(prec*val[0]),Math.round(prec*val[1]));
+}
+function near(tx,sx,ty,sy) {
+  return((tx-sx)*(tx-sx)+(ty-sy)*(ty-sy)<0.01);
+
+}
   function checkHash(obj) {
     let key = genKey(obj);
     return key in posHash;
