@@ -76,6 +76,25 @@
         // console.log(pp._T);
         pp.snap(px.atMid(), grid);
         // console.log(pp._T);
+        
+        
+        let id = pp.id;
+        if (id in dirstate) {
+          if (isDownsideup(pp)){
+            dirstate[id] = (dirstate[id]+3-1)%3;
+          } else {
+            dirstate[id] = (dirstate[id]+1)%3;
+          }
+        } else {
+          basestate[id] = 0;
+          dirstate[id] = 0;
+        }
+      px.resetTransform();
+      px.rotate(
+                px.at(XSIZE / 2, YSIZE / 3),
+                [0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3][dirstate[id]]
+              );
+        
       }
 
       if (checkHash(pp, px)) {
@@ -160,6 +179,7 @@
           [px0, px1, px2, px3].map((px) => {
             px.setSize(0, 0);
             if (idx === 3) {
+              // px === px3
               pp.translate(px.atMid(), grid.at(i, j));
               if (k === 1) {
                 pp.rotate(px.at(50, 0), Math.PI);
