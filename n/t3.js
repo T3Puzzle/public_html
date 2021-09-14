@@ -41,7 +41,7 @@
     );
     var g = new tapspace.SpaceGroup(space);
 
-    var touchmode = { translate: true, tap: true };
+    var touchmode = { translate: true, tap: true , rotate: true, scale: true };
 
     let tapHandler = function (ev, k) {
       //console.log(ev.item._T);
