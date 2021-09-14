@@ -43,9 +43,48 @@
 
     var touchmode = { translate: true, tap: true };
 
-    let tapHandler = function (ev, k) {
-      //console.log(ev.item._T);
-      ev.item.rotate(ev.item.at(XSIZE / 2, (k * YSIZE) / 3), (Math.PI * 2) / 3);
+     let gstart = function(pp,px) {
+          ///console.log(pp._T);
+            //console.log(px._T);
+            px.bringToFront();
+            deleteHash(pp,px);
+           prevX = pp._T.tx;
+           prevY = pp._T.ty;
+    }
+    let gend = function (pp,px) {
+            let dx = -px._T.tx;
+            let dy = -px._T.ty;
+            pp.snap(px.atMid(), grid);
+            dx += px._T.tx;
+            dy += px._T.ty;
+            let norm = Math.sqrt(dx * dx + dy * dy);
+            //console.log(norm);
+            // TODO:
+            //console.log(norm);
+            /*
+            if (norm>50){
+              // revert first
+              px.rotate(px.at(0,0), Math.PI/2);
+              px.snap(px.at(0,0), grid);
+            }
+            */
+            if (checkHash(pp,px)) {
+              console.log("dup"+genKey(pp,px));
+              pp._T.tx = prevX;
+              pp._T.ty = prevY;
+              pp.snap(px.atMid(), grid);
+            } else {
+              console.log("safe"+genKey(pp,px));
+            }
+            setHash(pp,px);
+    }
+    let tapHandler = function (ev, px) {
+      px.resetTransform();
+      // TODO:
+      px.rotate(
+            px.at(XSIZE / 2, YSIZE / 3),
+            pickRandom([0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3])
+          );
     };
     for (let i = 0; i < WX; i++) {
       for (let j = 0; j < WY; j++) {
@@ -62,62 +101,27 @@
           if (i - j < -WY / 2) {
             continue;
           }
-          let _tile = "";
-          if (k === 0) {
-            _tile = tile;
-          } else {
-            _tile = '<div class="downsideup">' + tile + "</div>";
-          }
-          let px = new tapspace.SpaceHTML(_tile, g);
+          var pp = new tapspace.SpaceGroup(g);
+          let px = new tapspace.SpaceHTML(tile, pp);
           px.setSize(0, 0);
-          px.translate(px.atMid(), grid.at(i, j));
-          setHash(px);
-          
+          pp.translate(px.atMid(), grid.at(i, j));
+          if (k===1) {
+            pp.rotate(px.at(50,0),Math.PI);
+          }
           px.rotate(
-            px.at(XSIZE / 2, ((1 - 2 * k) * YSIZE) / 3),
+            px.at(XSIZE / 2, YSIZE / 3),
             pickRandom([0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3])
           );
+          setHash(pp,px);
 
-          let touch = new tapspace.Touchable(view, px);
+          let touch = new tapspace.Touchable(view, pp);
           touch.start(touchmode);
-          touch.on("gesturestart", function () {
-            px.bringToFront();
-            deleteHash(px);
-            prevX = px._T.tx;
-            prevY = px._T.ty;
-          });
-          touch.on("gestureend", function () {
-            let dx = -px._T.tx;
-            let dy = -px._T.ty;
-            px.snap(px.atMid(), grid);
-            dx += px._T.tx;
-            dy += px._T.ty;
-            let norm = Math.sqrt(dx * dx + dy * dy);
-            //console.log(norm);
-            // TODO:
-            /*
-            if (norm>20){
-              // revert first
-              px.rotate(px.atMid(), Math.PI/2);
-              px.snap(px.atMid(), grid);
-            }
-            */
-            if (checkHash(px)) {
-              console.log("dup"+genKey(px));
-              px._T.tx = prevX;
-              px._T.ty = prevY;
-              px.snap(px.atMid(), grid);
-            } else {
-              console.log("safe"+genKey(px));
-            }
-            setHash(px);
-          });
-
-          if (k === 0) {
-            touch.on("tap", (e) => tapHandler(e, 1));
-          } else {
-            touch.on("tap", (e) => tapHandler(e, -1));
-          }
+          touch.on("gesturestart", ((pp,px)=>() => gstart(pp,px)
+          )(pp,px));
+          touch.on("gestureend", ((pp,px)=>()=>gend(pp,px)
+          )(pp,px));
+          touch.on("tap", (px=>(e)=>tapHandler(e,px)
+          )(px));
         }
       }
     }
@@ -129,91 +133,44 @@
     var tView = new tapspace.Touchable(view, view);
     tView.start( { translate: true, rotate: true, scale: true });
   }
-  function genKey(obj) {
+  function isDownsideup(par) {
+    let br = par._T;
+    return(Math.abs(br.r-0)<0.01 && Math.abs(br.s-(-1))<0.01);
+  }
+  function genKey(par,obj) {
+    let downsideup = isDownsideup(par);
     let ar = obj._T;
-    let downsideup = /downsideup/.test(obj.html);
     let out = [];
     let prec = 1000;
-  let a ={
-    "s": 1,
-    "r": 0,
-    "tx": 50.00000000000002,
-    "ty": 86.60254037844388,
-  };
-  let b = {
-    "s": -0.4999999999999994,
-    "r": 0.8660254037844389,
-    "tx": 99.99999999999999,
-    "ty": -7.105427357600994e-15,
-  };
-   let c = {
-    "s": -0.4999999999999996,
-    "r": -0.8660254037844388,
-    "tx": 150.00000000000003,
-    "ty": 86.60254037844388,
-    };
-  let xa = {
-    "s": 1,
-    "r": 0,
-    "tx": 0,
-    "ty": 0,
-  };
-  let xb = {
-    "s": -0.4999999999999994,
-    "r": 0.8660254037844389,
-    "tx": 99.99999999999999,
-    "ty": -7.105427357600994e-15,
-  };
-  let xc = {
-    "s": -0.4999999999999996,
-    "r": -0.8660254037844388,
-    "tx": 50.00000000000014,
-    "ty": 86.60254037844388,
-    };
+  let pptx = 150;
+  let ppty = 86.60254037844388;
+  let xpptx = 100;
+  let xppty = 0;
   let ret = {};
   for(let k in ar){
     let v = ar[k];
-    if (v===-0) {
-      v = 0;
-    }
     ret[k]=v;
   }
   if (downsideup) {
-    if (near(a.s,ret.s,a.r,ret.r)) {
-      outpush(prec,out,[ret.tx-a.tx, ret.ty-a.ty]);
-    } else if (near(b.s,ret.s,b.r,ret.r)) {
-      outpush(prec,out,[ret.tx-b.tx, ret.ty-b.ty]);
-    } else if (near(c.s,ret.s,c.r,ret.r)) {
-      outpush(prec,out,[ret.tx-c.tx, ret.ty-c.ty]);
-    }
+      outpush(prec,out,[par._T.tx-pptx, par._T.ty-ppty]);
   } else {
-    if (near(xa.s,ret.s,xa.r,ret.r)) {
-      outpush(prec,out,[ret.tx-xa.tx, ret.ty-xa.ty]);
-    } else if (near(xb.s,ret.s,xb.r,ret.r)) {
-      outpush(prec,out,[ret.tx-xb.tx, ret.ty-xb.ty]);
-    } else if (near(xc.s,ret.s,xc.r,ret.r)) {
-      outpush(prec,out,[ret.tx-xc.tx, ret.ty-xc.ty]);
-    }
+      outpush(prec,out,[par._T.tx-xpptx, par._T.ty-xppty]);
   }
     return JSON.stringify([downsideup,out]);
   }
   function outpush (prec,out,val) {
-  out.push(Math.round(prec*val[0]),Math.round(prec*val[1]));
+  out.push([Math.round(prec*val[0]),Math.round(prec*val[1])]);
 }
-function near(tx,sx,ty,sy) {
-  return((tx-sx)*(tx-sx)+(ty-sy)*(ty-sy)<0.01);
-
-}
-  function checkHash(obj) {
-    let key = genKey(obj);
+  function checkHash(par,obj) {
+    let key = genKey(par,obj);
     return key in posHash;
   }
-  function deleteHash(obj) {
-    let key = genKey(obj);
+  function deleteHash(par,obj) {
+    let key = genKey(par,obj);
     delete posHash[key];
   }
-  function setHash(obj) {
-    let key = genKey(obj);
+  function setHash(par,obj) {
+    let key = genKey(par,obj);
     posHash[key] = true;
   }
   function pickRandom(arr) {
@@ -247,10 +204,9 @@ function near(tx,sx,ty,sy) {
 div.white {
   background: rgba(255,255,255,0.5);
 }
-div.downsideup {
-  transform-origin: 50px 0px;
-  transform: rotate(180deg);
-}
     </style>`;
   }
 })();
+
+
+
