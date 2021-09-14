@@ -44,35 +44,40 @@
     var touchmode = { translate: true, tap: true };
 
      let gstart = function(pp,px) {
-          ///console.log(pp._T);
-            //console.log(px._T);
+       console.log(pp._T);
             px.bringToFront();
             deleteHash(pp,px);
            prevX = pp._T.tx;
            prevY = pp._T.ty;
     }
     let gend = function (pp,px) {
-            let dx = -px._T.tx;
-            let dy = -px._T.ty;
+            let dx = -pp._T.tx;
+            let dy = -pp._T.ty;
             pp.snap(px.atMid(), grid);
-            dx += px._T.tx;
-            dy += px._T.ty;
+            dx += pp._T.tx;
+            dy += pp._T.ty;
             let norm = Math.sqrt(dx * dx + dy * dy);
-            //console.log(norm);
-            // TODO:
-            //console.log(norm);
-            /*
+            console.log(norm);
+            
             if (norm>50){
+              console.log(pp._T);
+              
               // revert first
-              px.rotate(px.at(0,0), Math.PI/2);
-              px.snap(px.at(0,0), grid);
+              //pp.rotate(px.at(0,0), Math.PI/2);
+              toggleDownsideup(pp);
+              console.log(pp._T);
+              pp.snap(px.atMid(), grid);
+              console.log(pp._T);
             }
-            */
+            
             if (checkHash(pp,px)) {
               console.log("dup"+genKey(pp,px));
               pp._T.tx = prevX;
               pp._T.ty = prevY;
               pp.snap(px.atMid(), grid);
+              
+              // TODO: try rotate again
+              
             } else {
               console.log("safe"+genKey(pp,px));
             }
@@ -132,6 +137,18 @@
     // Make view transformable
     var tView = new tapspace.Touchable(view, view);
     tView.start( { translate: true, rotate: true, scale: true });
+  }
+  function toggleDownsideup(par) {
+    
+    if (par._T.s > 0) {
+      par._T.tx += 50;
+      par._T.ty += 86.60254037844388;
+    } else {
+      par._T.tx -= 50;
+      par._T.ty -= 86.60254037844388;
+    }
+    par._T.s *= -1;
+    
   }
   function isDownsideup(par) {
     let br = par._T;
