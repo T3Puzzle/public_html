@@ -41,7 +41,7 @@
     );
     var g = new tapspace.SpaceGroup(space);
 
-    var touchmode = { translate: true, tap: true , rotate: true, scale: true };
+    var touchmode = { translate: true, tap: true };
 
     let tapHandler = function (ev, k) {
       //console.log(ev.item._T);
@@ -127,7 +127,7 @@
 
     // Make view transformable
     var tView = new tapspace.Touchable(view, view);
-    tView.start(touchmode);
+    tView.start( { translate: true, rotate: true, scale: true });
   }
   function genKey(obj) {
     let ar = obj._T;
