@@ -1,4 +1,7 @@
 (() => {
+  let posHash = {};
+  let prevX = 0;
+  let prevY = 0;
   initHtml();
   let space = new tapspace.Space();
   let view = new tapspace.SpaceView(space);
@@ -38,9 +41,10 @@
     );
     var g = new tapspace.SpaceGroup(space);
 
-    var touchmode = { translate: true, scale: true, rotate: true, tap: true };
+    var touchmode = { translate: true, tap: true };
 
     let tapHandler = function (ev, k) {
+      //console.log(ev.item._T);
       ev.item.rotate(ev.item.at(XSIZE / 2, (k * YSIZE) / 3), (Math.PI * 2) / 3);
     };
     for (let i = 0; i < WX; i++) {
@@ -66,8 +70,9 @@
           }
           let px = new tapspace.SpaceHTML(_tile, g);
           px.setSize(0, 0);
-          px.translate(px.at(0, 0), grid.at(i, j));
-
+          px.translate(px.atMid(), grid.at(i, j));
+          setHash(px);
+          
           px.rotate(
             px.at(XSIZE / 2, ((1 - 2 * k) * YSIZE) / 3),
             pickRandom([0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3])
@@ -77,9 +82,35 @@
           touch.start(touchmode);
           touch.on("gesturestart", function () {
             px.bringToFront();
+            deleteHash(px);
+            prevX = px._T.tx;
+            prevY = px._T.ty;
           });
           touch.on("gestureend", function () {
+            let dx = -px._T.tx;
+            let dy = -px._T.ty;
             px.snap(px.atMid(), grid);
+            dx += px._T.tx;
+            dy += px._T.ty;
+            let norm = Math.sqrt(dx * dx + dy * dy);
+            //console.log(norm);
+            // TODO:
+            /*
+            if (norm>20){
+              // revert first
+              px.rotate(px.atMid(), Math.PI/2);
+              px.snap(px.atMid(), grid);
+            }
+            */
+            if (checkHash(px)) {
+              //console.log("dup"+genKey(px));
+              px._T.tx = prevX;
+              px._T.ty = prevY;
+              px.snap(px.atMid(), grid);
+            } else {
+              //console.log("safe"+genKey(px));
+            }
+            setHash(px);
           });
 
           if (k === 0) {
@@ -97,6 +128,87 @@
     // Make view transformable
     var tView = new tapspace.Touchable(view, view);
     tView.start(touchmode);
+  }
+  function genKey(obj) {
+    let ar = obj._T;
+    let downsideup = /downsideup/.test(obj.html);
+    let out = [];
+    let prec = 10000;
+    let a = {
+      s: 10000,
+      r: 0,
+      tx: 500000,
+      ty: 866025
+    };
+    let b = {
+      s: -5000,
+      r: 8660,
+      tx: 1000000,
+      ty: 0
+    };
+    let c = {
+      s: -5000,
+      r: -8660,
+      tx: 1500000,
+      ty: 866025
+    };
+    let xa = {
+      s: 10000,
+      r: 0,
+      tx: 1000000,
+      ty: 0
+    };
+    let xb = {
+      s: -5000,
+      r: 8660,
+      tx: 2000000,
+      ty: 0
+    };
+    let xc = {
+      s: -5000,
+      r: -8660,
+      tx: 1500000,
+      ty: 866025
+    };
+
+    let ret = {};
+    for (let k in ar) {
+      let v = Math.round(ar[k] * prec);
+      if (v === -0) {
+        v = 0;
+      }
+      ret[k] = v;
+    }
+    if (downsideup) {
+      if (a.s === ret.s && a.r === ret.r) {
+        out.push([ret.tx - a.tx, ret.ty - a.ty]);
+      } else if (b.s === ret.s && b.r === ret.r) {
+        out.push([ret.tx - b.tx, ret.ty - b.ty]);
+      } else if (c.s === ret.s && c.r === ret.r) {
+        out.push([ret.tx - c.tx, ret.ty - c.ty]);
+      }
+    } else {
+      if (xa.s === ret.s && xa.r === ret.r) {
+        out.push([ret.tx - xa.tx, ret.ty - xa.ty]);
+      } else if (xb.s === ret.s && xb.r === ret.r) {
+        out.push([ret.tx - xb.tx, ret.ty - xb.ty]);
+      } else if (xc.s === ret.s && xc.r === ret.r) {
+        out.push([ret.tx - xc.tx, ret.ty - xc.ty]);
+      }
+    }
+    return JSON.stringify([downsideup,out]);
+  }
+  function checkHash(obj) {
+    let key = genKey(obj);
+    return key in posHash;
+  }
+  function deleteHash(obj) {
+    let key = genKey(obj);
+    delete posHash[key];
+  }
+  function setHash(obj) {
+    let key = genKey(obj);
+    posHash[key] = true;
   }
   function pickRandom(arr) {
     var i = Math.floor(Math.random() * arr.length);
