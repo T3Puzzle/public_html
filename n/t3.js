@@ -19,10 +19,10 @@
         view.mount(div);
         let html = ` 
     <div style="transform-origin:50px 28.867513px;transform:scale(0.97);">
-         <div class="tr  white">
+         <div class="tr tr__tile white">
      </div>
  <div style="transform-origin:0px 0px;transform:scale(0.50);">
-     <div class="tr  blue">
+     <div class="tr tr__tile blue">
      </div>
       </div>
     </div>`;
@@ -52,8 +52,6 @@
     var touchmode = { translate: true, tap: true };
 
     let gstart = function (pp, px) {
-      // console.log(pp._T);
-      //px.bringToFront();
       deleteHash(pp, px);
       prevX = pp._T.tx;
       prevY = pp._T.ty;
@@ -68,14 +66,8 @@
       console.log(norm);
 
       if (norm > 50) {
-        // console.log(pp._T);
-
-        // revert first
-        //pp.rotate(px.at(0,0), Math.PI/2);
         toggleDownsideup(pp);
-        // console.log(pp._T);
         pp.snap(px.atMid(), grid);
-        // console.log(pp._T);
         
         
         let id = pp.id;
@@ -110,11 +102,16 @@
       setHash(pp, px);
     };
     let tapHandler = function (ev, px, idx, px3) {
+      
       let id = ev.item.id;
       if (idx !== 3) {
         if (id in basestate) {
           if (dirstate[id] === idx) {
             basestate[id] = (basestate[id] + 1) % 2;
+           Array.from(ev.element.parentNode.querySelectorAll('div.tr__tile')).map(tr=>{
+              tr.classList.toggle('blue');
+              tr.classList.toggle('white');
+            });
           } else {
             dirstate[id] = idx;
           }
@@ -123,9 +120,10 @@
           dirstate[id] = 0;
         }
       }
+      /*
       console.log(
         "idx=" + idx + "@" + id + "=" + basestate[id] + " " + dirstate[id]
-      );
+      );*/
       if (idx!==3) {
       px3.resetTransform();
       px3.rotate(
@@ -134,13 +132,6 @@
               );
         
       }
-/*
-      px.resetTransform();
-      px.rotate(
-        px.at(XSIZE / 2, YSIZE / 3),
-        [0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3][dirstate[id]]
-      );
-      */
     };
     for (let i = 0; i < WX; i++) {
       for (let j = 0; j < WY; j++) {
@@ -204,13 +195,6 @@
               
               dirstate[pp.id] = rndi % 3;
               basestate[pp.id] = Math.floor(rndi / 3);
-              /*
-              pq.resetTransform();
-              pq.rotate(
-                px.at(XSIZE / 2, YSIZE / 3),
-                [0, (Math.PI * 2) / 3, (-Math.PI * 2) / 3][dirstate[pp.id]]
-              );
-              */
               setHash(pp, pq);
             } else {
               let _touch = new tapspace.Touchable(view, px, pp);
