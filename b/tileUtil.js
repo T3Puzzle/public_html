@@ -200,7 +200,7 @@ function tileUtil() {
     let shadow = custom.attachShadow({ mode: "open" });
     // style
     let style = document.createElement("style");
-    style.innerText = puz.getCSS();
+    style.innerHTML = puz.getCSS();
     shadow.append(style);
     // mount point
     let div = document.createElement("div");
