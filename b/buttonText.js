@@ -1,4 +1,4 @@
-(() => {
+export function buttonText () {
   let me = null;
   let FONTSIZE = '500%';
   customElements.define(
@@ -69,4 +69,4 @@ div.inactive {
 }
 `;
   }
-})();
+}
