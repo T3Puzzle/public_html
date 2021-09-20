@@ -1,4 +1,6 @@
-export function buttonText () {
+export {buttonText} ;
+
+function buttonText () {
   let me = null;
   let FONTSIZE = '500%';
   customElements.define(
