@@ -5,13 +5,13 @@ function t3Util() {
   const YSIZE = 86.60254;
   const GRID__YROTATION = (Math.PI * 2) / 3;
   const GRID__ROTATESTEP = Math.PI / 3;
-  const ROTATES = [0,GRID__YROTATION,-GRID__YROTATION];
+  const ROTATES = [0, GRID__YROTATION, -GRID__YROTATION];
   const XCENTER = XSIZE / 2;
   const YCENTER = YSIZE / 3;
-  let basestate = {};
-  let dirstate = {};
   let view = null;
   let initTileCallback = null;
+  let stateAccess = null;
+
   return {
     XSIZE,
     YSIZE,
@@ -23,105 +23,131 @@ function t3Util() {
     getTileHtml,
     getCSS,
     getTapPanels,
-    toggleDownsideup,
-    getFootprint,
     load,
     adjustTransform,
     setFace,
     switchFace,
     adjustTurn,
-    storeState,
     init,
-    loadData,
     getInitTileCallback,
+    detectPosition
   };
-  function getInitTileCallback(){
-    return initTileCallback;
-  }
-  function loadData(top,out) {
-    let id = top.id;
-    let ijk = getFoot(top);
-   
-    out.i = ijk[0];
-    out.j = ijk[1];
-    out.k = ijk[1];
-    out.l = dirstate[id];
-    out.m = basestate[id];
-  }
-  function storeState(top, data) {
-    let id = top.id;
-    setState(id,data.l,data.m);
-  }
-  function setState(id,dir,base) {
-    dirstate[id] = dir;
-    basestate[id] = base;
-  }
-  function rotate(tile,id) {
-    let angle = ROTATES[dirstate[id]];
+  function rotateTile(tile, dir) {
+    let angle = ROTATES[dir];
     tile.resetTransform();
     tile.rotate(tile.at(XCENTER, YCENTER), angle);
-    // no snap
   }
-  function setFace(top,tile,data) {
+  function setFace(target, data) {
+    let top = target.top;
+    let tile = target.tile;
     let id = top.id;
-    let topNode = view.getElementBySpaceItem(top); 
-    setState(id,data.l,data.m);
-    rotate(tile,id);
-    setColor(topNode,id) ;
+    let topNode = view.getElementBySpaceItem(top);
+    rotateTile(tile, data.l);
+    setColor(topNode, data.m);
   }
-  function switchFace(top, tile, idx) {
-    let topNode = view.getElementBySpaceItem(top); 
-    console.log(idx);
+  function switchFace(target, idx) {
+    let top = target.top;
+    let tile = target.tile;
+    let topNode = view.getElementBySpaceItem(top);
+    //console.log(idx);
     let id = top.id;
-    let dir = 0;
-    let base = 0; 
-    if (id in basestate) {
-      dir = dirstate[id];
-      base = basestate[id];
-      if (dir === idx) {
-        base = (base + 1) % 2;
-        toggleColor(topNode);
-      } else {
-        dir = idx;
-      }
+    let state = stateAccess.get(id);
+    let dir = state.l;
+    let base = state.m;
+
+    if (dir === idx) {
+      base = (base + 1) % 2;
+      toggleColor(topNode);
+    } else {
+      dir = idx;
     }
-    setState(id,dir,base);
-    rotate(tile,id);
+
+    stateAccess.set(id, { l: dir, m: base });
+    rotateTile(tile, dir);
   }
-  function adjustTurn(top,tile) {
-    let id = top.id;
-    let dir = 0;
-    let base = 0; 
-    if (id in dirstate) {
-      dir = dirstate[id];
-      base = basestate[id];
-      if (isDownsideup(top)) {
-        dir = (dir + 3 + 1) % 3;
-      } else {
-        dir = (dir - 1) % 3;
-      }
+  function adjustTurn(target, data, prevData) {
+    if (prevData.k === data.k) {
+      return;
     }
-    setState(id,dir,base);
-    rotate(tile,id);
+    let top = target.top;
+    let tile = target.tile;
+    let id = top.id;
+    let state = stateAccess.get(id);
+    let dir = state.l;
+    let base = state.m;
+    if (state.k) {
+      dir = (dir + 3 - 1) % 3;
+    } else {
+      dir = (dir + 3 + 1) % 3;
+    }
+    stateAccess.set(id, { l: dir, m: base });
+    rotateTile(tile, dir);
   }
-  function randomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
-  function adjustTransform(k, top, tile) {
+  function adjustTransform(data, target) {
+    let top = target.top;
+    let tile = target.tile;
     // TODO: t3specific
-    if (k === 1) {
-      toggleDownsideup(top,tile);
+    if (data.k === 1) {
+      top.rotate(tile.at(XSIZE / 4, YSIZE / 2), Math.PI);
     }
   }
-  function load(opts,callback) {
+  function detectPosition(top) {
+    let topNode = view.getElementBySpaceItem(top);
+    let transformStr = topNode.style.transform;
+    let matrix = (a, b, c, d, e, f) => {
+      return { s: a, tx: e, ty: f };
+    };
+    let mat = eval("(()=>" + transformStr + ")();");
+    let i = 0;
+    let j = 0;
+    let k = 0;
+    let pk = 0;
+    if (mat.s < 0) {
+      k = 1;
+      pk = 1;
+      mat.s *= -1;
+      mat.tx -= XSIZE / 2;
+      mat.ty -= YSIZE;
+    }
+    let dy = mat.ty / YSIZE;
+    let pj = Math.round(dy);
+    let dx = pj / 2 + mat.tx / XSIZE;
+    let xx = ((Math.sign(dx) * dx) % 1) - 1 / 2;
+    let yy = ((Math.sign(dy) * dy) % 1) - 1 / 3;
+    let norm = Math.sqrt(xx * xx + yy * yy);
+    //console.log(norm);
+    if (norm < 1 / 3) {
+      i = Math.round(dx + 1 / 2);
+      j = Math.round(dy - 1 / 2);
+      k = (pk + 1) % 2;
+    } else {
+      i = Math.round(dx);
+      j = Math.round(dy);
+      k = (pk + 0) % 2;
+    }
+    if (pk === 1 && k === 0) {
+      i -= 1;
+      j += 1;
+    }
+    if (i === -0) {
+      i = 0;
+    }
+    if (j === -0) {
+      j = 0;
+    }
+    return { i, j, k };
+  }
+  function load(opts, callback) {
     initTileCallback = callback;
     // TODO: load from storage etc.
-    const WX = 8;
-    const WY = 6;
+    const WX = 2;
+    8;
+    const WY = 2;
+    6;
     for (let i = 0; i < WX; i++) {
       for (let j = 0; j < WY; j++) {
         for (let k = 0; k < 2; k++) {
-          
+          /*
           if (k === 0) {
             if (j-i-1>WY/3) {
               continue;
@@ -135,56 +161,19 @@ function t3Util() {
               continue;
             }
           }
-          
+          */
           let l = randomInt(3);
           let m = randomInt(2);
 
-          callback({ i, j, k, l, m });
+          callback({ i, j, k, l, m }, { local: true });
         }
       }
     }
   }
-  function toggleDownsideup(top,tile) {
-    top.rotate(tile.at(XSIZE / 2, YSIZE/2), Math.PI);
-    return;
-    /*
-    if (top._T.s > 0) {
-      top._T.tx += XSIZE / 2;
-      top._T.ty += YSIZE;
-    } else {
-      top._T.tx -= XSIZE / 2;
-      top._T.ty -= YSIZE;
-    }
-    top._T.s *= -1;
-    */
-  }
-  function isDownsideup(top) {
-    let br = top._T;
-    return Math.abs(br.r) < 0.01 && Math.abs(br.s+1) < 0.01;
-  }
-  function getFootprint(top) {
-    return JSON.stringify(getFoot(top));
-  }
-  function getFoot(top) {
-    let downsideup = isDownsideup(top);
-    let prec = 1000;
-    let i = 0;
-    let j = 0;
-    let k = downsideup?1:0;
-    if (downsideup) {
-      j = Math.round((top._T.ty - YSIZE)/YSIZE);
-      i = Math.round((top._T.tx + (j-1)*XSIZE/2)/XSIZE);
-    } else {
-      j = Math.round((top._T.ty)/YSIZE);
-      i = Math.round((top._T.tx + j*XSIZE/2)/XSIZE);
-    } 
-    return [i,j,k];
-  }
-  function setColor(topNode, id) {
-    let m = basestate[id];
+  function setColor(topNode, m) {
     let base = topNode.querySelector("div.tr__base");
     let tip = topNode.querySelector("div.tr__tip");
-    if (m===0) {
+    if (m === 0) {
       base.classList.remove("white");
       tip.classList.remove("blue");
       base.classList.add("blue");
@@ -202,10 +191,14 @@ function t3Util() {
     base.classList.toggle("blue");
     base.classList.toggle("white");
     tip.classList.toggle("blue");
-    tip.classList.toggle("white"); 
+    tip.classList.toggle("white");
   }
-  function init(_view) {
+  function getInitTileCallback() {
+    return initTileCallback;
+  }
+  function init(_view, _stateAccess) {
     view = _view;
+    stateAccess = _stateAccess;
   }
   function getCSS() {
     return `
@@ -257,5 +250,8 @@ div.blue {
     <div class="tr"></div>
     </div></div>`
     ];
+  }
+  function randomInt(max) {
+    return Math.floor(Math.random() * max);
   }
 }
