@@ -1,6 +1,6 @@
 (() => {
   let me = null;
-  let FONTSIZE = '500%';
+  let SIZE = '100px';
   customElements.define(
     "button-text",
     class extends HTMLElement {
@@ -8,21 +8,24 @@
         me = this;
         let shadow = me.attachShadow({ mode: "open" });
         let style = document.createElement("style");
-        style.innerText = getCSS();
+        style.innerHTML = getCSS();
         shadow.append(style);
         let a = document.createElement("a");
         a.href = "#";
         a.addEventListener("click", () => {
           toggleButton(a);
         });
-        shadow.append(a);
+        shadow.append(a);      
+        let block = document.createElement("div");
+        block.classList.add('button');
+        a.append(block);
         let text = me.getAttribute("text");
         Array.from(text).map((t) => {
           let div = document.createElement("div");
-          div.classList.add("icon");
+          div.classList.add("button--text");
           div.classList.add("inactive");
           div.innerText = t;
-          a.append(div);
+          block.append(div);
         });
       }
       static get observedAttributes() {
@@ -30,24 +33,24 @@
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "size") {
-          setFontSize(newValue);
+          setSize(newValue);
         }
       }
     }
   );
-  function setFontSize (value) {
+  function setSize (value) {
     // TODO: to be checked.
-    FONTSIZE = value;
+    SIZE = value;
   }
   function toggleButton(target) {
     let isInActive = target.querySelectorAll("div.inactive").length > 0;
-    let icons = Array.from(target.querySelectorAll("div.icon"));
+    let text = Array.from(target.querySelectorAll("div.button--text"));
 
-    icons.map((i) => {
+    text.map((t) => {
       if (isInActive) {
-        i.classList.remove("inactive");
+        t.classList.remove("inactive");
       } else {
-        i.classList.add("inactive");
+        t.classList.add("inactive");
       }
     });
 
@@ -57,9 +60,16 @@
   }
   function getCSS() {
     return `
-div.icon {
+div.button {
+  width: ${SIZE};
+  height: ${SIZE};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+div.button--text {
   position: absolute;
-  font-size: ${FONTSIZE};
+  font-size: ${SIZE};
   text-shadow:1px 2px 3px #808080;
   color: rgba(0,0,0,1);
   font-family: Gill Sans Extrabold, sans-serif;
