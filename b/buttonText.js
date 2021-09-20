@@ -1,6 +1,6 @@
 (() => {
   let me = null;
-  let SIZE = '100px';
+  let SIZE = '40px';
   customElements.define(
     "button-text",
     class extends HTMLElement {
@@ -12,6 +12,7 @@
         shadow.append(style);
         let a = document.createElement("a");
         a.href = "#";
+        a.classList.add('button');
         a.addEventListener("click", () => {
           toggleButton(a);
         });
@@ -60,6 +61,9 @@
   }
   function getCSS() {
     return `
+a.button {
+  display: inline-block;
+}
 div.button {
   width: ${SIZE};
   height: ${SIZE};
