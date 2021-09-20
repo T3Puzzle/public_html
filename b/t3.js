@@ -18,29 +18,27 @@ function define(util, puz) {
     "tapspace-grid",
     class extends HTMLElement {
       connectedCallback() {
-        util.init(this, puz);
-        process();   
-        util.final();
+        util.init(this, puz,process);
       }
     }
   );
   function process() {
     // customize initial position 
-    puz.load({}, (data) => {
-      util.initTile(data,tapHandler, gstart, gend,(top,tile,data)=>{
-        util.placeTile(top,tile,data);
-      });
-    });
+    puz.load({}, (data,opt) => 
+      util.initTile(data,tapHandler, gstart, gend,(target,data)=>{
+        util.placeTile(target,data);
+      }, opt)
+    );
   }
-  function gstart(ev, top, tile) {
+  function gstart(ev, target) {
     // customzie on gesturestart event
   }
-  function gend(ev, top, tile) {
+  function gend(ev, target) {
      // customize gestureend event
   }
-  function tapHandler(ev, top, tile, idx) {
+  function tapHandler(ev, target, idx) {
     // customize effect on tap panels.
-    puz.switchFace(top, tile, idx);
+    puz.switchFace(target, idx);
   }
 }
 function importModules(moduleName, first, second, callback) {
