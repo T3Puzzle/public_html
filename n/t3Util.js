@@ -57,7 +57,6 @@ function t3Util() {
   function setFace(target, data) {
     let top = target.top;
     let tile = target.tile;
-    let id = top.id;
     let topNode = view.getElementBySpaceItem(top);
     rotateTile(tile, data.l);
     setColor(topNode, data.m);
