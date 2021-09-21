@@ -26,17 +26,19 @@ div.menu {
   </button-text>
   <button-text text="➰" onchange="flipAllTiles();" size="40px">
   </button-text>
-
-  <form>
-    <select>
-      <option value="blue" selected>blue</option>>
-      <option value="green">green</option>
-      <option value="pink">pink</option>
-      <option value="mint">mint</option>
-    </select>
-  </form>
+<pallete-text onchange="changeColor(this.value)">
+  <datalist>
+    <option value="blue"></option>
+    <option value="green"></option>
+    <option disabled></option>
+    <option value="pink"></option>
+    <option value="mint"></option>
+  </datalist>
+</pallete-text>
 </div>
 <tapspace-grid id="t3puzzle" x-onChange="console.log(this.value);">
+  <tapspace-worldinfo title="application-name" info="t3puzzle"></tapspace-worldinfo>
+  <tapspace-viewpoint></tapspace-viewpoint>
 </tapspace-grid>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
@@ -76,13 +78,15 @@ div.menu {
     }
   }
 
-  function test(select) {
+  function changeColor(color) {
     let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('color', select.value);
+    t3puzzle.setAttribute('color', color);
   }
 </script>
 <script src="./tapspace.min.js"></script>
 <script src="./buttonText.js"></script>
+<script src="./palleteText.js"></script>
+
   
 <script src="./t3.js"></script>
 </body>
