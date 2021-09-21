@@ -94,6 +94,8 @@ label.label {
   margin-left: ${this.__MARGIN__LEFT}; /* space between colors*/
   cursor: pointer; 
   font-size: ${this.__TEXT__SIZE};
+  width: ${this.__TEXT__SIZE};
+  height: ${this.__TEXT__SIZE};
   text-shadow: 1px 1px 1px #808080;
 }
 label.checked {
