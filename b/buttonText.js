@@ -1,133 +1,129 @@
 (() => {
-  let me = null;
-  let shadow = null;
-  let SIZE = '40px';
-  let COLOR = 'rgb(180,0,0)';
   customElements.define(
     "button-text",
     class extends HTMLElement {
-      connectedCallback () {     
-        me = this;
-        shadow = me.attachShadow({ mode: "open" });
+      constructor() {
+        super();
+        this.__SIZE = "100px";
+        this.__COLOR = "rgb(180,0,0)";
+        this.__CHECKED = false;
+        this.__DISABLED = false;
+        this.attachShadow({ mode: "open" });
+        console.dir(this);
+      }
+      connectedCallback() {
         let style = document.createElement("style");
-        style.innerHTML = getCSS();
-        shadow.append(style);
+        style.innerHTML = this.__getCSS();
+        this.shadowRoot.append(style);
         let a = document.createElement("a");
         a.href = "#";
-        a.classList.add('button');
+        a.classList.add("button");
         a.addEventListener("click", () => {
-          toggleButton(a);
+          this.__toggleButton(a);
         });
-        shadow.append(a);      
-        let block = document.createElement('div');
-        block.classList.add('button');
+        this.shadowRoot.append(a);
+        let block = document.createElement("div");
+        block.classList.add("button");
         a.append(block);
-        let text = me.getAttribute("text");
+        let text = this.getAttribute("text");
         Array.from(text).map((t) => {
-          let div = document.createElement('div');
-          div.classList.add('button__text');
-          //div.classList.add('button__text--disabled');
+          let div = document.createElement("div");
+          div.classList.add("button__text");
           div.innerText = t;
           block.append(div);
         });
+        this.__disable(this.__DISABLED);
+        this.__check(this.__CHECKED);
       }
       static get observedAttributes() {
-        return ['size','disabled','checked','color'];
+        return ["size", "disabled", "checked", "color"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'size') {
-          setSize(newValue);
-        } else if (name === 'color') {
-          setColor(newValue);
-        } else if (name === 'disabled') {
-          disable(newValue);
-        } else if (name === 'checked') {
-          check(newValue);
+        if (name === "size") {
+          this.__setSize(newValue);
+        } else if (name === "color") {
+          this.__setColor(newValue);
+        } else if (name === "disabled") {
+          this.__DISABLED = !(newValue===null);
+          this.__disable(this.__DISABLED);
+        } else if (name === "checked") {
+          this.__CHECKED = !(newValue===null);
+          this.__check(this.__CHECKED);
         }
       }
-    }
-  );
-  function check (value) {
-    if(isDisabled()){
-      return;
-    }
-    let texts = shadow.querySelectorAll('div.button__text');
-    Array.from(texts).map(
-      text=>{
-      if (value.trim().toLowerCase()==='checked') {
-        text.classList.add('button__text--checked');
-      } else {
-        text.classList.remove('button__text--checked');
+      __check(value) {
+        if (this.__DISABLED) {
+          return;
+        }
+        this.__CHECKED = value;
+        let texts = this.shadowRoot.querySelectorAll("div.button__text");
+        Array.from(texts).map((text) => {
+          if (this.__CHECKED) {
+            text.classList.add("button__text--checked");
+          } else {
+            text.classList.remove("button__text--checked");
+          }
+        });
       }
-    });
-  }
-  function disable (value) {
-    let texts = shadow.querySelectorAll('div.button__text');
-    Array.from(texts).map(
-      text=>{
-      if (value.trim().toLowerCase()==='disabled') {
-        text.classList.add('button__text--disabled');
-      } else {
-        text.classList.remove('button__text--disabled');
+      __disable(value) {
+        this.__DISABLED = value;
+        let texts = this.shadowRoot.querySelectorAll("div.button__text");
+        Array.from(texts).map((text) => {
+          if (this.__DISABLED) {
+            text.classList.add("button__text--disabled");
+          } else {
+            text.classList.remove("button__text--disabled");
+          }
+        });
       }
-    });
-  }
-  function setColor (value) {
-    // TODO: to be checked.
-    COLOR = value;
-  }
-  function setSize (value) {
-    // TODO: to be checked.
-    SIZE = value;
-  }
-  function isDisabled (){
-    return shadow.querySelectorAll("div.button__text--disabled").length > 0;
-  }
-  function toggleButton(target) {
-    if(isDisabled()){
-      return;
-    }
-    let isInActive = target.querySelectorAll("div.button__text--checked").length > 0;
-    let text = Array.from(target.querySelectorAll("div.button__text"));
-
-    text.map((t) => {
-      if (isInActive) {
-        t.classList.remove('button__text--checked');
-      } else {
-        t.classList.add('button__text--checked');
+      __setColor(value) {
+        // TODO: to be checked.
+        this.__COLOR = value;
       }
-    });
-    let checked = !isInActive;
-    let value = { detail: { checked: checked } };
-    me.value = checked;
-    me.dispatchEvent(new CustomEvent('change', value));
-  }
-  function getCSS() {
-    return `
+      __setSize(value) {
+        // TODO: to be checked.
+        this.__SIZE = value;
+      }
+      __toggleButton(target) {
+        if (this.__DISABLED) {
+          return;
+        }
+        this.__CHECKED = !this.__CHECKED;
+        if (this.__CHECKED) {
+          this.setAttribute('checked','checked');
+        } else {
+          this.removeAttribute('checked');
+        }
+        let value = { detail: { checked: this.__CHECKED } };
+        this.value = this.__CHECKED;
+        this.dispatchEvent(new CustomEvent("change", value));
+      }
+      __getCSS() {
+        return `
 a.button {
   display: inline-block;
 }
+div.button__text--disabled {
+  opacity: 0.2;
+}
 div.button {
-  width: ${SIZE};
-  height: ${SIZE};
+  width: ${this.__SIZE};
+  height: ${this.__SIZE};
   display: flex;
   align-items: center;
   justify-content: center;
 }
 div.button__text {
   position: absolute;
-  font-size: ${SIZE};
-  
-  opacity: 1;
+  font-size: ${this.__SIZE};  
   color: rgb(0,0,0);
   font-family: Gill Sans Extrabold, sans-serif;
 }
 div.button__text--checked {
-  color:transparent; text-shadow: 0 0 0 ${COLOR};
-}
-div.button__text--disabled {
-  opacity: 0.2;
+  color:transparent; text-shadow: 0 0 0 ${this.__COLOR};
 }
 `;
-  }
+      }
+    }
+  );
 })();
