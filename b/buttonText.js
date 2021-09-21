@@ -97,9 +97,9 @@
         t.classList.add('button__text--checked');
       }
     });
-
-    let value = { detail: { isActive: isInActive } };
-    me.value = value;
+    let checked = !isInActive;
+    let value = { detail: { checked: checked } };
+    me.value = checked;
     me.dispatchEvent(new CustomEvent('change', value));
   }
   function getCSS() {
