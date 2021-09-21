@@ -42,7 +42,6 @@
         this.__VALUES.forEach((v, idx) => {
           if (v.trim().length === 0) {
             let p = document.createElement("p");
-            p.style = `margin-top:${this.__MARGIN__TOP};`;
             form.append(p);
             return;
           }
@@ -112,6 +111,12 @@ label[for=pink] {
 }
 label[for=mint] {
   color: rgba(100,225,230,1);
+}
+form {
+  display: inline-block;
+}
+p {
+  margin-top:${this.__MARGIN__TOP};
 }
   `;
       }
