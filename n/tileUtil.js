@@ -10,15 +10,12 @@ function tileUtil() {
   let dupHash = {};
   let READONLY = {
     touches: [],
-    enabled: false,
+    enabled: false
   };
   let ANCHOR = {
     touch: null,
     view: null,
-    enabled: false,
-  };
-  let FLIPALL = {
-    targets: []
+    enabled: false
   };
   let STATE = {};
   let REST = {
@@ -28,6 +25,7 @@ function tileUtil() {
     version: 1,
     state: STATE
   };
+  let targetHash = {};
   let idHash = {};
   let ridHash = {};
   const VERSION = 1.0;
@@ -38,9 +36,9 @@ function tileUtil() {
     enableReadonly,
     enableAnchored,
     flipAll,
-    VERSION,
+    VERSION
   };
-  function shareState(id, data, oldData, local) {
+  function shareState(target, id, data, oldData, local) {
     markFootprint(data);
     if (JSON.stringify(data) == JSON.stringify(oldData)) {
       return;
@@ -53,20 +51,23 @@ function tileUtil() {
     } else {
       if (local) {
         STATE[id] = state;
+        targetHash[id] = target;
       } else {
         //call just after recreated before renameId
         //console.log('never happen:sharer:'+id);
       }
     }
     if (!local) {
-      let value = {detail: { state: STATE }};
-      me.value = value;
-      me.dispatchEvent(new CustomEvent("change",value
-      ));
-      //localStorage.setItem("STATE", JSON.stringify(REST));
-      //localStorage.setItem('STATE',JSON.stringify(STATE));
-      //localStorage.setItem('DUP',JSON.stringify(dupHash));
+      shareStateAll();
     }
+  }
+  function shareStateAll() {
+    let value = { detail: { state: STATE } };
+    me.value = value;
+    me.dispatchEvent(new CustomEvent("change", value));
+    //localStorage.setItem("STATE", JSON.stringify(REST));
+    //localStorage.setItem('STATE',JSON.stringify(STATE));
+    //localStorage.setItem('DUP',JSON.stringify(dupHash));
   }
   function processGstart(gstart, e, target, prevData) {
     let top = target.top;
@@ -83,7 +84,7 @@ function tileUtil() {
     gend(e, target);
     top = target.top;
     //
-    shareState(top.id, detectData(top), prevData);
+    shareState(target,top.id, detectData(top), prevData);
     //
   }
   function processTap(thand, e, target, idx) {
@@ -92,7 +93,7 @@ function tileUtil() {
     thand(e, target, idx);
     top = target.top;
     //
-    shareState(top.id, detectData(top), oldData);
+    shareState(target,top.id, detectData(top), oldData);
     //
   }
   function detailGend(target, prevData) {
@@ -131,7 +132,7 @@ function tileUtil() {
       };
     }
   }
-  function renameId(fromId, toId) {
+  function renameId(fromId, target) {
     let orgId = null;
     if (fromId in ridHash) {
       orgId = ridHash[fromId];
@@ -140,6 +141,8 @@ function tileUtil() {
     } else {
       orgId = fromId;
     }
+    let toId = target.top.id;
+    targetHash[orgId] = target;
     idHash[orgId] = toId;
     ridHash[toId] = orgId;
   }
@@ -173,9 +176,7 @@ function tileUtil() {
     let _target = puz.getInitTileCallback()(data, { local: false });
     target.top = _target.top;
     target.tile = _target.tile;
-    top = target.top;
-    let toId = top.id;
-    renameId(fromId, toId);
+    renameId(fromId, target);
   }
   function placeTile(target, data) {
     let top = target.top;
@@ -187,14 +188,14 @@ function tileUtil() {
   }
   function initTile(data, thand, gstart, gend, gmid, opt) {
     let top = new tapspace.SpaceGroup(root);
-    // share local
-    shareState(top.id, data, {}, opt.local);
 
     let tileHtml = puz.getTileHtml();
     let tile = new tapspace.SpaceHTML(tileHtml, top).setSize(0, 0);
     // place tile here
     let target = { top, tile };
-    FLIPALL.targets.push(target);
+    // share local
+    shareState(target, top.id, data, {}, opt.local);
+
     gmid(target, data);
 
     ////
@@ -269,40 +270,38 @@ function tileUtil() {
     READONLY.enabled = getDefaultReadonly();
   }
   function flipAll() {
-    FLIPALL.targets.map(t=>{
-      let oldData = detectData(t.top);
-      let newData = detectData(t.top);
-      newData.m = (newData.m+1)%2;
-      puz.setFace(t,newData);
-      shareState(t.top.id, newData, oldData);
-    })
+    for (let id in STATE) {
+      STATE[id].m = (STATE[id].m + 1) % 2;
+      puz.setFace(targetHash[id],STATE[id]);
+    }
+    shareStateAll();
   }
-  function getDefaultReadonly () {
-    return (me.getAttribute('readonly')!==null);
+  function getDefaultReadonly() {
+    return me.getAttribute("readonly") !== null;
   }
-  function enableReadonly (newValue) {
-    let oldValue = READONLY.enabled; 
-    if (oldValue===newValue) {
+  function enableReadonly(newValue) {
+    let oldValue = READONLY.enabled;
+    if (oldValue === newValue) {
       // nop
       return;
     }
     READONLY.enabled = newValue;
     if (READONLY.enabled) {
-      READONLY.touches.map(t=>{
+      READONLY.touches.map((t) => {
         t.stop();
       });
     } else {
-      READONLY.touches.map(t=>{
+      READONLY.touches.map((t) => {
         t.resume();
       });
     }
   }
-  function getDefaultAnchor () {
-    return (me.getAttribute('anchored')!==null);
+  function getDefaultAnchor() {
+    return me.getAttribute("anchored") !== null;
   }
-  function enableAnchored (newValue) {
-    let oldValue = ANCHOR.enabled; 
-    if (oldValue===newValue) {
+  function enableAnchored(newValue) {
+    let oldValue = ANCHOR.enabled;
+    if (oldValue === newValue) {
       // nop
       return;
     }
