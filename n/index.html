@@ -8,10 +8,74 @@
 }</style>
 </head>
 <body>
-<tapspace-grid>
+
+<div class="menu">
+  <h1>T3 Puzzle</h1>
+
+  <button-text text="⤧⤩" onchange="enableReadonly(this.value);" size="40px">
+  </button-text>
+  <button-text text="⚓" onchange="enableAnchored(this.value);" size="40px">
+  </button-text>
+  <button-text text="➰" onchange="flipAllTiles();" size="40px">
+  </button-text>
+
+  <form>
+    <select>
+      <option value="blue" selected>blue</option>>
+      <option value="green">green</option>
+      <option value="pink">pink</option>
+      <option value="mint">mint</option>
+    </select>
+  </form>
+</div>
+<tapspace-grid id="t3puzzle" x-onChange="console.log(this.value);">
 </tapspace-grid>
- 
-<script src="tapspace.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+<script>
+  /*
+  // alternative change event
+  let t3puzzle = document.getElementById('t3puzzle');
+  t3puzzle.addEventListener('change',e=>{
+    console.log(e.detail.state);
+  });
+  */
+  function flipAllTiles() {
+    let t3puzzle = document.getElementById('t3puzzle');
+    //t3puzzle.setAttribute('flipall','flipall');
+    /*
+    (async () => {
+  dst.appendChild(await html2canvas(t3puzzle.shadowRoot.getElementById('parent')));
+})();
+    */
+  }
+
+  function enableReadonly(readonly) {
+    let t3puzzle = document.getElementById('t3puzzle');
+    if (readonly) {
+      t3puzzle.setAttribute('readonly', 'readonly');
+    } else {
+      t3puzzle.removeAttribute('readonly');
+    }
+  }
+
+  function enableAnchored(anchored) {
+    let t3puzzle = document.getElementById('t3puzzle');
+    if (anchored) {
+      t3puzzle.setAttribute('anchored', 'anchored');
+    } else {
+      t3puzzle.removeAttribute('anchored');
+    }
+  }
+
+  function test(select) {
+    let t3puzzle = document.getElementById('t3puzzle');
+    t3puzzle.setAttribute('color', select.value);
+  }
+</script>
+<script src="./tapspace.min.js"></script>
+<script src="./buttonText.js"></script>
+  
 <script src="./t3.js"></script>
 </body>
 </html>
