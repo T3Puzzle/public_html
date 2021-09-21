@@ -11,7 +11,6 @@
         this.__CHECKED = false;
         this.__DISABLED = false;
         this.attachShadow({ mode: "open" });
-        console.dir(this);
       }
       connectedCallback() {
         
