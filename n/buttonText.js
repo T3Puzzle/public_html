@@ -117,6 +117,7 @@ div.button__text {
   font-size: ${this.__SIZE};  
   color: rgb(0,0,0);
   font-family: Gill Sans Extrabold, sans-serif;
+  color:transparent; text-shadow: 0 0 0 rgb(90,90,90);
 }
 div.button__text--checked {
   color:transparent; text-shadow: 0 0 0 ${this.__COLOR};
