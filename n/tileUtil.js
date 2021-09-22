@@ -9,12 +9,15 @@ function tileUtil() {
   let puz = null;
   let dupHash = {};
   let READONLY = {
-    touches: [],
+    tiles: [],
     enabled: false
   };
   let ANCHOR = {
-    touch: null,
-    view: null,
+    ground: null,
+    enabled: false
+  };
+  let HAND = {
+    ground: null,
     enabled: false
   };
   let STATE = {};
@@ -33,8 +36,7 @@ function tileUtil() {
     init,
     initTile,
     placeTile,
-    enableReadonly,
-    enableAnchored,
+    changeMode,
     flipAll,
     VERSION
   };
@@ -65,9 +67,6 @@ function tileUtil() {
     let value = { detail: { state: STATE } };
     me.value = value;
     me.dispatchEvent(new CustomEvent("change", value));
-    //localStorage.setItem("STATE", JSON.stringify(REST));
-    //localStorage.setItem('STATE',JSON.stringify(STATE));
-    //localStorage.setItem('DUP',JSON.stringify(dupHash));
   }
   function processGstart(gstart, e, target, prevData) {
     let top = target.top;
@@ -80,11 +79,16 @@ function tileUtil() {
   function processGend(gend, e, target, prevData) {
     let top = target.top;
     let tile = target.tile;
-    detailGend(target, prevData);
-    gend(e, target);
-    top = target.top;
+    if (HAND.enabled) {
+      deleteTarget(target);
+      shareStateAll();
+    } else {
+      detailGend(target, prevData);
+      gend(e, target);
+      top = target.top;
     //
-    shareState(target,top.id, detectData(top), prevData);
+      shareState(target, top.id, detectData(top), prevData);
+    }
     //
   }
   function processTap(thand, e, target, idx) {
@@ -93,7 +97,7 @@ function tileUtil() {
     thand(e, target, idx);
     top = target.top;
     //
-    shareState(target,top.id, detectData(top), oldData);
+    shareState(target, top.id, detectData(top), oldData);
     //
   }
   function detailGend(target, prevData) {
@@ -105,11 +109,11 @@ function tileUtil() {
       let fromId = top.id;
       data = detectData(top);
       recreateTarget(target, data);
+      //?????
       puz.adjustTurn(target, data, prevData);
     } else {
       //console.log("DUP =>" +data);
       recreateTarget(target, prevData);
-      data = detectData(top);
     }
   }
   function detectData(top, out) {
@@ -133,18 +137,32 @@ function tileUtil() {
     }
   }
   function renameId(fromId, target) {
-    let orgId = null;
+    let orgId = fromId;
     if (fromId in ridHash) {
       orgId = ridHash[fromId];
-      //why not?
-      //delete ridHash[fromId];
-    } else {
-      orgId = fromId;
     }
     let toId = target.top.id;
     targetHash[orgId] = target;
     idHash[orgId] = toId;
     ridHash[toId] = orgId;
+    if (fromId in ridHash) {
+      //why not?
+      delete ridHash[fromId];
+    }
+  }
+  function deleteIdAndSo(id) {
+    let orgId = id;
+    if (id in ridHash) {
+      orgId = ridHash[id];
+    }
+    delete targetHash[orgId];
+    delete idHash[orgId];
+    if (id in ridHash) {
+      delete ridHash[id];
+    }
+    if (id in STATE) {
+      delete STATE[id];
+    } 
   }
   function setPartialState(id, state) {
     if (id in STATE) {
@@ -167,6 +185,13 @@ function tileUtil() {
       //
       console.log("never happen:get:" + id);
     }
+  }
+  function deleteTarget(target) {
+    let top = target.top;
+    let id = top.id;
+    let topNode = view.getElementBySpaceItem(top);
+    deleteIdAndSo(id);
+    topNode.remove();
   }
   function recreateTarget(target, data) {
     let top = target.top;
@@ -194,30 +219,33 @@ function tileUtil() {
     // place tile here
     let target = { top, tile };
     // share local
-    shareState(target, top.id, data, {}, opt.local);
-
     gmid(target, data);
-
+    shareState(target, top.id, data, {}, opt.local);
     ////
     let prevData = {};
     // gesture
     let gesture = new tapspace.Touchable(view, top);
-    READONLY.touches.push(gesture);
-    gesture.start({ translate: true });
+    READONLY.tiles.push(gesture);
+      gesture.start({ translate: true });
     gesture.on("gesturestart", (e) =>
       processGstart(gstart, e, target, prevData)
     );
     gesture.on("gestureend", (e) => processGend(gend, e, target, prevData));
+    if (READONLY.enabled) {
+      gesture.stop();
+    }
     // tap
     puz.getTapPanels().forEach((panelHtml, idx) => {
       let panel = new tapspace.SpaceHTML(panelHtml, top).setSize(0, 0);
       // tap panel
       let tap = new tapspace.Touchable(view, panel);
-      READONLY.touches.push(tap);
+      READONLY.tiles.push(tap);
       tap.start({ tap: true });
       tap.on("tap", (e) => processTap(thand, e, target, idx));
+      if (READONLY.enabled) {
+        tap.stop();
+      }
     });
-
     return target;
   }
   function init(_me, _puz, callback) {
@@ -264,20 +292,38 @@ function tileUtil() {
   function final() {
     view.fitScale(root);
     view.scale(view.atMid(), 1.618);
-    ANCHOR.touch = new tapspace.Touchable(view, view);
-    ANCHOR.touch.start({ translate: true, rotate: true, scale: true });
-    ANCHOR.enabled = getDefaultAnchor();
-    READONLY.enabled = getDefaultReadonly();
-  }
-  function flipAll() {
-    for (let id in STATE) {
-      STATE[id].m = (STATE[id].m + 1) % 2;
-      puz.setFace(targetHash[id],STATE[id]);
+
+    let touch = new tapspace.Touchable(view, view);
+    touch.start({ translate: true, rotate: true, scale: true });
+    ANCHOR.ground = touch;
+    HAND.ground = touch;
+    if (ANCHOR.enabled) {
+      ANCHOR.ground.stop();
     }
-    shareStateAll();
+    if (HAND.enabled) {
+      HAND.ground.stop();
+      startBaseClick();
+    }
   }
-  function getDefaultReadonly() {
-    return me.getAttribute("readonly") !== null;
+  function changeMode (oldValue,newValue) {
+    if (!oldValue){
+      // nop
+    } else if (oldValue==='anchor') {
+      enableAnchor(false);
+    } else if (oldValue==='readonly') {
+      enableReadonly(false);
+    } else if (oldValue==='hand') {
+      enableHand(false);
+    }   
+    if (!newValue){
+      // nop
+    } else if (newValue==='anchor') {
+      enableAnchor(true);
+    } else if (newValue==='readonly') {
+      enableReadonly(true);
+    } else if (newValue==='hand') {
+      enableHand(true);
+    }
   }
   function enableReadonly(newValue) {
     let oldValue = READONLY.enabled;
@@ -287,19 +333,18 @@ function tileUtil() {
     }
     READONLY.enabled = newValue;
     if (READONLY.enabled) {
-      READONLY.touches.map((t) => {
-        t.stop();
-      });
+      if (READONLY.tiles) {
+        READONLY.tiles.map((t) => {
+          t.stop();
+        });
+      }
     } else {
-      READONLY.touches.map((t) => {
+      READONLY.tiles.map((t) => {
         t.resume();
       });
     }
   }
-  function getDefaultAnchor() {
-    return me.getAttribute("anchored") !== null;
-  }
-  function enableAnchored(newValue) {
+  function enableAnchor(newValue) {
     let oldValue = ANCHOR.enabled;
     if (oldValue === newValue) {
       // nop
@@ -307,10 +352,72 @@ function tileUtil() {
     }
     ANCHOR.enabled = newValue;
     if (ANCHOR.enabled) {
-      ANCHOR.touch.stop();
+      if (ANCHOR.ground) {
+        ANCHOR.ground.stop();
+      }
     } else {
-      ANCHOR.touch.resume();
+      ANCHOR.ground.resume();
     }
+  }
+  function enableHand(newValue) {
+    let oldValue = HAND.enabled;
+    if (oldValue === newValue) {
+      // nop
+      return;
+    }
+    HAND.enabled = newValue;
+    if (HAND.enabled) {
+      if (HAND.ground) {
+        HAND.ground.stop();
+        startBaseClick();
+      }
+    } else {
+      stopBaseClick();
+      HAND.ground.resume();
+    }
+  }
+  function startBaseClick() {
+    let viewNode = view.getElementBySpaceItem(view);
+    let baseNode = view.getElementBySpaceItem(space).parentNode;
+    baseNode.addEventListener("click", baseClick);
+  }
+  function stopBaseClick() {
+    let baseNode = view.getElementBySpaceItem(space).parentNode;
+    baseNode.removeEventListener("click", baseClick);
+  }
+  function baseClick(e) {
+    let spaceNode = view.getElementBySpaceItem(space);
+    let transformStr = spaceNode.style.getPropertyValue("transform");
+    let matrix = (a, b, c, d, e, f) => {
+      return { c: a, s: b, tx: e, ty: f };
+    };
+    let m = eval("(()=>" + transformStr + ")();");
+    let scale = Math.sqrt(m.c*m.c+m.s*m.s);
+    let theta = Math.atan2(m.s,m.c);
+    let cos = Math.cos(-theta);
+    let sin = Math.sin(-theta);
+    let sx = (e.clientX - m.tx)/scale;
+    let sy = (e.clientY - m.ty)/scale;
+    let dx = cos * sx - sin * sy;
+    let dy = sin * sx + cos * sy; 
+    let data = puz.detectPoint(dx,dy);
+    if (checkFootprint(data) ) {
+      // nop
+      return;
+    }
+    let pos = { x: dx , y: dy };
+    let target = puz.getInitTileCallback()(data, { local: false });
+    let id = target.top.id;
+    STATE[id] = data;
+    targetHash[id] = target;
+    shareStateAll();
+  }
+  function flipAll() {
+    for (let id in STATE) {
+      STATE[id].m = (STATE[id].m + 1) % 2;
+      puz.setFace(targetHash[id], STATE[id]);
+    }
+    shareStateAll();
   }
   function checkFootprint(data) {
     let fp = JSON.stringify([data.i, data.j, data.k]);
