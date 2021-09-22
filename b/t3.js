@@ -17,6 +17,18 @@ function define(util, puz) {
   customElements.define(
     "tapspace-grid",
     class extends HTMLElement {
+      static get observedAttributes() {
+        return ["color", "mode", "flipall"];
+      }
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "color") {
+          puz.setNowColor(newValue);
+        } else if (name === "mode") {
+          util.changeMode(oldValue,newValue);
+        } else if (name === "flipall") {
+          util.flipAll();
+        }
+      }
       connectedCallback() {
         util.init(this, puz, process);
       }
@@ -45,6 +57,7 @@ function define(util, puz) {
   }
   function tapHandler(ev, target, idx) {
     // customize effect on tap panels.
+    
     puz.switchFace(target, idx);
   }
 }
