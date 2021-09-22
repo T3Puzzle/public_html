@@ -33,6 +33,7 @@ function t3Util() {
     adjustTurn,
     init,
     getInitTileCallback,
+    detectPoint,
     detectPosition,
     setTileColor,
   };
@@ -109,27 +110,17 @@ function t3Util() {
   }
   function detectPosition(top) {
     let topNode = view.getElementBySpaceItem(top);
-    let transformStr = topNode.style.transform;
+    let transformStr = topNode.style.getPropertyValue("transform");
     let matrix = (a, b, c, d, e, f) => {
       return { s: a, tx: e, ty: f };
     };
     let mat = eval("(()=>" + transformStr + ")();");
-    let i = 0;
-    let j = 0;
-    let k = 0;
-    let pk = 0;
-    if (mat.s < 0) {
-      k = 1;
-      pk = 1;
-      mat.s *= -1;
-      mat.tx -= XSIZE / 2;
-      mat.ty -= YSIZE;
-    }
-    let dy = mat.ty / YSIZE;
-    let pj = Math.round(dy);
-    let dx = pj / 2 + mat.tx / XSIZE;
+    let {dx,dy,pk} = detectPositionPoint(mat.tx, mat.ty, mat.s);
+    
     let xx = ((Math.sign(dx) * dx) % 1) - 1 / 2;
     let yy = ((Math.sign(dy) * dy) % 1) - 1 / 3;
+ 
+    let i,j,k;
     let norm = Math.sqrt(xx * xx + yy * yy);
     //console.log(norm);
     if (norm < 1 / 3) {
@@ -151,7 +142,68 @@ function t3Util() {
     if (j === -0) {
       j = 0;
     }
-    return { i, j, k };
+    return {i,j,k};
+  }
+  function detectPoint (tx,ty) {
+    let i = 0;
+    let j = 0;
+    let k = 0;  
+    let {dx,dy,pk} = detectPositionPoint(tx,ty);
+    i = Math.floor(dx);
+    j = Math.floor(dy);
+    if (i === -0) {
+      i = 0;
+    }
+    if (j === -0) {
+      j = 0;
+    }
+    let ox = dx-i;
+    let oy = dy-j;
+    if (ox<oy) {
+      k = 1;
+    }
+    let l=0;
+    let m=0;
+    let f0,f1,f2;
+    if (k===0) {
+      f0 = sq(ox,oy);
+      f2 = sq(1-ox,1-oy);
+      f1 = sq(1-ox,oy);
+    } else {
+      f2 = sq(ox,oy);
+      f0 = sq(1-ox,1-oy);
+      f1 = sq(ox,1-oy);
+    }
+    if (f0<=f1 && f0<=f2) {
+      l = 0;
+    }
+    if (f1<=f0 && f1<=f2) {
+      l = 1;
+    }
+    if (f2<=f0 && f2<=f1) {
+      l = 2;
+    }
+    // TODO: l,m too.
+    return {i,j,k,l,m};
+  }
+  function sq (x,y){
+    return x*x+y*y;
+  }
+  function detectPositionPoint (tx,ty,s) {
+    let i = 0;
+    let j = 0;
+    let k = 0;
+    let pk = 0;
+    if ( s !==null && s < 0) {
+      pk = 1;
+      s *= -1;
+      tx -= XSIZE / 2;
+      ty -= YSIZE;
+    }
+    let dy = ty / YSIZE;
+    let pj = Math.round(dy);
+    let dx = pj / 2 + tx / XSIZE;
+    return { dx, dy, pk };
   }
   function load(opts, callback) {
     initTileCallback = callback;
@@ -161,6 +213,7 @@ function t3Util() {
     for (let i = 0; i < WX; i++) {
       for (let j = 0; j < WY; j++) {
         for (let k = 0; k < 2; k++) {
+          /*
           if (k === 0) {
             if (j-i-1>WY/3) {
               continue;
@@ -174,6 +227,7 @@ function t3Util() {
               continue;
             }
           }
+          */
           let l = randomInt(3);
           let m = randomInt(2);
 
