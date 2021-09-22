@@ -193,15 +193,17 @@ function tileUtil() {
   function deleteTarget(target) {
     let top = target.top;
     let id = top.id;
-    let topNode = view.getElementBySpaceItem(top);
     deleteIdAndSo(id);
-    topNode.remove();
+    //let topNode = view.getElementBySpaceItem(top);
+    //topNode.remove();
+    top.remove();
   }
   function recreateTarget(target, data) {
     let top = target.top;
     let fromId = top.id;
-    let topNode = view.getElementBySpaceItem(top);
-    topNode.remove();
+    //let topNode = view.getElementBySpaceItem(top);
+    //topNode.remove();
+    top.remove();
     let _target = puz.getInitTileCallback()(data, { local: false });
     target.top = _target.top;
     target.tile = _target.tile;
