@@ -1,17 +1,83 @@
+
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <style>body {
   background:rgb(200,200,200);
-}</style>
+}
+div.menu {
+  position: absolute;
+  top: 0px;
+  padding-left: 1em;
+  z-index: 100;
+}
+</style>
 </head>
 <body>
-<tapspace-grid>
+
+<div class="menu">
+  <h1>T3 Puzzle</h1>
+
+<pallete-text onchange="changeMode(this.value)" value="hand">
+  <datalist>
+    <option value="readonly">⤧</option>
+    <option value="anchor">⚓</option>
+    <option value="hand">👆</option>
+  </datalist>
+</pallete-text>
+  <button-text text="➰" onchange="flipAllTiles();" size="40px">
+  </button-text>
+<pallete-text onchange="changeColor(this.value)">
+  <datalist>
+    <option value="blue"></option>
+    <option value="green"></option>
+    <option disabled></option>
+    <option value="pink"></option>
+    <option value="mint"></option>
+  </datalist>
+</pallete-text>
+</div>
+<tapspace-grid id="t3puzzle" x-onChange="console.log(this.value);">
+  <tapspace-worldinfo title="application-name" info="t3puzzle"></tapspace-worldinfo>
+  <tapspace-viewpoint></tapspace-viewpoint>
 </tapspace-grid>
- 
-<script src="tapspace.min.js"></script>
-<script type="module" src="./t3.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+<script>
+  /*
+  // alternative change event
+  let t3puzzle = document.getElementById('t3puzzle');
+  t3puzzle.addEventListener('change',e=>{
+    console.log(e.detail.state);
+  });
+  */
+  function flipAllTiles() {
+    let t3puzzle = document.getElementById('t3puzzle');
+    t3puzzle.setAttribute('flipall','flipall');
+    /*
+    (async () => {
+  dst.appendChild(await html2canvas(t3puzzle.shadowRoot.getElementById('parent')));
+})();
+    */
+  }
+
+  function changeMode(mode) {
+    let t3puzzle = document.getElementById('t3puzzle');
+    t3puzzle.setAttribute('mode', mode);
+  }
+  function changeColor(color) {
+    let t3puzzle = document.getElementById('t3puzzle');
+    t3puzzle.setAttribute('color', color);
+  }
+</script>
+<script src="./tapspace.min.js"></script>
+<script src="./buttonText.js"></script>
+<script src="./palleteText.js"></script>
+
+  
+<script src="./t3.js"></script>
 </body>
 </html>
