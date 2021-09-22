@@ -20,10 +20,13 @@ div.menu {
 <div class="menu">
   <h1>T3 Puzzle</h1>
 
-  <button-text text="⤧⤩" onchange="enableReadonly(this.value);" size="40px">
-  </button-text>
-  <button-text text="⚓" onchange="enableAnchored(this.value);" size="40px">
-  </button-text>
+<pallete-text onchange="changeMode(this.value)" value="hand">
+  <datalist>
+    <option value="readonly">⤧</option>
+    <option value="anchour">⚓</option>
+    <option value="hand">👆</option>
+  </datalist>
+</pallete-text>
   <button-text text="➰" onchange="flipAllTiles();" size="40px">
   </button-text>
 <pallete-text onchange="changeColor(this.value)">
