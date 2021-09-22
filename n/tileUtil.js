@@ -126,13 +126,15 @@ function tileUtil() {
       out.k = k;
       out.l = state.l;
       out.m = state.m;
+      out.n = state.n;
     } else {
       return {
         i: i,
         j: j,
         k: k,
         l: state.l,
-        m: state.m
+        m: state.m,
+        n: state.n
       };
     }
   }
@@ -168,9 +170,11 @@ function tileUtil() {
     if (id in STATE) {
       STATE[id].l = state.l;
       STATE[id].m = state.m;
+      STATE[id].n = state.n;
     } else if (id in ridHash) {
       STATE[ridHash[id]].l = state.l;
       STATE[ridHash[id]].m = state.m;
+      STATE[ridHash[id]].n = state.n;
     } else {
       //
       console.log("never happen:set:" + id);
