@@ -63,24 +63,10 @@ div.menu {
     */
   }
 
-  function enableReadonly(readonly) {
+  function changeMode(mode) {
     let t3puzzle = document.getElementById('t3puzzle');
-    if (readonly) {
-      t3puzzle.setAttribute('readonly', 'readonly');
-    } else {
-      t3puzzle.removeAttribute('readonly');
-    }
+    t3puzzle.setAttribute('mode', mode);
   }
-
-  function enableAnchored(anchored) {
-    let t3puzzle = document.getElementById('t3puzzle');
-    if (anchored) {
-      t3puzzle.setAttribute('anchored', 'anchored');
-    } else {
-      t3puzzle.removeAttribute('anchored');
-    }
-  }
-
   function changeColor(color) {
     let t3puzzle = document.getElementById('t3puzzle');
     t3puzzle.setAttribute('color', color);
