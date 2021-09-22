@@ -91,10 +91,10 @@ function t3Util() {
     
     if (dir === idx) {
       base = (base + 1) % 2;
-      setFaceColor(topNode,{m:base, n:color});
     } else {
       dir = idx;
     }
+    setFaceColor(topNode,{m:base, n:color});
 
     stateAccess.set(id, { l: dir, m: base, n: color });
     rotateTile(tile, dir);
@@ -109,7 +109,7 @@ function t3Util() {
     let state = stateAccess.get(id);
     let dir = state.l;
     let base = state.m;
-    let color = getColorIndex();
+    let color = state.n;
     if (state.k) {
       dir = (dir + 3 - 1) % 3;
     } else {
