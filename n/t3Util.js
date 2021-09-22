@@ -14,8 +14,12 @@ function t3Util() {
   let view = null;
   let initTileCallback = null;
   let stateAccess = null;
-
-  return {
+  const COLORS = ['color--blue',
+                  'color--pink',
+                  'color--green',
+                  'color--mint'
+  ];
+      return {
     XSIZE,
     YSIZE,
     GRID__YROTATION,
@@ -37,6 +41,18 @@ function t3Util() {
     detectPosition,
     setTileColor,
   };
+  function getColorIndex(){
+    if (TILECOLOR_NOW === 'color--blue') {
+      return 0;
+    } else if (TILECOLOR_NOW === 'color--pink') {
+      return 1;
+    } else if (TILECOLOR_NOW === 'color--green') {
+      return 2;
+    } else if (TILECOLOR_NOW === 'color--mint') {
+      return 3;     
+    }
+    return 0;
+  }
   function setTileColor (color){
     if ('blue'===color) {
       TILECOLOR_NOW = 'color--blue';
@@ -60,7 +76,7 @@ function t3Util() {
     let tile = target.tile;
     let topNode = view.getElementBySpaceItem(top);
     rotateTile(tile, data.l);
-    setColor(topNode, data.m);
+    setFaceColor(topNode, data);
   }
   function switchFace(target, idx) {
     let top = target.top;
@@ -71,15 +87,16 @@ function t3Util() {
     let state = stateAccess.get(id);
     let dir = state.l;
     let base = state.m;
-
+    let color = getColorIndex();
+    
     if (dir === idx) {
       base = (base + 1) % 2;
-      toggleColor(topNode);
+      setFaceColor(topNode,{m:base, n:color});
     } else {
       dir = idx;
     }
 
-    stateAccess.set(id, { l: dir, m: base });
+    stateAccess.set(id, { l: dir, m: base, n: color });
     rotateTile(tile, dir);
   }
   function adjustTurn(target, data, prevData) {
@@ -92,12 +109,13 @@ function t3Util() {
     let state = stateAccess.get(id);
     let dir = state.l;
     let base = state.m;
+    let color = state.n;
     if (state.k) {
       dir = (dir + 3 - 1) % 3;
     } else {
       dir = (dir + 3 + 1) % 3;
     }
-    stateAccess.set(id, { l: dir, m: base });
+    stateAccess.set(id, { l: dir, m: base, n: color });
     rotateTile(tile, dir);
   }
   function adjustTransform(data, target) {
@@ -163,7 +181,8 @@ function t3Util() {
       k = 1;
     }
     let l=0;
-    let m=0;
+    let m=1; // default
+    let n=getColorIndex();
     let f0,f1,f2;
     if (k===0) {
       f0 = sq(ox,oy);
@@ -184,7 +203,7 @@ function t3Util() {
       l = 2;
     }
     // TODO: l,m too.
-    return {i,j,k,l,m};
+    return {i,j,k,l,m,n};
   }
   function sq (x,y){
     return x*x+y*y;
@@ -228,13 +247,16 @@ function t3Util() {
           }
           let l = randomInt(3);
           let m = randomInt(2);
+          let n = getColorIndex();
 
-          callback({ i, j, k, l, m }, { local: true });
+          callback({ i, j, k, l, m,n }, { local: true });
         }
       }
     }
   }
-  function setColor(topNode, m) {
+  function setFaceColor(topNode, data) {
+    let m = data.m;
+    let n = data.n;
     let base = topNode.querySelector("div.tr__base");
     let tip = topNode.querySelector("div.tr__tip");
     TILECOLOR_ALL.map(c=>{
@@ -242,14 +264,14 @@ function t3Util() {
       tip.classList.remove(c);
     });
     if (m === 0) {
-      base.classList.add(TILECOLOR_NOW);
+      base.classList.add(COLORS[n]);
       tip.classList.add(TILECOLOR_WHITE);
     } else {
       base.classList.add(TILECOLOR_WHITE);
-      tip.classList.add(TILECOLOR_NOW);
+      tip.classList.add(COLORS[n]);
     }
   }
-  function toggleColor(topNode) {
+  function toggleFaceColor(topNode) {
     let base = topNode.querySelector("div.tr__base");
     let tip = topNode.querySelector("div.tr__tip");
     if (base.classList.contains(TILECOLOR_WHITE)) {
