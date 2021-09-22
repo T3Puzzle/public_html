@@ -213,7 +213,6 @@ function t3Util() {
     for (let i = 0; i < WX; i++) {
       for (let j = 0; j < WY; j++) {
         for (let k = 0; k < 2; k++) {
-          /*
           if (k === 0) {
             if (j-i-1>WY/3) {
               continue;
@@ -227,7 +226,6 @@ function t3Util() {
               continue;
             }
           }
-          */
           let l = randomInt(3);
           let m = randomInt(2);
 
