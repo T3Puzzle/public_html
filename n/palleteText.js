@@ -11,6 +11,7 @@
         this.__TEXT__SIZE = "40px";
         this.__MARGIN__TOP = "-33px";
         this.__MARGIN__LEFT = "0px";
+        this.__LAST__VALUE = "";
       }
       static get observedAttributes() {
         return ["size", "margin-top", "margin-left"];
@@ -25,6 +26,8 @@
           this.__MARGIN__TOP = newValue;
         } else if (name === "margin-left") {
           this.__MARGIN__LEFT = newValue;
+        } else if (name === "value") {
+          this.setValue(newValue);
         }
       }
       connectedCallback() {
@@ -32,6 +35,19 @@
         style.textContent = this.getCSS();
         this.shadowRoot.append(style);
         this.process();
+      }
+      setValue(v) {
+        let form = this.shadowRoot.querySelector("form");
+        Array.from(this.shadowRoot.querySelectorAll("input")).map((r) => {
+          r.checked = false;
+        });
+        if (v.length) {
+          let radio = this.shadowRoot.querySelector("input#" + v);
+          if (radio) {
+            radio.checked = true;
+          }
+        }
+        this.updateLabel(form);
       }
       process() {
         this.getDataText();
@@ -50,6 +66,16 @@
           radio.type = "radio";
           radio.value = v;
           radio.id = v;
+          radio.addEventListener("click", (e) => {
+            let v = e.path[0].value;
+            if (v === this.__LAST__VALUE) {
+              let emptyValue = '';
+              this.setValue(emptyValue);
+              this.__LAST__VALUE = emptyValue;
+            } else {
+              this.__LAST__VALUE = v;
+            }
+          });
           let label = document.createElement("label");
           label.setAttribute("for", v);
           label.classList.add("label");
@@ -57,20 +83,22 @@
           form.append(label);
           form.append(radio);
         });
-        form.addEventListener("change", (e) => {
-          Array.from(form.querySelectorAll("label")).map((f) => {
-            f.classList.remove("checked");
-          });
-          let color = new FormData(form).get("pallete");
-          let forName = "label[for=" + color + "]";
-          form.querySelector(forName).classList.add("checked");
-          
-          let value = {detail: { color: color }};
-          this.value = color;
-          this.dispatchEvent(new CustomEvent("change",value));
-
-        });
+        form.addEventListener("change", ()=>this.updateLabel(form));
         this.shadowRoot.append(form);
+      }
+      updateLabel(form) {
+        Array.from(form.querySelectorAll("label")).map((f) => {
+          f.classList.remove("checked");
+        });
+        let color = new FormData(form).get("pallete");
+        let forName = "label[for=" + color + "]";
+        let label = form.querySelector(forName);
+        if (label) {
+          label.classList.add("checked");
+        }
+        let value = { detail: { color: color } };
+        this.value = color;
+        this.dispatchEvent(new CustomEvent("change", value));
       }
       getDataText() {
         let datalist = this.querySelector("datalist");
