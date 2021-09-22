@@ -46,7 +46,7 @@
         Array.from(this.shadowRoot.querySelectorAll("input")).map((r) => {
           r.checked = false;
         });
-        if (v.length) {
+        if (v) {
           let radio = this.shadowRoot.querySelector("input#" + v);
           if (radio) {
             radio.checked = true;
