@@ -4,8 +4,6 @@
     class extends HTMLElement {
       constructor() {
         super();
-        console.log(this.style['fontSize']);
-        console.dir(this);
         this.__SIZE = "100px";
         this.__COLOR = "rgb(180,0,0)";
         this.__CHECKED = false;
