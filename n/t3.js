@@ -17,23 +17,20 @@ function define(util, puz) {
   customElements.define(
     "tapspace-grid",
     class extends HTMLElement {
-      connectedCallback() {
-        util.init(this, puz, process);
-      }
       static get observedAttributes() {
-        return ["color", "anchored", "readonly", "flipall"];
+        return ["color", "mode", "flipall"];
       }
-      attributeChangedCallback(_name, oldValue, newValue) {
-        let name = _name.toLowerCase();
+      attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
           puz.setTileColor(newValue);
-        } else if (name === "anchored") {
-          util.enableAnchored(newValue !== null);
-        } else if (name === "readonly") {
-          util.enableReadonly(newValue !== null);
+        } else if (name === "mode") {
+          util.changeMode(oldValue,newValue);
         } else if (name === "flipall") {
           util.flipAll();
         }
+      }
+      connectedCallback() {
+        util.init(this, puz, process);
       }
     }
   );
@@ -60,6 +57,7 @@ function define(util, puz) {
   }
   function tapHandler(ev, target, idx) {
     // customize effect on tap panels.
+    
     puz.switchFace(target, idx);
   }
 }
