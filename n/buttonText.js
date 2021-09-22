@@ -11,9 +11,6 @@
         this.attachShadow({ mode: "open" });
       }
       connectedCallback() {
-        
-        console.log(this.style['fontSize']);
-        console.dir(this);
         let style = document.createElement("style");
         style.innerHTML = this.__getCSS();
         this.shadowRoot.append(style);
