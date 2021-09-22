@@ -14,7 +14,7 @@
         this.__LAST__VALUE = "";
       }
       static get observedAttributes() {
-        return ["size", "margin-top", "margin-left"];
+        return ["size", "margin-top", "margin-left", "value"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (!newValue) {
@@ -27,17 +27,22 @@
         } else if (name === "margin-left") {
           this.__MARGIN__LEFT = newValue;
         } else if (name === "value") {
-          this.setValue(newValue);
+          this.__setValue(newValue);
         }
       }
       connectedCallback() {
         let style = document.createElement("style");
-        style.textContent = this.getCSS();
+        style.textContent = this.__getCSS();
         this.shadowRoot.append(style);
-        this.process();
+        this.__process();
+        let v = this.getAttribute("value");
+        this.__setValue(v);
       }
-      setValue(v) {
+      __setValue(v) {
         let form = this.shadowRoot.querySelector("form");
+        if (!form) {
+          return;
+        }
         Array.from(this.shadowRoot.querySelectorAll("input")).map((r) => {
           r.checked = false;
         });
@@ -47,13 +52,24 @@
             radio.checked = true;
           }
         }
-        this.updateLabel(form);
+        this.__updateLabel(form);
       }
-      process() {
-        this.getDataText();
-        this.buildFormRadios();
+      __process() {
+        this.__getDataText();
+        this.__buildFormRadios();
       }
-      buildFormRadios() {
+      __getDataText() {
+        let datalist = this.querySelector("datalist");
+        Array.from(datalist.querySelectorAll("option")).map((o) => {
+          this.__VALUES.push(o.value);
+          let text = o.innerHTML;
+          if (text.trim().length === 0) {
+            text = this.__TEXT__DEFAULT;
+          }
+          this.__TEXTS.push(text);
+        });
+      }
+      __buildFormRadios() {
         let form = document.createElement("form");
         this.__VALUES.forEach((v, idx) => {
           if (v.trim().length === 0) {
@@ -69,8 +85,8 @@
           radio.addEventListener("click", (e) => {
             let v = e.path[0].value;
             if (v === this.__LAST__VALUE) {
-              let emptyValue = '';
-              this.setValue(emptyValue);
+              let emptyValue = "";
+              this.__setValue(emptyValue);
               this.__LAST__VALUE = emptyValue;
             } else {
               this.__LAST__VALUE = v;
@@ -83,10 +99,10 @@
           form.append(label);
           form.append(radio);
         });
-        form.addEventListener("change", ()=>this.updateLabel(form));
+        form.addEventListener("change", () => this.__updateLabel(form));
         this.shadowRoot.append(form);
       }
-      updateLabel(form) {
+      __updateLabel(form) {
         Array.from(form.querySelectorAll("label")).map((f) => {
           f.classList.remove("checked");
         });
@@ -100,18 +116,7 @@
         this.value = color;
         this.dispatchEvent(new CustomEvent("change", value));
       }
-      getDataText() {
-        let datalist = this.querySelector("datalist");
-        Array.from(datalist.querySelectorAll("option")).map((o) => {
-          this.__VALUES.push(o.value);
-          let text = o.innerHTML;
-          if (text.trim().length === 0) {
-            text = this.__TEXT__DEFAULT;
-          }
-          this.__TEXTS.push(text);
-        });
-      }
-      getCSS() {
+      __getCSS() {
         return `
       
 input[type=radio][name=pallete]{
