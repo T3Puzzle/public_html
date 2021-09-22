@@ -109,7 +109,7 @@ function t3Util() {
     let state = stateAccess.get(id);
     let dir = state.l;
     let base = state.m;
-    let color = state.n;
+    let color = getColorIndex();
     if (state.k) {
       dir = (dir + 3 - 1) % 3;
     } else {
