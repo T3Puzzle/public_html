@@ -39,6 +39,7 @@
         this.__setValue(v);
       }
       __setValue(v) {
+        this.__LAST__VALUE = v;
         let form = this.shadowRoot.querySelector("form");
         if (!form) {
           return;
@@ -82,16 +83,17 @@
           radio.type = "radio";
           radio.value = v;
           radio.id = v;
-          radio.addEventListener("click", (e) => {
-            let v = e.path[0].value;
-            if (v === this.__LAST__VALUE) {
-              let emptyValue = "";
-              this.__setValue(emptyValue);
-              this.__LAST__VALUE = emptyValue;
-            } else {
-              this.__LAST__VALUE = v;
-            }
-          });
+          
+          radio.addEventListener("click", e=>(radio=>{
+              let v = radio.value;
+                if (v === this.__LAST__VALUE) {
+                  let emptyValue = "";
+                  this.__setValue(emptyValue);
+                } else {
+                  this.__LAST__VALUE = v;
+                }
+          })(radio));
+          
           let label = document.createElement("label");
           label.setAttribute("for", v);
           label.classList.add("label");
