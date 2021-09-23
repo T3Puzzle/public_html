@@ -15,10 +15,10 @@ importModules(
 );
 function define(util, puz) {
   customElements.define(
-    "tapspace-grid",
+    "grid-puzzle",
     class extends HTMLElement {
       static get observedAttributes() {
-        return ["color", "mode", "flipall"];
+        return ["color", "mode", "flipall","fit","loaddata"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
@@ -27,6 +27,10 @@ function define(util, puz) {
           util.changeMode(oldValue,newValue);
         } else if (name === "flipall") {
           util.flipAll();
+        } else if (name === "fit") {
+          util.fit();
+        } else if (name === "loaddata") {
+          util.loadData(newValue);
         }
       }
       connectedCallback() {
@@ -36,7 +40,7 @@ function define(util, puz) {
   );
   function process() {
     // customize initial position
-    puz.load({}, (data, opt) =>
+    util.load({}, (data, opt) =>
       util.initTile(
         data,
         tapHandler,
