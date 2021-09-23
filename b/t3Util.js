@@ -11,7 +11,6 @@ function t3Util() {
   const YCENTER = YSIZE / 3;
   let TILECOLOR_NOW = 0;
   let view = null;
-  let initTileCallback = null;
   let stateAccess = null;
   const COLORS = ['blue',
                   'pink',
@@ -37,7 +36,6 @@ function t3Util() {
     switchFace,
     adjustTurn,
     init,
-    getInitTileCallback,
     detectPoint,
     detectPosition,
     setNowColor,
@@ -218,7 +216,6 @@ function t3Util() {
     return { dx, dy, pk };
   }
   function load(opts, callback) {
-    initTileCallback = callback;
     // TODO: load from storage etc.
     const WX = 8;
     const WY = 6;
@@ -272,9 +269,6 @@ function t3Util() {
     }
     imgn.classList.add('hide');
     imgm.classList.add(COLORS[n]);
-  }
-  function getInitTileCallback() {
-    return initTileCallback;
   }
   function init(_view, _stateAccess) {
     view = _view;
