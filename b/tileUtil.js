@@ -82,6 +82,11 @@ function tileUtil() {
     let top = view.getElementBySpaceItem(target.top);
     let imgback = view.getElementBySpaceItem(target.imgback);
     imgback.style.cssText = top.style.cssText;
+    
+    let base = top.querySelector('div.tr.tr__base');
+    base.classList.remove('cursor--grab');
+    base.classList.remove('cursor--nodrop');
+    base.classList.add('cursor--grabbing');
   }
   function processGend(gend, e, target, prevData) {
     let top = target.top;
@@ -91,9 +96,11 @@ function tileUtil() {
       deleteTarget(target);
       shareStateAll();
     } else {
+      
       detailGend(target, prevData);
       gend(e, target);
       top = target.top;
+      
     //
       shareState(target, top.id, detectData(top), prevData);
     }
@@ -355,54 +362,71 @@ function tileUtil() {
     }
   }
   function changeMode (oldValue,newValue) {
-    if (!space){
-      return;
+    let spaceNode;
+    let baseNode;
+    if (space){
+      spaceNode = view.getElementBySpaceItem(space);
+      baseNode = view.getElementBySpaceItem(board);
     }
-    let spaceNode = view.getElementBySpaceItem(space);
-    let baseNode = view.getElementBySpaceItem(board);
     if (oldValue==='anchor') {
       enableAnchor(false);
-      baseNode.classList.remove('cursor--default');
-      spaceNode.classList.remove('cursor--pointer');
-      Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
-        t.classList.remove('cursor--grab');
-      });
+      if (space) {
+        baseNode.classList.remove('cursor--default');
+        spaceNode.classList.remove('cursor--pointer');
+        Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
+          t.classList.remove('cursor--grab');
+        });
+      }
     } else if (oldValue==='readonly') {
       enableReadonly(false);
-      spaceNode.classList.remove('cursor--move');
+      if (space) {
+        spaceNode.classList.remove('cursor--move');
+      }
     } else if (oldValue==='hand') {
       enableHand(false);
-      baseNode.classList.remove('cursor--copy');
-      spaceNode.classList.remove('cursor--pointer');
-      Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
-        t.classList.remove('cursor--nodrop');
-      });
+      if (space) {
+        baseNode.classList.remove('cursor--copy');
+        spaceNode.classList.remove('cursor--pointer');
+        Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
+          t.classList.remove('cursor--nodrop');
+        });
+      }
     } else {
-      baseNode.classList.remove('cursor--move');
-      spaceNode.classList.remove('cursor--pointer');
-      Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
-        t.classList.remove('cursor--grab');
-      });
+      if (space) {
+        baseNode.classList.remove('cursor--move');
+        spaceNode.classList.remove('cursor--pointer');
+        Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
+          t.classList.remove('cursor--grab');
+        });
+      }
     }
     ////
     if (newValue==='anchor') {
       enableAnchor(true);
-      baseNode.classList.add('cursor--default');
-      spaceNode.classList.add('cursor--pointer');
-      addCursor();
+      if (space) {
+        baseNode.classList.add('cursor--default');
+        spaceNode.classList.add('cursor--pointer');
+        addCursor();
+      }
     } else if (newValue==='readonly') {
       enableReadonly(true);
-      spaceNode.classList.add('cursor--move');
-      addCursor();
+      if (space) {
+        spaceNode.classList.add('cursor--move');
+        addCursor();
+      }
     } else if (newValue==='hand') {
       enableHand(true);
-      baseNode.classList.add('cursor--copy');
-      spaceNode.classList.add('cursor--pointer');
-      addCursor();
+      if (space) {
+        baseNode.classList.add('cursor--copy');
+        spaceNode.classList.add('cursor--pointer');
+        addCursor();
+      }
     } else {
-      baseNode.classList.add('cursor--move');
-      spaceNode.classList.add('cursor--pointer');
-      addCursor();
+      if (space) {
+        baseNode.classList.add('cursor--move');
+        spaceNode.classList.add('cursor--pointer');
+        addCursor();
+      }
     }
   }
   function enableReadonly(newValue) {
@@ -412,16 +436,16 @@ function tileUtil() {
       return;
     }
     READONLY.enabled = newValue;
-    if (READONLY.enabled) {
-      if (READONLY.tiles) {
+    if (READONLY.tiles) {
+      if (READONLY.enabled) {    
         READONLY.tiles.map((t) => {
           t.stop();
         });
+      } else {
+        READONLY.tiles.map((t) => {
+          t.resume();
+        });
       }
-    } else {
-      READONLY.tiles.map((t) => {
-        t.resume();
-      });
     }
   }
   function enableAnchor(newValue) {
@@ -431,12 +455,12 @@ function tileUtil() {
       return;
     }
     ANCHOR.enabled = newValue;
-    if (ANCHOR.enabled) {
-      if (ANCHOR.ground) {
+    if (ANCHOR.ground) {
+      if (ANCHOR.enabled) {
         ANCHOR.ground.stop();
+      } else {
+        ANCHOR.ground.resume();
       }
-    } else {
-      ANCHOR.ground.resume();
     }
   }
   function enableHand(newValue) {
@@ -446,14 +470,14 @@ function tileUtil() {
       return;
     }
     HAND.enabled = newValue;
-    if (HAND.enabled) {
-      if (HAND.ground) {
+    if (HAND.ground) {
+      if (HAND.enabled) {
         HAND.ground.stop();
         startBaseClick();
+      } else {
+        stopBaseClick();
+        HAND.ground.resume();
       }
-    } else {
-      stopBaseClick();
-      HAND.ground.resume();
     }
   }
   function startBaseClick() {
@@ -525,6 +549,9 @@ function tileUtil() {
     }
     div.cursor--grab{
       cursor: grab;
+    }
+    div.cursor--grabbing{
+      cursor: grabbing;
     }
     div.cursor--copy {
       cursor: copy;
