@@ -20,17 +20,14 @@ div.menu {
 
 <div class="menu">
   <h1>T3 Puzzle</h1>
-
-<pallete-text onchange="changeMode(this.value)" value="hand">
+<pallete-text onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
   <datalist>
     <option value="readonly">⤧</option>
     <option value="anchor">⚓</option>
     <option value="hand">👆</option>
   </datalist>
 </pallete-text>
-  <button-text text="➰" onchange="flipAllTiles();" size="40px">
-  </button-text>
-<pallete-text onchange="changeColor(this.value)">
+<pallete-text onchange="t3puzzle.setAttribute('color', this.value);">
   <datalist>
     <option value="blue"></option>
     <option value="green"></option>
@@ -39,11 +36,22 @@ div.menu {
     <option value="mint"></option>
   </datalist>
 </pallete-text>
+   <button-text text="➰" onchange="t3puzzle.setAttribute('flipall','');" size="40px">
+  </button-text>
+  <button-text text="👁" onchange="t3puzzle.setAttribute('fit','');" size="40px">
+  </button-text>
+  <button-text text="👁" onchange="t3puzzle.setAttribute('loaddata',localStorage.getItem('t3puzzle__LATEST'));" size="40px">
+  </button-text>
+   <button-text text="👁" onchange="console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
+  </button-text>
 </div>
-<tapspace-grid id="t3puzzle" x-onChange="console.log(this.value);" mode="hand">
-  <tapspace-worldinfo title="application-name" info="t3puzzle"></tapspace-worldinfo>
-  <tapspace-viewpoint></tapspace-viewpoint>
-</tapspace-grid>
+<grid-puzzle mode="hand" id="t3puzzle" onChange="localStorage.setItem('DEBUG',JSON.stringify(this.value.detail.debug));localStorage.setItem('t3puzzle__LATEST',this.value.detail.value);">
+  <datalist>
+    <grid-data>
+[[0,0,0,0,0,0],[0,0,1,0,0,0],[1,0,0,0,0,0],[1,0,1,0,0,0],[2,0,1,2,1,0]]
+    </grid-data>
+  </datalist>
+</grid-puzzle>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
 <script>
@@ -54,24 +62,6 @@ div.menu {
     console.log(e.detail.state);
   });
   */
-  function flipAllTiles() {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('flipall','flipall');
-    /*
-    (async () => {
-  dst.appendChild(await html2canvas(t3puzzle.shadowRoot.getElementById('parent')));
-})();
-    */
-  }
-
-  function changeMode(mode) {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('mode', mode);
-  }
-  function changeColor(color) {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('color', color);
-  }
 </script>
 <script src="./tapspace.min.js"></script>
 <script src="./buttonText.js"></script>
