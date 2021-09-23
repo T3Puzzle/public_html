@@ -87,7 +87,7 @@ function tileUtil() {
     let top = target.top;
     let imgback = target.imgback;
     imgback.sendToBack();
-    if (HAND.enabled) {
+    if (HAND.enabled && e.distance === 0) {
       deleteTarget(target);
       shareStateAll();
     } else {
