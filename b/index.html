@@ -36,13 +36,13 @@ div.menu {
     <option value="mint"></option>
   </datalist>
 </pallete-text>
-   <button-text text="➰" onchange="t3puzzle.setAttribute('flipall','');" size="40px">
+   <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <button-text text="👁" onchange="t3puzzle.setAttribute('fit','');" size="40px">
+  <button-text text="👁" onclick="t3puzzle.setAttribute('fit','');" size="40px">
   </button-text>
-  <button-text text="👁" onchange="t3puzzle.setAttribute('loaddata',localStorage.getItem('t3puzzle__LATEST'));" size="40px">
+  <button-text text="👁" onclick="t3puzzle.setAttribute('loaddata',localStorage.getItem('t3puzzle__LATEST'));" size="40px">
   </button-text>
-   <button-text text="👁" onchange="console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
+   <button-text text="👁" onclick="console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
   </button-text>
 </div>
 <grid-puzzle mode="hand" id="t3puzzle" onChange="localStorage.setItem('DEBUG',JSON.stringify(this.value.detail.debug));localStorage.setItem('t3puzzle__LATEST',this.value.detail.value);">
