@@ -9,8 +9,9 @@ function tileUtil() {
   let board = null;
   let puz = null;
   let dupHash = {};
+  let INITTILECALLBACK = null;
   let READONLY = {
-    tiles: [],
+    tiles: null,
     enabled: false
   };
   let ANCHOR = {
@@ -22,13 +23,6 @@ function tileUtil() {
     enabled: false
   };
   let STATE = {};
-  let REST = {
-    name: "T3Puzzle",
-    title: "Simple",
-    author: "Yoshiaki Araki",
-    version: 1,
-    state: STATE
-  };
   let targetHash = {};
   let idHash = {};
   let ridHash = {};
@@ -39,8 +33,58 @@ function tileUtil() {
     placeTile,
     changeMode,
     flipAll,
+    load,
+    fit,
+    loadData,
     VERSION
   };
+  function resetAllData(){
+    for(let key in targetHash) {
+      deleteTarget(targetHash[key]);
+    }
+    for(let key in dupHash) {
+      delete dupHash[key];
+    }
+    // TODO: remove handlers?
+    if (READONLY.tiles){
+      for(let key in READONLY.tiles) {
+        READONLY.tiles[key].stop();
+      }
+    }
+    ANCHOR.ground.stop();
+  }
+  function loadData(jsonStr){
+
+    try {
+      let data = JSON.parse(jsonStr);
+      resetAllData();
+      if (Array.isArray(data)) {
+        data.map(d=>{
+          INITTILECALLBACK({i:d[0],j:d[1],k:d[2],l:d[3],m:d[4],n:d[5]}, { local: true });
+        });
+      }
+    } catch (e) {
+      console.log('load e:'+e);
+    }
+  }
+  function load(opts, callback) {
+    INITTILECALLBACK = callback;
+    let dataNode = me.querySelector('grid-data');
+    let src = null;
+    try {
+      let jsonStr = dataNode.textContent;
+      let data = JSON.parse(jsonStr);
+      if (Array.isArray(data)) {
+        data.map(d=>{
+          INITTILECALLBACK({i:d[0],j:d[1],k:d[2],l:d[3],m:d[4],n:d[5]}, { local: true });
+        });
+        return;
+      }
+    } catch (e) {
+      console.log('load e:'+e);
+    }
+    puz.load(opts,callback);  
+  }
   function shareState(target, id, data, oldData, local) {
     markFootprint(data);
     if (JSON.stringify(data) == JSON.stringify(oldData)) {
@@ -64,8 +108,16 @@ function tileUtil() {
       shareStateAll();
     }
   }
+  function convertStateToJSON () {
+    let json = [];
+    for (let id in STATE) {
+      let s = STATE[id];
+      json.push([s.i,s.j,s.k,s.l,s.m,s.n]);
+    }
+    return JSON.stringify(json);
+  }
   function shareStateAll() {
-    let value = { detail: { state: STATE } };
+    let value = { detail: { value: convertStateToJSON(STATE), debug: STATE } };
     me.value = value;
     me.dispatchEvent(new CustomEvent("change", value));
   }
@@ -153,11 +205,15 @@ function tileUtil() {
       };
     }
   }
-  function renameId(fromId, target) {
-    let orgId = fromId;
-    if (fromId in ridHash) {
-      orgId = ridHash[fromId];
+  function getOrgId(id) {
+    let orgId = id;
+    if (id in ridHash) {
+      orgId = ridHash[id];
     }
+    return orgId;
+  }
+  function renameId(fromId, target) {
+    let orgId = getOrgId(fromId);
     let toId = target.top.id;
     targetHash[orgId] = target;
     idHash[orgId] = toId;
@@ -168,10 +224,7 @@ function tileUtil() {
     }
   }
   function deleteIdAndSo(id) {
-    let orgId = id;
-    if (id in ridHash) {
-      orgId = ridHash[id];
-    }
+    let orgId = getOrgId(id);
     delete targetHash[orgId];
     delete idHash[orgId];
     if (id in ridHash) {
@@ -179,7 +232,15 @@ function tileUtil() {
     }
     if (id in STATE) {
       delete STATE[id];
-    } 
+    }
+    let gkey = 'gesture_'+orgId;
+    if(gkey in READONLY.tiles) {
+      READONLY.tiles[gkey].stop();
+      // TODO:
+      READONLY.tiles['tap0_'+orgId].stop();
+      READONLY.tiles['tap1_'+orgId].stop();
+      READONLY.tiles['tap2_'+orgId].stop();
+    }
   }
   function setPartialState(id, state) {
     if (id in STATE) {
@@ -213,6 +274,7 @@ function tileUtil() {
     //topNode.remove();
     top.remove();
     target.imgback.remove();
+    delete targetHash[id];
   }
   function recreateTarget(target, data) {
     let top = target.top;
@@ -221,7 +283,7 @@ function tileUtil() {
     //topNode.remove();
     top.remove();
     target.imgback.remove();
-    let _target = puz.getInitTileCallback()(data, { local: false });
+    let _target = INITTILECALLBACK(data, { local: false });
     target.top = _target.top;
     target.tile = _target.tile;
     target.imgback = _target.imgback;
@@ -252,7 +314,6 @@ function tileUtil() {
     let tile = new tapspace.SpaceHTML(tileHtml, top).setSize(0, 0);
     // place tile here
     let target = { top, tile, imgback, img0 };
-    // share local
     gmid(target, data);
     addCursor();
     shareState(target, top.id, data, {}, opt.local);
@@ -260,7 +321,8 @@ function tileUtil() {
     let prevData = {};
     // gesture
     let gesture = new tapspace.Touchable(view, top);
-    READONLY.tiles.push(gesture);
+    registerTouchTiles(top.id,'gesture',gesture);
+   
       gesture.start({ translate: true });
     gesture.on("gesturestart", (e) =>
       processGstart(gstart, e, target, prevData));
@@ -274,8 +336,8 @@ function tileUtil() {
     puz.getTapPanels().forEach((panelHtml, idx) => {
       let panel = new tapspace.SpaceHTML(panelHtml, top).setSize(0, 0);
       // tap panel
-      let tap = new tapspace.Touchable(view, panel);
-      READONLY.tiles.push(tap);
+      let tap = new tapspace.Touchable(view, panel); 
+      registerTouchTiles(top.id,'tap'+idx,tap);
       tap.start({ tap: true });
       tap.on("tap", (e) => processTap(thand, e, target, idx));
       if (READONLY.enabled) {
@@ -283,6 +345,16 @@ function tileUtil() {
       }
     });
     return target;
+  }
+  function registerTouchTiles(id,head,touchtile) {
+    if(!READONLY.tiles){
+      READONLY.tiles = {};
+    }
+    let key = head+'_'+getOrgId(id);
+    if (key in READONLY.tiles) {
+      READONLY.tiles[key].stop();
+    }
+    READONLY.tiles[key] = touchtile;
   }
   function init(_me, _puz, callback) {
     me = _me;
@@ -322,12 +394,25 @@ function tileUtil() {
     callback();
     final();
   }
-  function final() {
+  function fit () {
     view.fitScale(root);
     view.scale(view.atMid(), 1.618);
-
+    exposeViewpoint ();
+  }
+  function exposeViewpoint () {
+    let baseNode = view.getElementBySpaceItem(view.getParent());
+    let transformStr = baseNode.style.getPropertyValue("transform");
+    let matrix = (a, b, c, d, e, f) => {
+      return { s: a, r:b, tx: e, ty: f };
+    };
+    let mat = eval("(()=>" + transformStr + ")();");
+    me.setAttribute('viewpoint',JSON.stringify([mat.s,mat.r,mat.tx,mat.ty]));
+  }
+  function final() {
+    fit();
     let touch = new tapspace.Touchable(view, view);
     touch.start({ translate: true, rotate: true, scale: true });
+    touch.on("gestureend", (e) => exposeViewpoint(view));
     ANCHOR.ground = touch;
     HAND.ground = touch;
     if (ANCHOR.enabled) {
@@ -437,14 +522,14 @@ function tileUtil() {
     }
     READONLY.enabled = newValue;
     if (READONLY.tiles) {
-      if (READONLY.enabled) {    
-        READONLY.tiles.map((t) => {
-          t.stop();
-        });
+      if (READONLY.enabled) {  
+        for(let key in READONLY.tiles) {
+          READONLY.tiles[key].stop();
+        }
       } else {
-        READONLY.tiles.map((t) => {
-          t.resume();
-        });
+        for(let key in READONLY.tiles) {
+          READONLY.tiles[key].resume();
+        }
       }
     }
   }
@@ -511,7 +596,7 @@ function tileUtil() {
       return;
     }
     let pos = { x: dx , y: dy };
-    let target = puz.getInitTileCallback()(data, { local: false });
+    let target = INITTILECALLBACK(data, { local: true });
     let id = target.top.id;
     STATE[id] = data;
     targetHash[id] = target;
