@@ -4,7 +4,6 @@
     class extends HTMLElement {
       constructor() {
         super();
-        console.dir(this);
         this.__SIZE = "100px";
         this.attachShadow({ mode: "open" });
       }
