@@ -17,14 +17,14 @@ div.menu {
 </style>
 </head>
 <body>
-
 <div class="menu">
 <pallete-text onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
   <datalist>
     <option value="readonly">⤧</option>
-    <option disabled></option>
-    <option value="anchor">⚓</option>
-    <option value="hand">👆</option>
+  
+    <option value="anchor">⚓</option>  <option disabled></option>
+    <option value="lock">🔒</option>
+     <option value="hand">👆</option>
   </datalist>
 </pallete-text>
 <pallete-text onchange="if(this.value) {t3puzzle.setAttribute('color', this.value);t3puzzle.setAttribute('mode', '');}">
@@ -196,6 +196,7 @@ div.menu {
 <script src="https://unpkg.com/tapspace@1.2.0/dist/tapspace.min.js"></script>
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
+
 
   
 <script src="./t3.js"></script>
