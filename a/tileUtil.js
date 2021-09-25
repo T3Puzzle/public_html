@@ -629,7 +629,7 @@ function tileUtil() {
           if (!id || !(id in STATE)) {
             console.log(id);
           }
-          if (id && ! STATE[id].o) {
+          if (id) {
             READONLY.tiles[key].stop();
           }
         }
