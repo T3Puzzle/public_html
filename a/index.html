@@ -18,7 +18,7 @@ div.menu {
 </head>
 <body>
 <div class="menu">
-<pallete-text onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
+<pallete-text  id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
   <datalist>
     <option value="readonly">⤧</option>
   
@@ -27,7 +27,7 @@ div.menu {
      <option value="hand">👆</option>
   </datalist>
 </pallete-text>
-<pallete-text onchange="if(this.value) {t3puzzle.setAttribute('color', this.value);t3puzzle.setAttribute('mode', '');}">
+<pallete-text onchange="if(this.value) {mode.setAttribute('value', '');t3puzzle.setAttribute('color', this.value);}">
   <datalist>
     <option value="blue"></option>
     <option value="green"></option>
