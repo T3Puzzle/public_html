@@ -18,7 +18,7 @@ function define(util, puz) {
     "grid-puzzle",
     class extends HTMLElement {
       static get observedAttributes() {
-        return ["color", "mode", "flipall","fit","loaddata"];
+        return ["color", "mode", "flipall","fit","rotate","loaddata","nomoveall","noflipall"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
@@ -28,8 +28,14 @@ function define(util, puz) {
           util.flipAll();
         } else if (name === "fit") {
           util.fit();
+        } else if (name === "rotate") {
+          util.rotate(newValue);
         } else if (name === "loaddata") {
           util.resetAndloadData(newValue);
+        } else if (name === "nomoveall") {
+          util.noMoveAll(newValue);
+        } else if (name === "noflipall") {
+          util.noFlipAll(newValue);
         }
       }
       connectedCallback() {
