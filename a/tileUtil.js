@@ -10,6 +10,10 @@ function tileUtil() {
   let puz = null;
   let dupHash = {};
   let INITTILECALLBACK = null;
+  let NOALL = {
+    noMove: false,
+    noFlip: false,
+  }
   let READONLY = {
     tiles: null,
     enabled: false
@@ -36,8 +40,11 @@ function tileUtil() {
     placeTile,
     changeMode,
     flipAll,
+    noMoveAll,
+    noFlipAll,
     load,
     fit,
+    rotate,
     resetAndloadData,
     VERSION
   };
@@ -74,8 +81,12 @@ function tileUtil() {
         data.tiles.map(d=>{
           INITTILECALLBACK({i:d[0],j:d[1],k:d[2],l:d[3],m:d[4],n:d[5],o:d[6]}, { local: true });
         });
-        if ('viewpoint' in data) {
-          setViewpoint(data.viewpoint);
+        if ('orientation' in data) {
+          let angle = parseFloat(data.orientation);
+          view.resetTransform();
+          fit();
+          view.rotate(view.atMid(),angle);
+          console.log('angle: '+angle);
         }
         // not to do initially shareStateAll()
         return true;
@@ -131,7 +142,7 @@ function tileUtil() {
   }
   function shareStateAll() {
     let value = { detail: { value: {
-      viewpoint: getViewpoint(),
+      orientation: getOrientation(),
       tiles: convertStateToJSON(STATE)
     }, debug: STATE } };
     me.value = value;
@@ -180,6 +191,8 @@ function tileUtil() {
     //
   }
   function processTap(thand, e, target, idx) {
+    console.log(NOALL.noFlip);
+    if (NOALL.noFlip) { return;}
     let top = target.top;
     let oldData = detectData(top);
     thand(e, target, idx);
@@ -192,7 +205,7 @@ function tileUtil() {
     let top = target.top;
     let tile = target.tile;
     let data = detectData(top);
-    if (!checkFootprint(data) && !data.o) {
+    if (!checkFootprint(data) && !data.o && !NOALL.noMove) {
       //console.log("SAFE=>" + data);
       data = detectData(top);
       recreateTarget(target, data);
@@ -440,6 +453,12 @@ function tileUtil() {
     final();
     shareStateAll();
   }
+  function rotate (value) {
+    let angle = parseFloat(value);
+    //view.fitScale(root);
+    view.rotate(view.atMid(),angle);
+    //view.scale(view.atMid(), 1.618);
+  }
   function fit () {
     view.fitScale(root);
     view.scale(view.atMid(), 1.618);
@@ -451,38 +470,26 @@ function tileUtil() {
     let c = v[0];
     let s = v[1];
     let scale = Math.sqrt(c*c+s*s);
-    let angle = Math.atan2(s,c);
+    
     return {scale:scale,angle:angle,tx:tx,ty:ty};
   }
   */
-  function setViewpoint (v) {
-    //return view.setLocalTransform(v);
-    /*
-    let w = convertViewpoint (v);
-    view.resetTransform();
-    view.scale(view.atMid(),v.scale);
-    view.rotate(view.atMid(),v.scale);
-    */
-    /*
-    let baseNode = view.getElementBySpaceItem(view.getParent());
-    let transformStr = baseNode.style["transform"] =
-         `matrix(${v[0]},${v[1]},${-v[1]},${v[0]},${v[2]},${v[3]})`;
-         */
-  }
-  function getViewpoint () {
-    //return view.getLocalTransform();
-    /*
-    let baseNode = view.getElementBySpaceItem(view.getParent());
-    let transformStr = baseNode.style.getPropertyValue("transform");
+  function distillMatrix (item) {
+    let node = view.getElementBySpaceItem(item);
+    let transformStr = node.style.getPropertyValue("transform");
     let matrix = (a, b, c, d, e, f) => {
       return { s: a, r:b, tx: e, ty: f };
     };
-    let mat = eval("(()=>" + transformStr + ")();");
-    console.log(view.getLocalTransform());
-    console.log(view.getGlobalTransform());
-    console.log([mat.s,mat.r,mat.tx,mat.ty]);
-    return [mat.s,mat.r,mat.tx,mat.ty];
-    */
+    return eval("(()=>" + transformStr + ")();");
+  }
+  function getOrientation () {
+    
+    let baseMat = distillMatrix(view.getParent());
+    let viewMat = distillMatrix(view);
+    
+    let baseAngle = -Math.atan2(baseMat.r,baseMat.s);
+    let viewAngle =  -Math.atan2(viewMat.r,viewMat.s);
+    return baseAngle;
   }
   function final() {
     fit();
@@ -725,6 +732,13 @@ function tileUtil() {
     STATE[id] = data;
     targetHash[id] = target;
     shareStateAll();
+  }  
+  function noMoveAll(newValue) {
+    NOALL.noMove = !!newValue;
+    console.log(NOALL.noMove);
+  }
+  function noFlipAll(newValue) {
+    NOALL.noFlip = !!newValue;
   }
   function flipAll() {
     for (let id in STATE) {
