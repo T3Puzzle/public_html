@@ -65,7 +65,6 @@ function t3Util() {
     setFaceColor(target, data);
   }
   function frozeTile(target,value) {
-    console.log('fr:'+value);
     let tile = target.tile;
     let frozen = target.frozen;
     let frozenNode = view.getElementBySpaceItem(frozen);
@@ -178,7 +177,8 @@ function t3Util() {
   function detectPoint (tx,ty) {
     let i = 0;
     let j = 0;
-    let k = 0;  
+    let k = 0; 
+    let o = 0;
     let {dx,dy,pk} = detectPositionPoint(tx,ty);
     i = Math.floor(dx);
     j = Math.floor(dy);
@@ -216,7 +216,7 @@ function t3Util() {
       l = 2;
     }
     // TODO: l,m too.
-    return {i,j,k,l,m,n};
+    return {i,j,k,l,m,n,o};
   }
   function sq (x,y){
     return x*x+y*y;
