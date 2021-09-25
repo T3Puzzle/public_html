@@ -61,14 +61,23 @@ function t3Util() {
     let frozen = target.frozen;
     rotateTile(tile, data.l);
     rotateTile(img, data.l);
-    frozeTile(frozen,data.o);
+    frozeTile(target,data.o);
     setFaceColor(target, data);
   }
-  function frozeTile(frozen,value) {
+  function frozeTile(target,value) {
+    console.log('fr:'+value);
+    let tile = target.tile;
+    let frozen = target.frozen;
+    let frozenNode = view.getElementBySpaceItem(frozen);
+    let tr__frozen = frozenNode.querySelector('div.tr.tr__frozen');
     if (value) {
+      tile.bringToFront();
       frozen.bringToFront();
+      tr__frozen.style['background-color'] = 'rgb(255,255,255,0.333)';
     } else {
+      tile.sendToBack();
       frozen.sendToBack();
+      tr__frozen.style['background-color'] = 'rgb(255,255,255,0)';
     }
   }
   function switchFace(target, idx) {
@@ -296,7 +305,10 @@ function t3Util() {
   transform: matrix3d(1, 0, 0, 0, 0, ${YSIZE}, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1);
   display: inline-block;
   position: absolute;
-}  
+}
+div.tr--hide {
+  display:none;
+}
 img.hide {
   display:none;
 }
@@ -325,7 +337,7 @@ img.mint {
     `;
   }
   function getFrozenHtml() {
-    return `<div>
+    return `<div style="transform-origin:${XCENTER}px ${YCENTER}px;transform:scale(0.97);">
          <div class="tr tr__frozen cursor--default">
      </div>
     </div>
@@ -333,14 +345,7 @@ img.mint {
   }
   function getTileHtml() {
     return `<div>
-         <div class="tr tr__base">
-     </div>
- <div style="transform-origin:${
-       XSIZE / 2
-     }px ${YSIZE}px;transform:scale(0.50);">
-     <div class="tr tr__tip">
-     </div>
-      </div>
+         <div class="tr tr__base"></div>
     </div>
     `;
   }
