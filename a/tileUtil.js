@@ -18,6 +18,9 @@ function tileUtil() {
     ground: null,
     enabled: false
   };
+  let LOCK = {
+    enabled: false
+  };
   let HAND = {
     ground: null,
     enabled: false
@@ -157,14 +160,20 @@ function tileUtil() {
     let top = target.top;
     let imgback = target.imgback;
     imgback.sendToBack();
-    if (HAND.enabled && e.distance === 0) {
+    
+    if (HAND.enabled && e.distance === 0 && prevData.o===0) {
       deleteTarget(target);
       shareStateAll();
     } else {
+      if (LOCK.enabled && e.distance===0) {
+        let newo = (prevData.o+1)%2;
+        prevData.o = newo;
+        STATE[getOrgId(top.id)].o = newo;
+        // reflect frozen after recreate
+      }
       detailGend(target, prevData);
       gend(e, target);
       top = target.top;
-      
     //
       shareState(target, top.id, detectData(top), prevData);
     }
@@ -183,9 +192,8 @@ function tileUtil() {
     let top = target.top;
     let tile = target.tile;
     let data = detectData(top);
-    if (!checkFootprint(data)) {
+    if (!checkFootprint(data) && !data.o) {
       //console.log("SAFE=>" + data);
-      let fromId = top.id;
       data = detectData(top);
       recreateTarget(target, data);
       //?????
@@ -335,7 +343,7 @@ function tileUtil() {
     let tile = new tapspace.SpaceHTML(tileHtml, top).setSize(0, 0);
     // place tile here
     let target = { top, tile, imgback, img, frozen };
-    let flag = false;
+    let flag = true;
     if (flag) {
       gmid(target, data);
       addCursor();
@@ -354,7 +362,7 @@ function tileUtil() {
     gesture.on("gesturemove",(e)=>
               processGmove(null,e,target,prevData));
     gesture.on("gestureend", (e) => processGend(gend, e, target, prevData));
-    if (READONLY.enabled || data.o ) { 
+    if (READONLY.enabled ) { 
       gesture.stop();
     }
     // tap
@@ -365,7 +373,7 @@ function tileUtil() {
       registerTouchTiles(top.id,'tap'+idx,tap,opt);
       tap.start({ tap: true });
       tap.on("tap", (e) => processTap(thand, e, target, idx));
-      if (READONLY.enabled || data.o ) {
+      if (READONLY.enabled  ) {
         tap.stop();
       }
     });
@@ -375,7 +383,7 @@ function tileUtil() {
       addCursor();
       shareState(target, top.id, data, {}, opt.local);
     } else {
-     puz.frozeTile(target.frozen,data.o);
+     puz.frozeTile(target,data.o);
     }
     return target;
   }
@@ -485,6 +493,8 @@ function tileUtil() {
     if (ANCHOR.enabled) {
       changeMode(null,'anchor');
       ANCHOR.ground.stop();
+    } else if (LOCK.enabled) {
+      changeMode(null,'lock');
     } else if (HAND.enabled) {
       changeMode(null,'hand');
       HAND.ground.stop();
@@ -504,6 +514,10 @@ function tileUtil() {
       
     } else if (READONLY.enabled) {
       // nop
+    } else if (LOCK.enabled) {
+      Array.from(spaceNode.querySelectorAll('div.tr__base')).map(t=>{
+        t.classList.add('cursor--crosshair');
+      });
     } else if (HAND.enabled) {
       Array.from(spaceNode.querySelectorAll('div.tr.tr__base')).map(t=>{
         t.classList.add('cursor--nodrop');
@@ -535,6 +549,15 @@ function tileUtil() {
       if (space) {
         spaceNode.classList.remove('cursor--move');
       }
+    } else if (oldValue==='lock') {
+      enableLock(false);
+      if (space) {
+        baseNode.classList.remove('cursor--move');
+        spaceNode.classList.remove('cursor--pointer');
+        Array.from(spaceNode.querySelectorAll('div.tr')).map(t=>{
+          t.classList.remove('cursor--crosshair');
+        });
+      }
     } else if (oldValue==='hand') {
       enableHand(false);
       if (space) {
@@ -565,6 +588,13 @@ function tileUtil() {
       enableReadonly(true);
       if (space) {
         spaceNode.classList.add('cursor--move');
+        addCursor();
+      }
+    } else if (newValue==='lock') {
+      enableLock(true);
+      if (space) {
+        baseNode.classList.add('cursor--move');
+        spaceNode.classList.add('cursor--pointer');
         addCursor();
       }
     } else if (newValue==='hand') {
@@ -612,7 +642,7 @@ function tileUtil() {
           if (!id || !(id in STATE)) {
             console.log(id);
           }
-          if (id && ! STATE[id].o){
+          if (id){
             READONLY.tiles[key].resume();
           }
         }
@@ -633,6 +663,14 @@ function tileUtil() {
         ANCHOR.ground.resume();
       }
     }
+  }
+  function enableLock(newValue) {
+    let oldValue = LOCK.enabled;
+    if (oldValue === newValue) {
+      // nop
+      return;
+    }
+    LOCK.enabled = newValue;
   }
   function enableHand(newValue) {
     let oldValue = HAND.enabled;
@@ -732,6 +770,9 @@ function tileUtil() {
     }
     div.cursor--nodrop {
       cursor: no-drop;
+    }
+    div.cursor--crosshair {
+      cursor: crosshair;
     }`; 
   }
   function getStyle() {
