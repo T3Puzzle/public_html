@@ -17,6 +17,7 @@ div.menu {
 </style>
 </head>
 <body>
+
 <div class="menu">
 <pallete-text  id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
   <datalist>
@@ -25,6 +26,17 @@ div.menu {
     <option value="anchor">⚓</option>  <option disabled></option>
     <option value="lock">🔒</option>
      <option value="hand">👆</option>
+  </datalist>
+</pallete-text>
+
+<pallete-text  id="nomoveall" onchange="t3puzzle.setAttribute('nomoveall', this.value);">
+  <datalist>
+    <option value="nomoveall">x</option>
+  </datalist>
+</pallete-text>
+<pallete-text  id="noflipall" onchange="t3puzzle.setAttribute('noflipall', this.value);">
+  <datalist>
+    <option value="noflipall">x</option>
   </datalist>
 </pallete-text>
 <pallete-text onchange="if(this.value) {mode.setAttribute('value', '');t3puzzle.setAttribute('color', this.value);}">
@@ -39,10 +51,11 @@ div.menu {
   <br/>
    <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <button-text text="👁" onclick="t3puzzle.setAttribute('fit','');console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
+  <button-text text="👁" onclick="t3puzzle.setAttribute('fit','');" size="40px">
   </button-text>
 
-   <button-text text="📌" onclick="console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
+   <button-text text="⤿"
+                      onclick="rotate();" size="40px">
   </button-text>
   <br/>
    <button-text text="📖"
@@ -51,16 +64,18 @@ div.menu {
 
    <button-text text="🔖"     onclick="saveData()" size="40px">
 </button-text>
+  
     <button-text text="📝"     onclick="console.log(1);" size="40px">
+</button-text>
+   <button-text text="↤"     onclick="backward();" size="40px">
+</button-text>
+  <button-text text="↦"     onclick="forward();" size="40px">
 </button-text>
 </div>
 <grid-puzzle id="t3puzzle"  onChange="processData(this.value)">
   <datalist>
     <grid-data>{
-"viewpoint":{"r": 0,
-"s": 3.9104068028197907,
-"tx": -1863.5748769240968,
-"ty": -160.56111016779607},
+"orientation":2.094388031086739,
 "tiles":[[0,0,0,0,0,0,1],[0,0,1,0,0,0,1],
       [1,0,0,0,0,0,0],[1,0,1,0,0,0,0],[2,0,1,2,1,0,0]]}
     </grid-data>
@@ -69,13 +84,29 @@ div.menu {
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
 <script>
-  let counter=0;
+  
+  let HISTORY = {
+    max: 200,
+    count: -1,
+    pointer: -1,
+    status: ''
+  };
+  let SAVE = {
+    max: 10,
+  }
+  function rotate( ) {   
+
+   if (HISTORY.status!=='rotate') {
+    t3puzzle.setAttribute('fit','');
+   }
+   t3puzzle.setAttribute('rotate',Math.PI/3);
+   HISTORY.status = 'rotate';
+  }
   function emptyIndexFromLocalStorage(){
-    let MAX = 10;
     let dates=[];
     let empty=[];
     let dihash = {};
-    for (let i=0;i<MAX;i++) {
+    for (let i=0;i<SAVE.max;i++) {
       let item = localStorage.getItem('t3puzzle__DATA--'+i);
       
       if (!item) {
@@ -91,7 +122,7 @@ div.menu {
         }
       }
     }
-    if(dates.length===MAX) {
+    if(dates.length===SAVE.max) {
       dates.sort();
       return dihash[dates[0]];
     }
@@ -100,7 +131,7 @@ div.menu {
     let MAX = 10;
     let dates=[];
     let ddhash = {};
-    for (let i=0;i<MAX;i++) {
+    for (let i=0;i<SAVE.max;i++) {
       let item = localStorage.getItem('t3puzzle__DATA--'+i);
       if (!item) {
         continue;
@@ -116,17 +147,25 @@ div.menu {
     }
     return ddhash;
   }
-  function processData(value) {
-    localStorage.setItem('DEBUG',JSON.stringify(
+  function processData(value) {localStorage.setItem('DEBUG',JSON.stringify(
       value.detail.debug));
     
     let firstloaded = localStorage.getItem('t3puzzle__DATA--FIRSTLOADED');
-    if (!firstloaded || counter===0) {
-      localStorage.setItem('t3puzzle__DATA--FIRSTLOADED',JSON.stringify(value.detail.value));
+    let str = JSON.stringify(value.detail.value);
+    if (!firstloaded || HISTORY.count===-1) {
+      localStorage.setItem('t3puzzle__DATA--FIRSTLOADED',str);
     } else {
-      localStorage.setItem('t3puzzle__DATA--LASTMODIFIED',JSON.stringify(value.detail.value));
+      localStorage.setItem('t3puzzle__DATA--LASTMODIFIED',str);
     }
-    counter++;
+                               
+    if (HISTORY.status!=='history') {
+      let json = JSON.parse(str);
+      delete json.orientation;
+      HISTORY.pointer++;
+      HISTORY.count = HISTORY.pointer;
+      localStorage.setItem('t3puzzle__DATA--HISTORY'+HISTORY.count,JSON.stringify(json));
+    }
+    HISTORY.status = 'change'; 
     
   }
   function loadData(){
@@ -138,9 +177,9 @@ div.menu {
     if (saved){
       console.log('load saved');
       selected = saved;
-    } else if (counter>1 && firstloaded) {
+    } else if (HISTORY.count>1 && firstloaded) {
       
-      console.log('load firstloaded:'+counter);
+      console.log('load firstloaded:'+HISTORY.count);
       selected = firstloaded;
        
     } else if (lastmodified) {
@@ -185,6 +224,28 @@ div.menu {
       localStorage.setItem('t3puzzle__DATA--LASTSAVED',lastmodified);
     }
   }
+  function backward () {
+    if (HISTORY.pointer <= 0) { return; }
+ 
+    HISTORY.status = 'history';
+    HISTORY.pointer--;
+    console.log(HISTORY.pointer);
+    let str = localStorage.getItem('t3puzzle__DATA--HISTORY'+HISTORY.pointer);
+    if (str) {
+      t3puzzle.setAttribute('loaddata',str);
+    }
+  }
+  function forward () {
+    if (HISTORY.pointer >= HISTORY.count) { return; }
+    
+    HISTORY.status = 'history';
+    HISTORY.pointer++;
+    console.log(HISTORY.pointer);
+    let str = localStorage.getItem('t3puzzle__DATA--HISTORY'+HISTORY.pointer);
+    if (str) {
+      t3puzzle.setAttribute('loaddata',str);
+    }
+  }
   /*
   // alternative change event
   let t3puzzle = document.getElementById('t3puzzle');
@@ -196,7 +257,6 @@ div.menu {
 <script src="https://unpkg.com/tapspace@1.2.0/dist/tapspace.min.js"></script>
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
-
 
   
 <script src="./t3.js"></script>
