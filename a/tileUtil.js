@@ -1,5 +1,6 @@
 export { tileUtil };
 function tileUtil() {
+  return function internal () {
   let me = null;
   let hasSnap = false;
   let space = null;
@@ -10,10 +11,14 @@ function tileUtil() {
   let puz = null;
   let dupHash = {};
   let INITTILECALLBACK = null;
+  let OFFSET = {
+    x: 0,
+    y: 0,
+  };
   let NOALL = {
     noMove: false,
     noFlip: false,
-  }
+  };
   let READONLY = {
     tiles: null,
     enabled: false
@@ -86,7 +91,6 @@ function tileUtil() {
           view.resetTransform();
           fit();
           view.rotate(view.atMid(),angle);
-          console.log('angle: '+angle);
         }
         // not to do initially shareStateAll()
         return true;
@@ -191,7 +195,6 @@ function tileUtil() {
     //
   }
   function processTap(thand, e, target, idx) {
-    console.log(NOALL.noFlip);
     if (NOALL.noFlip) { return;}
     let top = target.top;
     let oldData = detectData(top);
@@ -414,8 +417,57 @@ function tileUtil() {
     }
     READONLY.tiles[key] = touchtile;
   }
+   /*
+  function calcOffset () {
+    OFFSET.x = 0;
+    OFFSET.y = 0;
+    let node = me;//.previousElementSibling;
+    let paddingTop ='';
+    let marginTop='';
+    while (node) {
+      if (node && node.style) {
+        console.log(node.style.padding);
+        console.log(node.style.margin);
+        paddingTop = node.style['padding-top'];
+        marginTop = node.style['margin-top'];
+        if (paddingTop) {
+          OFFSET.y += parseInt(paddingTop,10);
+        }
+        if (marginTop) {
+          OFFSET.y += parseInt(marginTop,10);
+        }
+        node = node.previousElementSibling;
+      }
+    }
+    node = me;
+    while (node.tagName !=='BODY') {
+      if (!node.style) {
+        continue;
+      }
+      let paddingLeft = node.style['padding-left'];
+      let marginLeft = node.style['margin-left'];
+      let paddingTop = node.style['padding-top'];
+      let marginTop = node.style['margin-top'];
+      if (paddingLeft) {
+        OFFSET.x += parseInt(paddingLeft,10);
+      }
+      if (marginLeft) {
+        OFFSET.x += parseInt(marginLeft,10);
+      }
+      if (paddingTop) {
+        OFFSET.y += parseInt(paddingTop,10);
+      }
+      if (marginTop) {
+        OFFSET.y += parseInt(marginTop,10);
+      }
+      node = node.parentNode;
+    }
+    console.log(OFFSET.x+' '+OFFSET.y);
+  }
+  */
   function init(_me, _puz, callback) {
     me = _me;
+    //calcOffset();
     puz = _puz;
     me.attachShadow({ mode: "open" });
     // style
@@ -424,7 +476,13 @@ function tileUtil() {
     style.innerHTML = puz.getCSS()+getCSS();
     // mount point
     let div = document.createElement("div");
-    div.style = getStyle();
+    let width = me.getAttribute('width');
+    let height = me.getAttribute('height');
+    if (width && height) {
+      div.style = 'width:300px;height:300px;padding:0px;margin:0px;';
+    } else {
+      div.style = getStyle();
+    }
     me.shadowRoot.append(div);
     let commonStyle = getStyle();
     document.querySelector("html").style = commonStyle;
@@ -633,9 +691,6 @@ function tileUtil() {
           if (/_(\d+)$/.test(key)){
             id = RegExp.$1;
           }
-          if (!id || !(id in STATE)) {
-            console.log(id);
-          }
           if (id) {
             READONLY.tiles[key].stop();
           }
@@ -645,9 +700,6 @@ function tileUtil() {
           let id = null;
           if (/_(\d+)$/.test(key)){
             id = RegExp.$1;
-          }
-          if (!id || !(id in STATE)) {
-            console.log(id);
           }
           if (id){
             READONLY.tiles[key].resume();
@@ -717,8 +769,8 @@ function tileUtil() {
     let theta = Math.atan2(m.s,m.c);
     let cos = Math.cos(-theta);
     let sin = Math.sin(-theta);
-    let sx = (e.clientX - m.tx)/scale;
-    let sy = (e.clientY - m.ty)/scale;
+    let sx = (e.clientX -OFFSET.x - m.tx)/scale;
+    let sy = (e.clientY -OFFSET.y - m.ty)/scale;
     let dx = cos * sx - sin * sy;
     let dy = sin * sx + cos * sy; 
     let data = puz.detectPoint(dx,dy);
@@ -735,7 +787,6 @@ function tileUtil() {
   }  
   function noMoveAll(newValue) {
     NOALL.noMove = !!newValue;
-    console.log(NOALL.noMove);
   }
   function noFlipAll(newValue) {
     NOALL.noFlip = !!newValue;
@@ -791,10 +842,11 @@ function tileUtil() {
   }
   function getStyle() {
     return `
- margin:0;
- padding:0;
+ margin:0px;
+ padding:0px;
  width:100%;
  height:100%;
  `;
+  }
   }
 }
