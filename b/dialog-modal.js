@@ -10,9 +10,9 @@
       }
       attributeChangedCallback (name,oldValue,newValue){
         if (name==='open') {
-          open(this._area);
+          open(this, this._area);
         } else if (name==='close') {
-          close(this._area);
+          close(this, this._area);
         } else if (name==='width') {
           this.setWidth(newValue);
         } else if (name==='height') {
@@ -65,10 +65,10 @@
         this._wrapper.append(this._close);
 
         this._close.addEventListener("click", (e) => {
-          close(this._area);
+          close(this, this._area);
         });
         this._background.addEventListener("click", (e) => {
-          close(this._area);
+          close(this, this._area);
         });
       }
     }
@@ -118,14 +118,25 @@
 }
     </style>`;
   }
-  function open(modalArea) {
+  function open(me, modalArea) {
     if (!modalArea.classList.contains("is-show")) {
       modalArea.classList.add("is-show");
+      changeEvent (me,'open');
     }
   }
-  function close(modalArea) {
+  function close(me, modalArea) {
     if (modalArea.classList.contains("is-show")) {
       modalArea.classList.remove("is-show");
+      changeEvent (me,'close');
     }
+  }
+  function changeEvent (me,v) {
+      let value = {
+        detail: {
+          value: v
+        }
+      };
+      me.value = v;
+      me.dispatchEvent(new CustomEvent("change", value));    
   }
 })();
