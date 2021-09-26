@@ -52,10 +52,10 @@ div.menu {
   <br />
   <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px">
+  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px" class="ui__pc">
   </button-text>
 
-  <button-text text="⤿" onclick="rotate();" size="40px">
+  <button-text text="⤿" onclick="rotate();" size="40px" class="ui__pc">
   </button-text>
   <br />
   <button-text text="📖" onclick="loadData();" size="40px">
@@ -84,18 +84,20 @@ div.menu {
 
 <dialog-modal id="dialog__modal">
   <template>
-    <div id="dialog__src" style="width:200px;height:200px; background: rgb(200, 200, 200);"></div>
-    <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="200px" height="200px" mode="readonly" for="dialog__src">
+    <div id="dialog__src" style="width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="320px" height="320px" mode="readonly" for="dialog__src">
       <datalist>
         <grid-data>{"tiles":[]}
         </grid-data>
       </datalist>
     </grid-puzzle>
-    <div style="width:200px;height:90%;margin: 0px;text-align: center;">
+    <div style="width:100%;height:90%;margin: 0px;text-align: center;">
+      <div class="ui__pc">
       <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
       </button-text>
       <button-text text="⌖" onclick="dialog__t3work.setAttribute('fit','');" size="20px">
       </button-text>
+      </div>
       <form id="dialog__form" action="#" style="text-align:left;" onsubmit="submitImage();return false;">
         <input id="dialog__artist" name="artist" type="hidden">
         <input id="dialog__data" name="data" type="hidden">
@@ -108,8 +110,8 @@ div.menu {
           <input id="dialog__submit" type="submit" value="そうしん" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;">
         </div>
         <br />
-        <input id="dialog__title" required placeholder="だいめい" name="title" type="text" style="width:200px;margin-top:3px;border-width:1px;">
-        <textarea id="dialog__note" required placeholder="くふうしたところ" name="note" rows="3" style="width:200px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+        <input id="dialog__title" required placeholder="だいめい" name="title" type="text" style="width:100%;margin-top:3px;border-width:1px;">
+        <textarea id="dialog__note" required placeholder="くふうしたところ" name="note" rows="3" style="width:100%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
       </form>
       <div id="dialog__dst" style="display:none;">
       </div>
@@ -118,8 +120,13 @@ div.menu {
 
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded',
-                            bodyScrollPrevent);
+  document.addEventListener('DOMContentLoaded',()=>{
+                            bodyScrollPrevent();
+    if (('ontouchend' in document)) {
+      Array.from(document.querySelector['ui__pc']).map(u=>{
+        u.style['display'] = 'none';});
+    }
+  });
   
   let HISTORY = {
     max: 200,
@@ -140,9 +147,6 @@ div.menu {
 
   function dialogopen() {
     let lastmodified = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
-    if (!lastmodified) {
-      return;
-    }
     markArtist();
     let artist = localStorage.getItem('t3puzzle__INFO--ARTIST');
     if (artist) {
