@@ -1,23 +1,3 @@
-
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<style>body {
-  background:rgb(200,200,200);
-}
-div.menu {
-  position: absolute;
-  top: 0px;
-  padding-left: 1em;
-  z-index: 5;
-}
-</style>
-</head>
-<body>
-  
 <div class="menu">
   <pallete-text id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
     <datalist>
@@ -52,25 +32,26 @@ div.menu {
   <br />
   <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px" class="ui__pc">
-  </button-text>
 
-  <button-text text="⤿" onclick="rotate();" size="40px" class="ui__pc">
-  </button-text>
-  <br />
   <button-text text="📖" onclick="loadData();" size="40px">
   </button-text>
 
   <button-text text="🔖" onclick="saveData()" size="40px">
   </button-text>
-
+  <br />
   <button-text text="↑⎵" onclick="dialogopen()" size="40px">
 
   </button-text>
   <button-text text="↤" onclick="backward();" size="40px">
   </button-text>
   <button-text text="↦" onclick="forward();" size="40px">
+  </button-text>  
+  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px" class="ui__pc">
   </button-text>
+
+  <button-text text="⤿" onclick="rotate();" size="40px" class="ui__pc">
+  </button-text>
+
 </div>
 <grid-puzzle style="margin-left:0px;" id="t3puzzle" onChange="processData(this.value)">
   <datalist>
@@ -110,8 +91,8 @@ div.menu {
           <input id="dialog__submit" type="submit" value="そうしん" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;">
         </div>
         <br />
-        <input id="dialog__title" required placeholder="だいめい" name="title" type="text" style="width:100%;margin-top:3px;border-width:1px;">
-        <textarea id="dialog__note" required placeholder="くふうしたところ" name="note" rows="3" style="width:100%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+        <input id="dialog__title" required placeholder="だいめい" name="title" type="text" style="width:95%;margin-top:3px;border-width:1px;">
+        <textarea id="dialog__note" required placeholder="くふうしたところ" name="note" rows="3" style="width:95%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
       </form>
       <div id="dialog__dst" style="display:none;">
       </div>
@@ -123,7 +104,7 @@ div.menu {
   document.addEventListener('DOMContentLoaded',()=>{
                             bodyScrollPrevent();
     if (('ontouchend' in document)) {
-      Array.from(document.querySelector['ui__pc']).map(u=>{
+      Array.from(document.querySelectorAll('.ui__pc')).map(u=>{
         u.style['display'] = 'none';});
     }
   });
@@ -423,7 +404,3 @@ div.menu {
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
 <script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
-  
-<script src="./t3.js"></script>
-</body>
-</html>
