@@ -17,127 +17,273 @@ div.menu {
 </style>
 </head>
 <body>
-
 <div class="menu">
-<pallete-text  id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
-  <datalist>
-    <option value="readonly">⤧</option>
-  
-    <option value="anchor">⚓</option>  <option disabled></option>
-    <option value="lock">🔒</option>
-     <option value="hand">👆</option>
-  </datalist>
-</pallete-text>
+  <pallete-text id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
+    <datalist>
+      <option value="readonly">⤧</option>
 
-<pallete-text  id="nomoveall" onchange="t3puzzle.setAttribute('nomoveall', this.value);">
-  <datalist>
-    <option value="nomoveall">x</option>
-  </datalist>
-</pallete-text>
-<pallete-text  id="noflipall" onchange="t3puzzle.setAttribute('noflipall', this.value);">
-  <datalist>
-    <option value="noflipall">x</option>
-  </datalist>
-</pallete-text>
-<pallete-text onchange="if(this.value) {mode.setAttribute('value', '');t3puzzle.setAttribute('color', this.value);}">
-  <datalist>
-    <option value="blue"></option>
-    <option value="green"></option>
-    <option disabled></option>
-    <option value="pink"></option>
-    <option value="mint"></option>
-  </datalist>
-</pallete-text>
-  <br/>
-   <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
-  </button-text>
-  <button-text text="👁" onclick="t3puzzle.setAttribute('fit','');" size="40px">
-  </button-text>
+      <option value="anchor">⚓</option>
+      <option disabled></option>
+      <option value="lock">🔒</option>
+      <option value="hand">👆</option>
+    </datalist>
+  </pallete-text>
 
-   <button-text text="⤿"
-                      onclick="rotate();" size="40px">
+  <pallete-text id="nomoveall" onchange="t3puzzle.setAttribute('nomoveall', this.value);">
+    <datalist>
+      <option value="nomoveall">x</option>
+    </datalist>
+  </pallete-text>
+  <pallete-text id="noflipall" onchange="t3puzzle.setAttribute('noflipall', this.value);">
+    <datalist>
+      <option value="noflipall">x</option>
+    </datalist>
+  </pallete-text>
+  <pallete-text onchange="if(this.value) {mode.setAttribute('value', '');t3puzzle.setAttribute('color', this.value);}">
+    <datalist>
+      <option value="blue"></option>
+      <option value="green"></option>
+      <option disabled></option>
+      <option value="pink"></option>
+      <option value="mint"></option>
+    </datalist>
+  </pallete-text>
+  <br />
+  <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <br/>
-   <button-text text="📖"
-                      onclick="loadData();" size="40px">
+  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px">
   </button-text>
 
-   <button-text text="🔖"     onclick="saveData()" size="40px">
-</button-text>
-  
-    <button-text text="📝"     onclick="console.log(1);" size="40px">
-</button-text>
-   <button-text text="↤"     onclick="backward();" size="40px">
-</button-text>
-  <button-text text="↦"     onclick="forward();" size="40px">
-</button-text>
+  <button-text text="⤿" onclick="rotate();" size="40px">
+  </button-text>
+  <br />
+  <button-text text="📖" onclick="loadData();" size="40px">
+  </button-text>
+
+  <button-text text="🔖" onclick="saveData()" size="40px">
+  </button-text>
+
+  <button-text text="↑⎵" onclick="dialogopen()" size="40px">
+
+  </button-text>
+  <button-text text="↤" onclick="backward();" size="40px">
+  </button-text>
+  <button-text text="↦" onclick="forward();" size="40px">
+  </button-text>
 </div>
 <grid-puzzle style="margin-left:0px;" id="t3puzzle" onChange="processData(this.value)">
   <datalist>
     <grid-data>{
-"orientation":2.094388031086739,
-"tiles":[[0,0,0,0,0,0,1],[0,0,1,0,0,0,1],
+      "orientation":2.094388031086739,
+      "tiles":[[0,0,0,0,0,0,1],[0,0,1,0,0,0,1],
       [1,0,0,0,0,0,0],[1,0,1,0,0,0,0],[2,0,1,2,1,0,0]]}
     </grid-data>
   </datalist>
 </grid-puzzle>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+
+<dialog-modal id="dialog__modal">
+  <template>
+    <div id="dialog__src" style="width:200px;height:200px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="200px" height="200px" mode="readonly" for="dialog__src">
+      <datalist>
+        <grid-data>{"tiles":[]}
+        </grid-data>
+      </datalist>
+    </grid-puzzle>
+    <div style="width:200px;height:90%;margin: 0px;text-align: center;">
+      <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
+      </button-text>
+      <button-text text="⌖" onclick="dialog__t3work.setAttribute('fit','');" size="20px">
+      </button-text>
+      <form id="dialog__form" action="#" style="text-align:left;" onsubmit="submitImage();return false;">
+        <input id="dialog__artist" name="artist" type="hidden">
+        <input id="dialog__data" name="data" type="hidden">
+        <input id="dialog__filename" name="filename" type="hidden">
+        <input id="dialog__type" name="type" value="image/png" type="hidden">
+        <input id="dialog__content" name="content" type="hidden">
+        <label for="dialog__age">ねんれい:</label>
+        <input required id="dialog__age" name="age" type="number" min="0" max="150" style="width:45px;">
+        <div style="display:inline-block;margin-top:10px;border-width:1px;">
+          <input id="dialog__submit" type="submit" value="そうしん" style="background:#4676FF;color:white;border-radius: 5px;border-width:0px;">
+        </div>
+        <br />
+        <input id="dialog__title" required placeholder="だいめい" name="title" type="text" style="width:200px;margin-top:3px;border-width:1px;">
+        <textarea id="dialog__note" required placeholder="くふうしたところ" name="note" rows="3" style="width:200px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+      </form>
+      <div id="dialog__dst" style="display:none;">
+      </div>
+  </template>
+</dialog-modal>
+
+</div>
 <script>
-  
   let HISTORY = {
     max: 200,
     count: -1,
     pointer: -1,
-    status: ''
+    status: '',
+    save: 10,
   };
   let SAVE = {
     max: 10,
   }
-  function rotate( ) {   
-
-   if (HISTORY.status!=='rotate') {
-    t3puzzle.setAttribute('fit','');
-   }
-   t3puzzle.setAttribute('rotate',Math.PI/3);
-   HISTORY.status = 'rotate';
+  let UPLOAD = {
+    imageNode: null,
+    lastImageNode: null,
+    submitMessage: '',
+    url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
   }
-  function emptyIndexFromLocalStorage(){
-    let dates=[];
-    let empty=[];
-    let dihash = {};
-    for (let i=0;i<SAVE.max;i++) {
-      let item = localStorage.getItem('t3puzzle__DATA--'+i);
+
+  function dialogopen() {
+    let lastmodified = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
+    if (!lastmodified) {
+      return;
+    }
+    markArtist();
+    let artist = localStorage.getItem('t3puzzle__INFO--ARTIST');
+    if (artist) {
+      dialog__artist.value = artist;
+    }
+    let age = localStorage.getItem('t3puzzle__INFO--AGE');
+    if (age) {
+      dialog__age.value = age;
+    }
+    dialog__data.value = lastmodified;
+    dialog__title.value = '';
+    dialog__note.value = ''; 
+    dialog__t3work.setAttribute('loaddata', lastmodified);
+   
+    if (!UPLOAD.submitMessage) {
+      UPLOAD.submitMessage = dialog__submit.value;
+    } else {
+      dialog__submit.value = UPLOAD.submitMessage;
+      dialog__submit.removeAttribute('disabled');
+    }
+    dialog__modal.setAttribute('open', '');
+  }
+
+  function submitImage() {
+    dialog__submit.disabled = 'disable';
+    dialog__submit.value = '.......';
+    localStorage.setItem('t3puzzle__INFO--AGE',dialog__age.value);
       
+    saveImage(() => {
+      dialog__filename.setAttribute('value',
+        't3puzzle__' + dialog__artist.value + '__' + Date.now() + '.png');
+      let dst_img = dialog__dst.querySelector('img');
+      dialog__content.setAttribute('value', dst_img.src.split(',')[1]);
+      /* dialog__filename.setAttribute('value','b.txt');
+       dialog__type.setAttribute('value','text/plain');
+       dialog__content.setAttribute('value','YXJha2k=');
+       */
+      try {
+        fetch_upload(
+          (json) => {
+            dialog__submit.value = '😄';
+          }, (e) => {
+            dialog__submit.value = '😨';
+          }
+        );
+      } catch (e) {
+        dialog__submit.value = '😨';
+        console.log(e);
+      }
+    }, () => {
+      dialog__submit.value = '🤔';
+    })
+  }
+
+  function fetch_upload(successCallback, errorCallback) {
+    const body = new FormData(dialog__form);
+    fetch(UPLOAD.url, {
+        method: 'POST',
+        body: body,
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if (successCallback) {
+          successCallback(j);
+        }
+      }).catch(e => {
+        if (errorCallback) {
+          errorCallback(e);
+        }
+      });
+  }
+
+  function saveImage(successCallback, errorCallback) {
+    (async () => {
+      try {
+        UPLOAD.imageNode = new Image();
+        UPLOAD.imageNode.src = await domtoimage.toPng(dialog__src);
+        if (UPLOAD.lastImageNode) {
+          dialog__dst.removeChild(UPLOAD.lastImageNode);
+        }
+        dialog__dst.appendChild(UPLOAD.imageNode);
+        UPLOAD.lastImageNode = UPLOAD.imageNode;
+        successCallback();
+      } catch (e) {
+        console.log('e::' + e);
+        errorCallback();
+      }
+    })();
+  }
+
+  function markArtist() {
+    let artist = localStorage.getItem('t3puzzle__INFO--ARTIST');
+    if (!artist) {
+      localStorage.setItem('t3puzzle__INFO--ARTIST', Math.random().toString(32).substring(2));
+    }
+  }
+  /* ------ UI ------ */
+  function rotate(_item) {
+    let item = _item ? _item : t3puzzle;
+    if (HISTORY.status !== 'rotate') {
+      item.setAttribute('fit', '');
+    }
+    //t3puzzle.setAttribute('rotate',Math.PI/3);
+    item.set_rotate(Math.PI / 3);
+    HISTORY.status = 'rotate';
+  }
+  /* ------ SAVE ------ */
+  function emptyIndexFromLocalStorage() {
+    let dates = [];
+    let empty = [];
+    let dihash = {};
+    for (let i = 0; i < SAVE.max; i++) {
+      let item = localStorage.getItem('t3puzzle__DATA--' + i);
       if (!item) {
         return i;
       } else {
         try {
           let json = JSON.parse(item);
-	  let date = json.date;
-	  dates.push(date);
+          let date = json.date;
+          dates.push(date);
           dihash[date] = i;
         } catch (e) {
           return i;
         }
       }
     }
-    if(dates.length===SAVE.max) {
+    if (dates.length === SAVE.max) {
       dates.sort();
       return dihash[dates[0]];
     }
   }
-  function scanLocalStorage(){
-    let MAX = 10;
-    let dates=[];
+  /* ------ SAVE ------ */
+  function scanLocalStorage() {
+    let dates = [];
     let ddhash = {};
-    for (let i=0;i<SAVE.max;i++) {
-      let item = localStorage.getItem('t3puzzle__DATA--'+i);
+    for (let i = 0; i < SAVE.max; i++) {
+      let item = localStorage.getItem('t3puzzle__DATA--' + i);
       if (!item) {
         continue;
       } else {
         try {
           let json = JSON.parse(item);
-	        let date = json.date;
+          let date = json.date;
           ddhash[date] = json.data;
         } catch (e) {
           continue;
@@ -146,67 +292,63 @@ div.menu {
     }
     return ddhash;
   }
-  function processData(value) {localStorage.setItem('DEBUG',JSON.stringify(
+  /* ------ SAVE & HISTORY ------ */
+  function processData(value) {
+    localStorage.setItem('DEBUG', JSON.stringify(
       value.detail.debug));
-    
     let firstloaded = localStorage.getItem('t3puzzle__DATA--FIRSTLOADED');
     let str = JSON.stringify(value.detail.value);
-    if (!firstloaded || HISTORY.count===-1) {
-      localStorage.setItem('t3puzzle__DATA--FIRSTLOADED',str);
+    if (!firstloaded || HISTORY.count === -1) {
+      localStorage.setItem('t3puzzle__DATA--FIRSTLOADED', str);
     } else {
-      localStorage.setItem('t3puzzle__DATA--LASTMODIFIED',str);
+      localStorage.setItem('t3puzzle__DATA--LASTMODIFIED', str);
     }
-                               
-    if (HISTORY.status!=='history') {
+    if (HISTORY.status !== 'history') {
       let json = JSON.parse(str);
       delete json.orientation;
       HISTORY.pointer++;
       HISTORY.count = HISTORY.pointer;
-      localStorage.setItem('t3puzzle__DATA--HISTORY'+HISTORY.count,JSON.stringify(json));
+      localStorage.setItem('t3puzzle__DATA--HISTORY' + HISTORY.count, JSON.stringify(json));
     }
-    HISTORY.status = 'change'; 
-    
+    HISTORY.status = 'change';
   }
-  function loadData(){
-    let selected = null; 
+  /* ------ SAVE & HISTORY ------ */
+  function loadData() {
+    let selected = null;
     let saved = localStorage.getItem('t3puzzle__DATA--LASTSAVED');
     let firstloaded = localStorage.getItem('t3puzzle__DATA--FIRSTLOADED');
     let lastmodified = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
-
-    if (saved){
+    if (saved) {
       console.log('load saved');
       selected = saved;
-    } else if (HISTORY.count>1 && firstloaded) {
-      
-      console.log('load firstloaded:'+HISTORY.count);
+    } else if (HISTORY.count > 1 && firstloaded) {
+      console.log('load firstloaded:' + HISTORY.count);
       selected = firstloaded;
-       
     } else if (lastmodified) {
-        console.log('load lastmodified');
-        selected = lastmodified;
+      console.log('load lastmodified');
+      selected = lastmodified;
     } else if (firstloaded) {
-      
       console.log('load firstloaded:000');
-      selected = firstloaded; 
+      selected = firstloaded;
     } else {
-        console.log('load none');
-        selected = '{ "tiles": []}';
-     
+      console.log('load none');
+      selected = '{ "tiles": []}';
     }
-    t3puzzle.setAttribute('loaddata',selected);
-    localStorage.setItem('t3puzzle__DATA--LASTLOADED',selected);
+    t3puzzle.setAttribute('loaddata', selected);
+    localStorage.setItem('t3puzzle__DATA--LASTLOADED', selected);
     let ddhash = scanLocalStorage();
-    let sort=[];
+    let sort = [];
     for (let key in ddhash) {
       sort.push(key);
       //console.log(key+' '+ddhash[key]);
     }
     sort.sort();
-    sort.map(k=>{
-      console.log(k+' '+ddhash[k]);
+    sort.map(k => {
+      console.log(k + ' ' + ddhash[k]);
     });
   }
-  function saveData () { 
+  /* ------ SAVE ------ */
+  function saveData() {
     let lastmodified = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
     if (!lastmodified) {
       return;
@@ -214,49 +356,47 @@ div.menu {
     let lastsaved = localStorage.getItem('t3puzzle__DATA--LASTSAVED');
     if (lastmodified != lastsaved) {
       let idx = emptyIndexFromLocalStorage();
-      
       let value = {
         date: Date.now(),
         data: JSON.parse(lastmodified)
       };
-      localStorage.setItem('t3puzzle__DATA--'+idx,JSON.stringify(value));
-      localStorage.setItem('t3puzzle__DATA--LASTSAVED',lastmodified);
+      localStorage.setItem('t3puzzle__DATA--' + idx, JSON.stringify(value));
+      localStorage.setItem('t3puzzle__DATA--LASTSAVED', lastmodified);
     }
   }
-  function backward () {
-    if (HISTORY.pointer <= 0) { return; }
- 
+  /* ------ HISTORY ------ */
+  function backward() {
+    if (HISTORY.pointer <= 0) {
+      return;
+    }
     HISTORY.status = 'history';
     HISTORY.pointer--;
     console.log(HISTORY.pointer);
-    let str = localStorage.getItem('t3puzzle__DATA--HISTORY'+HISTORY.pointer);
+    let str = localStorage.getItem('t3puzzle__DATA--HISTORY' + HISTORY.pointer);
     if (str) {
-      t3puzzle.setAttribute('loaddata',str);
+      t3puzzle.setAttribute('loaddata', str);
     }
   }
-  function forward () {
-    if (HISTORY.pointer >= HISTORY.count) { return; }
-    
+  /* ------ HISTORY ------ */
+  function forward() {
+    if (HISTORY.pointer >= HISTORY.count) {
+      return;
+    }
     HISTORY.status = 'history';
     HISTORY.pointer++;
     console.log(HISTORY.pointer);
-    let str = localStorage.getItem('t3puzzle__DATA--HISTORY'+HISTORY.pointer);
+    let str = localStorage.getItem('t3puzzle__DATA--HISTORY' + HISTORY.pointer);
     if (str) {
-      t3puzzle.setAttribute('loaddata',str);
+      t3puzzle.setAttribute('loaddata', str);
     }
   }
-  /*
-  // alternative change event
-  let t3puzzle = document.getElementById('t3puzzle');
-  t3puzzle.addEventListener('change',e=>{
-    console.log(e.detail.state);
-  });
-  */
 </script>
-<script src="https://unpkg.com/tapspace@1.2.0/dist/tapspace.min.js"></script>
+<script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
+
+<script src="https://www.t3puzzle.com/b/dom-to-image.min.js"></script>
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
-
+<script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
   
 <script src="./t3.js"></script>
 </body>
