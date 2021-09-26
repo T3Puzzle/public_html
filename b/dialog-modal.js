@@ -5,7 +5,7 @@
      
       static get observedAttributes ( ){
         return [
-          'open','close'
+          'open','close','width','height'
         ];
       }
       attributeChangedCallback (name,oldValue,newValue){
@@ -13,9 +13,24 @@
           open(this._area);
         } else if (name==='close') {
           close(this._area);
+        } else if (name==='width') {
+          this.setWidth(newValue);
+        } else if (name==='height') {
+          this.setHeight(newValue);
+        }
+      }      
+      setWidth (newValue) {
+        if (newValue){
+          this._wrapper.style['width'] = newValue;
         }
       }
-      connectedCallback () {
+      setHeight (newValue) {
+        if (newValue){
+          this._wrapper.style['height'] = newValue;
+        }
+      }
+      constructor () {
+        super();
         let html = this.querySelector("template").innerHTML;
         
         this._root = document.createElement("div");
@@ -31,6 +46,17 @@
         this._close.innerHTML = "×";
 
         this.insertAdjacentElement('afterend',this._root);
+        
+        this.WIDTH = '200px';
+        let width = this.getAttribute('width');
+        if (width) {
+          this.WIDTH = width;
+        }
+        this.HEIGHT = '600px';
+        let height = this.getAttribute('height');
+        if (height) {
+          this.HEIGHT = height;
+        }
         this._root.insertAdjacentHTML("beforeend", getStyle());
         this._root.append(this._area);
         this._area.append(this._background);
@@ -72,9 +98,8 @@
   top: 50%;
   left: 50%;
   transform:translate(-50%,-50%);
-  width: 220px;
-  height: 90%;
-  max-height: 500px;
+  width: ${this.WIDTH};
+  height: ${this.HEIGHT};
   padding: 10px 30px;
   background-color: #fff;
   overflow: auto;
