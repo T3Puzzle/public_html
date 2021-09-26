@@ -11,13 +11,13 @@
       attributeChangedCallback (name,oldValue,newValue){
         if (name==='open') {
           open(this._area);
-        } else if (name==='close') {
+        } else if (name==='open') {
           close(this._area);
         }
       }
       connectedCallback () {
         let html = this.querySelector("template").innerHTML;
-        
+        let shadowRoot = this.attachShadow({ mode: "open" });
         this._root = document.createElement("div");
         this._area = document.createElement("div");
         this._background = document.createElement("div");
@@ -30,7 +30,7 @@
         this._close.classList.add("closeModal");
         this._close.innerHTML = "×";
 
-        this.insertAdjacentElement('afterend',this._root);
+        shadowRoot.append(this._root);
         this._root.insertAdjacentHTML("beforeend", getStyle());
         this._root.append(this._area);
         this._area.append(this._background);
@@ -70,8 +70,8 @@
 .modalWrapper {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform:translate(-50%,-50%);
+  left:  0px;/*50%;*/
+  /*transform:translate(-50%,-50%);*/
   width: 220px;
   height: 90%;
   max-height: 500px;
