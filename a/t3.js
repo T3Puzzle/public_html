@@ -33,6 +33,7 @@ function define(util, puz) {
         super();
         this.util = util();
         this.puz = puz();
+        this.set_rotate = (val)=>this.util.rotate(val);
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
