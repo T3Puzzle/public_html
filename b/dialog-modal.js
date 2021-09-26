@@ -5,7 +5,7 @@
      
       static get observedAttributes ( ){
         return [
-          'open','close','width','height'
+          'open','close',
         ];
       }
       attributeChangedCallback (name,oldValue,newValue){
@@ -13,22 +13,8 @@
           open(this, this._area);
         } else if (name==='close') {
           close(this, this._area);
-        } else if (name==='width') {
-          this.setWidth(newValue);
-        } else if (name==='height') {
-          this.setHeight(newValue);
         }
       }      
-      setWidth (newValue) {
-        if (newValue){
-          this._wrapper.style['width'] = newValue;
-        }
-      }
-      setHeight (newValue) {
-        if (newValue){
-          this._wrapper.style['height'] = newValue;
-        }
-      }
       constructor () {
         super();
         let html = this.querySelector("template").innerHTML;
@@ -47,16 +33,6 @@
 
         this.insertAdjacentElement('afterend',this._root);
         
-        this.WIDTH = '200px';
-        let width = this.getAttribute('width');
-        if (width) {
-          this.WIDTH = width;
-        }
-        this.HEIGHT = '600px';
-        let height = this.getAttribute('height');
-        if (height) {
-          this.HEIGHT = height;
-        }
         this._root.insertAdjacentHTML("beforeend", getStyle());
         this._root.append(this._area);
         this._area.append(this._background);
@@ -98,9 +74,7 @@
   top: 50%;
   left: 50%;
   transform:translate(-50%,-50%);
-  width: ${this.WIDTH};
-  height: ${this.HEIGHT};
-  padding: 10px 30px;
+  padding: 10px 10px;
   background-color: #fff;
   overflow: auto;
 }
