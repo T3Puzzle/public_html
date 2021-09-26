@@ -16,7 +16,7 @@
         }
       }
       connectedCallback () {
-        let html = this.querySelector("template").innerHTML;
+        let html = this.querySelector("datalist").innerHTML;
         
         this._root = document.createElement("div");
         this._area = document.createElement("div");
