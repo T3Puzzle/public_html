@@ -81,9 +81,10 @@
 
 .closeModal {
   position: absolute;
-  top: 0.5rem;
-  font-size: 20px;
-  right: 1rem;
+  top: 0rem;
+  right: 0.5rem;
+  font-size: 25px;
+  color: red;
   cursor: pointer;
 }
 
