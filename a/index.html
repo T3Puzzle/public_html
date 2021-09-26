@@ -17,7 +17,7 @@ div.menu {
 </style>
 </head>
 <body>
-  
+
 <div class="menu">
   <pallete-text id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
     <datalist>
@@ -143,6 +143,7 @@ div.menu {
     imageNode: null,
     lastImageNode: null,
     submitMessage: '',
+    submitEvent: '',
     url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
   }
 
@@ -163,8 +164,10 @@ div.menu {
     dialog__t3work.setAttribute('loaddata', lastmodified);
     if (!UPLOAD.submitMessage) {
       UPLOAD.submitMessage = dialog__submit.value;
+      UPLOAD.submitEvent = dialog__form.getAttribute('onsubmit');
     } else {
       dialog__submit.value = UPLOAD.submitMessage;
+      dialog__form.setAttribute('onsubmit',UPLOAD.submitEvent);
       dialog__submit.removeAttribute('disabled');
     }
     dialog__modal.setAttribute('open', '');
@@ -186,7 +189,9 @@ div.menu {
       try {
         fetch_upload(
           (json) => {
-            dialog__submit.value = '😄';
+            dialog__submit.value = 'とじる';
+            dialog__submit.removeAttribute('disabled');
+            dialog__form.setAttribute('onsubmit','dialog__modal.setAttribute("close","");return false;');
           }, (e) => {
             dialog__submit.value = '😨';
           }
@@ -424,7 +429,7 @@ div.menu {
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
 <script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
-
+  
 <script src="./t3.js"></script>
 </body>
 </html>
