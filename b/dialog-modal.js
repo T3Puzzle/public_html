@@ -11,13 +11,13 @@
       attributeChangedCallback (name,oldValue,newValue){
         if (name==='open') {
           open(this._area);
-        } else if (name==='open') {
+        } else if (name==='close') {
           close(this._area);
         }
       }
       connectedCallback () {
         let html = this.querySelector("template").innerHTML;
-        let shadowRoot = this.attachShadow({ mode: "open" });
+        
         this._root = document.createElement("div");
         this._area = document.createElement("div");
         this._background = document.createElement("div");
@@ -30,7 +30,7 @@
         this._close.classList.add("closeModal");
         this._close.innerHTML = "×";
 
-        shadowRoot.append(this._root);
+        this.insertAdjacentElement('afterend',this._root);
         this._root.insertAdjacentHTML("beforeend", getStyle());
         this._root.append(this._area);
         this._area.append(this._background);
