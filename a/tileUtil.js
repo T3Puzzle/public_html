@@ -34,6 +34,12 @@ function tileUtil() {
       ground: null,
       enabled: false
     };
+    let LASTSTATE = {
+      l: 0,
+      m: 1, // fujisan by default
+      n: 0,
+      o: 0,
+    }
     let STATE = {};
     let targetHash = {};
     let idHash = {};
@@ -309,6 +315,13 @@ function tileUtil() {
         //
         console.log("never happen:set:" + id);
       }
+      LASTSTATE.l = state.l;
+      LASTSTATE.m = state.m;
+      LASTSTATE.n = state.n;
+      LASTSTATE.o = state.o;
+    }
+    function getLastPartialState() {
+      return LASTSTATE;
     }
     function getState(id) {
       if (id in STATE) {
@@ -532,7 +545,7 @@ function tileUtil() {
         root
       ).setSize(0, 0);
 
-      puz.init(view, { set: setPartialState, get: getState });
+      puz.init(view, { set: setPartialState, get: getState, last: getLastPartialState});
       callback();
       final();
       shareStateAll();
@@ -586,6 +599,10 @@ function tileUtil() {
       fit();
       let touch = new tapspace.Touchable(view, view);
       touch.start({ translate: true, rotate: true, scale: true });
+      touch.on("gestureend", (e) =>{
+        let value = { detail: { value: true } };
+        me.dispatchEvent(new CustomEvent("click", value));
+      });
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
