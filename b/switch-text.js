@@ -64,7 +64,6 @@
           if (!text){
             text = this.__TEXT__DEFAULT;
           }
-          console.log(text);
           Array.from(text).map((t) => {
             let divButton = item.querySelector("div.button");
             divButton.style["width"] = this.__SIZE;
