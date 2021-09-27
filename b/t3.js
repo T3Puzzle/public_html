@@ -18,52 +18,62 @@ function define(util, puz) {
     "grid-puzzle",
     class extends HTMLElement {
       static get observedAttributes() {
-        return ["color", "mode", "flipall","fit","loaddata"];
+        return [
+          "color",
+          "mode",
+          "flipall",
+          "fit",
+          "rotate",
+          "loaddata",
+          "nomoveall",
+          "noflipall"
+        ];
+      }
+      constructor() {
+        super();
+        this.util = util();
+        this.puz = puz();
+        this.mode = "";
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
-          puz.setNowColor(newValue);
+          this.puz.setNowColor(newValue);
         } else if (name === "mode") {
-          util.changeMode(oldValue,newValue);
+          this.util.changeMode(oldValue, newValue);
+          this.mode = newValue;
         } else if (name === "flipall") {
-          util.flipAll();
+          this.util.flipAll();
         } else if (name === "fit") {
-          util.fit();
+          this.util.fit();
+        } else if (name === "rotate") {
+          this.util.rotate(newValue);
         } else if (name === "loaddata") {
-          util.loadData(newValue);
+          this.util.resetAndloadData(newValue);
+        } else if (name === "nomoveall") {
+          this.util.noMoveAll(newValue);
+        } else if (name === "noflipall") {
+          this.util.noFlipAll(newValue);
         }
       }
       connectedCallback() {
-        util.init(this, puz, process);
+        this.util.init(this, this.puz, () => {
+          // customize initial position
+          this.util.load({}, (data, opt) =>
+            this.util.initTile(
+              data,
+              (ev, target, idx) => this.puz.switchFace(target, idx),
+              (ev, target) => {},
+              (ev, target) => {},
+              (target, data) => {
+                this.util.placeTile(target, data);
+              },
+              opt
+            )
+          );
+        });
       }
     }
   );
-  function process() {
-    // customize initial position
-    util.load({}, (data, opt) =>
-      util.initTile(
-        data,
-        tapHandler,
-        gstart,
-        gend,
-        (target, data) => {
-          util.placeTile(target, data);
-        },
-        opt
-      )
-    );
-  }
-  function gstart(ev, target) {
-    // customzie on gesturestart event
-  }
-  function gend(ev, target) {
-    // customize gestureend event
-  }
-  function tapHandler(ev, target, idx) {
-    // customize effect on tap panels.
-    
-    puz.switchFace(target, idx);
-  }
 }
 function importModules(moduleName, first, second, callback) {
   let ret = null;
