@@ -194,7 +194,7 @@ function t3Util() {
         k = 1;
       }
       let l = 0;
-      let m = 1; // default
+      let m = stateAccess.last().m; // default
       let n = TILECOLOR_NOW;
       let f0, f1, f2;
       if (k === 0) {
