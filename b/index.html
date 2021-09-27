@@ -12,61 +12,437 @@ div.menu {
   position: absolute;
   top: 0px;
   padding-left: 1em;
-  z-index: 100;
+  z-index: 5;
 }
 </style>
 </head>
 <body>
-
 <div class="menu">
-  <h1>T3 Puzzle</h1>
-<pallete-text onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
-  <datalist>
-    <option value="readonly">⤧</option>
-    <option value="anchor">⚓</option>
-    <option value="hand">👆</option>
-  </datalist>
-</pallete-text>
-<pallete-text onchange="t3puzzle.setAttribute('color', this.value);">
-  <datalist>
-    <option value="blue"></option>
-    <option value="green"></option>
-    <option disabled></option>
-    <option value="pink"></option>
-    <option value="mint"></option>
-  </datalist>
-</pallete-text>
-   <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
+  <button-text text="⤧⤩" onclick="t3puzzle.setAttribute('mode','readonly');" size="40px">
   </button-text>
-  <button-text text="👁" onclick="t3puzzle.setAttribute('fit','');" size="40px">
+
+  <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
+    <datalist>
+      <option value="blue"></option>
+      <option value="green"></option>
+      <option value="pink"></option>
+      <option value="mint"></option>
+    </datalist>
+  </switch-text>
+  <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
   </button-text>
-  <button-text text="👁" onclick="t3puzzle.setAttribute('loaddata',localStorage.getItem('t3puzzle__LATEST'));" size="40px">
+
+  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px" class="ui__pc">
   </button-text>
-   <button-text text="👁" onclick="console.log(t3puzzle.getAttribute('viewpoint'));" size="40px">
+
+  <button-text text="⤿" onclick="rotate();" size="40px" class="ui__pc">
+  </button-text>
+
+  <button-text text="↑⎵" onclick="dialogopen(
+                                  'upload',
+                                  dialog__form__modal,
+                                  dialog__t3work, 
+                                  dialog__form,
+                                  UPLOAD)" size="40px">
+  </button-text>
+  <button-text text="📖" onclick="dialogopen(
+                                  'load',
+                                  load__form__modal,
+                                  load__t3work, 
+                                  load__form,
+                                  LOAD)" size="40px">
   </button-text>
 </div>
-<grid-puzzle mode="hand" id="t3puzzle" onChange="localStorage.setItem('DEBUG',JSON.stringify(this.value.detail.debug));localStorage.setItem('t3puzzle__LATEST',this.value.detail.value);">
+<grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)" onclick="window.setTimeout(()=>{t3puzzle.setAttribute('mode','hand')},500);">
   <datalist>
-    <grid-data>
-[[0,0,0,0,0,0],[0,0,1,0,0,0],[1,0,0,0,0,0],[1,0,1,0,0,0],[2,0,1,2,1,0]]
+    <grid-data>{
+      "orientation":2.094388031086739,
+      "tiles":[[0,0,0,0,0,0,1],[0,0,1,0,0,0,1],
+      [1,0,0,0,0,0,0],[1,0,1,0,0,0,0],[2,0,1,2,1,0,0]]}
     </grid-data>
   </datalist>
 </grid-puzzle>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
-<script>
-  /*
-  // alternative change event
-  let t3puzzle = document.getElementById('t3puzzle');
-  t3puzzle.addEventListener('change',e=>{
-    console.log(e.detail.state);
-  });
-  */
-</script>
-<script src="./tapspace.min.js"></script>
-<script src="./buttonText.js"></script>
-<script src="./palleteText.js"></script>
+<dialog-modal id="dialog__form__modal">
+  <template>
+    <div id="dialog__src" style="width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="320px" height="320px" mode="readonly" for="dialog__src">
+      <datalist>
+        <grid-data>{"tiles":[]}
+        </grid-data>
+      </datalist>
+    </grid-puzzle>
+    <div style="width:100%;height:90%;margin: 0px;text-align: center;">
+      <div class="ui__pc">
+        <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
+        </button-text>
+        <button-text text="⌖" onclick="dialog__t3work.setAttribute('fit','');" size="20px">
+        </button-text>
+      </div>
+      <form id="dialog__form" action="#" style="text-align:left;" onsubmit="submitImage(dialog__src,dialog__dst,dialog__form, UPLOAD);return false;">
+        <input name="artist" type="hidden">
+        <input name="data" type="hidden">
+        <input name="filename" type="hidden">
+        <input name="type" value="image/png" type="hidden">
+        <input name="content" type="hidden">
+        <label for="dialog__age">ねんれい:</label>
+        <input required id="dialog__age" name="age" type="number" min="0" max="150" style="width:35px;">
+        <div style="display:inline-block;margin-top:10px;border-width:1px;">
+          <input type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
+        </div>
+        <br />
+        <input placeholder="だいめい" name="title" type="text" style="width:95%;margin-top:3px;border-width:1px;">
+        <textarea placeholder="メモ" name="note" rows="3" style="width:95%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+      </form>
+      <div id="dialog__dst" style="display:none;">
+      </div>
+  </template>
+</dialog-modal>
 
+<dialog-modal id="load__form__modal">
+  <template>
+    <div id="load__src" style="width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="load__t3work" width="320px" height="320px" mode="readonly" for="load__src">
+      <datalist>
+        <grid-data>{"tiles":[]}
+        </grid-data>
+      </datalist>
+    </grid-puzzle>
+    <div style="width:100%;height:90%;margin: 0px;text-align: center;">
+
+    </div>
+    <form id="load__form" action="#" style="text-align:left;" onsubmit="loadDataToMain(load__form__modal);return false;">
+      <input name="artist" type="hidden">
+      <input name="data" type="hidden">
+      <input name="filename" type="hidden">
+      <input name="type" value="image/png" type="hidden">
+      <input name="content" type="hidden">
+      <input id="load__age" name="age" type="hidden" min="0" max="150" style="width:35px;">
+      <div style="display:inline-block;border-width:1px;">
+        <button-text text="↤" onclick="backward(load__t3work,load__form);" size="30px">
+        </button-text>
+        <button-text text="↦" onclick="forward(load__t3work,load__form);" size="30px">
+        </button-text>
+        <input type="submit" value="これをつかう" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
+      </div>
+      <br />
+      <input placeholder="だいめい" name="title" type="text" style="width:95%;margin-top:3px;border-width:1px;">
+      <textarea placeholder="メモ" name="note" rows="3" style="width:95%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+    </form>
+    <div id="load__dst" style="display:none;">
+    </div>
+  </template>
+</dialog-modal>
+
+</div>
+<script>
+  let HISTORY = {
+    status: '',
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    bodyScrollPrevent();
+    if (('ontouchend' in document)) {
+      Array.from(document.querySelectorAll('.ui__pc')).map(u => {
+        u.style['display'] = 'none';
+      });
+    }
+  });
+  let APP = {
+    name: 't3p',
+    type: 'gridpuzzle'
+  };
+  let UPLOAD = {
+    imageNode: null,
+    lastImageNode: null,
+    submitMessage: '',
+    submitEvent: '',
+    url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
+  }
+  let LOAD = {
+    imageNode: null,
+    lastImageNode: null,
+    submitMessage: '',
+    submitEvent: '',
+    url: UPLOAD.url,
+    pointer: 0,
+  }
+
+  function processData(value) {
+    localStorage.setItem('DEBUG', JSON.stringify(
+      value.detail.debug));
+    let str = JSON.stringify(value.detail.value);
+    localStorage.setItem(APP.name + '__DATA--LASTMODIFIED', str);
+    HISTORY.status = 'change';
+  }
+
+  function dialogopen(action, modal, t3work, form, OBJ) {
+    let submit = form.querySelector('input[type=submit]');
+    let age = form.querySelector('input[name=age]');
+    let filename = form.querySelector('input[name=filename]');
+    let artist = form.querySelector('input[name=artist]');
+    let title = form.querySelector('input[name=title]');
+    let data = form.querySelector('input[name=data]');
+    let note = form.querySelector('textarea[name=note]');
+    let jsonStr = '';
+    if (action === 'load') {
+      jsonStr = loadData(modal);
+      setStrToForm(form, jsonStr);
+    } else {
+      jsonStr = localStorage.getItem(APP.name +
+        '__DATA--LASTMODIFIED');
+      markArtist();
+      let artistStr = localStorage.getItem(APP.type + '__INFO--ARTIST');
+      if (artistStr) {
+        artist.value = artistStr;
+      }
+      let ageStr = localStorage.getItem(APP.type + '__INFO--AGE');
+      if (ageStr) {
+        age.value = ageStr;
+      }
+      data.value = jsonStr;
+      title.value = '';
+      note.value = '';
+    }
+    if (jsonStr) {
+      t3work.setAttribute('loaddata', jsonStr);
+    }
+    if (!OBJ.submitMessage) {
+      OBJ.submitMessage = submit.value;
+      OBJ.submitEvent = form.getAttribute('onsubmit');
+    } else {
+      submit.value = OBJ.submitMessage;
+      form.setAttribute('onsubmit', OBJ.submitEvent);
+      submit.removeAttribute('disabled');
+    }
+    modal.setAttribute('open', '');
+  }
+
+  function loadData(modal) {
+    let idx = getCountFromLocal();
+    if (idx < 0) {
+      return '';
+    }
+    LOAD.data = loadDataFromLocal(idx, false);
+    return LOAD.data;
+  }
+
+  function loadDataToMain(modal, form) {
+    t3puzzle.setAttribute('loaddata', LOAD.data);
+    modal.setAttribute('close', '');
+  }
+
+  function setStrToForm(form, str) {
+    let title = form.querySelector('input[name=title]');
+    let note = form.querySelector('textarea[name=note]');
+    title.value = '';
+    note.value = '';
+    if (str) {
+      let json = JSON.parse(str);
+      if (json.title) {
+        title.value = json.title;
+      }
+      if (json.note) {
+        note.value = json.note;
+      }
+    }
+  }
+
+  function backward(item, form) {
+    let idx = LOAD.pointer;
+    let str = loadDataFromLocal(idx - 1, false);
+    if (str) {
+      setStrToForm(form, str);
+      LOAD.data = str;
+      item.setAttribute('loaddata', str);
+    }
+  }
+
+  function forward(item, form) {
+    let idx = LOAD.pointer;
+    let str = loadDataFromLocal(idx + 1, true);
+    if (str) {
+      setStrToForm(form, str);
+      LOAD.data = str;
+      item.setAttribute('loaddata', str);
+    }
+  }
+
+  function loadDataFromLocal(idx, direct) {
+    let count = getCountFromLocal();
+    let i = idx;
+    let str = '';
+    while (0 <= i && i <= count) {
+      str = localStorage.getItem(
+        APP.name + '__DATA--' +
+        i);
+      if (str) {
+        LOAD.pointer = i;
+        break;
+      }
+      if (direct) {
+        i++;
+      } else {
+        i--;
+      }
+    }
+    if (!str) {
+      if (direct) {
+        LOAD.pointer = count;
+      } else {
+        LOAD.pointer = 0;
+      }
+    }
+    return str;
+  }
+
+  function getCountFromLocal() {
+    let countStr = localStorage.getItem(
+      APP.name + '__MAX');
+    if (!countStr) {
+      return -1;
+    } else {
+      return parseInt(countStr, 10);
+    }
+  }
+
+  function addDataToLocal(form) {
+    let data = form.querySelector(
+      'input[name=data]').value;
+    if (!data) {
+      return;
+    }
+    let title = form.querySelector(
+      'input[name=title]').value;
+    let note = form.querySelector(
+      'textarea[name=note]').value;
+    // count up
+    let count = getCountFromLocal() + 1;
+    let json = JSON.parse(data);
+    json['time'] = Date.now();
+    json['title'] = title;
+    json['note'] = note;
+    localStorage.setItem(
+      APP.name + '__DATA--' +
+      count, JSON.stringify(json));
+    localStorage.setItem(
+      APP.name + '__MAX', count);
+  }
+
+  function submitImage(src, dst, form, OBJ) {
+    let submit = form.querySelector('input[type=submit]');
+    let age = form.querySelector('input[name=age]');
+    let filename = form.querySelector('input[name=filename]');
+    let artist = form.querySelector('input[name=artist]');
+    let content = form.querySelector('input[name=content]');
+    submit.disabled = 'disable';
+    submit.value = '.......';
+    addDataToLocal(form);
+    localStorage.setItem(APP.type + '__INFO--AGE', age.value);
+    saveImage(src, dst, OBJ, () => {
+      filename.setAttribute('value',
+        APP.name + '__' + artist.value + '__' + Date.now() + '.png');
+      let dst_img = dst.querySelector('img');
+      content.setAttribute('value', dst_img.src.split(',')[1]);
+      try {
+        fetch_upload(form, OBJ,
+          (json) => {
+            submit.value = 'とじる';
+            submit.removeAttribute('disabled');
+            form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
+          }, (e) => {
+            submit.value = '😨';
+          }
+        );
+      } catch (e) {
+        submit.value = '😨';
+        console.log(e);
+      }
+    }, () => {
+      submit.value = '🤔';
+    })
+  }
+
+  function fetch_upload(form, OBJ, successCallback, errorCallback) {
+    const body = new FormData(form);
+    fetch(OBJ.url, {
+        method: 'POST',
+        body: body,
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if (successCallback) {
+          successCallback(j);
+        }
+      }).catch(e => {
+        if (errorCallback) {
+          errorCallback(e);
+        }
+      });
+  }
+
+  function saveImage(src, dst, OBJ, successCallback, errorCallback) {
+    (async () => {
+      try {
+        OBJ.imageNode = new Image();
+        OBJ.imageNode.src = await domtoimage.toPng(src);
+        if (OBJ.lastImageNode) {
+          dst.removeChild(OBJ.lastImageNode);
+        }
+        dst.appendChild(OBJ.imageNode);
+        OBJ.lastImageNode = OBJ.imageNode;
+        successCallback();
+      } catch (e) {
+        console.log('e::' + e);
+        errorCallback();
+      }
+    })();
+  }
+
+  function markArtist() {
+    let artist = localStorage.getItem(APP.type + '__INFO--ARTIST');
+    if (!artist) {
+      localStorage.setItem(APP.type + '__INFO--ARTIST', Math.random().toString(32).substring(2));
+    }
+  }
+
+  function rotate(_item) {
+    let item = _item ? _item : t3puzzle;
+    if (HISTORY.status !== 'rotate') {
+      item.setAttribute('fit', '');
+    }
+    item.setAttribute('rotate', Math.PI / 3);
+    HISTORY.status = 'rotate';
+  }
+
+  function bodyScrollPrevent() {
+    let scrollPosition;
+    const body = document.getElementsByTagName("body")[0];
+    const ua = window.navigator.userAgent.toLowerCase();
+    const isiOS =
+      ua.indexOf("iphone") > -1 ||
+      ua.indexOf("ipad") > -1 ||
+      (ua.indexOf("macintosh") > -1 && "ontouchend" in document);
+    const scrollBarWidth = window.innerWidth - document.body.clientWidth;
+    body.style.paddingRight = scrollBarWidth + "px";
+    if (isiOS) {
+      scrollPosition = -window.pageYOffset;
+      body.style.position = "fixed";
+      body.style.width = "100%";
+      body.style.top = scrollPosition + "px";
+    } else {
+      body.style.overflow = "hidden";
+    }
+  }
+</script>
+<script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
+
+<script src="https://www.t3puzzle.com/b/dom-to-image.min.js"></script>
+<script src="https://www.t3puzzle.com/b/buttonText.js"></script>
+<script src="https://www.t3puzzle.com/b/palleteText.js"></script>
+<script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
+<script src="https://www.t3puzzle.com/b/switch-text.js"></script>
   
 <script src="./t3.js"></script>
 </body>
