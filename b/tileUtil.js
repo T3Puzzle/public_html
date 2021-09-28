@@ -84,7 +84,11 @@ function tileUtil() {
       try {
         let data = JSON.parse(jsonStr);
         if (callback) {
+          
+        
+      console.log(102102);
           callback();
+      console.log(112112);
         }
         if (!data) {
           console.log("load e: data null");
