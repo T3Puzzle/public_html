@@ -56,6 +56,7 @@ function tileUtil() {
       load,
       fit,
       rotate,
+      zoom,
       resetAndloadData,
       VERSION
     };
@@ -115,10 +116,11 @@ function tileUtil() {
       let src = null;
       let jsonStr = dataNode.textContent;
       if (loadData(jsonStr)) {
-        return;
+        return false;
       }
       puz.load(opts, callback);
       // not to do initially shareStateAll()
+      return true;
     }
     function shareState(target, id, data, oldData, local) {
       markFootprint(data);
@@ -552,11 +554,16 @@ function tileUtil() {
     }
     function rotate(value) {
       let angle = parseFloat(value);
-      //view.fitScale(root);
       view.rotate(view.atMid(), angle);
-      //view.scale(view.atMid(), 1.618);
+      shareStateAll();
+    }
+    function zoom(value) {
+      let scale = parseFloat(value);
+      view.scale(view.atMid(), scale);
+      shareStateAll();
     }
     function fit() {
+      
       view.fitScale(root);
       view.scale(view.atMid(), 1.618);
     }
