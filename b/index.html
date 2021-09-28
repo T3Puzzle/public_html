@@ -160,12 +160,12 @@ document.body.classList.remove('move');},500);">
   function loadInitData(){
      let str = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
     if (str) {
-      console.log(9999);
+      console.log(989898);
       t3puzzle.setAttribute('loaddata',str);
     }
-      console.log(10101);
+      console.log(1212121);
   }
-  window.addEventListener('load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     loadInitData();
     bodyScrollPrevent();
     if (('ontouchend' in document)) {
