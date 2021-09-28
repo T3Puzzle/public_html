@@ -155,7 +155,9 @@ div.menu {
   };
   function loadInitData(){
      let str = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+    console.log(111);
     if (str) {
+    console.log(222);
       t3puzzle.setAttribute('loaddata',str);
     }
   }
