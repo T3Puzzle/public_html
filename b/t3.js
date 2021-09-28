@@ -45,7 +45,9 @@ function define(util, puz) {
          } else if (name === "zoom") {
           this.util.zoom(newValue);
         } else if (name === "loaddata") {
+          console.log(8888);
           this.util.resetAndloadData(newValue);
+          console.log(2020202);
         } else if (name === "nomoveall") {
           this.util.noMoveAll(newValue);
         } else if (name === "noflipall") {
