@@ -18,7 +18,8 @@ div.menu {
 </style>
 </head>
 <body>
-<div class="menu">
+
+  <div class="menu">
   <button-text text="⤧⤩" onclick="t3puzzle.setAttribute('mode','readonly');" size="40px">
   </button-text>
 
@@ -58,7 +59,7 @@ div.menu {
   <datalist>
     <grid-data>{
       "orientation":2.094388031086739,
-      "tiles":[[0,0,0,0,0,0,1],[0,0,1,0,0,0,1],
+      "tiles":[[0,0,0,0,0,0,0],[0,0,1,0,0,0,0],
       [1,0,0,0,0,0,0],[1,0,1,0,0,0,0],[2,0,1,2,1,0,0]]}
     </grid-data>
   </datalist>
@@ -122,6 +123,7 @@ div.menu {
       <div style="display:inline-block;border-width:1px;">
         <button-text text="↤" onclick="backward(load__t3work,load__form);" size="30px">
         </button-text>
+        <span id="load__number"></span>
         <button-text text="↦" onclick="forward(load__t3work,load__form);" size="30px">
         </button-text>
         <input type="submit" value="これをつかう" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
@@ -147,6 +149,10 @@ div.menu {
         u.style['display'] = 'none';
       });
     }
+    let idx = getCountFromLocal();
+    if (idx<LOAD.preset) {
+      loadPreset();
+    }
   });
   let APP = {
     name: 't3p',
@@ -166,8 +172,14 @@ div.menu {
     submitEvent: '',
     url: UPLOAD.url,
     pointer: 0,
+    preset: 0,
   }
-
+  function loadPreset() { 
+    //return;
+    let count=0;
+    localStorage.setItem(APP.name+'__MAX',count);
+    localStorage.setItem(APP.name+'__DATA--'+count,JSON.stringify({'orientation':0.5235902227738833,'tiles':[[0,0,0,1,1,0,0],[1,0,0,2,1,0,0],[1,0,1,1,0,0,0],[2,0,1,0,1,0,0],[1,-1,1,0,1,0,0],[0,-1,0,0,0,0,0],[0,-1,1,1,1,0,0],[-1,-1,0,1,1,0,0],[0,1,1,1,1,0,0],[-1,1,0,1,1,0,0],[0,2,1,1,1,0,0],[-1,2,0,1,0,0,0],[2,2,1,0,1,0,0],[0,3,1,1,1,0,0],[-1,3,0,0,1,0,0],[1,2,0,0,0,0,0],[2,3,1,0,1,0,0],[1,3,0,2,0,0,0],[2,4,1,2,1,0,0],[1,4,0,2,0,0,0],[0,4,1,1,1,0,0],[-1,4,0,0,0,0,0],[2,5,1,2,1,0,0],[1,5,0,0,1,0,0]],'time':1632792152517,'title':'ひしならべ','note':'T3パズルをつかったあそびです\nうえのようなおおきなひしがたをつくりましょう。ただし、したの８つのちいさなひしがたをふくむこと'}));
+  }
   function processData(value) {
     localStorage.setItem('DEBUG', JSON.stringify(
       value.detail.debug));
@@ -186,8 +198,9 @@ div.menu {
     let note = form.querySelector('textarea[name=note]');
     let jsonStr = '';
     if (action === 'load') {
-      jsonStr = loadData(modal);
-      setStrToForm(form, jsonStr);
+      let {str,i} = loadData(modal);
+      jsonStr = str;
+      setStrToForm(form, jsonStr,i);
     } else {
       jsonStr = localStorage.getItem(APP.name +
         '__DATA--LASTMODIFIED');
@@ -223,8 +236,9 @@ div.menu {
     if (idx < 0) {
       return '';
     }
-    LOAD.data = loadDataFromLocal(idx, false);
-    return LOAD.data;
+    let {str,i} = loadDataFromLocal(idx, false);
+    LOAD.data = str;
+    return {str,i};
   }
 
   function loadDataToMain(modal, form) {
@@ -232,7 +246,8 @@ div.menu {
     modal.setAttribute('close', '');
   }
 
-  function setStrToForm(form, str) {
+  function setStrToForm(form, str,idx) {
+   　　 console.log(str);
     let title = form.querySelector('input[name=title]');
     let note = form.querySelector('textarea[name=note]');
     title.value = '';
@@ -245,14 +260,16 @@ div.menu {
       if (json.note) {
         note.value = json.note;
       }
+      let count = getCountFromLocal();
+      load__number.textContent = idx+'/'+count;
     }
   }
 
   function backward(item, form) {
     let idx = LOAD.pointer;
-    let str = loadDataFromLocal(idx - 1, false);
+    let {str,i} = loadDataFromLocal(idx - 1, false);
     if (str) {
-      setStrToForm(form, str);
+      setStrToForm(form, str,i);
       LOAD.data = str;
       item.setAttribute('loaddata', str);
     }
@@ -260,9 +277,9 @@ div.menu {
 
   function forward(item, form) {
     let idx = LOAD.pointer;
-    let str = loadDataFromLocal(idx + 1, true);
+    let {str,i} = loadDataFromLocal(idx + 1, true);
     if (str) {
-      setStrToForm(form, str);
+      setStrToForm(form, str,i);
       LOAD.data = str;
       item.setAttribute('loaddata', str);
     }
@@ -293,7 +310,7 @@ div.menu {
         LOAD.pointer = 0;
       }
     }
-    return str;
+    return {str,i};
   }
 
   function getCountFromLocal() {
@@ -336,7 +353,7 @@ div.menu {
     let artist = form.querySelector('input[name=artist]');
     let content = form.querySelector('input[name=content]');
     submit.disabled = 'disable';
-    submit.value = '.......';
+    submit.value = 'ほぞんちゅう';
     addDataToLocal(form);
     localStorage.setItem(APP.type + '__INFO--AGE', age.value);
     saveImage(src, dst, OBJ, () => {
@@ -413,7 +430,7 @@ div.menu {
     if (HISTORY.status !== 'rotate') {
       item.setAttribute('fit', '');
     }
-    item.setAttribute('rotate', Math.PI / 3);
+    item.setAttribute('rotate', Math.PI / 6);
     HISTORY.status = 'rotate';
   }
 
