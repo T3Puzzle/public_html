@@ -11,6 +11,9 @@
   user-select: none;
   -webkit-user-select: none;
 }
+body.move {
+  background:rgb(175, 175, 175);
+}
 div.menu {
   position: absolute;
   top: 0px;
@@ -21,7 +24,7 @@ div.menu {
 </head>
 <body>
 
-<div class="menu">
+  <div class="menu">
   <button-text text="⤧⤩" onclick="moveMode();" size="40px">
   </button-text>
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
@@ -56,7 +59,8 @@ div.menu {
                                   LOAD)" size="40px">
   </button-text>
 </div>
-<grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)" onclick="window.setTimeout(()=>{t3puzzle.setAttribute('mode','hand')},500);">
+<grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)" onclick="window.setTimeout(()=>{t3puzzle.setAttribute('mode','hand');
+document.body.classList.remove('move');},500);">
   <datalist>
     <grid-data>{
       "orientation":2.094388031086739,
@@ -155,9 +159,7 @@ div.menu {
   };
   function loadInitData(){
      let str = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
-    console.log(111);
     if (str) {
-    console.log(222);
       t3puzzle.setAttribute('loaddata',str);
     }
   }
@@ -248,7 +250,8 @@ div.menu {
     if (HISTORY.status === 'change') {
       t3puzzle.setAttribute('fit','');
     }
-    t3puzzle.setAttribute('mode','readonly');
+    document.body.classList.add('move');
+   t3puzzle.setAttribute('mode','readonly');
     HISTORY.status = 'move';
   }
   function processData(value) {
@@ -311,6 +314,7 @@ div.menu {
       initpointer = LOAD.pointer;
     }
     let {str,i} = loadDataFromLocal(initpointer, false);
+    
     LOAD.data = str;
     return {str,i};
   }
@@ -321,7 +325,7 @@ div.menu {
   }
 
   function setStrToForm(form, str,idx) {
-   　//　console.log(str);
+   　　console.log(str);
     let title = form.querySelector('input[name=title]');
     let note = form.querySelector('textarea[name=note]');
     title.value = '';
