@@ -21,10 +21,9 @@ div.menu {
 </head>
 <body>
 
-  <div class="menu">
-  <button-text text="⤧⤩" onclick="t3puzzle.setAttribute('mode','readonly');" size="40px">
+<div class="menu">
+  <button-text text="⤧⤩" onclick="moveMode();" size="40px">
   </button-text>
-
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
     <datalist>
       <option value="blue"></option>
@@ -76,10 +75,14 @@ div.menu {
         </grid-data>
       </datalist>
     </grid-puzzle>
-    <div style="width:100%;height:90%;margin: 0px;text-align: center;">
+    <div style="width:100%;height:90%;margin: 3px;text-align: center;">
       <div class="ui__pc">
         <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
         </button-text>
+        
+        <button-text text="🔍" onclick="zoom(dialog__t3work);" size="20px">
+        </button-text>
+        
         <button-text text="⌖" onclick="dialog__t3work.setAttribute('fit','');" size="20px">
         </button-text>
       </div>
@@ -95,8 +98,8 @@ div.menu {
           <input type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
         </div>
         <br />
-        <input placeholder="だいめい" name="title" type="text" style="width:95%;margin-top:3px;border-width:1px;">
-        <textarea placeholder="メモ" name="note" rows="3" style="width:95%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+        <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
+        <textarea placeholder="メモ" name="note" rows="4" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
       </form>
       <div id="dialog__dst" style="display:none;">
       </div>
@@ -123,16 +126,22 @@ div.menu {
       <input name="content" type="hidden">
       <input id="load__age" name="age" type="hidden" min="0" max="150" style="width:35px;">
       <div style="display:inline-block;border-width:1px;">
-        <button-text text="↤" onclick="backward(load__t3work,load__form);" size="30px">
+        
+        <button-text text="«" onclick="gohead(load__t3work,load__form);" size="30px">
         </button-text>
-        <span id="load__number"></span>
-        <button-text text="↦" onclick="forward(load__t3work,load__form);" size="30px">
+        <button-text text="‹" onclick="backward(load__t3work,load__form);" size="30px">
+        </button-text>
+        <div id="load__number" style="display:inline-block;"></div>
+        
+        <button-text text="›" onclick="forward(load__t3work,load__form);" size="30px">
+        </button-text>
+        <button-text text="»" onclick="goend(load__t3work,load__form);" size="30px">
         </button-text>
         <input type="submit" value="これをつかう" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
       </div>
       <br />
-      <input placeholder="だいめい" name="title" type="text" style="width:95%;margin-top:3px;border-width:1px;">
-      <textarea placeholder="メモ" name="note" rows="3" style="width:95%;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+      <input readonly placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+      <textarea readonly placeholder="メモ" name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
     </form>
     <div id="load__dst" style="display:none;">
     </div>
@@ -144,17 +153,22 @@ div.menu {
   let HISTORY = {
     status: '',
   };
+  function loadInitData(){
+     let str = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+    if (str) {
+      t3puzzle.setAttribute('loaddata',str);
+    }
+  }
   document.addEventListener('DOMContentLoaded', () => {
+    loadInitData();
     bodyScrollPrevent();
     if (('ontouchend' in document)) {
       Array.from(document.querySelectorAll('.ui__pc')).map(u => {
         u.style['display'] = 'none';
       });
     }
-    let idx = getCountFromLocal();
-    if (idx<LOAD.preset) {
-      loadPreset();
-    }
+    
+    loadPreset();
   });
   let APP = {
     name: 't3p',
@@ -165,6 +179,8 @@ div.menu {
     lastImageNode: null,
     submitMessage: '',
     submitEvent: '',
+    title: '',
+    note:'',
     url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
   }
   let LOAD = {
@@ -173,23 +189,73 @@ div.menu {
     submitMessage: '',
     submitEvent: '',
     url: UPLOAD.url,
-    pointer: 0,
+    pointer: null,
     preset: 0,
   }
-  function loadPreset() { 
-    //return;
-    let count=0;
-    localStorage.setItem(APP.name+'__MAX',count);
-    localStorage.setItem(APP.name+'__DATA--'+count,JSON.stringify({'orientation':0.5235902227738833,'tiles':[[0,0,0,1,1,0,0],[1,0,0,2,1,0,0],[1,0,1,1,0,0,0],[2,0,1,0,1,0,0],[1,-1,1,0,1,0,0],[0,-1,0,0,0,0,0],[0,-1,1,1,1,0,0],[-1,-1,0,1,1,0,0],[0,1,1,1,1,0,0],[-1,1,0,1,1,0,0],[0,2,1,1,1,0,0],[-1,2,0,1,0,0,0],[2,2,1,0,1,0,0],[0,3,1,1,1,0,0],[-1,3,0,0,1,0,0],[1,2,0,0,0,0,0],[2,3,1,0,1,0,0],[1,3,0,2,0,0,0],[2,4,1,2,1,0,0],[1,4,0,2,0,0,0],[0,4,1,1,1,0,0],[-1,4,0,0,0,0,0],[2,5,1,2,1,0,0],[1,5,0,0,1,0,0]],'time':1632792152517,'title':'ひしならべ','note':'T3パズルをつかったあそびです\nうえのようなおおきなひしがたをつくりましょう。ただし、したの８つのちいさなひしがたをふくむこと'}));
+  function loadPreset() {
+    let count=-1;
+  
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':3.1415855821521044,'tiles':[[2,0,0,1,0,0,0],[2,0,1,1,1,0,0],[2,1,0,0,1,0,0],[1,1,0,0,1,0,0],[2,1,1,0,0,0,0],[2,-1,1,1,1,0,0],[2,-1,0,1,0,0,0],[1,-1,0,1,1,0,0],[1,-1,1,1,0,0,0],[1,0,1,1,0,0,0],[1,0,0,1,1,0,0],[1,1,1,0,0,0,0],[0,1,0,1,0,0,0],[0,1,1,0,0,0,0],[-1,1,0,0,1,0,0],[-1,0,1,1,1,0,0],[-1,0,0,0,1,0,0],[-1,-1,1,1,1,0,0],[-1,-1,0,0,1,0,0],[0,-1,0,1,0,0,0],[0,-1,1,0,0,0,0],[0,0,0,1,0,0,0],[0,0,1,0,0,0,0],[-1,1,1,0,0,0,0]],'time':1632810891609,'title':'T3','note':'T3パズルのロゴをつくりました'})); 
+       ///
+    count--; 
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.0944014018871053,'tiles':[[2,0,0,0,1,2,0],[2,0,1,1,1,2,0],[2,-1,1,2,1,2,0],[2,-1,0,1,1,2,0],[1,-1,0,0,1,2,0],[1,-1,1,2,1,2,0],[1,0,0,1,1,2,0],[2,1,0,1,0,2,0],[1,0,1,1,0,2,0],[1,-2,0,1,0,2,0],[2,-2,1,1,0,2,0],[1,-2,1,1,1,2,0],[2,2,0,2,0,2,0],[2,1,1,2,1,2,0],[1,1,0,0,1,2,0],[1,1,1,0,0,2,0],[0,-3,0,2,1,2,0],[1,-3,1,0,1,2,0],[2,-3,1,2,0,2,0],[2,-2,0,2,1,2,0],[1,-3,0,0,0,2,0],[0,-4,1,1,1,2,0],[3,-2,1,0,1,2,0],[3,-2,0,1,1,2,0],[3,0,1,2,1,2,0],[3,1,0,1,1,2,0],[0,-1,0,0,1,2,0],[0,-1,1,1,1,2,0],[0,-2,0,2,1,2,0],[3,-1,1,0,1,2,0],[3,-1,0,0,0,2,0],[0,-3,1,2,0,2,0]],'time':1632811156995,'title':'カブトムシ','note':'なつやすみのおもいででカブトムシをかきました'})); 
+       ///
+    count--;
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.0944014018871053,'tiles':[[2,0,0,0,1,2,0],[2,0,1,0,0,2,0],[2,-1,1,1,1,2,0],[2,-1,0,1,0,2,0],[1,-1,1,0,1,2,0],[1,0,0,0,1,2,0],[1,0,1,1,1,2,0],[1,1,1,0,0,2,0],[1,-3,0,0,0,2,0],[3,0,1,0,0,2,0],[0,-1,0,1,1,2,0],[0,-1,1,0,1,2,0],[4,0,0,2,1,2,0],[3,0,0,0,1,2,0],[4,0,1,0,0,2,0],[2,-2,1,1,1,2,0],[2,-2,0,1,0,2,0],[2,-3,1,2,0,2,0],[1,-1,0,2,1,2,0],[0,0,0,0,1,2,0],[1,1,0,1,0,2,0],[0,1,0,0,1,2,0],[0,0,1,2,0,2,0],[-1,0,0,0,0,2,0],[0,-2,1,1,0,2,0],[0,-2,0,0,0,2,0],[1,-2,1,2,0,2,0]],'time':1632811454266,'title':'ラジオ体操','note':'夏休みにラジオ体操をした思い出をかきました'})); 
+       ///
+    count--;
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094400778962728,'tiles':[[2,0,0,0,0,1,0],[2,-1,1,0,1,1,0],[2,-1,0,0,0,1,0],[1,-1,0,0,0,1,0],[1,-1,1,1,0,1,0],[1,0,0,1,1,1,0],[2,1,0,1,1,1,0],[1,0,1,1,0,1,0],[2,2,0,0,1,1,0],[2,1,1,2,1,1,0],[1,1,0,2,0,1,0],[3,0,1,0,0,1,0],[3,1,0,1,0,1,0],[3,-1,1,2,0,1,0],[3,2,1,2,1,1,0],[2,0,1,0,1,1,0],[3,1,1,2,1,1,0],[3,2,0,0,1,1,0],[3,3,0,2,0,1,0],[4,3,1,0,0,1,0],[4,2,1,1,1,1,0],[4,3,0,0,1,1,0],[5,3,1,0,0,1,0],[5,3,0,1,0,1,0],[4,2,0,1,0,1,0],[5,2,1,1,1,1,0],[5,2,0,1,0,1,0],[5,1,1,2,0,1,0],[4,1,0,2,1,1,0],[4,1,1,0,0,1,0],[4,0,1,2,0,1,0],[3,0,0,2,1,1,0],[4,0,0,1,1,1,0],[5,0,1,2,1,1,0],[5,1,0,2,0,1,0],[4,-1,1,2,1,1,0],[3,-1,0,2,0,1,0],[3,-2,1,1,0,1,0],[6,1,1,0,0,1,0],[6,1,0,0,1,1,0],[3,-2,0,1,1,1,0],[4,-2,1,0,1,1,0],[5,-2,1,1,0,1,0],[4,-2,0,0,0,1,0],[4,-1,0,1,1,1,0],[5,0,0,0,1,1,0],[5,-1,1,2,1,1,0],[3,-3,0,0,0,1,0],[3,-3,1,1,0,1,0],[4,-3,1,0,1,1,0],[6,0,1,1,1,1,0],[7,1,1,0,0,1,0],[7,1,0,1,0,1,0],[7,0,1,1,1,1,0],[7,0,0,1,0,1,0],[7,-1,1,2,0,1,0],[6,-1,0,2,1,1,0],[6,-2,1,2,0,1,0],[5,-2,0,2,1,1,0],[5,-3,1,2,0,1,0],[4,-3,0,0,0,1,0],[5,-1,0,0,0,1,0],[6,-1,1,1,0,1,0],[6,0,0,1,0,1,0],[1,1,1,2,0,1,0],[1,2,0,2,1,1,0],[2,2,1,2,0,1,0],[2,3,0,2,1,1,0],[3,3,1,2,0,1,0],[3,4,0,1,0,1,0],[3,4,1,1,1,1,0],[3,5,0,1,0,1,0],[0,1,0,0,0,1,0],[-1,1,0,0,0,1,0],[0,1,1,0,1,1,0],[2,3,1,1,0,1,0],[1,2,1,1,0,1,0],[2,4,0,1,0,1,0],[1,3,0,0,0,1,0],[0,2,0,0,0,1,0],[-1,1,1,1,0,1,0],[2,5,0,0,1,1,0],[3,5,1,0,0,1,0],[2,5,1,0,0,1,0],[-1,2,0,1,1,1,0],[-1,2,1,1,0,1,0],[-1,3,0,2,0,1,0],[0,3,1,2,1,1,0],[0,4,0,1,1,1,0],[1,4,1,2,1,1,0],[1,5,0,2,0,1,0],[0,3,0,1,1,1,0],[0,2,1,0,1,1,0],[1,4,0,0,1,1,0],[1,3,1,2,1,1,0],[2,4,1,1,1,1,0]],'time':1632812255904,'title':'ジャックオーランタン','note':'ことしももうすぐハロウィーン！'})); 
+       ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':0.5235896368295516,'tiles':[[0,0,0,1,1,0,1],[1,0,0,2,1,0,1],[1,0,1,1,0,0,1],[2,0,1,0,1,0,1],[1,-1,1,0,1,0,1],[0,-1,0,0,0,0,1],[0,-1,1,1,1,0,1],[-1,-1,0,1,1,0,1],[0,1,1,1,1,0,1],[-1,1,0,1,1,0,1],[0,2,1,1,1,0,1],[-1,2,0,1,0,0,1],[2,2,1,0,1,0,1],[0,3,1,1,1,0,1],[-1,3,0,0,1,0,1],[1,2,0,0,0,0,1],[2,3,1,0,1,0,1],[1,3,0,2,0,0,1],[2,4,1,2,1,0,1],[1,4,0,2,1,0,1],[0,4,1,1,1,0,1],[-1,4,0,0,0,0,1],[2,5,1,2,1,0,1],[1,5,0,0,1,0,1]],'time':1632794863529,'title':'ひしならべ','note':'T3パズルをつかったあそびです\nうえのようなおおきなひしがたをつくりましょう。ただし、したの８つのちいさなひしがたをふくむこと'}));
+   ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':0.523591014873946,'tiles':[[0,0,0,1,0,0,1],[1,0,0,0,0,0,1],[2,0,1,1,0,0,1],[0,-1,0,2,0,0,1],[0,-1,1,2,0,0,1],[-1,-1,0,2,0,0,1],[0,1,1,1,0,0,1],[-1,1,0,1,0,0,1],[0,2,1,1,0,0,1],[-1,2,0,1,1,0,1],[2,2,1,2,0,0,1],[0,3,1,1,0,0,1],[-1,3,0,0,1,0,1],[1,2,0,2,1,0,1],[2,3,1,2,0,0,1],[1,3,0,0,1,0,1],[2,4,1,2,0,0,1],[1,4,0,2,0,0,1],[0,4,1,1,0,0,1],[-1,4,0,0,0,0,1],[2,5,1,2,0,0,1],[1,5,0,0,0,0,1]],'time':1632794566502,'title':'ひしならべ(のこり２ピース)','note':'T3パズルをつかったあそびです\nしたの８つのちいさなひしがたをふくむように、うえのおおきなひしがたをかんせいさせよう'}));
+    
+    
+   ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.0944027137654952,'tiles':[[0,0,0,2,0,0,1],[1,0,0,0,0,0,1],[1,0,1,0,0,0,1],[2,0,1,2,1,0,1],[1,-1,1,2,0,0,1],[0,-1,0,0,0,0,1],[0,-1,1,0,0,0,1],[-1,-1,0,2,1,0,1],[3,-2,1,1,0,0,1],[4,-2,1,1,0,0,1],[3,-2,0,1,0,0,1],[3,-3,1,1,0,0,1],[2,-3,0,0,1,0,1]],'time':1632805212985,'title':'まりょうじん（魔菱陣）','note':'うえのような「ひしがた」をつくるパズルです。\nひしがたを4×4のマスメでくぎってかんがえて、\nどのぎょう、れつにもあおい「さんかくけい」を\n３つおくようにならべてください'})); 
+    ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094403274190408,'tiles':[[2,-2,1,1,0,0,1],[1,-2,1,0,0,0,1],[1,-2,0,1,1,0,1],[1,-3,1,2,0,0,1],[0,-2,0,2,1,0,1],[0,-3,1,2,1,0,1],[0,-3,0,2,0,0,1],[0,-4,1,1,1,0,1],[-1,-4,1,0,1,0,1],[-1,-4,0,1,0,0,1],[-1,-3,0,0,0,0,1],[-2,-4,0,0,1,0,1],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1]],'time':1632806379048,'title':'チェッカーならべ','note':'うえのような「しかく」にならべるパズルです。\n下の12ピースのむきをかえずに、となりあうピースといろがぶつからないように「チェッカーもよう」のようにならべてください。'}));
+     ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094403274190408,'tiles':[[2,-2,1,1,1,0,1],[1,-2,0,1,0,0,1],[1,-3,1,1,0,0,1],[0,-2,0,0,1,0,1],[0,-3,1,0,0,0,1],[0,-3,0,1,1,0,1],[-1,-4,1,2,1,0,1],[-1,-4,0,2,0,0,1],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1],[1,-2,1,0,0,0,0],[-1,-3,0,2,0,0,0],[0,-4,1,2,1,0,0],[-2,-4,0,2,0,0,0]],'time':1632807872117,'title':'チェッカーならべ（のこり4ピース）','note':'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'}));
+     ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094402963852356,'tiles':[[2,-2,1,2,0,0,1],[1,-2,0,2,1,0,0],[1,-3,1,2,0,0,0],[0,-2,0,2,1,0,0],[0,-3,1,2,0,0,0],[0,-3,0,2,1,0,0],[-1,-4,1,2,0,0,0],[-1,-4,0,2,1,0,0],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1],[1,-2,1,2,0,0,0],[-1,-3,0,2,1,0,0],[0,-4,1,2,0,0,0],[-2,-4,0,2,1,0,1]],'time':1632808558705,'title':'チェッカーならべ（のこり10ピース）','note':'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'}));
+  }
+  function moveMode () {
+    if (HISTORY.status === 'change') {
+      t3puzzle.setAttribute('fit','');
+    }
+    t3puzzle.setAttribute('mode','readonly');
+    HISTORY.status = 'move';
   }
   function processData(value) {
     localStorage.setItem('DEBUG', JSON.stringify(
       value.detail.debug));
     let str = JSON.stringify(value.detail.value);
-    localStorage.setItem(APP.name + '__DATA--LASTMODIFIED', str);
+    localStorage.setItem(APP.name + '__DATA__LASTMODIFIED', str);
     HISTORY.status = 'change';
   }
-
   function dialogopen(action, modal, t3work, form, OBJ) {
     let submit = form.querySelector('input[type=submit]');
     let age = form.querySelector('input[name=age]');
@@ -205,7 +271,7 @@ div.menu {
       setStrToForm(form, jsonStr,i);
     } else {
       jsonStr = localStorage.getItem(APP.name +
-        '__DATA--LASTMODIFIED');
+        '__DATA__LASTMODIFIED');
       markArtist();
       let artistStr = localStorage.getItem(APP.type + '__INFO--ARTIST');
       if (artistStr) {
@@ -216,8 +282,8 @@ div.menu {
         age.value = ageStr;
       }
       data.value = jsonStr;
-      title.value = '';
-      note.value = '';
+      title.value = UPLOAD.title;
+      note.value = UPLOAD.note;
     }
     if (jsonStr) {
       t3work.setAttribute('loaddata', jsonStr);
@@ -234,11 +300,15 @@ div.menu {
   }
 
   function loadData(modal) {
-    let idx = getCountFromLocal();
-    if (idx < 0) {
+    let {min,max} = getCountFromLocal();
+    if (min===null) {
       return '';
     }
-    let {str,i} = loadDataFromLocal(idx, false);
+    let initpointer = max;
+    if ( LOAD.pointer !==null) {
+      initpointer = LOAD.pointer;
+    }
+    let {str,i} = loadDataFromLocal(initpointer, false);
     LOAD.data = str;
     return {str,i};
   }
@@ -249,7 +319,7 @@ div.menu {
   }
 
   function setStrToForm(form, str,idx) {
-   　　 console.log(str);
+   　//　console.log(str);
     let title = form.querySelector('input[name=title]');
     let note = form.querySelector('textarea[name=note]');
     title.value = '';
@@ -262,39 +332,49 @@ div.menu {
       if (json.note) {
         note.value = json.note;
       }
-      let count = getCountFromLocal();
-      load__number.textContent = idx+'/'+count;
+      let {min,max} = getCountFromLocal();
+      let base = max-min+1;
+      let now = idx-min+1;
+      LOAD.pointer = idx;
+      load__number.textContent = (now)+'/'+(base);
     }
   }
 
   function backward(item, form) {
     let idx = LOAD.pointer;
     let {str,i} = loadDataFromLocal(idx - 1, false);
-    if (str) {
-      setStrToForm(form, str,i);
-      LOAD.data = str;
-      item.setAttribute('loaddata', str);
-    }
+    goto (item,form,str,i);
   }
 
   function forward(item, form) {
     let idx = LOAD.pointer;
     let {str,i} = loadDataFromLocal(idx + 1, true);
+    goto (item,form,str,i);
+  }
+  function gohead(item, form) {
+    let {min,max} = getCountFromLocal();
+    let {str,i} = loadDataFromLocal(min, false);
+    goto (item,form,str,i);
+  }
+  function goend(item, form) {
+    let {min,max} = getCountFromLocal();
+    let {str,i} = loadDataFromLocal(max, true);
+    goto (item,form,str,i);
+  }
+  function goto (item,form,str,i) {
     if (str) {
       setStrToForm(form, str,i);
       LOAD.data = str;
       item.setAttribute('loaddata', str);
     }
   }
-
   function loadDataFromLocal(idx, direct) {
-    let count = getCountFromLocal();
+    let {min,max} = getCountFromLocal();
     let i = idx;
     let str = '';
-    while (0 <= i && i <= count) {
+    while (min!==null && min <= i && i <= max) {
       str = localStorage.getItem(
-        APP.name + '__DATA--' +
-        i);
+        APP.name + '__DATA__' +i);
       if (str) {
         LOAD.pointer = i;
         break;
@@ -307,22 +387,28 @@ div.menu {
     }
     if (!str) {
       if (direct) {
-        LOAD.pointer = count;
+        LOAD.pointer = max;
       } else {
-        LOAD.pointer = 0;
+        LOAD.pointer = min;
       }
     }
     return {str,i};
   }
 
   function getCountFromLocal() {
-    let countStr = localStorage.getItem(
+    let maxStr = localStorage.getItem(
       APP.name + '__MAX');
-    if (!countStr) {
-      return -1;
-    } else {
-      return parseInt(countStr, 10);
+    let minStr = localStorage.getItem(
+      APP.name + '__MIN');
+    let min = null;
+    let max = -1;
+    if (minStr) {
+      min = parseInt(minStr, 10);
     }
+    if (maxStr) {
+      max = parseInt(maxStr, 10);
+    }
+    return {min,max};
   }
 
   function addDataToLocal(form) {
@@ -336,13 +422,14 @@ div.menu {
     let note = form.querySelector(
       'textarea[name=note]').value;
     // count up
-    let count = getCountFromLocal() + 1;
+    let {min,max} = getCountFromLocal();
+    let count = max + 1;
     let json = JSON.parse(data);
     json['time'] = Date.now();
     json['title'] = title;
     json['note'] = note;
     localStorage.setItem(
-      APP.name + '__DATA--' +
+      APP.name + '__DATA__' +
       count, JSON.stringify(json));
     localStorage.setItem(
       APP.name + '__MAX', count);
@@ -367,6 +454,8 @@ div.menu {
         fetch_upload(form, OBJ,
           (json) => {
             submit.value = 'とじる';
+            UPLOAD.title = '';
+            UPLOAD.note = '';
             submit.removeAttribute('disabled');
             form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
           }, (e) => {
@@ -426,14 +515,19 @@ div.menu {
       localStorage.setItem(APP.type + '__INFO--ARTIST', Math.random().toString(32).substring(2));
     }
   }
-
   function rotate(_item) {
     let item = _item ? _item : t3puzzle;
-    if (HISTORY.status !== 'rotate') {
-      item.setAttribute('fit', '');
+    if (!_item) {
+      if (HISTORY.status !== 'rotate') {
+        item.setAttribute('fit', '');
+      }
     }
     item.setAttribute('rotate', Math.PI / 6);
     HISTORY.status = 'rotate';
+  }
+  function zoom(_item) {
+    let item = _item ? _item : t3puzzle;
+    item.setAttribute('zoom', 0.9);
   }
 
   function bodyScrollPrevent() {
