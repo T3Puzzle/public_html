@@ -24,16 +24,11 @@ function define(util, puz) {
           "flipall",
           "fit",
           "rotate",
+          "zoom",
           "loaddata",
           "nomoveall",
           "noflipall"
         ];
-      }
-      constructor() {
-        super();
-        this.util = util();
-        this.puz = puz();
-        this.mode = "";
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "color") {
@@ -47,6 +42,8 @@ function define(util, puz) {
           this.util.fit();
         } else if (name === "rotate") {
           this.util.rotate(newValue);
+         } else if (name === "zoom") {
+          this.util.zoom(newValue);
         } else if (name === "loaddata") {
           this.util.resetAndloadData(newValue);
         } else if (name === "nomoveall") {
@@ -55,10 +52,16 @@ function define(util, puz) {
           this.util.noFlipAll(newValue);
         }
       }
-      connectedCallback() {
+      constructor() {
+        super();
+        this.util = util();
+        this.puz = puz();
+        this.mode = "";/*
+      }
+      connectedCallback() {*/
         this.util.init(this, this.puz, () => {
           // customize initial position
-          this.util.load({}, (data, opt) =>
+          return this.util.load({}, (data, opt) =>
             this.util.initTile(
               data,
               (ev, target, idx) => this.puz.switchFace(target, idx),
