@@ -23,7 +23,13 @@ div.menu {
 </style>
 </head>
 <body>
-
+  <script>
+  let APP = {
+    name: 't3p',
+    type: 'gridpuzzle'
+  };
+  APP.restored = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+  </script>
   <div class="menu">
   <button-text text="⤧⤩" onclick="moveMode();" size="40px">
   </button-text>
@@ -158,7 +164,7 @@ document.body.classList.remove('move');},500);">
     status: '',
   };
   function loadInitData(){
-     let str = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+     let str = APP.restored; //localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
     if (str) {
       t3puzzle.setAttribute('loaddata',str);
     }
@@ -174,10 +180,6 @@ document.body.classList.remove('move');},500);">
     
     loadPreset();
   });
-  let APP = {
-    name: 't3p',
-    type: 'gridpuzzle'
-  };
   let UPLOAD = {
     imageNode: null,
     lastImageNode: null,
