@@ -72,11 +72,13 @@ function t3Util() {
       if (value) {
         tile.bringToFront();
         frozen.bringToFront();
-        tr__frozen.style["background-color"] = "rgb(255,255,255,0.333)";
+        tr__frozen.classList.add('tr__frozen--white');
+        //tr__frozen.style["background-color"] = "rgb(255,255,255,0.333)";
       } else {
         tile.sendToBack();
         frozen.sendToBack();
-        tr__frozen.style["background-color"] = "rgb(255,255,255,0)";
+        tr__frozen.classList.remove('tr__frozen--white');
+        //tr__frozen.style["background-color"] = "rgb(255,255,255,0)";
       }
     }
     function switchFace(target, idx) {
@@ -304,6 +306,10 @@ function t3Util() {
   transform: matrix3d(1, 0, 0, 0, 0, ${YSIZE}, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1);
   display: inline-block;
   position: absolute;
+}
+div.tr__frozen--white {
+  background: white;
+  opacity: 0.4;
 }
 div.tr--hide {
   display:none;
