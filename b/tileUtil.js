@@ -80,6 +80,7 @@ function tileUtil() {
       shareStateAll();
     }
     function loadData(jsonStr, callback) {
+      console.log(1111);
       try {
         let data = JSON.parse(jsonStr);
         if (callback) {
@@ -89,6 +90,8 @@ function tileUtil() {
           console.log("load e: data null");
           return false;
         }
+        
+      console.log(222);
         if ("tiles" in data) {
           data.tiles.map((d) => {
             INITTILECALLBACK(
