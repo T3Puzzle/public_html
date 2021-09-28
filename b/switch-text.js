@@ -22,15 +22,21 @@
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'value') {
           this.__VALUE = newValue;
+          this.__INDEX = this.__VALUES.indexOf(newValue);
+          if (oldValue!==null) {
+            this.update();
+          }
         } else if (name === 'size') {
           this.__SIZE = newValue;
         } else if (name === 'next') {
           this.next();
+          if (oldValue!==null) {
+            this.update();
+          }
         }
       }
       next () {
         this.__INDEX = (this.__INDEX + 1) % this.__LENGTH;
-        this.update();
       }
       update () {
         Array.from(this.shadowRoot.querySelectorAll('a')).forEach((a,idx)=>{
@@ -41,6 +47,14 @@
           }
           this.__VALUE = this.__VALUES[this.__INDEX];
         });
+        this.value = this.__VALUE;
+        let value = {
+          detail: {
+            value: this.value
+          }
+        } 
+        this.dispatchEvent(new CustomEvent('change',value))
+      
       }
       connectedCallback() {
         let style = document.createElement("style");
@@ -53,13 +67,6 @@
           div.insertAdjacentHTML("beforeend", getStaticHTML());
           let item = div.lastElementChild;
           let value = o.value;
-          if (value === this.__VALUE) {
-            this.__VALUE = value;
-            this.__INDEX = idx;
-            item.style["display"] = "inline-block";
-          } else {
-            item.style["display"] = "none";
-          }
           let text = o.textContent;
           if (!text){
             text = this.__TEXT__DEFAULT;
@@ -81,15 +88,10 @@
             divButtonText.textContent = t;
           });
         });
+        this.update();
         div.addEventListener("click", () => {
           this.next();
-          this.value = this.__VALUE;
-          let value = {
-            detail: {
-              value: this.value
-            }
-          } 
-          this.dispatchEvent(new CustomEvent('change',value))
+          this.update();
         });
       }
     }
