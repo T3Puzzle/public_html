@@ -820,7 +820,7 @@ function tileUtil() {
       }
           window.setTimeout(()=>{
             
-            if (HAND.ok<=0) {
+            if (HAND.ok===0) {
               document.body.classList.remove('move');
               if (('ontouchend' in document)) {  
                 HAND.ground.stop();
@@ -854,11 +854,19 @@ function tileUtil() {
         
         baseNode.addEventListener(out, e=>{
           HAND.ok--;
-          endBaseClick (baseNode);
+          if (HAND.ok===0) {
+            endBaseClick (baseNode);
+          } else {
+            HAND.ok = 0;
+          }
         });
         baseNode.addEventListener(up, e=>{
           HAND.ok--;
-          endBaseClick (baseNode);
+          if (HAND.ok===0) {
+            endBaseClick (baseNode);
+          } else {
+            HAND.ok = 0;
+          }
         },false);
         baseNode.addEventListener(move, e=>{
           if (HAND.ok===1) {
