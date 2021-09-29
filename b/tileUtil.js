@@ -191,7 +191,7 @@ function tileUtil() {
       let imgback = target.imgback;
       imgback.sendToBack();
 
-      if (HAND.enabled && e.distance === 0 && prevData.o === 0) {
+      if ((HAND.enabled||true) && e.distance === 0 && prevData.o === 0) {
         deleteTarget(target);
         shareStateAll();
       } else {
@@ -543,7 +543,7 @@ function tileUtil() {
       root = new tapspace.SpaceGroup(space);
 
       board = new tapspace.SpaceHTML(
-        '<div style="width:5000px;height:5000px;transform:translate(-2500px,-2500px)"></div>',
+        '<div style="width:0px;height:0px;transform:translate(-2500px,-2500px)"></div>',
         root
       ).setSize(0, 0);
 
@@ -610,6 +610,11 @@ function tileUtil() {
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
       });
+      ///
+      let viewNode = view.getElementBySpaceItem(view);
+      let touchNode = viewNode.parentNode.parentNode;
+      startBaseClick(touchNode);
+      ///
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
@@ -645,11 +650,12 @@ function tileUtil() {
         });
       } else {
         Array.from(spaceNode.querySelectorAll("div.tr.tr__base")).map((t) => {
-          t.classList.add("cursor--grab");
+          t.classList.add("cursor--nodrop");
         });
       }
     }
     function changeMode(oldValue, newValue) {
+      return;
       let spaceNode;
       let baseNode;
       if (space) {
@@ -804,14 +810,44 @@ function tileUtil() {
         }
       }
     }
-    function startBaseClick() {
+    function startBaseClick(_baseNode) {
       //let baseNode = view.getElementBySpaceItem(space).parentNode;
       let baseNode = view.getElementBySpaceItem(board);
+      if (_baseNode) {
+        baseNode = _baseNode;
+        baseNode.addEventListener("mousedown", e=>{
+          if (!HAND.ok) {
+            HAND.ok = true;
+          }
+        });
+        baseNode.addEventListener("mouseup", e=>{
+          HAND.ok = false;
+          window.setTimeout(()=>{
+            baseNode.addEventListener("click", baseClick);   
+            baseNode.classList.remove("cursor--move");
+            baseNode.classList.add("cursor--copy");
+          },500);
+        });
+        baseNode.addEventListener("mousemove", e=>{
+          if (HAND.ok) {
+            baseNode.removeEventListener("click", baseClick);
+            baseNode.classList.add("cursor--move");
+            baseNode.classList.remove("cursor--copy");
+            HAND.ok = false;
+          }
+        });
+      }
       baseNode.addEventListener("click", baseClick);
+      baseNode.classList.remove("cursor--move");
+      baseNode.classList.add("cursor--copy");
+      
     }
-    function stopBaseClick() {
+    function stopBaseClick(_baseNode) {
       //let baseNode = view.getElementBySpaceItem(space).parentNode;
       let baseNode = view.getElementBySpaceItem(board);
+      if (_baseNode) {
+        baseNode = _baseNode;
+      }
       baseNode.removeEventListener("click", baseClick);
     }
     function baseClick(e) {
