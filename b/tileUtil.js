@@ -856,7 +856,7 @@ function tileUtil() {
           HAND.ok--;
           if (HAND.ok===0) {
             endBaseClick (baseNode);
-          } else {
+          } else if (HAND.ok<0) {
             HAND.ok = 0;
           }
         });
@@ -864,7 +864,7 @@ function tileUtil() {
           HAND.ok--;
           if (HAND.ok===0) {
             endBaseClick (baseNode);
-          } else {
+          } else if (HAND.ok<0) {
             HAND.ok = 0;
           }
         },false);
