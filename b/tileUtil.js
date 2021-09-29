@@ -834,27 +834,26 @@ function tileUtil() {
         baseNode.addEventListener(up, e=>{
           HAND.ok--;
           window.setTimeout(()=>{
-            document.body.classList.add('move');
-            if (('ontouchend' in document)) {
-              if (HAND.ok===0) {
+            if (HAND.ok===0) {
+              if (('ontouchend' in document)) {  
+                document.body.classList.remove('move');
                 HAND.ground.stop();
-              }
-            }     
-            baseNode.classList.remove("cursor--move");
-            baseNode.classList.add("cursor--copy");
-            baseNode.addEventListener("click", baseClick,false);  
-        
+              }     
+              baseNode.classList.remove("cursor--move");
+              baseNode.classList.add("cursor--copy");
+              baseNode.addEventListener("click", baseClick,false);  
+            }
           },500);
         },false);
         baseNode.addEventListener(move, e=>{
           if (HAND.ok===1) {
-            HAND.ok=2;
+            HAND.ok++;
             baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
             HAND.ok = false;
             if (('ontouchend' in document)) {
-              document.body.classList.remove('move');
+              document.body.classList.add('move');
               HAND.ground.resume();
             }
           }
