@@ -829,16 +829,14 @@ function tileUtil() {
           up = 'touchend';
         }
         baseNode.addEventListener(down, e=>{
-          if (!HAND.ok) {
-            HAND.ok = 1;
-          }
+          HAND.ok++;
         });
         baseNode.addEventListener(up, e=>{
-          HAND.ok = 1;
+          HAND.ok--;
           window.setTimeout(()=>{
             document.body.classList.add('move');
             if (('ontouchend' in document)) {
-              if (HAND.ok===1) {
+              if (HAND.ok===0) {
                 HAND.ground.stop();
               }
             }     
@@ -859,8 +857,6 @@ function tileUtil() {
               document.body.classList.remove('move');
               HAND.ground.resume();
             }
-          } else {
-            HAND.ok++;
           }
         },false);
       }
