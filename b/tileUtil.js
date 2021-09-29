@@ -836,17 +836,23 @@ function tileUtil() {
         let down = 'mousedown';
         let move = 'mousemove';
         let up = 'mouseup';
+        let out = 'mouseout';
         if (('ontouchend' in document)) {
           down = 'touchstart';
           move = 'touchmove';
           up = 'touchend';
-          baseNode.addEventListener('touchcancel', e=>{
-            HAND.ok--;
-            endBaseClick (baseNode);
-          });
+          out = 'touchcancel';
         }
         baseNode.addEventListener(down, e=>{
           HAND.ok++;
+        });
+        
+        baseNode.addEventListener(out, e=>{
+          HAND.ok--;
+          if (HAND.ok<0) {
+            HAND.ok = 0;
+          }
+          endBaseClick (baseNode);
         });
         baseNode.addEventListener(up, e=>{
           HAND.ok--;
