@@ -813,6 +813,19 @@ function tileUtil() {
         }
       }
     }
+    function endBaseClick (baseNode) {
+          window.setTimeout(()=>{
+            if (HAND.ok===0) {
+              document.body.classList.remove('move');
+              if (('ontouchend' in document)) {  
+                HAND.ground.stop();
+              }     
+              baseNode.classList.remove("cursor--move");
+              baseNode.classList.add("cursor--copy");
+              baseNode.addEventListener("click", baseClick,false);  
+            }
+          },500);
+    }
     function startBaseClick(_baseNode) {
       //let baseNode = view.getElementBySpaceItem(space).parentNode;
       let baseNode = view.getElementBySpaceItem(board);
@@ -827,23 +840,17 @@ function tileUtil() {
           down = 'touchstart';
           move = 'touchmove';
           up = 'touchend';
+          baseNode.addEventListener('touchcancel', e=>{
+            HAND.ok--;
+            endBaseClick (baseNode);
+          });
         }
         baseNode.addEventListener(down, e=>{
           HAND.ok++;
         });
         baseNode.addEventListener(up, e=>{
           HAND.ok--;
-          window.setTimeout(()=>{
-            if (HAND.ok===0) {
-              document.body.classList.remove('move');
-              if (('ontouchend' in document)) {  
-                HAND.ground.stop();
-              }     
-              baseNode.classList.remove("cursor--move");
-              baseNode.classList.add("cursor--copy");
-              baseNode.addEventListener("click", baseClick,false);  
-            }
-          },500);
+          endBaseClick (baseNode);
         },false);
         baseNode.addEventListener(move, e=>{
           if (HAND.ok===1) {
