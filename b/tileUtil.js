@@ -817,12 +817,11 @@ function tileUtil() {
       if (_baseNode) {
         baseNode = _baseNode;
       }
-      /*
       if (_baseNode) {
-        baseNode = _baseNode;
         let down = 'mousedown';
         let move = 'mousemove';
         let up = 'mouseup';
+        
         if ('ontouchend' in document) {
           down = 'touchstart';
           move = 'touchmove';
@@ -848,17 +847,15 @@ function tileUtil() {
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
             HAND.ok = false;
+            HAND.ground.resume();
           }
         },false);
       }
       
       baseNode.classList.remove("cursor--move");
       baseNode.classList.add("cursor--copy");
-      */
-      
-      console.log(1);
       baseNode.addEventListener("click", baseClick,false);
-      console.log(2);
+
       
     }
     function stopBaseClick(_baseNode) {
@@ -870,7 +867,6 @@ function tileUtil() {
       baseNode.removeEventListener("click", baseClick);
     }
     function baseClick(e) {
-      document.body.classList.add('move');
       let spaceNode = view.getElementBySpaceItem(space);
       let transformStr = spaceNode.style.getPropertyValue("transform");
       let matrix = (a, b, c, d, e, f) => {
