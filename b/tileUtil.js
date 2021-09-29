@@ -830,24 +830,27 @@ function tileUtil() {
         }
         baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
-            HAND.ok = true;
+            HAND.ok = 1;
           }
         });
         baseNode.addEventListener(up, e=>{
-          HAND.ok = false;
+          HAND.ok = 1;
           window.setTimeout(()=>{
             document.body.classList.add('move');
             if (('ontouchend' in document)) {
-              HAND.ground.stop();
+              if (HAND.ok===1) {
+                HAND.ground.stop();
+              }
             }     
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
             baseNode.addEventListener("click", baseClick,false);  
         
-          },2500);
+          },500);
         },false);
         baseNode.addEventListener(move, e=>{
-          if (HAND.ok) {
+          if (HAND.ok===1) {
+            HAND.ok=2;
             baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
@@ -856,10 +859,12 @@ function tileUtil() {
               document.body.classList.remove('move');
               HAND.ground.resume();
             }
+          } else {
+            HAND.ok++;
           }
         },false);
       }
-      
+      HAND.ok = 0;
       baseNode.classList.remove("cursor--move");
       baseNode.classList.add("cursor--copy");
       baseNode.addEventListener("click", baseClick,false);
