@@ -826,7 +826,7 @@ function tileUtil() {
         if (('ontouchend' in document)) {
           down = 'touchstart';
           move = 'touchmove';
-          up = 'click';//'touchend';
+          up = 'touchend';
         }
         baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
@@ -835,13 +835,14 @@ function tileUtil() {
         });
         baseNode.addEventListener(up, e=>{
           HAND.ok = false;
+          if (('ontouchend' in document)) {
+            HAND.ground.stop();
+          }    
           window.setTimeout(()=>{
             baseNode.addEventListener("click", baseClick,false);   
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
-            if (('ontouchend' in document)) {
-              HAND.ground.stop();
-            }            
+        
           },500);
         },false);
         baseNode.addEventListener(move, e=>{
