@@ -155,6 +155,9 @@ function tileUtil() {
       return json;
     }
     function shareStateAll() {
+      // just in case
+      endBaseClick ();
+      // just in case
       let value = {
         detail: {
           value: {
@@ -564,6 +567,9 @@ function tileUtil() {
       //shareStateAll();
     }
     function fit() {
+      // just in case
+      endBaseClick ();
+      // just in case
       view.fitScale(root);
       view.scale(view.atMid(), 1.618);
     }
@@ -813,7 +819,9 @@ function tileUtil() {
         }
       }
     }
-    function endBaseClick (baseNode) {
+    function endBaseClick () {
+      let viewNode = view.getElementBySpaceItem(view);
+      let baseNode = viewNode.parentNode.parentNode;
       let timeout = 500;
       if (('ontouchend' in document)) {
         timeout = 2500;
@@ -855,7 +863,7 @@ function tileUtil() {
         baseNode.addEventListener(out, e=>{
           HAND.ok--;
           if (HAND.ok===0) {
-            endBaseClick (baseNode);
+            endBaseClick ();
           } else if (HAND.ok<0) {
             HAND.ok = 0;
           }
@@ -863,7 +871,7 @@ function tileUtil() {
         baseNode.addEventListener(up, e=>{
           HAND.ok--;
           if (HAND.ok===0) {
-            endBaseClick (baseNode);
+            endBaseClick ();
           } else if (HAND.ok<0) {
             HAND.ok = 0;
           }
@@ -928,6 +936,9 @@ function tileUtil() {
       NOALL.noFlip = !!newValue;
     }
     function flipAll() {
+      // just in case
+      endBaseClick ();
+      // just in case
       for (let id in STATE) {
         STATE[id].m = (STATE[id].m + 1) % 2;
         puz.setFace(targetHash[id], STATE[id]);
