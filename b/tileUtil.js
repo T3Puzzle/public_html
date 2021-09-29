@@ -815,12 +815,21 @@ function tileUtil() {
       let baseNode = view.getElementBySpaceItem(board);
       if (_baseNode) {
         baseNode = _baseNode;
-        baseNode.addEventListener("mousedown", e=>{
+        let down = 'mousedown';
+        let move = 'mousemove';
+        let up = 'mouseup';
+        if ('ontouchend' in document) {
+          down = 'touchstart';
+          move = 'touchmove';
+          up = 'touchend';
+        }
+        
+        baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
             HAND.ok = true;
           }
         });
-        baseNode.addEventListener("mouseup", e=>{
+        baseNode.addEventListener(up, e=>{
           HAND.ok = false;
           window.setTimeout(()=>{
             baseNode.addEventListener("click", baseClick);   
@@ -828,7 +837,7 @@ function tileUtil() {
             baseNode.classList.add("cursor--copy");
           },500);
         });
-        baseNode.addEventListener("mousemove", e=>{
+        baseNode.addEventListener(move, e=>{
           if (HAND.ok) {
             baseNode.removeEventListener("click", baseClick);
             baseNode.classList.add("cursor--move");
