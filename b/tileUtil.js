@@ -604,17 +604,18 @@ function tileUtil() {
     }
     function final() {
       fit();
+      ///
+      let viewNode = view.getElementBySpaceItem(view);
+      let touchNode = viewNode.parentNode.parentNode;
+      startBaseClick(touchNode);
+      ///
       let touch = new tapspace.Touchable(view, view);
       touch.start({ translate: true, rotate: true, scale: true });
       touch.on("gestureend", (e) =>{
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
       });
-      ///
-      let viewNode = view.getElementBySpaceItem(view);
-      let touchNode = viewNode.parentNode.parentNode;
-      startBaseClick(touchNode);
-      ///
+      touch.stop();
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
@@ -856,7 +857,6 @@ function tileUtil() {
       */
       
       console.log(1);
-      HAND.ground.stop();
       baseNode.addEventListener("touch", baseClick,false);
       console.log(2);
       
