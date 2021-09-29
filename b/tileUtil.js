@@ -847,7 +847,6 @@ function tileUtil() {
         },false);
         baseNode.addEventListener(move, e=>{
           if (HAND.ok===1) {
-            HAND.ok++;
             baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
