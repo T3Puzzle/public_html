@@ -550,28 +550,8 @@ document.body.classList.remove('move');},500);">
   }
   
 　　　　function bodyMovePrevent() {
-  //document.addEventListener('touchstart', e=>e.preventDefault(), { passive: false });
   document.addEventListener('touchmove', e=>e.preventDefault(), { passive: false });
   document.addEventListener('mousewheel', e=>e.preventDefault(), { passive: false });
-    /*
-    let scrollPosition;
-    const body = document.getElementsByTagName("body")[0];
-    const ua = window.navigator.userAgent.toLowerCase();
-    const isiOS =
-      ua.indexOf("iphone") > -1 ||
-      ua.indexOf("ipad") > -1 ||
-      (ua.indexOf("macintosh") > -1 && "ontouchend" in document);
-    const scrollBarWidth = window.innerWidth - document.body.clientWidth;
-    body.style.paddingRight = scrollBarWidth + "px";
-    if (isiOS) {
-      scrollPosition = -window.pageYOffset;
-      body.style.position = "fixed";
-      body.style.width = "100%";
-      body.style.top = scrollPosition + "px";
-    } else {
-      body.style.overflow = "hidden";
-    }
-    */
   }
 </script>
 <script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
