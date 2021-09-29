@@ -25,7 +25,6 @@ div.menu {
 <body>
 
 
-
   <script>
   let APP = {
     name: 't3p',
@@ -34,8 +33,6 @@ div.menu {
   APP.restored = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
   </script>
 <div class="menu">
-  <button-text text="⤧⤩" onclick="moveMode();" size="40px">
-  </button-text>
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
     <datalist>
       <option value="blue"></option>
@@ -68,7 +65,7 @@ div.menu {
                                   LOAD)" size="40px">
   </button-text>
 </div>
-<grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)" onclick="window.setTimeout(()=>{t3puzzle.setAttribute('mode','hand');
+<grid-puzzle style="margin-left:0px;" id="t3puzzle" xmode="hand" onChange="processData(this.value)" xonclick="window.setTimeout(()=>{t3puzzle.setAttribute('mode','hand');
 document.body.classList.remove('move');},500);">
   <datalist>
     <grid-data>{
