@@ -853,6 +853,7 @@ function tileUtil() {
             baseNode.classList.remove("cursor--copy");
             HAND.ok = false;
             if (('ontouchend' in document)) {
+              document.body.classList.remove('move');
               HAND.ground.resume();
             }
           }
