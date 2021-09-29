@@ -615,7 +615,7 @@ function tileUtil() {
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
       });
-      touch.stop();
+      //touch.stop();
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
@@ -846,7 +846,7 @@ function tileUtil() {
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
             HAND.ok = false;
-            HAND.ground.resume();
+            //HAND.ground.resume();
           }
         },false);
       }
