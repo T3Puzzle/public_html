@@ -832,21 +832,21 @@ function tileUtil() {
         baseNode.addEventListener(up, e=>{
           HAND.ok = false;
           window.setTimeout(()=>{
-            baseNode.addEventListener("click", baseClick);   
+            baseNode.addEventListener("click", baseClick,false);   
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
           },500);
-        });
+        },false);
         baseNode.addEventListener(move, e=>{
           if (HAND.ok) {
-            baseNode.removeEventListener("click", baseClick);
+            baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
             HAND.ok = false;
           }
-        });
+        },false);
       }
-      baseNode.addEventListener("click", baseClick);
+      baseNode.addEventListener("click", baseClick,false);
       baseNode.classList.remove("cursor--move");
       baseNode.classList.add("cursor--copy");
       
