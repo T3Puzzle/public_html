@@ -839,7 +839,9 @@ function tileUtil() {
             baseNode.addEventListener("click", baseClick,false);   
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
-            
+            if (('ontouchend' in document)) {
+              HAND.ground.stop();
+            }            
           },500);
         },false);
         baseNode.addEventListener(move, e=>{
