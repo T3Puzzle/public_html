@@ -819,7 +819,8 @@ function tileUtil() {
         timeout = 2500;
       }
           window.setTimeout(()=>{
-            if (HAND.ok===0) {
+            
+            if (HAND.ok<=0) {
               document.body.classList.remove('move');
               if (('ontouchend' in document)) {  
                 HAND.ground.stop();
@@ -853,9 +854,6 @@ function tileUtil() {
         
         baseNode.addEventListener(out, e=>{
           HAND.ok--;
-          if (HAND.ok<0) {
-            HAND.ok = 0;
-          }
           endBaseClick (baseNode);
         });
         baseNode.addEventListener(up, e=>{
