@@ -69,16 +69,17 @@ function t3Util() {
       let frozen = target.frozen;
       let frozenNode = view.getElementBySpaceItem(frozen);
       let tr__frozen = frozenNode.querySelector("div.tr.tr__frozen");
-      if (value) {
+      if (value===1) {
         tile.bringToFront();
         frozen.bringToFront();
         tr__frozen.classList.add('tr__frozen--white');
-        //tr__frozen.style["background-color"] = "rgb(255,255,255,0.333)";
+      } else if (value===2) {
+        frozen.sendToBack();
+        tile.sendToBack();
       } else {
         tile.sendToBack();
         frozen.sendToBack();
         tr__frozen.classList.remove('tr__frozen--white');
-        //tr__frozen.style["background-color"] = "rgb(255,255,255,0)";
       }
     }
     function switchFace(target, idx) {
@@ -98,7 +99,7 @@ function t3Util() {
       } else {
         dir = idx;
       }
-      setFaceColor(target, { m: base, n: color });
+      setFaceColor(target, { m: base, n: color, o: frozen });
 
       stateAccess.set(id, { l: dir, m: base, n: color, o: frozen });
       rotateTile(tile, dir);
@@ -273,6 +274,7 @@ function t3Util() {
       let imgbackNode = view.getElementBySpaceItem(target.imgback);
       let m = data.m;
       let n = data.n;
+      let o = data.o;
       let img0 = imgbackNode.querySelector("img.img0");
       let img1 = imgbackNode.querySelector("img.img1");
       [img0, img1].map((i) => {
@@ -291,7 +293,19 @@ function t3Util() {
         imgm = img0;
       }
       imgn.classList.add("hide");
-      imgm.classList.add(COLORS[n]);
+      if (o===2) {
+        let once = imgn.classList.contains('white--once')
+        || imgm.classList.contains('white--once');
+        if (!once) {
+          imgm.classList.add('white');
+          imgm.classList.add('white--once');
+        } else {
+          imgm.classList.remove('white');
+          imgm.classList.add(COLORS[n]);
+        }
+      } else {
+        imgm.classList.add(COLORS[n]);
+      }
     }
     function init(_view, _stateAccess) {
       view = _view;
@@ -331,6 +345,12 @@ img.green {
 }
 img.mint {
   filter:brightness(1.20) saturate(130%) hue-rotate(70deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+}
+img.white {
+  filter:brightness(1000)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+}
+img.white--once {
+  cursor:help;
 }
 `;
     }
