@@ -560,10 +560,10 @@ function tileUtil() {
     function zoom(value) {
       let scale = parseFloat(value);
       view.scale(view.atMid(), scale);
-      shareStateAll();
+      // zoom not associated with STATE
+      //shareStateAll();
     }
     function fit() {
-      
       view.fitScale(root);
       view.scale(view.atMid(), 1.618);
     }
