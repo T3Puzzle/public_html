@@ -820,8 +820,10 @@ function tileUtil() {
       }
     }
     function justInCase() {
-      HAND.ok=0;
-      endBaseClick();
+      if (HAND.ok>0) {
+        HAND.ok = 0;
+        endBaseClick();
+      }
     }
     function endBaseClick () {
       let viewNode = view.getElementBySpaceItem(view);
