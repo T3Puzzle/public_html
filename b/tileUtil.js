@@ -835,13 +835,14 @@ function tileUtil() {
         });
         baseNode.addEventListener(up, e=>{
           HAND.ok = false;
-          if (('ontouchend' in document)) {
-            HAND.ground.stop();
-          }    
           window.setTimeout(()=>{
-            baseNode.addEventListener("click", baseClick,false);   
+            document.body.classList.add('move');
+            if (('ontouchend' in document)) {
+              HAND.ground.stop();
+            }     
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
+            baseNode.addEventListener("click", baseClick,false);  
         
           },500);
         },false);
@@ -865,7 +866,6 @@ function tileUtil() {
       
     }
     function stopBaseClick(_baseNode) {
-      //let baseNode = view.getElementBySpaceItem(space).parentNode;
       let baseNode = view.getElementBySpaceItem(board);
       if (_baseNode) {
         baseNode = _baseNode;
