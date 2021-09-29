@@ -856,7 +856,7 @@ function tileUtil() {
       */
       
       console.log(1);
-      baseNode.addEventListener("click", baseClick,false);
+      baseNode.addEventListener("touchstart", baseClick,false);
       console.log(2);
       
     }
