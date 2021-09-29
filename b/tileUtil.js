@@ -821,12 +821,12 @@ function tileUtil() {
         let down = 'mousedown';
         let move = 'mousemove';
         let up = 'mouseup';
-        
+        /*
         if ('ontouchend' in document) {
           down = 'touchstart';
           move = 'touchmove';
           up = 'touchend';
-        }
+        }*/
         
         baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
