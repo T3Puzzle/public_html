@@ -25,7 +25,7 @@ div.menu {
 <body>
 
 
-  
+
   <script>
   let APP = {
     name: 't3p',
@@ -251,6 +251,13 @@ document.body.classList.remove('move');},500);">
     localStorage.setItem(APP.name+'__MIN',count);
     localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094402963852356,'tiles':[[2,-2,1,2,0,0,1],[1,-2,0,2,1,0,2],[1,-3,1,2,0,0,2],[0,-2,0,2,1,0,2],[0,-3,1,2,0,0,2],[0,-3,0,2,1,0,2],[-1,-4,1,2,0,0,2],[-1,-4,0,2,1,0,2],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1],[1,-2,1,2,0,0,2],[-1,-3,0,2,1,0,2],[0,-4,1,2,0,0,2],[-2,-4,0,2,1,0,1]],'time':1632808558705,'title':'チェッカーならべ（のこり10ピース）','note':'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'}));
   }
+  function Unlock (jsonStr) {
+    let json = JSON.parse(jsonStr);
+    json.tiles.map(t=>{
+      t[6]=0;
+    });
+    return JSON.stringify(json);
+  }
   function moveMode () {
     document.body.classList.add('move');
    t3puzzle.setAttribute('mode','readonly');
@@ -279,6 +286,7 @@ document.body.classList.remove('move');},500);">
     } else {
       jsonStr = localStorage.getItem(APP.name +
         '__DATA__LASTMODIFIED');
+      jsonStr = Unlock(jsonStr);
       markArtist();
       let artistStr = localStorage.getItem(APP.type + '__INFO--ARTIST');
       if (artistStr) {
@@ -460,10 +468,6 @@ document.body.classList.remove('move');},500);">
     submit.value = 'ほぞんちゅう';
     addDataToLocal(form);
     localStorage.setItem(APP.type + '__INFO--AGE', age.value);
-    let white = src.querySelectorAll('div.tr__frozen--white');
-    Array.from(white).map(w=>{
-      w.classList.remove('tr__frozen--white');
-    });
     saveImage(src, dst, OBJ, () => {
       filename.setAttribute('value',
         artist.value + '__' + dateNow() + '__' + age.value.padStart(3,'0') + '__'+  APP.name +'.png');
