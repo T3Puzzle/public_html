@@ -835,8 +835,8 @@ function tileUtil() {
           HAND.ok--;
           window.setTimeout(()=>{
             if (HAND.ok===0) {
+              document.body.classList.remove('move');
               if (('ontouchend' in document)) {  
-                document.body.classList.remove('move');
                 HAND.ground.stop();
               }     
               baseNode.classList.remove("cursor--move");
@@ -850,9 +850,8 @@ function tileUtil() {
             baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
             baseNode.classList.remove("cursor--copy");
-            HAND.ok = false;
+            document.body.classList.add('move');
             if (('ontouchend' in document)) {
-              document.body.classList.add('move');
               HAND.ground.resume();
             }
           }
