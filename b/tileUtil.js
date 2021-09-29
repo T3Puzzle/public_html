@@ -615,7 +615,9 @@ function tileUtil() {
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
       });
-      //touch.stop();
+      if (('ontouchend' in document)) {
+        touch.stop();
+      }
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
