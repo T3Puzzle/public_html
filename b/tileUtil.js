@@ -40,6 +40,10 @@ function tileUtil() {
       n: 0,
       o: 0,
     }
+    let ORIENTATION = {
+      last: 0,
+      value: 0
+    };
     let STATE = {};
     let targetHash = {};
     let idHash = {};
@@ -158,6 +162,8 @@ function tileUtil() {
       // just in case
       justInCase();
       // just in case
+      ORIENTATION.lastValue = ORIENTATION.value;
+      ORIENTATION.value = getOrientation();
       let value = {
         detail: {
           value: {
@@ -620,6 +626,12 @@ function tileUtil() {
       touch.on("gestureend", (e) =>{
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
+        ORIENTATION.lastValue = ORIENTATION.value;
+        ORIENTATION.value = getOrientation();
+        if (ORIENTATION.lastValue!==ORIENTATION.value) {
+        
+          shareStateAll();
+        }
       });
       if (('ontouchend' in document)) {
         touch.stop();
