@@ -857,7 +857,7 @@ function tileUtil() {
       */
       
       console.log(1);
-      baseNode.addEventListener("touch", baseClick,false);
+      baseNode.addEventListener("click", baseClick,false);
       console.log(2);
       
     }
