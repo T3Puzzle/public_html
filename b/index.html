@@ -514,7 +514,7 @@ div.menu {
 
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
     if (true) {
-      form.action = OBJ.url;
+      form.action = OBJ.url+'?xxx=fff';
       form.method = 'POST';
       form.setAttribute('onsubmit','');
       form.target = '_blank';
