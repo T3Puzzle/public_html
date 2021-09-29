@@ -109,7 +109,7 @@
   function getStaticCSS() {
     return `
 div.color--blue {
-  color: rgba(68,162,225,1); 
+  color: rgba(105,195,255,1); 
 }
 div.color--green {
   color: rgba(54,210,102,1);
@@ -118,7 +118,7 @@ div.color--pink {
   color: rgba(255,122,190,1);
 }
 div.color--mint {
-  color: rgba(100,225,230,1);
+  color: rgba(120,250,240,1);
 }
 a.button {
   display: inline-block;
