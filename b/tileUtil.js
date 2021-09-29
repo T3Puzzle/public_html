@@ -826,7 +826,7 @@ function tileUtil() {
         if (('ontouchend' in document)) {
           down = 'touchstart';
           move = 'touchmove';
-          //up = 'touchend';
+          up = 'click';//'touchend';
         }
         baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
