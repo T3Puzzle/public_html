@@ -821,11 +821,11 @@ function tileUtil() {
         let down = 'mousedown';
         let move = 'mousemove';
         let up = 'mouseup';
-        
+        /*
           down = 'touchstart';
           move = 'touchmove';
           up = 'touchend';
-        
+        */
         baseNode.addEventListener(down, e=>{
           if (!HAND.ok) {
             HAND.ok = true;
@@ -837,7 +837,7 @@ function tileUtil() {
             baseNode.addEventListener("click", baseClick,false);   
             baseNode.classList.remove("cursor--move");
             baseNode.classList.add("cursor--copy");
-            HAND.ground.stop();
+            
           },500);
         },false);
         baseNode.addEventListener(move, e=>{
