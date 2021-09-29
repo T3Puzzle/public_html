@@ -854,6 +854,8 @@ function tileUtil() {
       baseNode.classList.remove("cursor--move");
       baseNode.classList.add("cursor--copy");
       */
+      
+      document.body.classList.add('move');
       baseNode.addEventListener("click", baseClick,false);
       
     }
