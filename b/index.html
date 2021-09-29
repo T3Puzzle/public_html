@@ -23,6 +23,8 @@ div.menu {
 </style>
 </head>
 <body>
+
+
   <script>
   let APP = {
     name: 't3p',
@@ -30,7 +32,7 @@ div.menu {
   };
   APP.restored = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
   </script>
-  <div class="menu">
+<div class="menu">
   <button-text text="⤧⤩" onclick="moveMode();" size="40px">
   </button-text>
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
@@ -164,14 +166,14 @@ document.body.classList.remove('move');},500);">
     status: '',
   };
   function loadInitData(){
-     let str = APP.restored; //localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+     let str = APP.restored;
     if (str) {
       t3puzzle.setAttribute('loaddata',str);
     }
   }
   document.addEventListener('DOMContentLoaded', () => {
     loadInitData();
-    bodyScrollPrevent();
+    bodyMovePrevent();
     if (('ontouchend' in document)) {
       Array.from(document.querySelectorAll('.ui__pc')).map(u => {
         u.style['display'] = 'none';
@@ -249,9 +251,6 @@ document.body.classList.remove('move');},500);">
     localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'orientation':-2.094402963852356,'tiles':[[2,-2,1,2,0,0,1],[1,-2,0,2,1,0,0],[1,-3,1,2,0,0,0],[0,-2,0,2,1,0,0],[0,-3,1,2,0,0,0],[0,-3,0,2,1,0,0],[-1,-4,1,2,0,0,0],[-1,-4,0,2,1,0,0],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1],[1,-2,1,2,0,0,0],[-1,-3,0,2,1,0,0],[0,-4,1,2,0,0,0],[-2,-4,0,2,1,0,1]],'time':1632808558705,'title':'チェッカーならべ（のこり10ピース）','note':'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'}));
   }
   function moveMode () {
-    if (HISTORY.status === 'change') {
-      t3puzzle.setAttribute('fit','');
-    }
     document.body.classList.add('move');
    t3puzzle.setAttribute('mode','readonly');
     HISTORY.status = 'move';
@@ -442,7 +441,14 @@ document.body.classList.remove('move');},500);">
     localStorage.setItem(
       APP.name + '__MAX', count);
   }
-
+  function dateNow() {
+    return new Intl.DateTimeFormat('ja-JP', {
+  year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit',
+  hour12: false,
+  timeZone: 'Asia/Tokyo'
+}).format(new Date()).replace(/[\s\/:]/g,'');
+  }
   function submitImage(src, dst, form, OBJ) {
     let submit = form.querySelector('input[type=submit]');
     let age = form.querySelector('input[name=age]');
@@ -453,9 +459,13 @@ document.body.classList.remove('move');},500);">
     submit.value = 'ほぞんちゅう';
     addDataToLocal(form);
     localStorage.setItem(APP.type + '__INFO--AGE', age.value);
+    let white = src.querySelectorAll('div.tr__frozen--white');
+    Array.from(white).map(w=>{
+      w.classList.remove('tr__frozen--white');
+    });
     saveImage(src, dst, OBJ, () => {
       filename.setAttribute('value',
-        APP.name + '__' + artist.value + '__' + Date.now() + '.png');
+        artist.value + '__' + dateNow() + '__' + age.value.padStart(3,'0') + '__'+  APP.name +'.png');
       let dst_img = dst.querySelector('img');
       content.setAttribute('value', dst_img.src.split(',')[1]);
       try {
@@ -502,6 +512,7 @@ document.body.classList.remove('move');},500);">
   function saveImage(src, dst, OBJ, successCallback, errorCallback) {
     (async () => {
       try {
+        
         OBJ.imageNode = new Image();
         OBJ.imageNode.src = await domtoimage.toPng(src);
         if (OBJ.lastImageNode) {
@@ -537,8 +548,15 @@ document.body.classList.remove('move');},500);">
     let item = _item ? _item : t3puzzle;
     item.setAttribute('zoom', 0.9);
   }
+  
+　　　　function bodyMovePrevent() {
+  document.body.addEventListener('touchstart', e=>e.preventDefault, { passive: false });
+      
+  document.body.addEventListener('touchmove', e=>e.preventDefault, { passive: false });
 
-  function bodyScrollPrevent() {
+
+  document.body.addEventListener('mousewheel', e=>e.preventDefault, { passive: false });
+    /*
     let scrollPosition;
     const body = document.getElementsByTagName("body")[0];
     const ua = window.navigator.userAgent.toLowerCase();
@@ -556,6 +574,7 @@ document.body.classList.remove('move');},500);">
     } else {
       body.style.overflow = "hidden";
     }
+    */
   }
 </script>
 <script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
@@ -565,7 +584,6 @@ document.body.classList.remove('move');},500);">
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
 <script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
 <script src="https://www.t3puzzle.com/b/switch-text.js"></script>
-  
 <script src="./t3.js"></script>
 <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
