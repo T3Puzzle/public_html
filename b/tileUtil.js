@@ -156,7 +156,7 @@ function tileUtil() {
     }
     function shareStateAll() {
       // just in case
-      endBaseClick ();
+      justInCase();
       // just in case
       let value = {
         detail: {
@@ -568,7 +568,7 @@ function tileUtil() {
     }
     function fit() {
       // just in case
-      endBaseClick ();
+      justInCase();
       // just in case
       view.fitScale(root);
       view.scale(view.atMid(), 1.618);
@@ -819,6 +819,10 @@ function tileUtil() {
         }
       }
     }
+    function justInCase() {
+      HAND.ok=0;
+      endBaseClick();
+    }
     function endBaseClick () {
       let viewNode = view.getElementBySpaceItem(view);
       let baseNode = viewNode.parentNode.parentNode;
@@ -840,7 +844,6 @@ function tileUtil() {
           },timeout);
     }
     function startBaseClick(_baseNode) {
-      //let baseNode = view.getElementBySpaceItem(space).parentNode;
       let baseNode = view.getElementBySpaceItem(board);
       if (_baseNode) {
         baseNode = _baseNode;
@@ -937,7 +940,7 @@ function tileUtil() {
     }
     function flipAll() {
       // just in case
-      endBaseClick ();
+      justInCase();
       // just in case
       for (let id in STATE) {
         STATE[id].m = (STATE[id].m + 1) % 2;
