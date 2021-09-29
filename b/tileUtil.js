@@ -814,6 +814,10 @@ function tileUtil() {
       }
     }
     function endBaseClick (baseNode) {
+      let timeout = 500;
+      if (('ontouchend' in document)) {
+        timeout = 2500;
+      }
           window.setTimeout(()=>{
             if (HAND.ok===0) {
               document.body.classList.remove('move');
@@ -824,7 +828,7 @@ function tileUtil() {
               baseNode.classList.add("cursor--copy");
               baseNode.addEventListener("click", baseClick,false);  
             }
-          },500);
+          },timeout);
     }
     function startBaseClick(_baseNode) {
       //let baseNode = view.getElementBySpaceItem(space).parentNode;
