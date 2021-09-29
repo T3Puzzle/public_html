@@ -856,7 +856,8 @@ function tileUtil() {
       */
       
       console.log(1);
-      baseNode.addEventListener("touchstart", baseClick,false);
+      HAND.ground.stop();
+      baseNode.addEventListener("touch", baseClick,false);
       console.log(2);
       
     }
