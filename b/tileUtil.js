@@ -695,6 +695,10 @@ function tileUtil() {
         Array.from(spaceNode.querySelectorAll("div.tr.tr__base")).map((t) => {
           t.classList.add("cursor--nodrop");
         });
+        // caution
+        Array.from(spaceNode.querySelectorAll("div.img")).map((t) => {
+          t.classList.add("cursor--copy");
+        });
       } else {
         Array.from(spaceNode.querySelectorAll("div.tr.tr__base")).map((t) => {
           t.classList.add("cursor--nodrop");
