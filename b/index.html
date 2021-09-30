@@ -502,7 +502,7 @@ div.menu {
               let array = [title,note,hash,json.url];
               let tweet = 'https://twitter.com/intent/tweet?text='+encodeURI(array.join('\n'));
               
-              form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open(${tweet});return false;`);
+              form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open("${tweet}");return false;`);
             } else {
               submit.value = 'とじる';
               form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
