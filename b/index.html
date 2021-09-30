@@ -25,6 +25,7 @@ div.menu {
 </head>
 <body>
 
+
   <script>
   let APP = {
     name: 't3p',
@@ -589,14 +590,15 @@ div.menu {
     })
   }
   function fetch_initdata() {
-    if (/#!([^\?#]+)/.test(location.href)) {
-      APP.id = RegExp.$1;
-      APP.preset = '';
-    } else (/#preset=([^\?#]+)/.test(location.href)) {
+      if (/#!preset=([^\?#]+)/.test(location.href)) {
       APP.preset = RegExp.$1;
       APP.id = '';
-    }
-    if (APP.id) {
+      let jstr = localStorage.getItem(APP.name+'__DATA__'+APP.preset);
+      if (jstr) {
+        dialogopen('download',load__form__modal, load__t3work, load__form, {jsonStr:jstr});
+      }
+     } else if (/#!([^\?#]+)/.test(location.href)) {
+      APP.id = RegExp.$1;
       let url = UPLOAD.url+'?id='+encodeURIComponent(APP.id);
       console.log(url);
       fetch(url,{
@@ -608,11 +610,6 @@ div.menu {
       .then(jstr=>{
           dialogopen('download',load__form__modal, load__t3work, load__form, {jsonStr:jstr});
       });
-    } else if (APP.preset) {
-      let data = localStorage(APP.name+'__DATA__'+APP.preset);
-      if (data) {
-        t3puzzle.setAttribute('loaddata',data);
-      }
     }
   }
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
