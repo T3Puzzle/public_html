@@ -26,7 +26,6 @@ div.menu {
 <body>
 
 
- 
   <script>
   let APP = {
     name: 't3p',
@@ -493,11 +492,23 @@ div.menu {
       try {
         fetch_upload(form, OBJ,
           (json) => {
+            submit.removeAttribute('disabled');
+            if(true) {
+              submit.value = 'ツイート';
+              
+              let title = UPLOAD.title.substr(0,20);
+              let note = UPLOAD.note.substr(0,80);
+              let hash = '#FMS特別講義 #T3パズル';
+              let array = [title,note,hash,json.url];
+              let tweet = 'https://twitter.com/intent/tweet?text='+encodeURI(array.join('\n'));
+              
+              form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open(${tweet});return false;`);
+            } else {
+              submit.value = 'とじる';
+              form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
+            }
             UPLOAD.title = '';
             UPLOAD.note = '';
-            submit.value = 'とじる';
-            submit.removeAttribute('disabled');
-            form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
             
           }, (e) => {
             submit.value = '😨';
@@ -513,14 +524,6 @@ div.menu {
   }
 
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
-    if (true) {
-      form.action = OBJ.url+'?type=tweet';
-      form.method = 'POST';
-      form.setAttribute('onsubmit','');
-      form.target = '_blank';
-      form.submit();
-      return;
-    }
     const body = new FormData(form);
     fetch(OBJ.url, {
         method: 'POST',
