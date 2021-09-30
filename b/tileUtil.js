@@ -676,13 +676,30 @@ function tileUtil() {
       }
     }
     function changeMode(oldValue, newValue) {
-      return;
+      if (!newValue) {
+        return;
+      }
+      HAND.bad = true;
       let spaceNode;
       let baseNode;
+      let viewNode;
       if (space) {
         spaceNode = view.getElementBySpaceItem(space);
-        baseNode = view.getElementBySpaceItem(board);
+        //baseNode = view.getElementBySpaceItem(board);
+        
+        viewNode = view.getElementBySpaceItem(view);
+        baseNode = viewNode.parentNode.parentNode;
+        
+        let move = 'mousemove';
+        if (('ontouchend' in document)) { 
+          move = 'touchmove';
+        }
+        baseNode.removeEventListener(move,addTouchEvent);
+        baseNode.removeEventListener("click", baseClick);
       }
+      
+      /* not support to change mode */
+      /*
       if (oldValue === "anchor") {
         enableAnchor(false);
         if (space) {
@@ -724,6 +741,15 @@ function tileUtil() {
           });
         }
       }
+      */
+      
+        if (space) {
+          baseNode.classList.remove("cursor--copy");
+          spaceNode.classList.remove("cursor--pointer");
+          Array.from(spaceNode.querySelectorAll("div.tr.tr__base")).map((t) => {
+            t.classList.remove("cursor--nodrop");
+          });
+        }
       ////
       if (newValue === "anchor") {
         enableAnchor(true);
@@ -838,6 +864,9 @@ function tileUtil() {
       }
     }
     function endBaseClick () {
+      if (HAND.bad){
+        return;
+      }
       let viewNode = view.getElementBySpaceItem(view);
       let baseNode = viewNode.parentNode.parentNode;
       let timeout = 500;
@@ -893,7 +922,16 @@ function tileUtil() {
             HAND.ok = 0;
           }
         },false);
-        baseNode.addEventListener(move, e=>{
+        baseNode.addEventListener(move,addTouchEvent,false);
+      }
+      HAND.ok = 0;
+      baseNode.classList.remove("cursor--move");
+      baseNode.classList.add("cursor--copy");
+      baseNode.addEventListener("click", baseClick,false);
+
+      
+    }
+    function addTouchEvent (e) {
           if (HAND.ok===1) {
             baseNode.removeEventListener("click", baseClick,false);
             baseNode.classList.add("cursor--move");
@@ -903,15 +941,7 @@ function tileUtil() {
               HAND.ground.resume();
             }
           }
-        },false);
-      }
-      HAND.ok = 0;
-      baseNode.classList.remove("cursor--move");
-      baseNode.classList.add("cursor--copy");
-      baseNode.addEventListener("click", baseClick,false);
-
-      
-    }
+        }
     function stopBaseClick(_baseNode) {
       let baseNode = view.getElementBySpaceItem(board);
       if (_baseNode) {
