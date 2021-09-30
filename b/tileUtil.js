@@ -676,6 +676,16 @@ function tileUtil() {
       }
     }
     function changeMode(oldValue, newValue) {
+      if (newValue && newValue==='readonly') {
+        READONLY.on = true;
+        HAND.ok = -1;
+        let viewNode = view.getElementBySpaceItem(view);
+        let baseNode = viewNode.parentNode.parentNode;
+        baseNode.classList.add("cursor--move");
+        baseNode.classList.remove("cursor--copy");
+        baseNode.removeEventListener("click", baseClick,false);
+        enableReadonly(true);
+      }
       return;
       let spaceNode;
       let baseNode;
@@ -838,6 +848,9 @@ function tileUtil() {
       }
     }
     function endBaseClick () {
+      if (READONLY.on) {
+        return;
+      }
       let viewNode = view.getElementBySpaceItem(view);
       let baseNode = viewNode.parentNode.parentNode;
       let timeout = 500;
