@@ -26,6 +26,7 @@ div.menu {
 <body>
 
 
+
   <script>
   let APP = {
     name: 't3p',
@@ -153,8 +154,8 @@ div.menu {
           <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
       </div>
       <br />
-      <input readonly placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
-      <textarea readonly placeholder="メモ" name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
+      <input readonly id="load__title" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+      <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:95%;border-width:1px;"></textarea>
     </form>
     <div id="load__dst" style="display:none;">
     </div>
@@ -381,6 +382,7 @@ div.menu {
 
   function loadDataToMain(modal, form) {
     t3puzzle.setAttribute('loaddata', LOAD.data);
+    UPLOAD.placeholder = load__title.value;
     console.log(LOAD.data);
     modal.setAttribute('close', '');
   }
@@ -396,11 +398,9 @@ div.menu {
     note.value = '';
     if (str) {
       let json = JSON.parse(str);
-      console.log(json);
       if (json.meta.title) {
         title.value = json.meta.title;
       }
-      UPLOAD.placeholder = title.value;
       if (json.meta.note) {
         note.value = json.meta.note;
       }
