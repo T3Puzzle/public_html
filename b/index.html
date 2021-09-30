@@ -25,17 +25,13 @@ div.menu {
 </head>
 <body>
 
-
   <script>
   let APP = {
     name: 't3p',
     type: 'gridpuzzle'
   };
   APP.restored = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
-    if (/\/id\/([^\?#]+)/.test(location.href)) {
-      APP.id = RegExp.$1;
-      console.log(APP.id);
-    }
+
   </script>
 <div class="menu">
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
@@ -142,7 +138,7 @@ div.menu {
       <input name="content" type="hidden">
       <input id="load__age" name="age" type="hidden" min="0" max="150" style="width:35px;">
       <div style="display:inline-block;border-width:1px;">
-        
+        <div id="load__history" style="display:inline-block;">
         <button-text text="«" onclick="gohead(load__t3work,load__form);" size="30px">
         </button-text>
         <button-text text="‹" onclick="backward(load__t3work,load__form);" size="30px">
@@ -153,7 +149,8 @@ div.menu {
         </button-text>
         <button-text text="»" onclick="goend(load__t3work,load__form);" size="30px">
         </button-text>
-        <input type="submit" value="これをつかう" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
+        </div>
+          <input type="submit" value="これをつかう" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
       </div>
       <br />
       <input readonly placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
@@ -198,6 +195,9 @@ div.menu {
     }
     
     loadPreset();
+    /////
+    fetch_initdata();
+    ///////
   });
   let UPLOAD = {
     imageNode: null,
@@ -296,9 +296,13 @@ div.menu {
     let note = form.querySelector('textarea[name=note]');
     let jsonStr = '';
     if (action === 'load') {
+      load__history.style.display = 'inline-block';
       let {str,i} = loadData(modal);
       jsonStr = str;
       setStrToForm(form, jsonStr,i);
+    } else if (action==='download') {
+      load__history.style.display = 'none';
+      goto (t3work,form,OBJ.jsonStr,null);
     } else {
       jsonStr = localStorage.getItem(APP.name +
         '__DATA__LASTMODIFIED');
@@ -374,11 +378,13 @@ div.menu {
       if (json.note) {
         note.value = json.note;
       }
-      let {min,max} = getCountFromLocal();
-      let base = max-min+1;
-      let now = idx-min+1;
-      LOAD.pointer = idx;
-      load__number.textContent = (now)+'/'+(base);
+      if (idx!==null) {
+        let {min,max} = getCountFromLocal();
+        let base = max-min+1;
+        let now = idx-min+1;
+        LOAD.pointer = idx;
+        load__number.textContent = (now)+'/'+(base);
+      }
     }
   }
 
@@ -519,7 +525,7 @@ div.menu {
             let data = JSON.parse(dataStr);
             data.genealogy = json.genealogy;
             
-            history.replaceState('','',data.genealogy.id);
+            history.replaceState('','','id/'+data.genealogy.id);
           
             let str = JSON.stringify(data);
             putGenealogy (str);
@@ -538,7 +544,25 @@ div.menu {
       submit.value = '🤔';
     })
   }
-
+  function fetch_initdata() {
+    if (/\/id\/([^\?#]+)/.test(location.href)) {
+      APP.id = RegExp.$1;
+    }
+    if (APP.id) {
+      let url = UPLOAD.url+'?id='+encodeURIComponent(APP.id);
+      console.log(url);
+      fetch(url,{
+        method: 'GET',
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r=>r.json())
+      .then(jstr=>{
+        console.log(jstr);
+          dialogopen('download',load__form__modal, load__t3work, load__form, {jsonStr:JSON.stringify(jstr)});
+      });
+    }
+  }
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
     const body = new FormData(form);
     fetch(OBJ.url, {
