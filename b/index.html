@@ -25,7 +25,6 @@ div.menu {
 </head>
 <body>
 
-
   <script>
   let APP = {
     name: 't3p',
@@ -72,8 +71,7 @@ div.menu {
 <grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand"  onChange="processData(this.value)">
   <datalist>
     <grid-data>{
-      "orientation":3.141585657386029,
-      "tiles":[[0,0,1,1,0,0,0],[0,1,0,1,1,0,0],[0,1,1,0,1,0,0],[1,1,1,0,1,0,0]]
+      "orientation":2.0919229374524506,"tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
       }
     </grid-data>
   </datalist>
@@ -285,7 +283,7 @@ div.menu {
     count--;
 
     localStorage.setItem(APP.name+'__MIN',count);
-    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'meta':{'id':'','base':'','origin':'',artist:'_','title':'アルファベットのT','note':'もじをかいてみよう！'},'orientation':3.141585657386029,'tiles':[[0,0,1,1,0,0,0],[0,1,0,1,1,0,0],[0,1,1,0,1,0,0],[1,1,1,0,1,0,0]]}));
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'meta':{'id':'','base':'','origin':'',artist:'_','title':'ダイヤ','note':'他にもいろんなダイヤをかいてみよう!'},"orientation":-1.0496697182489454,"tiles":[[0,0,0,1,1,0,0],[1,0,1,1,0,0,0]]}));
   }
   function Unwrap (jsonStr) {
     if (!jsonStr) {
@@ -593,6 +591,10 @@ div.menu {
   function fetch_initdata() {
     if (/#!([^\?#]+)/.test(location.href)) {
       APP.id = RegExp.$1;
+      APP.preset = '';
+    } else (/#preset=([^\?#]+)/.test(location.href)) {
+      APP.preset = RegExp.$1;
+      APP.id = '';
     }
     if (APP.id) {
       let url = UPLOAD.url+'?id='+encodeURIComponent(APP.id);
@@ -606,6 +608,11 @@ div.menu {
       .then(jstr=>{
           dialogopen('download',load__form__modal, load__t3work, load__form, {jsonStr:jstr});
       });
+    } else if (APP.preset) {
+      let data = localStorage(APP.name+'__DATA__'+APP.preset);
+      if (data) {
+        t3puzzle.setAttribute('loaddata',data);
+      }
     }
   }
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
@@ -681,7 +688,7 @@ div.menu {
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
 <script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
 <script src="https://www.t3puzzle.com/b/switch-text.js"></script>
- 
+
   
 <script src="./t3.js"></script>
 <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
