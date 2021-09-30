@@ -35,6 +35,8 @@ div.menu {
 
   </script>
 <div class="menu">
+  <button-text text="🔙" size="40px" onclick="historyback();">
+    </button-text>
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
     <datalist>
       <option value="blue"></option>
@@ -69,7 +71,10 @@ div.menu {
 </div>
 <grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand"  onChange="processData(this.value)">
   <datalist>
-    <grid-data>
+    <grid-data>{
+      "orientation":3.141585657386029,
+      "tiles":[[0,0,1,1,0,0,0],[0,1,0,1,1,0,0],[0,1,1,0,1,0,0],[1,1,1,0,1,0,0]]
+      }
     </grid-data>
   </datalist>
 </grid-puzzle>
@@ -163,6 +168,7 @@ div.menu {
 <script>
   let HISTORY = {
     status: '',
+    back: ''
   };
   function putmeta (str) {
     if (!str) {
@@ -300,10 +306,17 @@ div.menu {
    t3puzzle.setAttribute('mode','readonly');
     HISTORY.status = 'move';
   }
+  function historyback () {
+    if (HISTORY.back) {
+      t3puzzle.setAttribute('loaddata', HISTORY.back);
+    }
+  }
   function processData(value) {
     localStorage.setItem('DEBUG', JSON.stringify(
       value.detail.debug));
     let str = JSON.stringify(value.detail.value);
+    HISTORY.back =  
+    localStorage.getItem(APP.name + '__DATA__LASTMODIFIED');
     localStorage.setItem(APP.name + '__DATA__LASTMODIFIED', str);
     HISTORY.status = 'change';
   }
@@ -653,8 +666,7 @@ div.menu {
   document.addEventListener('mousewheel', e=>e.preventDefault(), { passive: false });
   }
 </script>
-<!--script src="https://www.t3puzzle.com/b/tapspace.min.js"></script-->
-<script src="https://unpkg.com/tapspace@1.6.0/dist/tapspace.min.js"></script>
+<script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
 <script src="https://www.t3puzzle.com/b/dom-to-image.min.js"></script>
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
