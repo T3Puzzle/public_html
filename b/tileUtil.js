@@ -616,13 +616,17 @@ function tileUtil() {
     }
     function final() {
       fit();
+      
       ///
       let viewNode = view.getElementBySpaceItem(view);
       let touchNode = viewNode.parentNode.parentNode;
-      startBaseClick(touchNode);
+      /********/
+      if (false) {
+        startBaseClick(touchNode);
+      }
       ///
       let touch = new tapspace.Touchable(view, view);
-      touch.start({ translate: true, rotate: true, scale: true });
+      touch.start({ tap:true, translate: true, rotate: true, scale: true });
       touch.on("gestureend", (e) =>{
         let value = { detail: { value: true } };
         me.dispatchEvent(new CustomEvent("click", value));
@@ -633,9 +637,27 @@ function tileUtil() {
           shareStateAll();
         }
       });
+      touch.on("tap", (e) =>{
+        let dx = e.points[0]._vec.x;
+        let dy = e.points[0]._vec.y;
+        
+        let data = puz.detectPoint(dx, dy);
+        if (checkFootprint(data)) {
+          // nop
+          return;
+        }
+        let target = INITTILECALLBACK(data, { local: true });
+        let id = target.top.id;
+        STATE[id] = data;
+        targetHash[id] = target;
+        shareStateAll();
+      });
+      return;
+      /***/
       if (('ontouchend' in document)) {
         touch.stop();
       }
+      
       ANCHOR.ground = touch;
       HAND.ground = touch;
       if (ANCHOR.enabled) {
