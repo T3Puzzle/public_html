@@ -620,10 +620,7 @@ function tileUtil() {
       ///
       let viewNode = view.getElementBySpaceItem(view);
       let touchNode = viewNode.parentNode.parentNode;
-      /********/
-      if (false) {
-        startBaseClick(touchNode);
-      }
+
       ///
       let touch = new tapspace.Touchable(view, view);
       touch.start({ tap:true, translate: true, rotate: true, scale: true });
@@ -635,6 +632,18 @@ function tileUtil() {
         if (ORIENTATION.lastValue!==ORIENTATION.value) {
         
           shareStateAll();
+        }
+      });
+      touch.on("gesturestart",(e)=>{
+        if (HAND.enabled) {
+          touchNode.classList.remove("cursor--copy");
+          touchNode.classList.add("cursor--move");
+        }
+      });
+      touch.on("gestureend",(e)=>{
+        if (HAND.enabled) {
+          touchNode.classList.add("cursor--copy");
+          touchNode.classList.remove("cursor--move");
         }
       });
       touch.on("tap", (e) =>{
@@ -652,11 +661,6 @@ function tileUtil() {
         targetHash[id] = target;
         shareStateAll();
       });
-      return;
-      /***/
-      if (('ontouchend' in document)) {
-        touch.stop();
-      }
       
       ANCHOR.ground = touch;
       HAND.ground = touch;
@@ -667,8 +671,8 @@ function tileUtil() {
         changeMode(null, "lock");
       } else if (HAND.enabled) {
         changeMode(null, "hand");
-        HAND.ground.stop();
-        startBaseClick();
+        //HAND.ground.stop();
+        //startBaseClick();
       } else if (READONLY.enabled) {
         changeMode(null, "readonly");
       } else {
@@ -698,22 +702,24 @@ function tileUtil() {
       }
     }
     function changeMode(oldValue, newValue) {
+      let viewNode = view.getElementBySpaceItem(view);
+      let baseNode = viewNode.parentNode.parentNode;
+      /*
       if (newValue && newValue==='readonly') {
-        READONLY.on = true;
-        HAND.ok = -1;
-        let viewNode = view.getElementBySpaceItem(view);
-        let baseNode = viewNode.parentNode.parentNode;
         baseNode.classList.add("cursor--move");
         baseNode.classList.remove("cursor--copy");
-        baseNode.removeEventListener("click", baseClick,false);
         enableReadonly(true);
+      } else {
+        baseNode.classList.remove("cursor--move");
+        baseNode.classList.all("cursor--copy");
+        enableReadonly(false);       
       }
       return;
+      */
       let spaceNode;
-      let baseNode;
       if (space) {
         spaceNode = view.getElementBySpaceItem(space);
-        baseNode = view.getElementBySpaceItem(board);
+        
       }
       if (oldValue === "anchor") {
         enableAnchor(false);
@@ -768,6 +774,7 @@ function tileUtil() {
         enableReadonly(true);
         if (space) {
           spaceNode.classList.add("cursor--move");
+          baseNode.classList.add("cursor--move");
           addCursor();
         }
       } else if (newValue === "lock") {
@@ -855,11 +862,11 @@ function tileUtil() {
       HAND.enabled = newValue;
       if (HAND.ground) {
         if (HAND.enabled) {
-          HAND.ground.stop();
-          startBaseClick();
+          //HAND.ground.stop();
+          //startBaseClick();
         } else {
-          stopBaseClick();
-          HAND.ground.resume();
+          //stopBaseClick();
+          //HAND.ground.resume();
         }
       }
     }
