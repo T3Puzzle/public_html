@@ -501,7 +501,7 @@ div.menu {
               let hash = '#FMS特別講義 #T3パズル';
               let url = 'https://drive.google.com/file/d/'+json.id+'/view';
               let array = [title,note,hash,url];
-              let tweet = 'https://twitter.com/intent/tweet?text='+encodeURI(array.join('\n'));
+              let tweet = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(array.join('\n'));
               
               form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open("${tweet}");return false;`);
             } else {
