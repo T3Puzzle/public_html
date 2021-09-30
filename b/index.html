@@ -514,6 +514,8 @@ div.menu {
               'input[name=data]').value;
             let data = JSON.parse(dataStr);
             data.genealogy = json.genealogy;
+            
+            history.replaceState('','',data.genealogy.id);
           
             let str = JSON.stringify(data);
             putGenealogy (str);
