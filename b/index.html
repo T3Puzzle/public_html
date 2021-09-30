@@ -499,8 +499,9 @@ div.menu {
               let title = UPLOAD.title.substr(0,20);
               let note = UPLOAD.note.substr(0,80);
               let hash = '#FMS特別講義 #T3パズル';
-              let array = [title,note,hash,json.url];
-              let tweet = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(array.join('\n'));
+              let url = 'https://drive.google.com/file/d/'+json.id+'/view';
+              let array = [title,note,hash,url];
+              let tweet = 'https://twitter.com/intent/tweet?text='+encodeURI(array.join('\n'));
               
               form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open("${tweet}");return false;`);
             } else {
@@ -596,7 +597,6 @@ div.menu {
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
 <script src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
 <script src="https://www.t3puzzle.com/b/switch-text.js"></script>
-  
 <script src="./t3.js"></script>
 <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
