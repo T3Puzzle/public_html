@@ -355,7 +355,7 @@ img.white--once {
 `;
     }
     function getImgHtml() {
-      return `<div style="transform-origin:${XCENTER}px ${YCENTER}px;transform:scale(0.97);">
+      return `<div class="img" style="transform-origin:${XCENTER}px ${YCENTER}px;transform:scale(0.97);">
      <img src="${IMGS[0]}" class="img0" width="${XSIZE}" height="${YSIZE}">
      <img src="${IMGS[1]}" class="img1" width="${XSIZE}" height="${YSIZE}">
     </div>
