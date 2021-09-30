@@ -32,6 +32,10 @@ div.menu {
     type: 'gridpuzzle'
   };
   APP.restored = localStorage.getItem(APP.name+'__DATA__LASTMODIFIED');
+    if (/\/id\/([^\?#]+)/.test(location.href)) {
+      APP.id = RegExp.$1;
+      console.log(APP.id);
+    }
   </script>
 <div class="menu">
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
