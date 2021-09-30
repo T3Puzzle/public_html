@@ -26,7 +26,6 @@ div.menu {
 <body>
 
 
-
   <script>
   let APP = {
     name: 't3p',
@@ -50,7 +49,7 @@ div.menu {
   <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px">
   </button-text>
 
-  <button-text text="⤿" onclick="rotate();" size="40px" class="ui__pc">
+  <button-text text="⤿" onclick="rotate();" size="40px">
   </button-text>
 
   <button-text text="↑⎵" onclick="dialogopen(
@@ -268,6 +267,11 @@ div.menu {
 
     localStorage.setItem(APP.name+'__MIN',count);
     localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'genealogy':{'id':'preset'+count,'base':'','origin':'',artist:'_'},'orientation':-2.094402963852356,'tiles':[[2,-2,1,2,0,0,1],[1,-2,0,2,1,0,2],[1,-3,1,2,0,0,2],[0,-2,0,2,1,0,2],[0,-3,1,2,0,0,2],[0,-3,0,2,1,0,2],[-1,-4,1,2,0,0,2],[-1,-4,0,2,1,0,2],[3,-3,1,0,1,0,1],[2,-4,1,1,1,0,1],[1,-5,1,2,0,0,1],[0,-6,1,0,0,0,1],[-1,-7,1,1,0,0,1],[4,-2,1,2,1,0,1],[4,-3,0,2,1,0,1],[3,-4,0,1,1,0,1],[2,-5,0,0,1,0,1],[1,-6,0,2,0,0,1],[0,-7,0,1,0,0,1],[-1,-8,0,0,0,0,1],[1,-2,1,2,0,0,2],[-1,-3,0,2,1,0,2],[0,-4,1,2,0,0,2],[-2,-4,0,2,1,0,1]],'title':'チェッカーならべ（のこり10ピース）','note':'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'}));
+    ///
+    count--;
+
+    localStorage.setItem(APP.name+'__MIN',count);
+    localStorage.setItem(APP.name+'__DATA__'+count,JSON.stringify({'genealogy':{'id':'preset'+count,'base':'','origin':'',artist:'_'},'orientation':0,'tiles':[[0,0,1,0,1,0,0]],'title':'ふじさん','note':'ひとつのピースでふじさんをひょうげんしました'}));
   }
   function Unwrap (jsonStr) {
     let json = JSON.parse(jsonStr);
