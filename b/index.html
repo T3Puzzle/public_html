@@ -570,7 +570,7 @@ div.menu {
             let data = JSON.parse(dataStr);
             data.meta = json.meta;
             
-            history.replaceState('','','#!'+data.meta.id);
+            history.replaceState('','','#!load='+data.meta.id);
           
             let str = JSON.stringify(data);
             putmeta (str);
@@ -601,7 +601,7 @@ div.menu {
           dialogopen('download',load__form__modal, load__t3work, load__form, {jsonStr:jstr});
         }
       }
-     } else if (/#!([^\?#]+)/.test(location.href)) {
+     } else if (/#!load=([^\?#]+)/.test(location.href)) {
       let id = RegExp.$1;
       let url = UPLOAD.url+'?id='+encodeURIComponent(id);
       console.log(url);
@@ -682,8 +682,7 @@ div.menu {
   document.addEventListener('mousewheel', e=>e.preventDefault(), { passive: false });
   }
 </script>
-<!--script src="https://www.t3puzzle.com/b/tapspace.min.js"></script-->
-<script src="https://unpkg.com/tapspace@1.6.0/dist/tapspace.min.js"></script>
+<script src="https://www.t3puzzle.com/b/tapspace.min.js"></script>
 <script src="https://www.t3puzzle.com/b/dom-to-image.min.js"></script>
 <script src="https://www.t3puzzle.com/b/buttonText.js"></script>
 <script src="https://www.t3puzzle.com/b/palleteText.js"></script>
