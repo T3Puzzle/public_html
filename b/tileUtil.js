@@ -646,20 +646,22 @@ function tileUtil() {
           touchNode.classList.remove("cursor--move");
         }
       });
-      touch.on("tap", (e) =>{
-        let dx = e.points[0]._vec.x;
-        let dy = e.points[0]._vec.y;
-        
-        let data = puz.detectPoint(dx, dy);
-        if (checkFootprint(data)) {
-          // nop
-          return;
+      touch.on("tap", (e) =>{   
+        if (HAND.enabled) {
+          let dx = e.points[0]._vec.x;
+          let dy = e.points[0]._vec.y;
+
+          let data = puz.detectPoint(dx, dy);
+          if (checkFootprint(data)) {
+            // nop
+            return;
+          }
+          let target = INITTILECALLBACK(data, { local: true });
+          let id = target.top.id;
+          STATE[id] = data;
+          targetHash[id] = target;
+          shareStateAll();
         }
-        let target = INITTILECALLBACK(data, { local: true });
-        let id = target.top.id;
-        STATE[id] = data;
-        targetHash[id] = target;
-        shareStateAll();
       });
       
       ANCHOR.ground = touch;
