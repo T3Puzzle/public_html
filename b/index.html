@@ -80,13 +80,14 @@ div.menu {
 
 <dialog-modal id="dialog__form__modal">
   <template>
-    <div id="dialog__src" style="width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <div id="dialog__src" style="margin-left:0px;width:320px;height:320px; background: rgb(200, 200, 200);"></div>
     <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="320px" height="320px" mode="readonly" for="dialog__src">
       <datalist>
         <grid-data>{"tiles":[]}
         </grid-data>
       </datalist>
-    </grid-puzzle>
+    </grid-puzzle> 
+    <img id="dialog__img" style="display:none;" width="320px" height="320px">
     <div style="width:100%;height:90%;margin: 3px;text-align: center;">
       <div class="ui__pc">
         <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
@@ -885,6 +886,10 @@ div.menu {
       load__history.style.display = 'none';
       goto(t3work, form, OBJ.jsonStr, null);
     } else {
+      //  
+      dialog__src.style.display = 'block';
+      dialog__img.style.display = 'none';
+      //
       jsonStr = localStorage.getItem(APP.name +
         '__DATA__LASTMODIFIED');
       jsonStr = Unwrap(jsonStr);
@@ -1124,6 +1129,11 @@ div.menu {
     addDataToLocal(form);
     localStorage.setItem(APP.type + '__INFO--AGE', age.value);
     saveImage(src, dataStr, OBJ, (value) => {
+      // image
+      dialog__src.style.display = 'none';
+      dialog__img.style.display = 'block';
+      dialog__img.src = 'data:image/png;base64,'+value;
+      //
       filename.value = 'server_to_be_named.png';
       content.value = value;
       try {
