@@ -1233,9 +1233,11 @@ div.menu {
         domtoimage.toPng(src).then(dataurl=>{
           let txt = (dataurl.split(',')[1]);
           let buf = buffer.Buffer.from(txt, 'base64');
+          let json = JSON.parse(dataStr);
+          delete json.meta;
           let metadata = {
             "tEXt": {
-              "meta": dataStr
+              "meta": JSON.stringify(json)
             }
           };
           let bufwithmeta = writeMetadata(buf, metadata);
