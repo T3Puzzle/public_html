@@ -9,12 +9,33 @@ function gol(inputarray,iteration) {
   output.map(o=>{
     ret.push([o.i,o.j,o.k,lconv(o.l),o.m,0,0]);
   });
+console.log(ret);
   return ret;
 }
-function lconv(l) {
-  if (l===0) {return 1;}
-  else if (l===1) {return 0;}
-  else {return 2;}
+/*
+console.log(gol(
+[
+ [1,1,1,0,1,0,0],
+ [1,2,1,0,0,0,0],
+]
+,2));
+console.log(automata(
+[
+// {i:0,j:-1,k:1,l:2,m:0},
+// {i:0,j: 0,k:1,l:1,m:0},
+// {i:1,j: 0,k:1,l:2,m:0},
+ {i:1,j: 1,k:1,l:1,m:1},
+ {i:1,j: 2,k:1,l:1,m:0},
+]
+,2));
+*/
+function lconv (l) {
+  let conv = {
+    0:1,
+    1:0,
+    2:2,
+  };
+  return conv[l];
 }
 function automata(input,iteration) {
 /*
@@ -83,7 +104,7 @@ function iter (input,i) {
       if (p.l!==-1) {
         pp = p;
       }
-    } 
+    }
     if (pp) {
       output.push(pp);
     }
