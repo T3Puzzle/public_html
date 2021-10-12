@@ -95,13 +95,7 @@ function iter (input,i) {
   let output = [];
   input.map(p=>{
     let pp = null;
-    if (p.k===i%2) {
-      pp = next(p);
-    } else {
-      if (p.l!==-1) {
-        pp = p;
-      }
-    }
+    pp = next(p);
     if (pp) {
       output.push(pp);
     }
