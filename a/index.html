@@ -18,6 +18,7 @@ div.menu {
 </head>
 <body>
 
+<script src="./automata.js"></script>
 <div class="menu">
   <pallete-text id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
     <datalist>
@@ -66,6 +67,8 @@ div.menu {
   </button-text>
   <button-text text="↦" onclick="forward();" size="40px">
   </button-text>  
+   <button-text text="↦" onclick="automata(,1);" size="40px">
+  </button-text> 
   <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px" class="ui__pc">
   </button-text>
 
