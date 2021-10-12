@@ -1,3 +1,4 @@
+
 function gol(inputarray,iteration) {
   let input = [];
   inputarray.map(v=>{
@@ -12,8 +13,8 @@ let input = [
  {i:0,j:-1,k:1,l:2,m:0},
  {i:0,j: 0,k:1,l:1,m:0},
  {i:1,j: 0,k:1,l:2,m:0},
-*/
 ];
+*/
 /*
 let iteration=2;
 */
@@ -325,3 +326,4 @@ function getRawData () {
   ];
 }
 }
+
