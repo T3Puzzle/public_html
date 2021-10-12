@@ -20,10 +20,10 @@ div.menu {
   
 <script src="./t0347.js"></script>
 <script>function t0347() {
-let t_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
-if (t_last) {
-  let t_data = JSON.parse(g_last);
-  t_data.tiles = gol(t_data.tiles,2);
+let g_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
+if (g_last) {
+  let g_data = JSON.parse(g_last);
+  g_data.tiles = t0347(g_data.tiles,2);
   t3puzzle.setAttribute('loaddata',JSON.stringify(t_data));  
 }
 }</script>
