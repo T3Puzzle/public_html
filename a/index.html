@@ -17,7 +17,16 @@ div.menu {
 </style>
 </head>
 <body>
-
+  
+<script src="./t0347.js"></script>
+<script>function t0347() {
+let t_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
+if (t_last) {
+  let t_data = JSON.parse(g_last);
+  t_data.tiles = gol(t_data.tiles,2);
+  t3puzzle.setAttribute('loaddata',JSON.stringify(t_data));  
+}
+}</script>
 <script src="./automata.js"></script>
 <script>function gogol() {
 let g_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
@@ -29,6 +38,8 @@ if (g_last) {
 }</script>
 <div class="menu">
   
+   <button-text text="↦" onclick="t0347();" size="40px">
+  </button-text> 
    <button-text text="↦" onclick="gogol();" size="40px">
   </button-text> 
   <pallete-text id="mode" onchange="t3puzzle.setAttribute('mode', this.value);" value="hand">
