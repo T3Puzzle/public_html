@@ -3,13 +3,18 @@ function gol(inputarray,iteration) {
   let ret = [];
   let input = [];
   inputarray.map(v=>{
-    input.push({i:v[0],j:v[1],k:v[2],l:v[3],m:v[4]});
+    input.push({i:v[0],j:v[1],k:v[2],l:lconv(v[3]),m:v[4]});
   });
   let output = automata(input,iteration);
   output.map(o=>{
-    ret.push([o.i,o.j,o.k,o.l,o.m,0,0]);
+    ret.push([o.i,o.j,o.k,lconv(o.l),o.m,0,0]);
   });
   return ret;
+}
+function lconv(l) {
+  if (l===0) {return 1;}
+  else if (l===1) {return 0;}
+  else {return 2;}
 }
 function automata(input,iteration) {
 /*
