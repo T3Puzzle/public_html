@@ -20,7 +20,7 @@ div.menu {
 
 <script src="./automata.js"></script>
 <script>function gogol() {
-let g_last = localStorage.getItem(APP.name+'__DATA__LASTMODIFIEID');
+let g_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
 if (g_last) {
   let g_data = JSON.parse(g_last);
   g_data.tiles = gol(g_data.tiles,1);
