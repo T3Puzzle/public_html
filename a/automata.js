@@ -9,7 +9,6 @@ function gol(inputarray,iteration) {
   output.map(o=>{
     ret.push([o.i,o.j,o.k,lconv(o.l),o.m,0,0]);
   });
-console.log(ret);
   return ret;
 }
 /*
@@ -135,7 +134,11 @@ function next ( me ) {
 if ( !val ) {
   console.log(key);
 }
-  return updateMe(me, val[0], val[1]);
+  let up = updateMe(me, val[0], val[1]);
+  if (up) {
+    console.log(key);
+  }
+  return up;
 }
 function updateMe(me,l,m) {
   if (l===-1) {
@@ -220,7 +223,7 @@ function lRotate (l,r) {
  if (l<0) {
    return l;
  } else {
-   return (l+r+3)%3;
+   return (l-r+3)%3;
  }
 }
 function getDoubleData () {
