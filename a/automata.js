@@ -185,7 +185,7 @@ function lRotate (l,r) {
  if (l<0) {
    return l;
  } else {
-   return (l+r)%3;
+   return (l-r+3)%3;
  }
 }
 function getDoubleData () {
