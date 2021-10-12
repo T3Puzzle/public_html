@@ -39,7 +39,6 @@ for (let i=0;i<iteration;i++) {
   //console.log(next(me));
   let seed = getSeed(input);
   input = iter(seed);
-console.log(input);
 }
 return input;
 
@@ -98,6 +97,9 @@ function next ( me ) {
   let abc = [a.l,b.l,c.l,a.m,b.m,c.m];
   let key = JSON.stringify(abc);
   let val = dh[key];
+if ( !('0' in val )) {
+  console.log(key);
+}
   return updateMe(me, val[0], val[1]);
 }
 function updateMe(me,l,m) {
