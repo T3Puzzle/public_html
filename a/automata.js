@@ -41,6 +41,9 @@ for (let i=0;i<iteration;i++) {
   input = iter(seed);
 console.log(input);
 }
+return input;
+
+/////////////////
 function getSeed (input) {
   let seedHash = {};
   let ret = [];
