@@ -73,16 +73,7 @@ function getSeed (input) {
   let seedHash = {};
   let ret = [];
   input.map(p=>{
-    let a,b,c;
-    if (p.k===0) {
-      a = getRelative( p,0,-1,1);
-      b = getRelative( p,0,0,1);
-      c = getRelative( p,1,0,1);
-    } else {
-      a = getRelative( p,0,1,-1);
-      b = getRelative( p,0,0,-1);
-      c = getRelative( p,-1,0,-1);
-    }
+    let {a,b,c}=getABC(p);
     [p,a,b,c].map(x=>{
       let key = JSON.stringify({i:x.i,j:x.j,k:x.k});
       if (key in seedHash) {
@@ -116,17 +107,20 @@ function addDupHash(i,j,k,l,m) {
   let key = JSON.stringify({i:i,j:j,k:k});
   dupHash[key] = {i:i,j:j,k:k,l:l,m:m};
 }
+function getABC (p) {
+    if (p.k===0) {
+      c = getRelative( p,0,-1,1);
+      a = getRelative( p,0,0,1);
+      b = getRelative( p,1,0,1);
+    } else {
+      c = getRelative( p,0,1,-1);
+      a = getRelative( p,0,0,-1);
+      b = getRelative( p,-1,0,-1);
+    }
+    return {a,b,c};
+}
 function next ( me ) {
-  let a,b,c;
-  if (me.k===0) {
-    a = getRelative( me,0,-1,1);
-    b = getRelative( me,0,0,1);
-    c = getRelative( me,1,0,1);
-  } else {
-    a = getRelative( me,0,1,-1);
-    b = getRelative( me,0,0,-1);
-    c = getRelative( me,-1,0,-1);
-  }
+  let {a,b,c}=getABC(me);
   let abc = [a.l,b.l,c.l,a.m,b.m,c.m];
   let key = JSON.stringify(abc);
   let val = dh[key];
@@ -293,7 +287,7 @@ function getRawData () {
     [[-1,1,1,-1,0,0],[0,0],6],
     [[-1,1,1,-1,1,1],[0,1],6],
     [[-1,1,1,-1,0,1],[1,0],6],
-    [[-1,1,1,-1,1,0],[0,0],6],
+    [[-1,1,1,-1,1,0],[2,0],6], //
 ///
     [[-1,1,2,-1,0,0],[0,1],3],
     [[-1,1,2,-1,1,1],[0,0],3],
