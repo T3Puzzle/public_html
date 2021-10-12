@@ -135,7 +135,7 @@ if ( !val ) {
   console.log(key);
 }
   let up = updateMe(me, val[0], val[1]);
-  if (up && !(up[0]===-1||up[1]===-1||up[2]===-1)) {
+  if (up && (up[0]!==-1&&up[1]!==-1&&up[2]!==-1)) {
     console.log(key);
     return up;
   } else {
