@@ -38,7 +38,7 @@ for (let i=0;i<iteration;i++) {
   //let me = {i:0,j:0,k:0,l:0,m:0};
   //console.log(next(me));
   let seed = getSeed(input);
-  input = iter(seed);
+  input = iter(seed,i);
 }
 return input;
 
@@ -68,10 +68,15 @@ function getSeed (input) {
   });
   return ret;
 }
-function iter (input) {
+function iter (input,i) {
   let output = [];
   input.map(p=>{
-    let pp = next(p);
+    let pp;
+    if (p.k===i%2) {
+      pp = next(p);
+    } else {
+      pp = p;
+    } 
     if (pp) {
       output.push(pp);
     }
