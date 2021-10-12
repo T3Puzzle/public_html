@@ -71,11 +71,13 @@ function getSeed (input) {
 function iter (input,i) {
   let output = [];
   input.map(p=>{
-    let pp;
+    let pp = null;
     if (p.k===i%2) {
       pp = next(p);
     } else {
-      pp = p;
+      if (p.l!==-1) {
+        pp = p;
+      }
     } 
     if (pp) {
       output.push(pp);
