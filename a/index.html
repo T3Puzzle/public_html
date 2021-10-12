@@ -23,8 +23,8 @@ div.menu {
 let g_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
 if (g_last) {
   let g_data = JSON.parse(g_last);
-  g_data.tiles = t0347(g_data.tiles,2);
-  t3puzzle.setAttribute('loaddata',JSON.stringify(t_data));  
+  g_data.tiles = t0347(g_data.tiles,1);
+  t3puzzle.setAttribute('loaddata',JSON.stringify(g_data));  
 }
 }</script>
 <script src="./automata.js"></script>
@@ -33,7 +33,7 @@ let g_last = localStorage.getItem('t3puzzle__DATA--LASTMODIFIED');
 if (g_last) {
   let g_data = JSON.parse(g_last);
   g_data.tiles = gol(g_data.tiles,2);
-  t3puzzle.setAttribute('loaddata',JSON.stringify(t_data));  
+  t3puzzle.setAttribute('loaddata',JSON.stringify(g_data));  
 }
 }</script>
 <div class="menu">
