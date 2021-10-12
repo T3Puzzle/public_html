@@ -97,7 +97,7 @@ function next ( me ) {
   let abc = [a.l,b.l,c.l,a.m,b.m,c.m];
   let key = JSON.stringify(abc);
   let val = dh[key];
-if ( !val )) {
+if ( !val ) {
   console.log(key);
 }
   return updateMe(me, val[0], val[1]);
