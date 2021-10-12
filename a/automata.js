@@ -15,8 +15,8 @@ console.log(ret);
 /*
 console.log(gol(
 [
- [0,0,1,0,1,0,0],
- [1,0,1,0,0,0,0],
+ [0,0,1,2,1,0,0],
+ [1,0,1,2,0,0,0],
 ]
 ,2));
 console.log(automata(
@@ -24,8 +24,16 @@ console.log(automata(
 // {i:0,j:-1,k:1,l:2,m:0},
 // {i:0,j: 0,k:1,l:1,m:0},
 // {i:1,j: 0,k:1,l:2,m:0},
- {i:1,j: 1,k:1,l:1,m:1},
- {i:1,j: 2,k:1,l:1,m:0},
+// {i:0,j: 0,k:1,l:1,m:1},
+// {i:1,j: 0,k:1,l:1,m:0},
+// {i:0,j: 0,k:1,l:2,m:0},
+// {i:1,j: 0,k:1,l:2,m:1},
+// {i:0,j:-1,k:1,l:0,m:0},
+// {i:0,j: 0,k:1,l:2,m:0},
+// {i:1,j: 0,k:1,l:1,m:0},
+ {i:0,j:-1,k:1,l:2,m:0},
+ {i:0,j: 0,k:1,l:1,m:0},
+ {i:1,j: 0,k:1,l:0,m:0},
 ]
 ,2));
 */
@@ -117,9 +125,6 @@ function getABC (p) {
       b = getRelative( p,0,0,-1);
       c = getRelative( p,-1,0,-1);
     }
-console.log(a);
-console.log(b);
-console.log(c);
     return {a,b,c};
 }
 function next ( me ) {
@@ -127,7 +132,6 @@ function next ( me ) {
   let abc = [a.l,b.l,c.l,a.m,b.m,c.m];
   let key = JSON.stringify(abc);
   let val = dh[key];
-console.log(key);
 if ( !val ) {
   console.log(key);
 }
@@ -216,7 +220,7 @@ function lRotate (l,r) {
  if (l<0) {
    return l;
  } else {
-   return (l+r+3)%3;
+   return (l-r+3)%3;
  }
 }
 function getDoubleData () {
