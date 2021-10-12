@@ -15,8 +15,8 @@ console.log(ret);
 /*
 console.log(gol(
 [
- [1,1,1,0,1,0,0],
- [1,2,1,0,0,0,0],
+ [0,0,1,0,1,0,0],
+ [1,0,1,0,0,0,0],
 ]
 ,2));
 console.log(automata(
@@ -109,14 +109,17 @@ function addDupHash(i,j,k,l,m) {
 }
 function getABC (p) {
     if (p.k===0) {
-      c = getRelative( p,0,-1,1);
-      a = getRelative( p,0,0,1);
-      b = getRelative( p,1,0,1);
+      a = getRelative( p,0,-1,1);
+      b = getRelative( p,0,0,1);
+      c = getRelative( p,1,0,1);
     } else {
-      c = getRelative( p,0,1,-1);
-      a = getRelative( p,0,0,-1);
-      b = getRelative( p,-1,0,-1);
+      a = getRelative( p,0,1,-1);
+      b = getRelative( p,0,0,-1);
+      c = getRelative( p,-1,0,-1);
     }
+console.log(a);
+console.log(b);
+console.log(c);
     return {a,b,c};
 }
 function next ( me ) {
@@ -124,6 +127,7 @@ function next ( me ) {
   let abc = [a.l,b.l,c.l,a.m,b.m,c.m];
   let key = JSON.stringify(abc);
   let val = dh[key];
+console.log(key);
 if ( !val ) {
   console.log(key);
 }
@@ -212,7 +216,7 @@ function lRotate (l,r) {
  if (l<0) {
    return l;
  } else {
-   return (l-r+3)%3;
+   return (l+r+3)%3;
  }
 }
 function getDoubleData () {
@@ -287,7 +291,7 @@ function getRawData () {
     [[-1,1,1,-1,0,0],[0,0],6],
     [[-1,1,1,-1,1,1],[0,1],6],
     [[-1,1,1,-1,0,1],[1,0],6],
-    [[-1,1,1,-1,1,0],[2,0],6], //
+    [[-1,1,1,-1,1,0],[0,0],6], //
 ///
     [[-1,1,2,-1,0,0],[0,1],3],
     [[-1,1,2,-1,1,1],[0,0],3],
