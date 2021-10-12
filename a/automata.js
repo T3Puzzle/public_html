@@ -1,4 +1,10 @@
-
+function gol(inputarray,iteration) {
+  let input = [];
+  inputarray.map(v=>{
+    input.push({i:v[0],j:v[1],k:v[2],l:v[3],m:v[4]});
+  });
+  return automata(input,iteration);
+}
 function automata(input,iteration) {
 /*
 let xx = [2,1,2,0,0,0];
