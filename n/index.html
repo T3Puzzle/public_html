@@ -1,82 +1,1336 @@
-<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="jscheck.js"></script>
 <style>body {
   background:rgb(200,200,200);
+  user-select: none;
+  touch-action: none;
+  -webkit-user-select: none;
+}
+body.move {
+  background:rgb(175, 175, 175);
 }
 div.menu {
   position: absolute;
   top: 0px;
   padding-left: 1em;
-  z-index: 100;
+  z-index: 5;
 }
 </style>
 </head>
 <body>
 
-<div class="menu">
-  <h1>T3 Puzzle</h1>
+  
+<script src="https://www.t3puzzle.com/b/dom-to-image.min.js"></script>
+<script defer src="https://www.t3puzzle.com/b/buttonText.js"></script>
+<script defer src="https://www.t3puzzle.com/b/palleteText.js"></script>
+<script defer src="https://www.t3puzzle.com/b/dialog-modal.js"></script>
+<script defer src="https://www.t3puzzle.com/b/switch-text.js"></script>
 
-<pallete-text onchange="changeMode(this.value)" value="hand">
-  <datalist>
-    <option value="readonly">⤧</option>
-    <option value="anchor">⚓</option>
-    <option value="hand">👆</option>
-  </datalist>
-</pallete-text>
-  <button-text text="➰" onchange="flipAllTiles();" size="40px">
-  </button-text>
-<pallete-text onchange="changeColor(this.value)">
-  <datalist>
-    <option value="blue"></option>
-    <option value="green"></option>
-    <option disabled></option>
-    <option value="pink"></option>
-    <option value="mint"></option>
-  </datalist>
-</pallete-text>
-</div>
-<tapspace-grid id="t3puzzle" x-onChange="console.log(this.value);">
-  <tapspace-worldinfo title="application-name" info="t3puzzle"></tapspace-worldinfo>
-  <tapspace-viewpoint></tapspace-viewpoint>
-</tapspace-grid>
-
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+<script src="https://www.t3puzzle.com/b/buffer.js"></script>
+<script src="https://www.t3puzzle.com/b/writeMetadata.js"></script>
 <script>
-  /*
-  // alternative change event
-  let t3puzzle = document.getElementById('t3puzzle');
-  t3puzzle.addEventListener('change',e=>{
-    console.log(e.detail.state);
-  });
-  */
-  function flipAllTiles() {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('flipall','flipall');
-    /*
-    (async () => {
-  dst.appendChild(await html2canvas(t3puzzle.shadowRoot.getElementById('parent')));
-})();
-    */
+  let APP = {
+    name: 't3p',
+    type: 'gridpuzzle'
+  };
+  APP.restored = localStorage.getItem(APP.name + '__DATA__LASTMODIFIED');
+</script>
+
+<div class="menu">
+  <button-text text="🔙" size="40px" onclick="historyback();">
+  </button-text>
+  <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
+    <datalist>
+      <option value="blue"></option>
+      <option value="green"></option>
+      <option value="pink"></option>
+      <option value="mint"></option>
+    </datalist>
+  </switch-text>
+  <button-text text="➰" onclick="t3puzzle.setAttribute('flipall','');" size="40px">
+  </button-text>
+
+  <button-text text="⌖" onclick="t3puzzle.setAttribute('fit','');" size="40px">
+  </button-text>
+
+  <button-text text="⤿" onclick="rotate();" size="40px">
+  </button-text>
+
+  <button-text text="↑⎵" onclick="dialogopen(
+                                  'upload',
+                                  dialog__form__modal,
+                                  dialog__t3work, 
+                                  dialog__form,
+                                  UPLOAD)" size="40px">
+  </button-text>
+  <button-text text="📖" onclick="dialogopen(
+                                  'load',
+                                  load__form__modal,
+                                  load__t3work, 
+                                  load__form,
+                                  LOAD)" size="40px">
+  </button-text>
+</div>
+<grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)">
+  <datalist>
+    <grid-data>{
+      "orientation":2.0919229374524506,"tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      }
+    </grid-data>
+  </datalist>
+</grid-puzzle>
+
+<dialog-modal id="dialog__form__modal">
+  <template>
+    <div id="dialog__src" style="margin-left:0px;width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="dialog__t3work" width="320px" height="320px" mode="readonly" for="dialog__src">
+      <datalist>
+        <grid-data>{"tiles":[]}
+        </grid-data>
+      </datalist>
+    </grid-puzzle> 
+    <img id="dialog__img" style="display:none;" width="320px" height="320px">
+    <div style="width:100%;height:90%;margin: 3px;text-align: center;">
+      <div class="ui__pc">
+        <button-text text="⤿" onclick="rotate(dialog__t3work);" size="20px">
+        </button-text>
+
+        <button-text text="🔍" onclick="zoom(dialog__t3work);" size="20px">
+        </button-text>
+
+        <button-text text="⌖" onclick="dialog__t3work.setAttribute('fit','');" size="20px">
+        </button-text>
+      </div>
+      <form id="dialog__form" action="#" style="text-align:left;" onsubmit="submitImage(dialog__src,dialog__form, UPLOAD);return false;">
+        <input name="artist" type="hidden">
+        <input name="data" type="hidden">
+        <input name="filename" type="hidden">
+        <input name="type" value="image/png" type="hidden">
+        <input name="content" type="hidden">
+        <input id="dialog__meta" name="meta" type="hidden">
+        <label for="dialog__age">ねんれい:</label>
+        <input required id="dialog__age" name="age" type="number" min="0" max="150" style="width:35px;">
+        <div style="display:inline-block;margin-top:10px;border-width:1px;">
+          <input type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
+        </div>
+        <br />
+        <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
+        <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="4" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+      </form>
+  </template>
+</dialog-modal>
+
+<dialog-modal id="load__form__modal">
+  <template>
+    <div id="load__src" style="width:320px;height:320px; background: rgb(200, 200, 200);"></div>
+    <grid-puzzle style="margin-left:0px;" id="load__t3work" width="320px" height="320px" mode="readonly" for="load__src">
+      <datalist>
+        <grid-data>{"tiles":[]}
+        </grid-data>
+      </datalist>
+    </grid-puzzle>
+    <div style="width:100%;height:90%;margin: 0px;text-align: center;">
+
+    </div>
+    <form id="load__form" action="#" style="text-align:left;" onsubmit="loadDataToMain(load__form__modal);return false;">
+      <input name="artist" type="hidden">
+      <input name="data" type="hidden">
+      <input name="filename" type="hidden">
+      <input name="type" value="image/png" type="hidden">
+      <input id="load_meta" name="meta" type="hidden">
+      <input name="content" type="hidden">
+      <input id="load__age" name="age" type="hidden" min="0" max="150" style="width:35px;">
+      <div style="display:inline-block;border-width:1px;">
+        <div id="load__history" style="display:inline-block;">
+          <button-text text="«" onclick="gohead(load__t3work,load__form);" size="30px">
+          </button-text>
+          <button-text text="‹" onclick="backward(load__t3work,load__form);" size="30px">
+          </button-text>
+          <div id="load__number" style="display:inline-block;"></div>
+
+          <button-text text="›" onclick="forward(load__t3work,load__form);" size="30px">
+          </button-text>
+          <button-text text="»" onclick="goend(load__t3work,load__form);" size="30px">
+          </button-text>
+        </div>
+        <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
+      </div>
+      <br />
+      <input readonly id="load__title" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+      <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+    </form>
+  </template>
+</dialog-modal>
+
+</div>
+<script>
+  let HISTORY = {
+    status: '',
+    back: ''
+  };
+
+  function putmeta(str) {
+    if (!str) {
+      return;
+    }
+    let json = JSON.parse(str);
+    if (!('meta' in json)) {
+      return;
+    }
+    localStorage.setItem(APP.name + '__meta__LASTLOADED', JSON.stringify(json.meta));
   }
 
-  function changeMode(mode) {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('mode', mode);
+  function setmeta() {
+    let value = localStorage.getItem(APP.name + '__meta__LASTLOADED');
+    if (value) {
+      dialog__meta.value = value;
+    }
   }
-  function changeColor(color) {
-    let t3puzzle = document.getElementById('t3puzzle');
-    t3puzzle.setAttribute('color', color);
+
+  function loadInitData() {
+    let str = APP.restored;
+    if (str) {
+      t3puzzle.setAttribute('loaddata', str);
+      setmeta();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    loadInitData();
+    bodyMovePrevent();
+    if (('ontouchend' in document)) {
+      Array.from(document.querySelectorAll('.ui__pc')).map(u => {
+        u.style['display'] = 'none';
+      });
+    }
+    loadPreset();
+    /////
+    fetch_initdata();
+    ///////
+  });
+  let UPLOAD = {
+    imageNode: null,
+    lastImageNode: null,
+    submitMessage: '',
+    submitEvent: '',
+    title: '',
+    note: '',
+    url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
+  }
+  let LOAD = {
+    imageNode: null,
+    lastImageNode: null,
+    submitMessage: '',
+    submitEvent: '',
+    url: UPLOAD.url,
+    pointer: null,
+    preset: 0,
+  }
+
+  function loadPreset() {
+    let count = -1;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'T3',
+        'note': 'T3パズルのロゴをつくりました'
+      },
+      'orientation': 3.1415855821521044,
+      'tiles': [
+        [2, 0, 0, 1, 0, 0, 0],
+        [2, 0, 1, 1, 1, 0, 0],
+        [2, 1, 0, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 0, 0],
+        [2, 1, 1, 0, 0, 0, 0],
+        [2, -1, 1, 1, 1, 0, 0],
+        [2, -1, 0, 1, 0, 0, 0],
+        [1, -1, 0, 1, 1, 0, 0],
+        [1, -1, 1, 1, 0, 0, 0],
+        [1, 0, 1, 1, 0, 0, 0],
+        [1, 0, 0, 1, 1, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0, 0],
+        [-1, 1, 0, 0, 1, 0, 0],
+        [-1, 0, 1, 1, 1, 0, 0],
+        [-1, 0, 0, 0, 1, 0, 0],
+        [-1, -1, 1, 1, 1, 0, 0],
+        [-1, -1, 0, 0, 1, 0, 0],
+        [0, -1, 0, 1, 0, 0, 0],
+        [0, -1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0],
+        [-1, 1, 1, 0, 0, 0, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'カブトムシ',
+        'note': 'なつやすみのおもいででカブトムシをかきました'
+      },
+      'orientation': -2.0944014018871053,
+      'tiles': [
+        [2, 0, 0, 0, 1, 2, 0],
+        [2, 0, 1, 1, 1, 2, 0],
+        [2, -1, 1, 2, 1, 2, 0],
+        [2, -1, 0, 1, 1, 2, 0],
+        [1, -1, 0, 0, 1, 2, 0],
+        [1, -1, 1, 2, 1, 2, 0],
+        [1, 0, 0, 1, 1, 2, 0],
+        [2, 1, 0, 1, 0, 2, 0],
+        [1, 0, 1, 1, 0, 2, 0],
+        [1, -2, 0, 1, 0, 2, 0],
+        [2, -2, 1, 1, 0, 2, 0],
+        [1, -2, 1, 1, 1, 2, 0],
+        [2, 2, 0, 2, 0, 2, 0],
+        [2, 1, 1, 2, 1, 2, 0],
+        [1, 1, 0, 0, 1, 2, 0],
+        [1, 1, 1, 0, 0, 2, 0],
+        [0, -3, 0, 2, 1, 2, 0],
+        [1, -3, 1, 0, 1, 2, 0],
+        [2, -3, 1, 2, 0, 2, 0],
+        [2, -2, 0, 2, 1, 2, 0],
+        [1, -3, 0, 0, 0, 2, 0],
+        [0, -4, 1, 1, 1, 2, 0],
+        [3, -2, 1, 0, 1, 2, 0],
+        [3, -2, 0, 1, 1, 2, 0],
+        [3, 0, 1, 2, 1, 2, 0],
+        [3, 1, 0, 1, 1, 2, 0],
+        [0, -1, 0, 0, 1, 2, 0],
+        [0, -1, 1, 1, 1, 2, 0],
+        [0, -2, 0, 2, 1, 2, 0],
+        [3, -1, 1, 0, 1, 2, 0],
+        [3, -1, 0, 0, 0, 2, 0],
+        [0, -3, 1, 2, 0, 2, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'ラジオ体操',
+        'note': '夏休みにラジオ体操をした思い出をかきました'
+      },
+      'orientation': -2.0944014018871053,
+      'tiles': [
+        [2, 0, 0, 0, 1, 2, 0],
+        [2, 0, 1, 0, 0, 2, 0],
+        [2, -1, 1, 1, 1, 2, 0],
+        [2, -1, 0, 1, 0, 2, 0],
+        [1, -1, 1, 0, 1, 2, 0],
+        [1, 0, 0, 0, 1, 2, 0],
+        [1, 0, 1, 1, 1, 2, 0],
+        [1, 1, 1, 0, 0, 2, 0],
+        [1, -3, 0, 0, 0, 2, 0],
+        [3, 0, 1, 0, 0, 2, 0],
+        [0, -1, 0, 1, 1, 2, 0],
+        [0, -1, 1, 0, 1, 2, 0],
+        [4, 0, 0, 2, 1, 2, 0],
+        [3, 0, 0, 0, 1, 2, 0],
+        [4, 0, 1, 0, 0, 2, 0],
+        [2, -2, 1, 1, 1, 2, 0],
+        [2, -2, 0, 1, 0, 2, 0],
+        [2, -3, 1, 2, 0, 2, 0],
+        [1, -1, 0, 2, 1, 2, 0],
+        [0, 0, 0, 0, 1, 2, 0],
+        [1, 1, 0, 1, 0, 2, 0],
+        [0, 1, 0, 0, 1, 2, 0],
+        [0, 0, 1, 2, 0, 2, 0],
+        [-1, 0, 0, 0, 0, 2, 0],
+        [0, -2, 1, 1, 0, 2, 0],
+        [0, -2, 0, 0, 0, 2, 0],
+        [1, -2, 1, 2, 0, 2, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': '令和（れいわ）',
+        'note': '元号の変わり目にかきました'
+      },
+      "orientation": -2.6180020411703095,
+      "tiles": [
+        [0, 0, 1, 2, 1, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 1, 0, 0],
+        [-1, 1, 0, 2, 1, 0, 0],
+        [-1, 0, 1, 2, 0, 0, 0],
+        [-2, 0, 0, 2, 1, 0, 0],
+        [-1, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0],
+        [0, -1, 1, 1, 1, 0, 0],
+        [-1, -1, 1, 1, 1, 0, 0],
+        [-1, -1, 0, 1, 0, 0, 0],
+        [-1, -2, 1, 1, 1, 0, 0],
+        [-1, -2, 0, 2, 1, 0, 0],
+        [0, -1, 0, 1, 0, 0, 0],
+        [0, -2, 1, 1, 1, 0, 0],
+        [-2, -1, 0, 0, 1, 1, 0],
+        [-2, -1, 1, 0, 0, 1, 0],
+        [-3, -1, 0, 0, 1, 1, 0],
+        [-2, -2, 1, 1, 1, 1, 0],
+        [-2, -2, 0, 0, 1, 1, 0],
+        [-2, -3, 1, 1, 1, 1, 0],
+        [-3, -2, 0, 0, 1, 1, 0],
+        [-2, -3, 0, 0, 1, 1, 0],
+        [-1, -3, 1, 0, 0, 1, 0],
+        [-2, -4, 1, 1, 1, 1, 0],
+        [-3, -3, 1, 1, 1, 1, 0],
+        [-3, -3, 0, 2, 1, 1, 0],
+        [-3, -2, 1, 0, 0, 1, 0],
+        [-4, -2, 0, 2, 0, 1, 0],
+        [-4, -3, 1, 2, 1, 1, 0],
+        [-4, -3, 0, 1, 0, 1, 0],
+        [-4, -4, 1, 1, 1, 1, 0],
+        [-4, -4, 0, 1, 0, 1, 0],
+        [-4, -5, 1, 0, 1, 1, 0],
+        [-4, -5, 0, 0, 0, 1, 0],
+        [-3, -5, 1, 2, 0, 1, 0],
+        [-3, -4, 1, 1, 1, 1, 0],
+        [-3, -4, 0, 1, 0, 1, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'かお',
+        'note': '目や口のかたちをかえていろんな表情をつくろう'
+      },
+      "orientation": -2.6180001200192566,
+      "tiles": [
+        [0, 0, 1, 2, 0, 0, 0],
+        [0, 1, 0, 2, 1, 0, 0],
+        [0, 1, 1, 2, 0, 0, 0],
+        [1, 1, 1, 2, 0, 0, 0],
+        [0, 0, 0, 2, 1, 0, 0],
+        [0, -1, 1, 2, 0, 0, 0],
+        [1, 0, 1, 2, 0, 0, 0],
+        [1, 1, 0, 2, 1, 0, 0],
+        [1, 2, 0, 1, 0, 0, 0],
+        [0, 2, 0, 0, 0, 0, 0],
+        [-1, 1, 0, 0, 0, 0, 0],
+        [0, 2, 1, 1, 0, 0, 0],
+        [0, 3, 0, 2, 0, 0, 0],
+        [1, 2, 1, 2, 0, 0, 0],
+        [1, 3, 0, 1, 0, 0, 0],
+        [1, 3, 1, 0, 0, 0, 0],
+        [-1, 2, 0, 1, 0, 0, 0],
+        [-1, 2, 1, 0, 0, 0, 0],
+        [-2, 2, 0, 2, 0, 0, 0],
+        [-2, 1, 1, 1, 0, 0, 0],
+        [-2, 1, 0, 0, 0, 0, 0],
+        [-1, 1, 1, 2, 0, 0, 0],
+        [-1, 0, 0, 0, 0, 0, 0],
+        [-1, 0, 1, 0, 1, 0, 0],
+        [-2, 0, 0, 0, 0, 0, 0],
+        [-2, 0, 1, 1, 0, 0, 0],
+        [-1, -1, 0, 0, 0, 0, 0],
+        [-2, -1, 0, 0, 0, 0, 0],
+        [-1, -1, 1, 0, 1, 0, 0],
+        [-3, -1, 0, 0, 0, 0, 0],
+        [-2, -1, 1, 0, 1, 0, 0],
+        [-3, -1, 1, 1, 0, 0, 0],
+        [-3, 0, 1, 1, 0, 0, 0],
+        [-3, 0, 0, 1, 1, 0, 0],
+        [2, 1, 1, 2, 0, 0, 0],
+        [2, 2, 0, 1, 0, 0, 0],
+        [2, 2, 1, 1, 1, 0, 0],
+        [2, 3, 0, 1, 0, 0, 0],
+        [2, 3, 1, 2, 1, 0, 0],
+        [-3, 1, 0, 0, 1, 0, 0],
+        [-3, 1, 1, 1, 1, 0, 0],
+        [-3, 2, 0, 1, 0, 0, 0],
+        [-2, 2, 1, 0, 0, 0, 0],
+        [2, 4, 0, 1, 1, 0, 0],
+        [1, 4, 0, 2, 0, 0, 0],
+        [-1, 3, 0, 0, 0, 0, 0],
+        [0, 3, 1, 2, 0, 0, 0],
+        [-1, 3, 1, 2, 1, 0, 0],
+        [-2, 3, 0, 0, 1, 0, 0],
+        [0, 4, 0, 0, 1, 0, 0],
+        [1, 4, 1, 2, 1, 0, 0],
+        [2, 4, 1, 1, 0, 0, 0],
+        [-1, 4, 0, 2, 0, 0, 0],
+        [0, 4, 1, 0, 0, 0, 0],
+        [2, 5, 0, 1, 1, 0, 0],
+        [1, 5, 0, 1, 1, 0, 0],
+        [2, 5, 1, 0, 1, 0, 0],
+        [-3, 2, 1, 1, 1, 0, 0],
+        [-3, 3, 0, 2, 1, 0, 0],
+        [-2, 3, 1, 1, 1, 0, 0],
+        [-2, 4, 0, 1, 0, 0, 0],
+        [1, 5, 1, 1, 0, 0, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'ジャックオーランタン',
+        'note': 'ことしももうすぐハロウィーン！'
+      },
+      'orientation': -2.094400778962728,
+      'tiles': [
+        [2, 0, 0, 0, 0, 1, 0],
+        [2, -1, 1, 0, 1, 1, 0],
+        [2, -1, 0, 0, 0, 1, 0],
+        [1, -1, 0, 0, 0, 1, 0],
+        [1, -1, 1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 1, 1, 0],
+        [2, 1, 0, 1, 1, 1, 0],
+        [1, 0, 1, 1, 0, 1, 0],
+        [2, 2, 0, 0, 1, 1, 0],
+        [2, 1, 1, 2, 1, 1, 0],
+        [1, 1, 0, 2, 0, 1, 0],
+        [3, 0, 1, 0, 0, 1, 0],
+        [3, 1, 0, 1, 0, 1, 0],
+        [3, -1, 1, 2, 0, 1, 0],
+        [3, 2, 1, 2, 1, 1, 0],
+        [2, 0, 1, 0, 1, 1, 0],
+        [3, 1, 1, 2, 1, 1, 0],
+        [3, 2, 0, 0, 1, 1, 0],
+        [3, 3, 0, 2, 0, 1, 0],
+        [4, 3, 1, 0, 0, 1, 0],
+        [4, 2, 1, 1, 1, 1, 0],
+        [4, 3, 0, 0, 1, 1, 0],
+        [5, 3, 1, 0, 0, 1, 0],
+        [5, 3, 0, 1, 0, 1, 0],
+        [4, 2, 0, 1, 0, 1, 0],
+        [5, 2, 1, 1, 1, 1, 0],
+        [5, 2, 0, 1, 0, 1, 0],
+        [5, 1, 1, 2, 0, 1, 0],
+        [4, 1, 0, 2, 1, 1, 0],
+        [4, 1, 1, 0, 0, 1, 0],
+        [4, 0, 1, 2, 0, 1, 0],
+        [3, 0, 0, 2, 1, 1, 0],
+        [4, 0, 0, 1, 1, 1, 0],
+        [5, 0, 1, 2, 1, 1, 0],
+        [5, 1, 0, 2, 0, 1, 0],
+        [4, -1, 1, 2, 1, 1, 0],
+        [3, -1, 0, 2, 0, 1, 0],
+        [3, -2, 1, 1, 0, 1, 0],
+        [6, 1, 1, 0, 0, 1, 0],
+        [6, 1, 0, 0, 1, 1, 0],
+        [3, -2, 0, 1, 1, 1, 0],
+        [4, -2, 1, 0, 1, 1, 0],
+        [5, -2, 1, 1, 0, 1, 0],
+        [4, -2, 0, 0, 0, 1, 0],
+        [4, -1, 0, 1, 1, 1, 0],
+        [5, 0, 0, 0, 1, 1, 0],
+        [5, -1, 1, 2, 1, 1, 0],
+        [3, -3, 0, 0, 0, 1, 0],
+        [3, -3, 1, 1, 0, 1, 0],
+        [4, -3, 1, 0, 1, 1, 0],
+        [6, 0, 1, 1, 1, 1, 0],
+        [7, 1, 1, 0, 0, 1, 0],
+        [7, 1, 0, 1, 0, 1, 0],
+        [7, 0, 1, 1, 1, 1, 0],
+        [7, 0, 0, 1, 0, 1, 0],
+        [7, -1, 1, 2, 0, 1, 0],
+        [6, -1, 0, 2, 1, 1, 0],
+        [6, -2, 1, 2, 0, 1, 0],
+        [5, -2, 0, 2, 1, 1, 0],
+        [5, -3, 1, 2, 0, 1, 0],
+        [4, -3, 0, 0, 0, 1, 0],
+        [5, -1, 0, 0, 0, 1, 0],
+        [6, -1, 1, 1, 0, 1, 0],
+        [6, 0, 0, 1, 0, 1, 0]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'ひしならべ',
+        'note': 'T3パズルをつかったあそびです\nうえのようなおおきなひしがたをつくりましょう。ただし、したの８つのちいさなひしがたをふくむこと'
+      },
+      'orientation': 0.5235896368295516,
+      'tiles': [
+        [0, 0, 0, 1, 1, 0, 1],
+        [1, 0, 0, 2, 1, 0, 1],
+        [1, 0, 1, 1, 0, 0, 1],
+        [2, 0, 1, 0, 1, 0, 1],
+        [1, -1, 1, 0, 1, 0, 1],
+        [0, -1, 0, 0, 0, 0, 1],
+        [0, -1, 1, 1, 1, 0, 1],
+        [-1, -1, 0, 1, 1, 0, 1],
+        [0, 1, 1, 1, 1, 0, 1],
+        [-1, 1, 0, 1, 1, 0, 1],
+        [0, 2, 1, 1, 1, 0, 1],
+        [-1, 2, 0, 1, 0, 0, 1],
+        [2, 2, 1, 0, 1, 0, 1],
+        [0, 3, 1, 1, 1, 0, 1],
+        [-1, 3, 0, 0, 1, 0, 1],
+        [1, 2, 0, 0, 0, 0, 1],
+        [2, 3, 1, 0, 1, 0, 1],
+        [1, 3, 0, 2, 0, 0, 1],
+        [2, 4, 1, 2, 1, 0, 1],
+        [1, 4, 0, 2, 1, 0, 1],
+        [0, 4, 1, 1, 1, 0, 1],
+        [-1, 4, 0, 0, 0, 0, 1],
+        [2, 5, 1, 2, 1, 0, 1],
+        [1, 5, 0, 0, 1, 0, 1]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'ひしならべ(のこり２ピース)',
+        'note': 'T3パズルをつかったあそびです。したの８つのちいさなひしがたをふくむように、うえのおおきなひしがたをかんせいさせよう'
+      },
+      'orientation': 0.52359196882172,
+      'tiles': [
+        [0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [2, 0, 1, 1, 0, 0, 1],
+        [0, -1, 0, 2, 0, 0, 1],
+        [0, -1, 1, 2, 0, 0, 1],
+        [-1, -1, 0, 2, 0, 0, 1],
+        [0, 1, 1, 1, 0, 0, 1],
+        [-1, 1, 0, 1, 0, 0, 1],
+        [0, 2, 1, 1, 0, 0, 1],
+        [-1, 2, 0, 1, 1, 0, 1],
+        [2, 2, 1, 2, 0, 0, 1],
+        [0, 3, 1, 1, 0, 0, 1],
+        [-1, 3, 0, 0, 1, 0, 1],
+        [1, 2, 0, 2, 1, 0, 1],
+        [2, 3, 1, 2, 0, 0, 1],
+        [1, 3, 0, 0, 1, 0, 1],
+        [2, 4, 1, 2, 0, 0, 1],
+        [1, 4, 0, 2, 0, 0, 1],
+        [0, 4, 1, 1, 0, 0, 1],
+        [-1, 4, 0, 0, 0, 0, 1],
+        [2, 5, 1, 2, 0, 0, 1],
+        [1, 5, 0, 0, 0, 0, 1],
+        [1, -1, 1, 2, 1, 0, 2],
+        [1, 0, 1, 1, 1, 0, 2]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'まりょうじん（魔菱陣）',
+        'note': 'うえのような「ひしがた」をつくるパズルです。ひしがたを4×4のマスメでくぎってかんがえて、どのぎょう、れつにもあおい「さんかくけい」を３つおくようにならべてください'
+      },
+      'orientation': -2.094401552186574,
+      'tiles': [
+        [0, 0, 0, 2, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 1],
+        [2, 0, 1, 2, 1, 0, 1],
+        [1, -1, 1, 2, 0, 0, 1],
+        [0, -1, 0, 0, 0, 0, 1],
+        [0, -1, 1, 0, 0, 0, 1],
+        [-1, -1, 0, 2, 1, 0, 1],
+        [3, -2, 1, 1, 0, 0, 1],
+        [4, -2, 1, 1, 0, 0, 1],
+        [3, -2, 0, 1, 0, 0, 1],
+        [3, -3, 1, 1, 0, 0, 1],
+        [2, -3, 0, 0, 1, 0, 1],
+        [2, -2, 0, 0, 1, 0, 2],
+        [2, -3, 1, 2, 1, 0, 2],
+        [1, -3, 0, 0, 1, 0, 2]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'チェッカーならべ',
+        'note': 'うえのような「しかく」にならべるパズルです。下の12ピースのむきをかえずに、となりあうピースといろがぶつからないように「チェッカーもよう」のようにならべてください。'
+      },
+      'orientation': -2.094403274190408,
+      'tiles': [
+        [2, -2, 1, 1, 0, 0, 1],
+        [1, -2, 1, 0, 0, 0, 1],
+        [1, -2, 0, 1, 1, 0, 1],
+        [1, -3, 1, 2, 0, 0, 1],
+        [0, -2, 0, 2, 1, 0, 1],
+        [0, -3, 1, 2, 1, 0, 1],
+        [0, -3, 0, 2, 0, 0, 1],
+        [0, -4, 1, 1, 1, 0, 1],
+        [-1, -4, 1, 0, 1, 0, 1],
+        [-1, -4, 0, 1, 0, 0, 1],
+        [-1, -3, 0, 0, 0, 0, 1],
+        [-2, -4, 0, 0, 1, 0, 1],
+        [3, -3, 1, 0, 1, 0, 1],
+        [2, -4, 1, 1, 1, 0, 1],
+        [1, -5, 1, 2, 0, 0, 1],
+        [0, -6, 1, 0, 0, 0, 1],
+        [-1, -7, 1, 1, 0, 0, 1],
+        [4, -2, 1, 2, 1, 0, 1],
+        [4, -3, 0, 2, 1, 0, 1],
+        [3, -4, 0, 1, 1, 0, 1],
+        [2, -5, 0, 0, 1, 0, 1],
+        [1, -6, 0, 2, 0, 0, 1],
+        [0, -7, 0, 1, 0, 0, 1],
+        [-1, -8, 0, 0, 0, 0, 1]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'チェッカーならべ（のこり4ピース）',
+        'note': 'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'
+      },
+      'orientation': -2.094403274190408,
+      'tiles': [
+        [2, -2, 1, 1, 1, 0, 1],
+        [1, -2, 0, 1, 0, 0, 1],
+        [1, -3, 1, 1, 0, 0, 1],
+        [0, -2, 0, 0, 1, 0, 1],
+        [0, -3, 1, 0, 0, 0, 1],
+        [0, -3, 0, 1, 1, 0, 1],
+        [-1, -4, 1, 2, 1, 0, 1],
+        [-1, -4, 0, 2, 0, 0, 1],
+        [3, -3, 1, 0, 1, 0, 1],
+        [2, -4, 1, 1, 1, 0, 1],
+        [1, -5, 1, 2, 0, 0, 1],
+        [0, -6, 1, 0, 0, 0, 1],
+        [-1, -7, 1, 1, 0, 0, 1],
+        [4, -2, 1, 2, 1, 0, 1],
+        [4, -3, 0, 2, 1, 0, 1],
+        [3, -4, 0, 1, 1, 0, 1],
+        [2, -5, 0, 0, 1, 0, 1],
+        [1, -6, 0, 2, 0, 0, 1],
+        [0, -7, 0, 1, 0, 0, 1],
+        [-1, -8, 0, 0, 0, 0, 1],
+        [1, -2, 1, 0, 0, 0, 2],
+        [-1, -3, 0, 2, 0, 0, 2],
+        [0, -4, 1, 2, 1, 0, 2],
+        [-2, -4, 0, 2, 0, 0, 2]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': 'preset' + count,
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'チェッカーならべ（のこり10ピース）',
+        'note': 'うえの「しかく」のあおいのピースをならびかえて、となりあうピースといろがぶつかならいようしてください。ただし、うえのピースはどれも、したの12ピースのいずれかひとつとおなじむきとします。'
+      },
+      'orientation': -2.094402963852356,
+      'tiles': [
+        [2, -2, 1, 2, 0, 0, 1],
+        [1, -2, 0, 2, 1, 0, 2],
+        [1, -3, 1, 2, 0, 0, 2],
+        [0, -2, 0, 2, 1, 0, 2],
+        [0, -3, 1, 2, 0, 0, 2],
+        [0, -3, 0, 2, 1, 0, 2],
+        [-1, -4, 1, 2, 0, 0, 2],
+        [-1, -4, 0, 2, 1, 0, 2],
+        [3, -3, 1, 0, 1, 0, 1],
+        [2, -4, 1, 1, 1, 0, 1],
+        [1, -5, 1, 2, 0, 0, 1],
+        [0, -6, 1, 0, 0, 0, 1],
+        [-1, -7, 1, 1, 0, 0, 1],
+        [4, -2, 1, 2, 1, 0, 1],
+        [4, -3, 0, 2, 1, 0, 1],
+        [3, -4, 0, 1, 1, 0, 1],
+        [2, -5, 0, 0, 1, 0, 1],
+        [1, -6, 0, 2, 0, 0, 1],
+        [0, -7, 0, 1, 0, 0, 1],
+        [-1, -8, 0, 0, 0, 0, 1],
+        [1, -2, 1, 2, 0, 0, 2],
+        [-1, -3, 0, 2, 1, 0, 2],
+        [0, -4, 1, 2, 0, 0, 2],
+        [-2, -4, 0, 2, 1, 0, 1]
+      ]
+    }));
+    ///
+    count--;
+    localStorage.setItem(APP.name + '__MIN', count);
+    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+      'meta': {
+        'id': '',
+        'base': '',
+        'origin': '',
+        artist: '_',
+        'title': 'おなじむきにちがうもようでならべよう',
+        'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
+      }, "orientation":2.0919229374524506,
+      "tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+    }));
+  }
+
+  function Unwrap(jsonStr) {
+    if (!jsonStr) {
+      return;
+    }
+    let json = JSON.parse(jsonStr);
+    json.tiles.map(t => {
+      if (t[6] > 1) {
+        t[6] = 0;
+      }
+    });
+    return JSON.stringify(json);
+  }
+
+  function Unlock(jsonStr) {
+    if (!jsonStr) {
+      return;
+    }
+    let json = JSON.parse(jsonStr);
+    json.tiles.map(t => {
+      t[6] = 0;
+    });
+    return JSON.stringify(json);
+  }
+
+  function moveMode() {
+    document.body.classList.add('move');
+    t3puzzle.setAttribute('mode', 'readonly');
+    HISTORY.status = 'move';
+  }
+
+  function historyback() {
+    if (HISTORY.back) {
+      t3puzzle.setAttribute('loaddata', HISTORY.back);
+    }
+  }
+
+  function processData(value) {
+    localStorage.setItem('DEBUG', JSON.stringify(
+      value.detail.debug));
+    let str = JSON.stringify(value.detail.value);
+    HISTORY.back =
+      localStorage.getItem(APP.name + '__DATA__LASTMODIFIED');
+    localStorage.setItem(APP.name + '__DATA__LASTMODIFIED', str);
+    HISTORY.status = 'change';
+  }
+
+  function dialogopen(action, modal, t3work, form, OBJ) {
+    let submit = form.querySelector('input[type=submit]');
+    let age = form.querySelector('input[name=age]');
+    let filename = form.querySelector('input[name=filename]');
+    let artist = form.querySelector('input[name=artist]');
+    let title = form.querySelector('input[name=title]');
+    let data = form.querySelector('input[name=data]');
+    let note = form.querySelector('textarea[name=note]');
+    let jsonStr = '';
+    if (action === 'load') {
+      load__history.style.display = 'inline-block';
+      let {
+        str,
+        i
+      } = loadData(modal);
+      jsonStr = str;
+      setStrToForm(form, jsonStr, i);
+    } else if (action === 'download') {
+      load__history.style.display = 'none';
+      goto(t3work, form, OBJ.jsonStr, null);
+    } else {
+      //  
+      dialog__src.style.display = 'block';
+      dialog__img.style.display = 'none';
+      //
+      jsonStr = localStorage.getItem(APP.name +
+        '__DATA__LASTMODIFIED');
+      jsonStr = Unwrap(jsonStr);
+      setmeta();
+      markArtist();
+      let artistStr = localStorage.getItem(APP.type + '__INFO--ARTIST');
+      if (artistStr) {
+        artist.value = artistStr;
+      }
+      let ageStr = localStorage.getItem(APP.type + '__INFO--AGE');
+      if (ageStr) {
+        age.value = ageStr;
+      }
+      data.value = jsonStr;
+      title.value = UPLOAD.title;
+      if (!title.value) {
+        let placeholder = UPLOAD.placeholder;
+        if (placeholder) {
+          title.placeholder = 'だいめい(れい)：' + placeholder;
+        }
+      }
+      note.value = UPLOAD.note;
+      jsonStr = Unlock(jsonStr);
+    }
+    if (jsonStr) {
+      t3work.setAttribute('loaddata', jsonStr);
+    }
+    if (!OBJ.submitMessage) {
+      OBJ.submitMessage = submit.value;
+      OBJ.submitEvent = form.getAttribute('onsubmit');
+    } else {
+      submit.value = OBJ.submitMessage;
+      form.setAttribute('onsubmit', OBJ.submitEvent);
+      submit.removeAttribute('disabled');
+    }
+    modal.setAttribute('open', '');
+  }
+
+  function loadData(modal) {
+    let {
+      min,
+      max
+    } = getCountFromLocal();
+    if (min === null) {
+      return '';
+    }
+    let initpointer = max;
+    if (LOAD.pointer !== null) {
+      initpointer = LOAD.pointer;
+    }
+    let {
+      str,
+      i
+    } = loadDataFromLocal(initpointer, false);
+    LOAD.data = str;
+    return {
+      str,
+      i
+    };
+  }
+
+  function loadDataToMain(modal, form) {
+    t3puzzle.setAttribute('loaddata', LOAD.data);
+    UPLOAD.placeholder = load__title.value;
+    console.log(LOAD.data);
+    modal.setAttribute('close', '');
+  }
+
+  function setStrToForm(form, str, idx) {
+    putmeta(str);
+    setmeta();
+    let title = form.querySelector('input[name=title]');
+    let note = form.querySelector('textarea[name=note]');
+    title.value = '';
+    note.value = '';
+    if (str) {
+      let json = JSON.parse(str);
+      if (json.meta.title) {
+        title.value = json.meta.title;
+      }
+      if (json.meta.note) {
+        note.value = json.meta.note;
+      }
+      if (idx !== null) {
+        let {
+          min,
+          max
+        } = getCountFromLocal();
+        let base = max - min + 1;
+        let now = idx - min + 1;
+        LOAD.pointer = idx;
+        load__number.textContent = (now) + '/' + (base);
+      }
+    }
+  }
+
+  function backward(item, form) {
+    let idx = LOAD.pointer;
+    let {
+      str,
+      i
+    } = loadDataFromLocal(idx - 1, false);
+    goto(item, form, str, i);
+  }
+
+  function forward(item, form) {
+    let idx = LOAD.pointer;
+    let {
+      str,
+      i
+    } = loadDataFromLocal(idx + 1, true);
+    goto(item, form, str, i);
+  }
+
+  function gohead(item, form) {
+    let {
+      min,
+      max
+    } = getCountFromLocal();
+    let {
+      str,
+      i
+    } = loadDataFromLocal(min, false);
+    goto(item, form, str, i);
+  }
+
+  function goend(item, form) {
+    let {
+      min,
+      max
+    } = getCountFromLocal();
+    let {
+      str,
+      i
+    } = loadDataFromLocal(max, true);
+    goto(item, form, str, i);
+  }
+
+  function goto(item, form, str, i) {
+    if (str) {
+      setStrToForm(form, str, i);
+      LOAD.data = str;
+      item.setAttribute('loaddata', str);
+    }
+  }
+
+  function loadDataFromLocal(idx, direct) {
+    let {
+      min,
+      max
+    } = getCountFromLocal();
+    let i = idx;
+    let str = '';
+    while (min !== null && min <= i && i <= max) {
+      str = localStorage.getItem(
+        APP.name + '__DATA__' + i);
+      if (str) {
+        LOAD.pointer = i;
+        break;
+      }
+      if (direct) {
+        i++;
+      } else {
+        i--;
+      }
+    }
+    if (!str) {
+      if (direct) {
+        LOAD.pointer = max;
+      } else {
+        LOAD.pointer = min;
+      }
+    }
+    return {
+      str,
+      i
+    };
+  }
+
+  function getCountFromLocal() {
+    let maxStr = localStorage.getItem(
+      APP.name + '__MAX');
+    let minStr = localStorage.getItem(
+      APP.name + '__MIN');
+    let min = null;
+    let max = -1;
+    if (minStr) {
+      min = parseInt(minStr, 10);
+    }
+    if (maxStr) {
+      max = parseInt(maxStr, 10);
+    }
+    return {
+      min,
+      max
+    };
+  }
+
+  function addDataToLocal(form) {
+    let data = form.querySelector(
+      'input[name=data]').value;
+    if (!data) {
+      return;
+    }
+    let title = form.querySelector(
+      'input[name=title]').value;
+    let note = form.querySelector(
+      'textarea[name=note]').value;
+    // count up
+    let {
+      min,
+      max
+    } = getCountFromLocal();
+    let count = max + 1;
+    let json = JSON.parse(data);
+    if (!('meta' in json)) {
+      json.meta = {};
+    }
+    json.meta.title = title;
+    json.meta.note = note;
+    localStorage.setItem(
+      APP.name + '__DATA__' +
+      count, JSON.stringify(json));
+    localStorage.setItem(
+      APP.name + '__MAX', count);
+  }
+
+  function submitImage(src, form, OBJ) {
+    let submit = form.querySelector('input[type=submit]');
+    let age = form.querySelector('input[name=age]');
+    let filename = form.querySelector('input[name=filename]');
+    let artist = form.querySelector('input[name=artist]');
+    let content = form.querySelector('input[name=content]');
+    let dataStr = form.querySelector('input[name=data]').value;
+    submit.disabled = 'disable';
+    submit.value = 'ほぞんちゅう';
+    addDataToLocal(form);
+    localStorage.setItem(APP.type + '__INFO--AGE', age.value);
+    saveImage(src, dataStr, OBJ, (value) => {
+      // image
+      dialog__src.style.display = 'none';
+      dialog__img.style.display = 'block';
+      dialog__img.src = 'data:image/png;base64,'+value;
+      //
+      filename.value = 'server_to_be_named.png';
+      content.value = value;
+      try {
+        fetch_upload(form, OBJ,
+          (json) => {
+            submit.removeAttribute('disabled');
+            if (true) {
+              submit.value = 'ツイート';
+              let title = UPLOAD.title;
+              let note = UPLOAD.note;
+              let hash = '#FMS特別講義 #T3パズル';
+              let url = 'https://drive.google.com/file/d/' + json.meta.image + '/view';
+              let array = [title, note, hash, url];
+              let tweet = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(array.join('\n'));
+              form.setAttribute('onsubmit', `document.querySelector("#"+this.id+"__modal").setAttribute("close","");window.open("${tweet}");return false;`);
+            } else {
+              submit.value = 'とじる';
+              form.setAttribute('onsubmit', 'document.querySelector("#"+this.id+"__modal").setAttribute("close","");return false;');
+            }
+            UPLOAD.title = '';
+            UPLOAD.note = '';
+            let data = JSON.parse(dataStr);
+            data.meta = json.meta;
+            history.replaceState('', '', '#!load=' + data.meta.id);
+            let str = JSON.stringify(data);
+            putmeta(str);
+            localStorage.setItem(APP.name + '__DATA__LASTMODIFIED', str);
+          }, (e) => {
+            console.log(e);
+            submit.value = '😨';
+          }
+        );
+      } catch (e) {
+        submit.value = '😨';
+        console.log(e);
+      }
+    }, () => {
+      submit.value = '🤔';
+    })
+  }
+
+  function fetch_initdata() {
+    if (/#!history=(\d+)/.test(location.href)) {
+      let val = parseInt(RegExp.$1, 10);
+      let minStr = localStorage.getItem(APP.name + '__MIN');
+      if (minStr) {
+        let min = parseInt(minStr, 10);
+        let num = val + min - 1;
+        let jstr = localStorage.getItem(APP.name + '__DATA__' + num);
+        if (jstr) {
+          dialogopen('download', load__form__modal, load__t3work, load__form, {
+            jsonStr: jstr
+          });
+        }
+      }
+    } else if (/#!load=([^\?#]+)/.test(location.href)) {
+      let id = RegExp.$1;
+      let url = UPLOAD.url + '?id=' + encodeURIComponent(id);
+      console.log(url);
+      fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+          redirect: 'follow',
+        })
+        .then(r => r.text())
+        .then(jstr => {
+          dialogopen('download', load__form__modal, load__t3work, load__form, {
+            jsonStr: jstr
+          });
+        });
+    }
+  }
+
+  function fetch_upload(form, OBJ, successCallback, errorCallback) {
+    const body = new FormData(form);
+    fetch(OBJ.url, {
+        method: 'POST',
+        body: body,
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if (successCallback) {
+          successCallback(j);
+        }
+      }).catch(e => {
+        if (errorCallback) {
+          errorCallback(e);
+        }
+      });
+  }
+
+  function saveImage(src, dataStr, OBJ, successCallback, errorCallback) {
+    (async () => {
+      try {
+        domtoimage.toPng(src).then(dataurl=>{
+          let txt = (dataurl.split(',')[1]);
+          let buf = buffer.Buffer.from(txt, 'base64');
+          let json = JSON.parse(dataStr);
+          delete json.meta;
+          let metadata = {
+            "tEXt": {
+              "meta": JSON.stringify(json)
+            }
+          };
+          let bufwithmeta = writeMetadata(buf, metadata);
+          let b64 = bufwithmeta.toString('base64');
+          successCallback(b64);
+        });
+                                   
+      } catch (e) {
+        console.log('e::' + e);
+        errorCallback();
+      }
+    })();
+  }
+
+  function markArtist() {
+    let artist = localStorage.getItem(APP.type + '__INFO--ARTIST');
+    if (!artist) {
+      localStorage.setItem(APP.type + '__INFO--ARTIST', Math.random().toString(32).substring(2));
+    }
+  }
+
+  function rotate(_item) {
+    let item = _item ? _item : t3puzzle;
+    if (!_item) {
+      if (HISTORY.status !== 'rotate') {
+        item.setAttribute('fit', '');
+      }
+    }
+    item.setAttribute('rotate', Math.PI / 6);
+    HISTORY.status = 'rotate';
+  }
+
+  function zoom(_item) {
+    let item = _item ? _item : t3puzzle;
+    item.setAttribute('zoom', 0.9);
+  }
+
+  function bodyMovePrevent() {
+    document.addEventListener('touchmove', e => e.preventDefault(), {
+      passive: false
+    });
+    document.addEventListener('mousewheel', e => e.preventDefault(), {
+      passive: false
+    });
   }
 </script>
-<script src="./tapspace.min.js"></script>
-<script src="./buttonText.js"></script>
-<script src="./palleteText.js"></script>
-
   
-<script src="./t3.js"></script>
+<script>
+  importModules(
+  "tileUtil",
+  "./tileUtil.js",
+  "https://codepen.io/alytile/pen/dyRZgga.js",
+  (tileUtil) => {
+    importModules(
+      "t3Util",
+      "./t3Util.js",
+      "https://codepen.io/alytile/pen/xxrPQob.js",
+      (t3Util) => {
+        importModules(
+          "t3",
+          "./t3.js",
+          "https://codepen.io/alytile/pen/OJjNeEd.js",
+          (t3) => {        
+            t3.define(tileUtil, t3Util);
+          }
+        );
+      }
+    );
+  }
+);
+
+function importModules(moduleName, first, second, callback) {
+  let ret = null;
+  import(first)
+    .then((module) => {
+      ret = new module[moduleName]();
+      callback(ret);
+    })
+    .catch((e) => {
+      import(second)
+        .then((module) => {
+          ret = new module[moduleName]();
+          callback(ret);
+        })
+        .catch((e) => {
+          console.log("error");
+        });
+    });
+}
+
+</script>
+<noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
 </html>
