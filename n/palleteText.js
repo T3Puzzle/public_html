@@ -1,3 +1,4 @@
+
 (() => {
   customElements.define(
     "pallete-text",
@@ -17,6 +18,9 @@
         return ["size", "margin-top", "margin-left", "value"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "value") {
+          this.__setValue(newValue);
+        } else {
         if (!newValue) {
           return;
         }
@@ -26,8 +30,7 @@
           this.__MARGIN__TOP = newValue;
         } else if (name === "margin-left") {
           this.__MARGIN__LEFT = newValue;
-        } else if (name === "value") {
-          this.__setValue(newValue);
+        }
         }
       }
       connectedCallback() {
@@ -109,10 +112,14 @@
           f.classList.remove("checked");
         });
         let color = new FormData(form).get("pallete");
-        let forName = "label[for=" + color + "]";
-        let label = form.querySelector(forName);
-        if (label) {
-          label.classList.add("checked");
+        if (color) {
+          let forName = "label[for=" + color + "]";
+          let label = form.querySelector(forName);
+          if (label) {
+            label.classList.add("checked");
+          }
+        } else {
+          color = '';
         }
         let value = { detail: { color: color } };
         this.value = color;
