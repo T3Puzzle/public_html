@@ -3,7 +3,8 @@ function writeMetadata(buf, metadata) {
 let uint8 = new Uint8Array(4);
 let int32 = new Int32Array(uint8.buffer);
 let uint32 = new Uint32Array(uint8.buffer);
-
+let T = signed_crc_table();
+  
   const chunks = extractChunks(buf);
   insertMetadata(chunks, metadata);
   // Buffer is for NodeJS
@@ -278,8 +279,6 @@ function signed_crc_table() {
 
   return typeof Int32Array !== "undefined" ? new Int32Array(table) : table;
 }
-
-var T = signed_crc_table();
 
 function crc32_buf(buf, seed) {
   if (buf.length > 10000) return crc32_buf_8(buf, seed);
