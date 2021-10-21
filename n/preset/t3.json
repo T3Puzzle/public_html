@@ -1,14 +1,14 @@
 {
-      meta: {
-        id: "preset0",
-        base: "",
-        origin: "",
-        artist: "_",
-        title: "T3",
-        note: "T3パズルのロゴをつくりました"
+      "meta": {
+        "id": "preset0",
+        "base": "",
+        "origin": "",
+        "artist": "_",
+        "title": "T3",
+        "note": "T3パズルのロゴをつくりました"
       },
-      orientation: 3.1415855821521044,
-      tiles: [
+      "orientation": 3.1415855821521044,
+      "tiles": [
         [2, 0, 0, 1, 0, 0, 0],
         [2, 0, 1, 1, 1, 0, 0],
         [2, 1, 0, 0, 1, 0, 0],
