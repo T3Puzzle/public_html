@@ -23,7 +23,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         );
       }
       static get observedAttributes() {
-        return ["_upload", "_open"];
+        return ["_upload", "_open","_age"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "_upload") {
@@ -37,6 +37,8 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
             this.__src,
             this.__img
           );
+        } else if (name === "_age") {
+           this.__storage.setAttribute("age",newValue);
         }
       }
     }
