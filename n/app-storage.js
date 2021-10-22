@@ -21,6 +21,7 @@
         return [
           "_index",
           "_append",
+          "_go",
           "_clear",
           "age",
           "artist",
@@ -44,18 +45,20 @@
           this.setAttribute("max", max);
           this.setAttribute("_index", max);
           this.setAttribute("_data", newValue);
-        } else if (name === "_index") {
+        } else if (name === "_go") {
           let maxStr = this.getAttribute("max");
           let minStr = this.getAttribute("min");
           if (newValue === "_next") {
-            indexStr = findDataIndex(indexStr, true, minStr, maxStr);
+            indexStr = findDataIndex(this,newValue,indexStr, true, minStr, maxStr);
           } else if (newValue === "_back") {
-            indexStr = findDataIndex(indexStr, false, minStr, maxStr);
+            indexStr = findDataIndex(this,newValue,indexStr, false, minStr, maxStr);
           } else if (newValue === "_min") {
-            indexStr = findDataIndex(minStr, true, minStr, maxStr);
+            indexStr = findDataIndex(this,newValue,minStr, true, minStr, maxStr);
           } else if (newValue === "_max") {
-            indexStr = findDataIndex(maxStr, false, minStr, maxStr);
+            indexStr = findDataIndex(this,newValue,maxStr, false, minStr, maxStr);
           }
+          this.setAttribute('_index',indexStr);
+        } else if (name === "_index") {
           this.setAttribute(
             "_data",
             localStorage.getItem(this.__data + indexStr)
@@ -106,7 +109,7 @@
     }
   );
 
-  function findDataIndex(indexStr, direct, minStr, maxStr) {
+  function findDataIndex(me,action, indexStr, direct, minStr, maxStr) {
     if (!minStr || !maxStr) {
       return;
     }
@@ -116,7 +119,7 @@
     if (max < min) {
       return;
     }
-    if (index !== min || index !== max) {
+    if (action!=="_min" && action!=="_max") {
       if (direct) {
         index += 1;
       } else {
@@ -125,7 +128,7 @@
     }
     let str = null;
     while (min <= index && index <= max) {
-      this.setAttribute("_index", index);
+      me.setAttribute("_index", index);
       str = storage.getAttribute("_data");
       if (str) {
         break;
@@ -134,6 +137,13 @@
         index++;
       } else {
         index--;
+      }
+    }
+    if (str===null) {
+      if (direct) {
+        index -= 1;
+      } else {
+        index += 1;
       }
     }
     return index.toString();
