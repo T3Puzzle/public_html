@@ -129,7 +129,7 @@
     let str = null;
     while (min <= index && index <= max) {
       me.setAttribute("_index", index);
-      str = storage.getAttribute("_data");
+      str = me.getAttribute("_data");
       if (str) {
         break;
       }
