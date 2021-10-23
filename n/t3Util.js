@@ -1,4 +1,3 @@
-
 export { t3Util };
 
 function t3Util() {
@@ -265,8 +264,9 @@ function t3Util() {
             let l = randomInt(3);
             let m = randomInt(2);
             let n = TILECOLOR_NOW;
+            let o = 0;
 
-            callback({ i, j, k, l, m, n }, { local: true });
+            callback({ i, j, k, l, m, n, o }, { local: true });
           }
         }
       }
