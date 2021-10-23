@@ -10,7 +10,6 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
     class extends HTMLElement {
       constructor() {
         super();
-        this.__img = this.querySelector("img.img");
         // common
         this.__modal = this.querySelector("dialog-modal");
         this.__grid = this.querySelector("grid-puzzle");
@@ -21,13 +20,18 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         this.__storage = document.querySelector(
           "app-storage[name=" + this.__name + "]"
         );
+        //
+        this.__dst = this.querySelector("img.dst");
+        this.__dst.style.display = "none";
+        this.__dst.setAttribute("width", this.__grid.getAttribute("width"));
+        this.__dst.setAttribute("height", this.__grid.getAttribute("height"));
       }
       static get observedAttributes() {
         return ["_upload", "_open","_age"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "_upload") {
-          upload(this.__storage, this.__form, this.__src, this.__img);
+          upload(this.__storage, this.__form, this.__src, this.__dst);
         } else if (name === "_open") {
           open(
             () => this.__modal.setAttribute("_open", ""),
@@ -35,7 +39,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
             this.__grid,
             this.__form,
             this.__src,
-            this.__img
+            this.__dst
           );
         } else if (name === "_age") {
            this.__storage.setAttribute("age",newValue);
@@ -43,11 +47,11 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       }
     }
   );
-  function open(callback, storage, grid, form, src, img) {
+  function open(callback, storage, grid, form, src, dst) {
     // form
     switchSubmitButton(form.querySelector("input[type=submit]"), "open");
-    // src, img
-    switchGridDisplay(src, img, "src");
+    // src, dst
+    switchGridDisplay(src, dst, "src");
     // storage -> form
     // storage -> grid
     {
@@ -75,13 +79,13 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
     callback();
   }
 
-  function upload(storage, form, src, img) {
+  function upload(storage, form, src, dst) {
     let data = form.querySelector("input[name=data]").value;
     // form(data) -> storage
     {
       storage.setAttribute("_append", updateData(data, "_append_input", form));
     }
-    // form(data), src -> form, img
+    // form(data), src -> form, dst
     // form -> server
     // server -> storage
     {
@@ -94,9 +98,9 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         data,
         (content) => {
           form.querySelector("input[name=content]").value = content;
-          img.src = "data:image/png;base64," + content;
+          dst.src = "data:image/png;base64," + content;
           // image
-          switchGridDisplay(src, img, "img");
+          switchGridDisplay(src, dst, "dst");
           //
           try {
             fetch_upload(
@@ -171,13 +175,13 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       return json;
     }
   }
-  function switchGridDisplay(src, img, action) {
+  function switchGridDisplay(src, dst, action) {
     if (action === "src") {
       src.style.display = "block";
-      img.style.display = "none";
-    } else if (action === "img") {
+      dst.style.display = "none";
+    } else if (action === "dst") {
       src.style.display = "none";
-      img.style.display = "block";
+      dst.style.display = "block";
     }
   }
   function switchSubmitButton(submit, action) {
