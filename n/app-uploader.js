@@ -30,7 +30,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
           upload(this.__storage, this.__form, this.__src, this.__img);
         } else if (name === "_open") {
           open(
-            () => this.__modal.setAttribute("open", ""),
+            () => this.__modal.setAttribute("_open", ""),
             this.__storage,
             this.__grid,
             this.__form,
@@ -61,7 +61,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
             ))
         )
         .map((v) =>
-          grid.setAttribute("loaddata", updateData(v, "_force_noral"))
+          grid.setAttribute("_load_data", updateData(v, "_force_noral"))
         );
     }
     // storage -> form
