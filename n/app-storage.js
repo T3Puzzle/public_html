@@ -8,7 +8,7 @@
         this.__type = this.getAttribute("type");
         this.__data = this.__name + "__DATA__";
         this.__map = {
-          "_last_modified": this.__data + "LASTMODIFIED",
+          _last_modified: this.__data + "LASTMODIFIED",
           age: this.__type + "__INFO--AGE",
           artist: this.__type + "__INFO--ARTIST",
           debug: this.__name + "__DEBUG",
@@ -36,8 +36,10 @@
         if (name === "_clear") {
           // TODO:
         } else if (name === "_last_modified") {
-          this.setAttribute("_previously_modified",
-                         localStorage.getItem(this.__map[name]));
+          this.setAttribute(
+            "_previously_modified",
+            localStorage.getItem(this.__map[name])
+          );
           localStorage.setItem(this.__map[name], newValue);
         } else if (name === "_append") {
           let maxStr = this.getAttribute("max");
@@ -52,15 +54,43 @@
           let maxStr = this.getAttribute("max");
           let minStr = this.getAttribute("min");
           if (newValue === "_next") {
-            indexStr = findDataIndex(this,newValue,indexStr, true, minStr, maxStr);
+            indexStr = findDataIndex(
+              this,
+              newValue,
+              indexStr,
+              true,
+              minStr,
+              maxStr
+            );
           } else if (newValue === "_back") {
-            indexStr = findDataIndex(this,newValue,indexStr, false, minStr, maxStr);
+            indexStr = findDataIndex(
+              this,
+              newValue,
+              indexStr,
+              false,
+              minStr,
+              maxStr
+            );
           } else if (newValue === "_min") {
-            indexStr = findDataIndex(this,newValue,minStr, true, minStr, maxStr);
+            indexStr = findDataIndex(
+              this,
+              newValue,
+              minStr,
+              true,
+              minStr,
+              maxStr
+            );
           } else if (newValue === "_max") {
-            indexStr = findDataIndex(this,newValue,maxStr, false, minStr, maxStr);
+            indexStr = findDataIndex(
+              this,
+              newValue,
+              maxStr,
+              false,
+              minStr,
+              maxStr
+            );
           }
-          this.setAttribute('_index',indexStr);
+          this.setAttribute("_index", indexStr);
         } else if (name === "_index") {
           this.setAttribute(
             "_data",
@@ -109,12 +139,23 @@
         if (max === null) {
           this.setAttribute("max", -1);
         }
-        this.setAttribute("_index",this.getAttribute("max"));
+        this.setAttribute("_index", this.getAttribute("max"));
+        //
+        let last = localStorage.getItem(this.__map["_last_modified"]);
+        if (last) {
+          let value = {
+            detail: {
+              value: last
+            }
+          };
+          this.value = last;
+          this.dispatchEvent(new CustomEvent("load", value));
+        }
       }
     }
   );
 
-  function findDataIndex(me,action, indexStr, direct, minStr, maxStr) {
+  function findDataIndex(me, action, indexStr, direct, minStr, maxStr) {
     if (!minStr || !maxStr) {
       return;
     }
@@ -124,7 +165,7 @@
     if (max < min) {
       return;
     }
-    if (action!=="_min" && action!=="_max") {
+    if (action !== "_min" && action !== "_max") {
       if (direct) {
         index += 1;
       } else {
@@ -144,7 +185,7 @@
         index--;
       }
     }
-    if (str===null) {
+    if (str === null) {
       if (direct) {
         index -= 1;
       } else {
