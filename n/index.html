@@ -3,30 +3,18 @@
 <head>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <meta charset="utf-8">
-  <style>
-    body {
-      background: rgb(200, 200, 200);
-    }
-
-    div.menu {
-      position: absolute;
-      top: 0px;
-      padding-left: 1em;
-      z-index: 5;
-    }
-  </style>
   <script src="https://www.t3puzzle.com/n/lib/jscheck.js"></script>
   <script src="https://www.t3puzzle.com/n/lib/touchui.js"></script>
 </head>
 
-<body>
+<body style="background: rgb(200, 200, 200);">
   <app-storage id="storage" name="t3p" type="gridpuzzle" base="https://www.t3puzzle.com/n/preset/" onload="[this.value].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data', v))">
     <datalist>
       <option value="prs_t3.json"></option>
       <option value="prs_beetle.json"></option>
     </datalist>
   </app-storage>
-  <div class="menu">
+  <div style="position: absolute;top: 0px;padding-left: 1em;z-index: 5;">
     <button-text text="🔙" size="40px" onclick="[storage.getAttribute('_previously_modified')].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data',v))">
     </button-text>
     <switch-text onchange="t3puzzle.setAttribute('_color',this.value)" value="blue">
@@ -164,7 +152,7 @@
   <script defer type="module" src="https://www.t3puzzle.com/n/button-text.js"></script>
   <script defer type="module" src="https://www.t3puzzle.com/n/pallete-text.js"></script>
   <script defer type="module" src="https://www.t3puzzle.com/n/dialog-modal.js"></script>
-  <script defer src="https://www.t3puzzle.com/n/switch-text.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/switch-text.js"></script>
 
   <script defer type="module">
     importModules(
@@ -211,8 +199,8 @@
   </script>
 
   <script defer type="module" src="https://www.t3puzzle.com/n/app-storage.js"></script>
-  <script type="module" defer src="https://www.t3puzzle.com/n/app-browser.js"></script>
-  <script type="module" defer src="https://www.t3puzzle.com/n/app-uploader.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-browser.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-uploader.js"></script>
   <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
 
