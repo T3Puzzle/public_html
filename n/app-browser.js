@@ -1,3 +1,6 @@
+// TODO: dummy
+import { buffer } from "https://www.t3puzzle.com/n/buffer.module.js";
+
 (() => {
   customElements.define(
     "app-browser",
@@ -22,7 +25,7 @@
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "_open") {
           open(
-            () => this.__modal.setAttribute("open", ""),
+            () => this.__modal.setAttribute("_open", ""),
             this.__storage,
             this.__grid,
             this.__form,
@@ -46,7 +49,7 @@
     }
   );
   function close(me,modal,storage) {
-    modal.setAttribute("close", "");
+    modal.setAttribute("_close", "");
     me.value = storage.getAttribute("_data");
     let value = {
             detail: {
@@ -59,13 +62,13 @@
     [storage.setAttribute("_go", action), storage.getAttribute("_data")]
       .filter((v) => v)
       .map((v) => {
-        grid.setAttribute("loaddata", v);
+        grid.setAttribute("_load_data", v);
         updateDeck(deck,storage,form,v);
       });
   }
   function open(callback, storage, grid, form, src, deck) {
     let v = storage.getAttribute("_data");
-    grid.setAttribute("loaddata", v);
+    grid.setAttribute("_load_data", v);
     updateDeck(deck,storage,form,v);
     callback();
   }
