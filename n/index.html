@@ -45,7 +45,7 @@
         <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
           <div class="src" style="background: rgb(200, 200, 200);"></div>
           <img class="dst" style="display:none;">
-        
+
           <div style="width:100%;height:90%;margin: 3px;text-align: center;">
             <div class="ui__pc">
               <button-text text="⤿" onclick="this.closest('grid-puzzle').setAttribute('_rotate', Math.PI/6)" size="20px">
@@ -71,6 +71,7 @@
               <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
               <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
             </form>
+          </div>
         </grid-puzzle>
       </template>
     </dialog-modal>
@@ -81,33 +82,32 @@
       <template>
         <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
           <div class="src" style="background: rgb(200, 200, 200);"></div>
-        </grid-puzzle>
-        <div style="width:100%;height:90%;margin: 3px;text-align: center;">
-          <form action="#" style="text-align:left;" onsubmit="browser.setAttribute('_close','');return false;">
-            <div style="display:inline-block;border-width:1px;">
-              <div style="display:inline-block;">
-                <button-text text="«" size="30px" onclick="browser.setAttribute('_go','_min')">
-                </button-text>
-                <button-text text="‹" size="30px" onclick="browser.setAttribute('_go','_back')">
-                </button-text>
-                <div class="deck" style="display:inline-block;"></div>
+          <div style="width:100%;height:90%;margin: 3px;text-align: center;">
+            <form action="#" style="text-align:left;" onsubmit="browser.setAttribute('_close','');return false;">
+              <div style="display:inline-block;border-width:1px;">
+                <div style="display:inline-block;">
+                  <button-text text="«" size="30px" onclick="browser.setAttribute('_go','_min')">
+                  </button-text>
+                  <button-text text="‹" size="30px" onclick="browser.setAttribute('_go','_back')">
+                  </button-text>
+                  <div class="deck" style="display:inline-block;"></div>
 
-                <button-text text="›" size="30px" onclick="browser.setAttribute('_go','_next')">
-                </button-text>
-                <button-text text="»" size="30px" onclick="browser.setAttribute('_go','_max')">
-                </button-text>
+                  <button-text text="›" size="30px" onclick="browser.setAttribute('_go','_next')">
+                  </button-text>
+                  <button-text text="»" size="30px" onclick="browser.setAttribute('_go','_max')">
+                  </button-text>
+                </div>
+                <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
               </div>
-              <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
-            </div>
-            <br />
-            <input readonly name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
-            <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
-          </form>
-        </div>
+              <br />
+              <input readonly name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+              <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+            </form>
+          </div>
+        </grid-puzzle>
       </template>
     </dialog-modal>
   </app-browser>
-  </div>
 
   <script defer type="module" src="https://www.t3puzzle.com/n/button-text.js"></script>
   <script defer type="module" src="https://www.t3puzzle.com/n/pallete-text.js"></script>
