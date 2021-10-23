@@ -8,7 +8,7 @@
 </head>
 
 <body style="background: rgb(200, 200, 200);">
-  <app-storage id="storage" name="t3p" type="gridpuzzle" base="https://www.t3puzzle.com/n/preset/" onload="[this.value].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data', v))" _file="prs_t3.json">
+  <app-storage id="storage" name="t3p" type="gridpuzzle" base="https://www.t3puzzle.com/n/preset/" onload="[this.value].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data', v))" _init="prs_t3.json">
     <datalist>
       <option value="prs_t3.json"></option>
       <option value="prs_beetle.json"></option>
