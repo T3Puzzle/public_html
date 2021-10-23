@@ -21,10 +21,11 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
           "app-storage[name=" + this.__name + "]"
         );
         //
-        this.__dst = this.querySelector("img.dst");
+        this.__dst = document.createElement("img");
         this.__dst.style.display = "none";
         this.__dst.setAttribute("width", this.__grid.getAttribute("width"));
         this.__dst.setAttribute("height", this.__grid.getAttribute("height"));
+        this.__src.insertAdjacentElement("afterend",this.__dst);
       }
       static get observedAttributes() {
         return ["_upload", "_open","_age"];
@@ -187,28 +188,28 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
   function switchSubmitButton(submit, action) {
     let form = submit.form;
     if (action === "open") {
-      if (submit.value === submit.getAttribute("x-close")) {
+      if (submit.value === submit.getAttribute("x-value-end")) {
         // reset
         ["title", "note"].map(
           (n) => (form.querySelector("[name=" + n + "]").value = "")
         );
       }
-      let x_onsubmit = form.getAttribute("x-onsubmit");
-      if (!x_onsubmit) {
-        form.setAttribute("x-onsubmit", form.getAttribute("onsubmit"));
-        submit.setAttribute("x-value", submit.getAttribute("value"));
+      let x_onsubmit_start = form.getAttribute("x-onsubmit-start");
+      if (!x_onsubmit_start) {
+        form.setAttribute("x-onsubmit-start", form.getAttribute("onsubmit"));
+        submit.setAttribute("x-value-start", submit.getAttribute("value"));
       } else {
-        form.setAttribute("onsubmit", form.getAttribute("x-onsubmit"));
-        submit.setAttribute("value", submit.getAttribute("x-value"));
+        form.setAttribute("onsubmit", form.getAttribute("x-onsubmit-start"));
+        submit.setAttribute("value", submit.getAttribute("x-value-start"));
         submit.removeAttribute("disabled");
       }
     } else if (action === "submitting") {
       submit.disabled = "disable";
-      submit.value = submit.getAttribute("x-submitting");
+      submit.value = submit.getAttribute("x-value-wait");
     } else if (action === "close") {
       submit.removeAttribute("disabled");
-      submit.value = submit.getAttribute("x-close");
-      form.setAttribute("onsubmit", form.getAttribute("x-onclose"));
+      submit.value = submit.getAttribute("x-value-end");
+      form.setAttribute("onsubmit", form.getAttribute("x-onsubmit-end"));
     }
   }
   function fetch_upload(form, successCallback, errorCallback) {
