@@ -117,12 +117,6 @@ function tileUtil() {
     }
     function load(opts, callback) {
       INITTILECALLBACK = callback;
-      let dataNode = me.querySelector("data");
-      let src = null;
-      let jsonStr = dataNode.textContent;
-      if (loadData(jsonStr)) {
-        return false;
-      }
       puz.load(opts, callback);
       // not to do initially shareStateAll()
       return true;
