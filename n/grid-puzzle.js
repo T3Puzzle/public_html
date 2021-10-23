@@ -1,64 +1,64 @@
 import { tapspace } from 'https://www.t3puzzle.com/n/tapspace.module.min.js?zo';
-export {t3};
-function t3 () {
+export {gridPuzzle};
+function gridPuzzle () {
   return { define: define };
 }
-function define(util, puz) {
+function define(tileUtil, t3Util) {
   customElements.define(
     "grid-puzzle",
     class extends HTMLElement {
       static get observedAttributes() {
         return [
-          "color",
           "mode",
-          "flipall",
-          "fit",
-          "rotate",
-          "zoom",
-          "loaddata",
-          "nomoveall",
-          "noflipall"
+          "_color",
+          "_flip_all",
+          "_fit",
+          "_rotate",
+          "_zoom",
+          "_load_data",
+          "_nomoveall",
+          "_noflipall"
         ];
       }
       attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "color") {
-          this.puz.setNowColor(newValue);
-        } else if (name === "mode") {
-          this.util.changeMode(oldValue, newValue);
-          this.mode = newValue;
-        } else if (name === "flipall") {
-          this.util.flipAll();
-        } else if (name === "fit") {
-          this.util.fit();
-        } else if (name === "rotate") {
-          this.util.rotate(newValue);
-         } else if (name === "zoom") {
-          this.util.zoom(newValue);
-        } else if (name === "loaddata") {
-          this.util.resetAndloadData(newValue);
-        } else if (name === "nomoveall") {
-          this.util.noMoveAll(newValue);
-        } else if (name === "noflipall") {
-          this.util.noFlipAll(newValue);
+        if (name === "mode") {
+          this.__tile.changeMode(oldValue, newValue);
+          this.__mode = newValue;
+        } else if (name === "_color") {
+          this.__t3.setNowColor(newValue);
+        } else if (name === "_flip_all") {
+          this.__tile.flipAll();
+        } else if (name === "_fit") {
+          this.__tile.fit();
+        } else if (name === "_rotate") {
+          this.__tile.rotate(newValue);
+         } else if (name === "_zoom") {
+          this.__tile.zoom(newValue);
+        } else if (name === "_load_data") {
+          this.__tile.resetAndloadData(newValue);
+        } else if (name === "_nomoveall") {
+          this.__tile.noMoveAll(newValue);
+        } else if (name === "_noflipall") {
+          this.__tile.noFlipAll(newValue);
         }
       }
       constructor() {
         super();
-        this.util = util();
-        this.puz = puz();
+        this.__tile = tileUtil();
+        this.__t3 = t3Util();
         this.mode = "";/*
       }
       connectedCallback() {*/
-        this.util.init(this, this.puz, () => {
+        this.__tile.init(this, this.__t3, () => {
           // customize initial position
-          return this.util.load({}, (data, opt) =>
-            this.util.initTile(
+          return this.__tile.load({}, (data, opt) =>
+            this.__tile.initTile(
               data,
-              (ev, target, idx) => this.puz.switchFace(target, idx),
+              (ev, target, idx) => this.__t3.switchFace(target, idx),
               (ev, target) => {},
               (ev, target) => {},
               (target, data) => {
-                this.util.placeTile(target, data);
+                this.__tile.placeTile(target, data);
               },
               opt
             )
