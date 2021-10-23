@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <meta charset="utf-8">
@@ -6,6 +7,7 @@
     body {
       background: rgb(200, 200, 200);
     }
+
     div.menu {
       position: absolute;
       top: 0px;
@@ -16,6 +18,7 @@
   <script src="https://www.t3puzzle.com/n/lib/jscheck.js"></script>
   <script src="https://www.t3puzzle.com/n/lib/touchui.js"></script>
 </head>
+
 <body>
   <app-storage id="storage" name="t3p" type="gridpuzzle" base="https://www.t3puzzle.com/n/preset/" onload="[this.value].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data', v))">
     <datalist>
@@ -47,7 +50,7 @@
   </div>
   <grid-puzzle onchange="storage.setAttribute('_last_modified',(this.value))" id="t3puzzle" mode="hand">
     <datalist>
-      <data>{        "orientation":2.0919229374524506,"tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      <data>{ "orientation":2.0919229374524506,"tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
         }
       </data>
     </datalist>
@@ -87,22 +90,16 @@
               <button-text text="⌖" onclick="this.closest('grid-puzzle').setAttribute('_fit','')" size="20px">
               </button-text>
             </div>
-            <form action="#" style="text-align:left;" 
-                  onsubmit="uploader.setAttribute('_upload','');return false;"
-                  x-onclose="uploader.querySelector('dialog-modal').setAttribute('_close','');return false;">
+            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_upload','');return false;" x-onclose="uploader.querySelector('dialog-modal').setAttribute('_close','');return false;">
               <input name="artist" type="hidden">
               <input name="type" value="image/png" type="hidden">
               <input name="content" type="hidden">
               <input name="data" type="hidden">
               <input name="meta" type="hidden">
-              <label >ねんれい:</label>
+              <label>ねんれい:</label>
               <input required name="age" type="number" min="0" max="150" style="width:35px;" onchange="uploader.setAttribute('_age',this.value)">
               <div style="display:inline-block;margin-top:10px;border-width:1px;">
-                <input type="submit" 
-                       value="ほぞんする" 
-                       x-submitting="ほぞんちゅう"
-                       x-close="とじる" 
-                       style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
+                <input type="submit" value="ほぞんする" x-submitting="ほぞんちゅう" x-close="とじる" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
               </div>
               <br />
               <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
@@ -138,26 +135,26 @@
           </datalist>
         </grid-puzzle>
         <div style="width:100%;height:90%;margin: 3px;text-align: center;">
-        <form action="#" style="text-align:left;" onsubmit="browser.setAttribute('_close','');return false;">
-          <div style="display:inline-block;border-width:1px;">
-            <div style="display:inline-block;">
-              <button-text text="«" size="30px" onclick="browser.setAttribute('_go','_min')">
-              </button-text>
-              <button-text text="‹" size="30px" onclick="browser.setAttribute('_go','_back')">
-              </button-text>
-              <div class="deck" style="display:inline-block;"></div>
+          <form action="#" style="text-align:left;" onsubmit="browser.setAttribute('_close','');return false;">
+            <div style="display:inline-block;border-width:1px;">
+              <div style="display:inline-block;">
+                <button-text text="«" size="30px" onclick="browser.setAttribute('_go','_min')">
+                </button-text>
+                <button-text text="‹" size="30px" onclick="browser.setAttribute('_go','_back')">
+                </button-text>
+                <div class="deck" style="display:inline-block;"></div>
 
-              <button-text text="›" size="30px" onclick="browser.setAttribute('_go','_next')">
-              </button-text>
-              <button-text text="»" size="30px" onclick="browser.setAttribute('_go','_max')">
-              </button-text>
+                <button-text text="›" size="30px" onclick="browser.setAttribute('_go','_next')">
+                </button-text>
+                <button-text text="»" size="30px" onclick="browser.setAttribute('_go','_max')">
+                </button-text>
+              </div>
+              <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
             </div>
-            <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
-          </div>
-          <br />
-          <input readonly name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
-          <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
-        </form>
+            <br />
+            <input readonly name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+            <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+          </form>
         </div>
       </template>
     </dialog-modal>
@@ -170,9 +167,6 @@
   <script defer src="https://www.t3puzzle.com/n/switch-text.js"></script>
 
   <script defer type="module">
-    import {
-      importModules
-    } from 'https://www.t3puzzle.com/n/lib/importModules.js?m';
     importModules(
       "tileUtil",
       "./tileUtil.js",
@@ -195,7 +189,26 @@
         );
       }
     );
-  </script> 
+
+    function importModules(moduleName, first, second, callback) {
+      let ret = null;
+      import(first)
+        .then((module) => {
+          ret = new module[moduleName]();
+          callback(ret);
+        })
+        .catch((e) => {
+          import(second)
+            .then((module) => {
+              ret = new module[moduleName]();
+              callback(ret);
+            })
+            .catch((e) => {
+              console.log("error");
+            });
+        });
+    }
+  </script>
 
   <script defer type="module" src="https://www.t3puzzle.com/n/app-storage.js"></script>
   <script type="module" defer src="https://www.t3puzzle.com/n/app-browser.js"></script>
