@@ -8,10 +8,10 @@
         this.__type = this.getAttribute("type");
         this.__data = this.__name + "__DATA__";
         this.__map = {
+          "_last_modified": this.__data + "LASTMODIFIED",
           age: this.__type + "__INFO--AGE",
           artist: this.__type + "__INFO--ARTIST",
           debug: this.__name + "__DEBUG",
-          last_modified: this.__data + "LASTMODIFIED",
           max: this.__name + "__MAX",
           meta: this.__name + "__META__LASTLOADED",
           min: this.__name + "__MIN"
@@ -23,20 +23,22 @@
           "_append",
           "_go",
           "_clear",
+          "_last_modified",
           "age",
           "artist",
           "debug",
-          "last_modified",
           "max",
           "min"
         ];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         let indexStr = this.getAttribute("_index");
-        if (name in this.__map) {
-          localStorage.setItem(name, newValue);
-        } else if (name === "_clear") {
+        if (name === "_clear") {
           // TODO:
+        } else if (name === "_last_modified") {
+          this.setAttribute("_previously_modified",
+                         localStorage.getItem(this.__map[name]));
+          localStorage.setItem(this.__map[name], newValue);
         } else if (name === "_append") {
           let maxStr = this.getAttribute("max");
           let max = -1;
@@ -66,6 +68,8 @@
           );
         } else if (name === "_data") {
           localStorage.setItem(this.__data + indexStr, newValue);
+        } else if (name in this.__map) {
+          localStorage.setItem(this.__map[name], newValue);
         }
       }
       connectedCallback() {
