@@ -1,6 +1,3 @@
-// TODO: dummy
-import { buffer } from "https://www.t3puzzle.com/n/buffer.module.js";
-
 (() => {
   customElements.define(
     "app-browser",
