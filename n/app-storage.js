@@ -25,6 +25,7 @@
           "_clear",
           "age",
           "artist",
+          "debug",
           "last_modified",
           "max",
           "min"
