@@ -51,7 +51,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
     // storage -> form
     // storage -> grid
     {
-      [storage.getAttribute("last_modified")]
+      [storage.getAttribute("_last_modified")]
         .filter((v) => v)
         .map(
           (v) =>
@@ -107,7 +107,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
                 storage.setAttribute("meta", JSON.stringify(serverjson.meta));
                 //
                 updateData(data, "_append_meta", serverjson.meta);
-                storage.setAttribute("last_modified", JSON.stringify(json));
+                storage.setAttribute("_last_modified", JSON.stringify(json));
               },
               (e) => {
                 console.log(e);
