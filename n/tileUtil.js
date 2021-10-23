@@ -1,5 +1,5 @@
-
 export { tileUtil };
+
 function tileUtil() {
   return function internal() {
     let me = null;
@@ -117,7 +117,7 @@ function tileUtil() {
     }
     function load(opts, callback) {
       INITTILECALLBACK = callback;
-      let dataNode = me.querySelector("grid-data");
+      let dataNode = me.querySelector("data");
       let src = null;
       let jsonStr = dataNode.textContent;
       if (loadData(jsonStr)) {
@@ -174,7 +174,7 @@ function tileUtil() {
           debug: STATE
         }
       };
-      me.value = value;
+      me.value = JSON.stringify(value.detail.value);
       me.dispatchEvent(new CustomEvent("change", value));
     }
     function processGstart(gstart, e, target, prevData) {
@@ -509,9 +509,13 @@ function tileUtil() {
       let src = null;
       let forid = me.getAttribute("for");
       if (forid) {
-        src = me.getRootNode().getElementById(forid);
+        src = me.querySelector(forid);
       }
-      if (!src) {
+      if (src) {
+        src.style["margin-left"]="0px";
+        src.style["width"]=me.getAttribute("width");
+        src.style["height"]=me.getAttribute("height"); 
+      } else {
         me.attachShadow({ mode: "open" });
         src = me.shadowRoot;
       }
