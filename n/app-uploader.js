@@ -82,10 +82,6 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
 
   function upload(storage, form, src, dst) {
     let data = form.querySelector("input[name=data]").value;
-    // form(data) -> storage
-    {
-      storage.setAttribute("_append", updateData(data, "_append_input", form));
-    }
     // form(data), src -> form, dst
     // form -> server
     // server -> storage
@@ -113,6 +109,8 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
                 //
                 data = updateData(data, "_append_meta", serverjson.meta);
                 storage.setAttribute("_last_modified", data);
+                storage.setAttribute("_append", updateData(data, "_append_input", form));
+    
               },
               (e) => {
                 console.log(e);
