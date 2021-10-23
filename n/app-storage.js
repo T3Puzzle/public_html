@@ -13,7 +13,6 @@
           artist: this.__type + "__INFO--ARTIST",
           debug: this.__name + "__DEBUG",
           max: this.__name + "__MAX",
-          meta: this.__name + "__META__LASTLOADED",
           min: this.__name + "__MIN"
         };
       }
