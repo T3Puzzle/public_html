@@ -111,9 +111,6 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
               form,
               (serverjson) => {
                 switchSubmitButton(submit, "close");
-                //
-                storage.setAttribute("meta", JSON.stringify(serverjson.meta));
-                //
                 data = updateData(data, "_append_meta", serverjson.meta);
                 callback(data);
               },
