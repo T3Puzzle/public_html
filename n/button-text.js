@@ -5,7 +5,7 @@
     class extends HTMLElement {
       constructor() {
         super();
-        this.__SIZE = "100px";
+        this.__SIZE = "40px";
         this.attachShadow({ mode: "open" });
       }
       connectedCallback() {
