@@ -528,17 +528,16 @@ function tileUtil() {
       let width = me.getAttribute('width');
       let height = me.getAttribute('height');
       if (width && height) {
-        div.style = ` margin:0px;
- padding:0px;
- width:${width};
- height:${height};`;
+        div.style["margin"] = "0px";
+        div.style["padding"] = "0px";
+        div.style["width"] = width;
+        div.style["height"] = height;
       } else {
-        div.style = getStyle();
+        setFitStyle(div);
       }
       src.append(div);
-      let commonStyle = getStyle();
-      document.querySelector("html").style = commonStyle;
-      document.querySelector("body").style = commonStyle;
+      setFitStyle(document.querySelector("html"));
+      setFitStyle(document.querySelector("body"));
       space = new tapspace.Space();
       view = new tapspace.SpaceView(space);
 
@@ -565,6 +564,12 @@ function tileUtil() {
       callback();
       final();
       shareStateAll();
+    }
+    function setFitStyle(element) {
+      element.style["margin"] = "0px";
+      element.style["padding"] = "0px";
+      element.style["width"] = "100%";
+      element.style["height"] = "100%";
     }
     function rotate(value) {
       let angle = parseFloat(value);
@@ -1056,14 +1061,6 @@ function tileUtil() {
     div.cursor--crosshair {
       cursor: crosshair;
     }`;
-    }
-    function getStyle() {
-      return `
- margin:0px;
- padding:0px;
- width:100%;
- height:100%;
- `;
     }
   };
 }
