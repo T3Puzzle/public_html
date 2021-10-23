@@ -112,7 +112,8 @@
         if (!artist) {
           this.setAttribute("artist", Math.random().toString(32).substring(2));
         }
-        let _file = this.getAttribute("_file");
+        let _init = this.getAttribute("_init");
+        let last = localStorage.getItem(this.__map["_last_modified"]);
         let presetlist = this.querySelector("datalist");
         let base = this.getAttribute("base");
         let max = null;
@@ -132,7 +133,7 @@
               .then((r) => r.text())
               .then((data) => {
                 localStorage.setItem(this.__data + index, data);
-                if (_file === o.value) {
+                if (!last && _init === o.value) {
                   dispatchLoadEvent(this,data);
                 }
               });
@@ -145,11 +146,8 @@
         }
         this.setAttribute("_index", this.getAttribute("max"));
         //
-        if (!_file) {
-          let last = localStorage.getItem(this.__map["_last_modified"]);
-          if (last) {
-            dispatchLoadEvent(this,last);
-          }
+        if (last) {
+          dispatchLoadEvent(this,last);
         }
       }
     }
