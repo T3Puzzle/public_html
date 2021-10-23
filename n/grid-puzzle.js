@@ -46,24 +46,7 @@ function define(tileUtil, t3Util) {
         super();
         this.__tile = tileUtil();
         this.__t3 = t3Util();
-        this.mode = "";/*
-      }
-      connectedCallback() {*/
-        this.__tile.init(this, this.__t3, () => {
-          // customize initial position
-          return this.__tile.load({}, (data, opt) =>
-            this.__tile.initTile(
-              data,
-              (ev, target, idx) => this.__t3.switchFace(target, idx),
-              (ev, target) => {},
-              (ev, target) => {},
-              (target, data) => {
-                this.__tile.placeTile(target, data);
-              },
-              opt
-            )
-          );
-        });
+        this.mode = "";
       }
     }
   );
