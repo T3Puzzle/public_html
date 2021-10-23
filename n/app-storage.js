@@ -44,7 +44,7 @@
         } else if (name === "_append") {
           let maxStr = this.getAttribute("max");
           let max = -1;
-          if (!maxStr) {
+          if (maxStr) {
             max = parseInt(maxStr, 10) + 1;
           }
           this.setAttribute("max", max);
