@@ -56,7 +56,7 @@
               <button-text text="⌖" onclick="this.closest('grid-puzzle').setAttribute('_fit','')" size="20px">
               </button-text>
             </div>
-            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_upload','');return false;" x-onclose="uploader.querySelector('dialog-modal').setAttribute('_close','');return false;">
+            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_upload','');return false;" x-onsubmit-end="uploader.querySelector('dialog-modal').setAttribute('_close','');return false;">
               <input name="artist" type="hidden">
               <input name="type" value="image/png" type="hidden">
               <input name="content" type="hidden">
@@ -65,7 +65,7 @@
               <label>ねんれい:</label>
               <input required name="age" type="number" min="0" max="150" style="width:35px;" onchange="uploader.setAttribute('_age',this.value)">
               <div style="display:inline-block;margin-top:10px;border-width:1px;">
-                <input type="submit" value="ほぞんする" x-submitting="ほぞんちゅう" x-close="とじる" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
+                <input type="submit" value="ほぞんする" x-value-wait="ほぞんちゅう" x-value-end="とじる" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
               </div>
               <br />
               <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
