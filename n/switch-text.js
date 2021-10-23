@@ -10,7 +10,7 @@
         this.__INDEX = 0;
         this.__VALUE = '';
         this.__TEXT__DEFAULT = '●';
-        this.__SIZE = '100px';
+        this.__SIZE = '40px';
         this.__LENGTH = this.querySelectorAll('option').length;
         this.__VALUES = [];
         Array.from(this.querySelectorAll("option")).forEach((o, idx) => {
