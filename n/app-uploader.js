@@ -12,9 +12,10 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         super();
         // common
         this.__modal = this.querySelector("dialog-modal");
-        this.__grid = this.querySelector("grid-puzzle");
         this.__form = this.querySelector("form");
-        this.__src = this.querySelector("div.src");
+        this.__grid = this.querySelector("grid-puzzle");
+        let forName = this.__grid.getAttribute("for");
+        this.__src = this.querySelector(forName);
         //
         this.__name = this.getAttribute("name");
         this.__storage = document.querySelector(
@@ -28,11 +29,17 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         this.__src.insertAdjacentElement("afterend",this.__dst);
       }
       static get observedAttributes() {
-        return ["_upload", "_open","_age"];
+        return ["_save", "_open","_age"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "_upload") {
-          upload(this.__storage, this.__form, this.__src, this.__dst);
+        if (name === "_save") {
+          save(
+            (v) =>this.__storage.setAttribute("_append", updateData(v, "_append_input", this.__form)),
+            this.__storage,
+            this.__form,
+            this.__src,
+            this.__dst
+          );
         } else if (name === "_open") {
           open(
             () => this.__modal.setAttribute("_open", ""),
@@ -66,7 +73,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
             ))
         )
         .map((v) =>
-          grid.setAttribute("_load_data", updateData(v, "_force_noral"))
+          grid.setAttribute("_load_data", updateData(v, "_force_normal"))
         );
     }
     // storage -> form
@@ -80,7 +87,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
     callback();
   }
 
-  function upload(storage, form, src, dst) {
+  function save(callback, storage, form, src, dst) {
     let data = form.querySelector("input[name=data]").value;
     // form(data), src -> form, dst
     // form -> server
@@ -108,9 +115,7 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
                 storage.setAttribute("meta", JSON.stringify(serverjson.meta));
                 //
                 data = updateData(data, "_append_meta", serverjson.meta);
-                storage.setAttribute("_last_modified", data);
-                storage.setAttribute("_append", updateData(data, "_append_input", form));
-    
+                callback(data);
               },
               (e) => {
                 console.log(e);
