@@ -106,8 +106,8 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
                 //
                 storage.setAttribute("meta", JSON.stringify(serverjson.meta));
                 //
-                updateData(data, "_append_meta", serverjson.meta);
-                storage.setAttribute("_last_modified", JSON.stringify(json));
+                data = updateData(data, "_append_meta", serverjson.meta);
+                storage.setAttribute("_last_modified", data);
               },
               (e) => {
                 console.log(e);
