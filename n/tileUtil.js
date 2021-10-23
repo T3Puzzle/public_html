@@ -557,7 +557,7 @@ function tileUtil() {
       puz.init(view, { set: setPartialState, get: getState, last: getLastPartialState});
       callback();
       final();
-      shareStateAll();
+      //shareStateAll();
     }
     function setFitStyle(element) {
       element.style["margin"] = "0px";
