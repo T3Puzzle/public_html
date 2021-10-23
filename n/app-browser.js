@@ -1,6 +1,3 @@
-// TODO: dummy
-import { buffer } from "https://www.t3puzzle.com/n/buffer.module.js";
-
 (() => {
   customElements.define(
     "app-browser",
@@ -77,7 +74,6 @@ import { buffer } from "https://www.t3puzzle.com/n/buffer.module.js";
     if (json && "meta" in json) {
       ["title","note"]
         .map(n=>({n,i:form.querySelector("[name="+n+"]")}))
-        .filter(ni=>json.meta[ni.n])
         .map(ni=>{ni.i.value = json.meta[ni.n]});
     }
     let min = parseInt(storage.getAttribute('min'),10);
