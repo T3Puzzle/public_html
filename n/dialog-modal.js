@@ -6,13 +6,13 @@
      
       static get observedAttributes ( ){
         return [
-          'open','close',
+          '_open','_close',
         ];
       }
       attributeChangedCallback (name,oldValue,newValue){
-        if (name==='open') {
+        if (name==='_open') {
           open(this, this._area);
-        } else if (name==='close') {
+        } else if (name==='_close') {
           close(this, this._area);
         }
       }      
