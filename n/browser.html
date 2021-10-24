@@ -1,5 +1,4 @@
 <proxy-browser id="browser">
-</proxy-browser>
         <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
           <div class="src" style="background: rgb(200, 200, 200);"></div>
           <div style="width:100%;height:90%;margin: 3px;text-align: center;">
@@ -25,12 +24,15 @@
             </form>
           </div>
         </grid-puzzle>
-
+</proxy-browser>
 <script type="module">
 customElements.define("proxy-browser",class extends HTMLElement {
   contructor() {
     super();
+    let grid = this.querySelector("grid-puzzle");
     let iframe = window.parent.querySelector("app-browser dialog-modal template iframe[src='"+window.location.href+"']");
+    ["width","height"].map(a=>iframe.setAttribute(a,grid.getAttribute(a)));
+          
     this.__browser = iframe.closest("app-browser");
   }
   static get observedAttributes () {
