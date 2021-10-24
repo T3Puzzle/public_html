@@ -39,18 +39,14 @@
   <grid-puzzle onchange="storage.setAttribute('_last_modified',(this.value))" id="t3puzzle" mode="hand">
   </grid-puzzle>
 
-  <app-uploader name="t3p" id="uploader">
-    <dialog-modal style="display:none;">
+  <app-uploader name="t3p" id="uploader" style="display:none;">
       <iframe src="https://www.t3puzzle.com/n/upload.html">
       </iframe>
-    </dialog-modal>
   </app-uploader>
 
-  <app-browser id="browser" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);">
-    <dialog-modal style="display:none;">
+  <app-browser id="browser" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);" style="display:none;">
       <iframe src="https://www.t3puzzle.com/n/browser.html">
       </iframe>
-    </dialog-modal>
   </app-browser>
 
   <script defer type="module" src="https://www.t3puzzle.com/n/button-text.js"></script>
