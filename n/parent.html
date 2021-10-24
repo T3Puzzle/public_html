@@ -1,12 +1,20 @@
 <test-iframe>
-<iframe src="https://www.t3puzzle.com/n/child.html">
+<iframe name="child" src="https://www.t3puzzle.com/n/child.html">
 </iframe>
 </test-iframe>
 <script type="module">
 customElements.define("test-iframe",class extends HTMLElement {
   constructor() {
     super();
-    console.log(this.querySelector("iframe").contentWindow.document.querySelector('test-child'));
+    
+  }
+  static get observedAttributes() {
+    return ["_child"];
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name==="_child") {
+      console.log(this.querySelector("iframe").contentWindow.document.querySelector('test-child'));
+    }
   }
 });
 </script>
