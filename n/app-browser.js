@@ -4,15 +4,24 @@
     class extends HTMLElement {
       constructor() {
         super();
-        this.__deck = this.querySelector("div.deck");
         // common
         this.__modal = this.querySelector("dialog-modal");
-        this.__form = this.querySelector("form");
         //
         this.__grid = this.querySelector("grid-puzzle");
-        console.log(this.__grid);
-        let forName = this.__grid.getAttribute("for");
-        this.__src = this.querySelector(forName);
+        if (!this.__grid) {
+          this.__modal.addEventListener("load",()=>{
+            this.__grid = this.querySelector("grid-puzzle");
+            let forName = this.__grid.getAttribute("for");
+            this.__src = this.querySelector(forName);
+            this.__form = this.querySelector("form");
+            this.__deck = this.querySelector("div.deck");
+          });
+        } else {
+          let forName = this.__grid.getAttribute("for");
+          this.__src = this.querySelector(forName);
+          this.__form = this.querySelector("form");
+          this.__deck = this.querySelector("div.deck");
+        }
         //
         this.__name = this.getAttribute("name");
         this.__storage = document.querySelector(
