@@ -11,55 +11,52 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       constructor() {
         super();
         // common
-        this.__modal = this.querySelector("dialog-modal");
         this.__form = this.querySelector("form");
+        this.__modal = this.querySelector("dialog-modal");
+        this.__modal.addEventListener("change", (e) => {
+          if (e.detail.value === "close") {
+            this.setAttribute("_close", "");
+          }
+        });
         this.__grid = this.querySelector("grid-puzzle");
-        let forName = this.__grid.getAttribute("for");
-        this.__src = this.querySelector(forName);
         //
         this.__name = this.getAttribute("name");
         this.__storage = document.querySelector(
           "app-storage[name=" + this.__name + "]"
         );
-        //
-        this.__dst = document.createElement("img");
-        this.__dst.style.display = "none";
-        this.__dst.setAttribute("width", this.__grid.getAttribute("width"));
-        this.__dst.setAttribute("height", this.__grid.getAttribute("height"));
-        this.__src.insertAdjacentElement("afterend",this.__dst);
       }
       static get observedAttributes() {
-        return ["_save", "_open","_age"];
+        return ["_save", "_open", "_close", "_age"];
       }
       attributeChangedCallback(name, oldValue, newValue) {
         if (name === "_save") {
           save(
-            (v) =>this.__storage.setAttribute("_append", updateData(v, "_append_input", this.__form)),
+            (v) =>
+              this.__storage.setAttribute(
+                "_append",
+                updateData(v, "_append_form", this.__form)
+              ),
             this.__storage,
-            this.__form,
-            this.__src,
-            this.__dst
+            this.__grid,
+            this.__form
           );
         } else if (name === "_open") {
           open(
             () => this.__modal.setAttribute("_open", ""),
             this.__storage,
             this.__grid,
-            this.__form,
-            this.__src,
-            this.__dst
+            this.__form
           );
+        } else if (name === "_close") {
+          close(this.__grid);
         } else if (name === "_age") {
-           this.__storage.setAttribute("age",newValue);
+          this.__storage.setAttribute("age", newValue);
         }
       }
     }
   );
-  function open(callback, storage, grid, form, src, dst) {
-    // form
-    switchSubmitButton(form.querySelector("input[type=submit]"), "open");
-    // src, dst
-    switchGridDisplay(src, dst, "src");
+  function open(callback, storage, grid, form) {
+    switchSubmitButton(form, "open");
     // storage -> form
     // storage -> grid
     {
@@ -86,16 +83,18 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
     // callback
     callback();
   }
-
-  function save(callback, storage, form, src, dst) {
+  function save(callback, storage, grid, form) {
     let data = form.querySelector("input[name=data]").value;
-    // form(data), src -> form, dst
-    // form -> server
-    // server -> storage
-    {
+    if (false) {
+      // local save only
+      callback(data);
+      switchSubmitButton(form, "close");
+    } else {
+      let {src,dst} = setupImage(grid, "_add");
+
       //
       let submit = form.querySelector("input[type=submit]");
-      switchSubmitButton(submit, "submitting");
+      switchSubmitButton(form, "submitting");
 
       saveImage(
         src,
@@ -110,9 +109,9 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
             fetch_upload(
               form,
               (serverjson) => {
-                switchSubmitButton(submit, "close");
                 data = updateData(data, "_append_meta", serverjson.meta);
                 callback(data);
+                switchSubmitButton(form, "close");
               },
               (e) => {
                 console.log(e);
@@ -130,17 +129,22 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       );
     }
   }
+  function close(gird) {
+    setupImage(gird, "_remove");
+  }
   function updateData(jsonStr, action, value) {
     if (!jsonStr) {
       return;
     }
     let json = JSON.parse(jsonStr);
     if (action === "_remove_meta") {
-      // clense meta
+      // clense meta to embed into image
       delete json.meta;
     } else if (action === "_append_meta") {
+      // append server meta
       json.meta = value;
-    } else if (action === "_append_input") {
+    } else if (action === "_append_form") {
+      // append local meta
       let form = value;
       if (!("meta" in json)) {
         json.meta = {};
@@ -149,8 +153,10 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
         .map((n) => ({ n, v: form.querySelector("[name=" + n + "]").value }))
         .map((nv) => (json.meta[nv.n] = nv.v));
     } else if (action === "_force_normal") {
+      // remove transparency to prevent from safari bug
       json = forceNormal(json);
     } else if (action === "_unwrap") {
+      // todo: fix grid-puzzle
       json = unwrap(json);
     }
     return JSON.stringify(json);
@@ -176,17 +182,40 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       return json;
     }
   }
+  function setupImage(grid, action) {
+    let forName = grid.getAttribute("for");
+    let src = grid.querySelector(forName);
+    let dst = null;
+    if (action === "_add") {
+      dst = document.createElement("img");
+      dst.classList.add("dst");
+      dst.setAttribute("width", grid.getAttribute("width"));
+      dst.setAttribute("height", grid.getAttribute("height"));
+      src.insertAdjacentElement("afterend", dst);
+    } else if (action === "_remove") {
+      dst = grid.querySelector("img.dst");
+      if (dst) {
+        grid.removeChild(dst);
+      }
+    }
+    switchGridDisplay(src, dst, "src");
+    return { src, dst};
+  }
   function switchGridDisplay(src, dst, action) {
     if (action === "src") {
       src.style.display = "block";
-      dst.style.display = "none";
+      if (dst) {
+        dst.style.display = "none";
+      }
     } else if (action === "dst") {
       src.style.display = "none";
-      dst.style.display = "block";
+      if (dst) {
+        dst.style.display = "block";
+      }
     }
   }
-  function switchSubmitButton(submit, action) {
-    let form = submit.form;
+  function switchSubmitButton(form, action) {
+    let submit = form.querySelector("input[type=submit]");
     if (action === "open") {
       if (submit.value === submit.getAttribute("x-value-end")) {
         // reset
