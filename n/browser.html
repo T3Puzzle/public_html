@@ -1,0 +1,87 @@
+<proxy-browser id="browser">
+</proxy-browser>
+        <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
+          <div class="src" style="background: rgb(200, 200, 200);"></div>
+          <div style="width:100%;height:90%;margin: 3px;text-align: center;">
+            <form action="#" style="text-align:left;" onsubmit="browser.setAttribute('_close','');return false;">
+              <div style="display:inline-block;border-width:1px;">
+                <div style="display:inline-block;">
+                  <button-text text="«" size="30px" onclick="browser.setAttribute('_go','_min')">
+                  </button-text>
+                  <button-text text="‹" size="30px" onclick="browser.setAttribute('_go','_back')">
+                  </button-text>
+                  <div class="deck" style="display:inline-block;"></div>
+
+                  <button-text text="›" size="30px" onclick="browser.setAttribute('_go','_next')">
+                  </button-text>
+                  <button-text text="»" size="30px" onclick="browser.setAttribute('_go','_max')">
+                  </button-text>
+                </div>
+                <input type="submit" value="はじめる" style="background:#46cc76;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;display:inline-block;">
+              </div>
+              <br />
+              <input readonly name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+              <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+            </form>
+          </div>
+        </grid-puzzle>
+
+<script type="module">
+customElements.define("proxy-browser",class extends HTMLElement {
+  contructor() {
+    super();
+    let iframe = window.parent.querySelector("app-browser iframe[src='"+window.location.href+"']");
+    this.__browser = iframe.closest("app-browser");
+  }
+  static get observedAttributes () {
+    return ["_close","_go"];
+  }
+  attributeChangedCallback (name, oldValue, newValue) {
+    this.__browser.setAttribute(name,newValue);      
+  }
+});
+</script>
+  <script defer type="module">
+    importModules(
+      "tileUtil",
+      "./tileUtil.js",
+      "https://codepen.io/alytile/pen/dyRZgga.js?x",
+      (tileUtil) => {
+        importModules(
+          "t3Util",
+          "./t3Util.js",
+          "https://codepen.io/alytile/pen/xxrPQob.js",
+          (t3Util) => {
+            importModules(
+              "gridPuzzle",
+              "./grid-puzzle.js",
+              "https://codepen.io/alytile/pen/OJjNeEd.js",
+              (gridPuzzle) => {
+                gridPuzzle.define(tileUtil, t3Util);
+              }
+            );
+          }
+        );
+      }
+    );
+
+    function importModules(moduleName, first, second, callback) {
+      let ret = null;
+      import(first)
+        .then((module) => {
+          ret = new module[moduleName]();
+          callback(ret);
+        })
+        .catch((e) => {
+          import(second)
+            .then((module) => {
+              ret = new module[moduleName]();
+              callback(ret);
+            })
+            .catch((e) => {
+              console.log("error");
+            });
+        });
+    }
+  </script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-browser.js"></script>
