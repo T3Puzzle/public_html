@@ -1,0 +1,12 @@
+<test-child>
+</test-child>
+<script type="module">
+customElements.define("test-child",class extends HTMLElement {
+  constructor {
+    let href = window.location.href;  
+    console.log(href);
+    let test = window.parent.querySelector("test-parent iframe[src="+href+"]");
+    console.log(test);
+  }
+});
+</script>
