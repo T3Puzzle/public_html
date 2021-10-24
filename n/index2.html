@@ -40,14 +40,14 @@
   </grid-puzzle>
 
   <app-uploader name="t3p" id="uploader">
-    <dialog-modal>
+    <dialog-modal style="display:none;">
       <iframe src="https://www.t3puzzle.com/n/upload.html">
       </iframe>
     </dialog-modal>
   </app-uploader>
 
   <app-browser id="browser" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);">
-    <dialog-modal>
+    <dialog-modal style="display:none;">
       <iframe src="https://www.t3puzzle.com/n/browser.html">
       </iframe>
     </dialog-modal>
