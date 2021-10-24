@@ -22,7 +22,7 @@
         if (this.__iframe) {
           let me = this;
           let iframe = this.__iframe;
-          iframe.addEventListener("load",(){
+          iframe.addEventListener("load",()=>{
             setup(me,iframe.contentWindow.document.body.innerHTML);  
           });
         }
