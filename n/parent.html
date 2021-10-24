@@ -4,7 +4,7 @@
 </test-iframe>
 <script type="module">
 customElements.define("test-iframe",class extends HTMLElement {
-  constructor {
+  constructor() {
     super();
     console.log(this.querySelector("iframe").contentWindow.document.querySelector('test-child'));
   }
