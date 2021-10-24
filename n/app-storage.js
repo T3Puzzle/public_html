@@ -32,7 +32,6 @@
         ];
       }
       attributeChangedCallback(name, oldValue, newValue) {
-        console.log(name);
         let indexStr = this.getAttribute("_index");
         if (name === "_clear") {
           // TODO:
