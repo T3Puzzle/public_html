@@ -36,7 +36,7 @@
 customElements.define("proxy-uploader", class extends HTMLElement {
   constructor () {
     super();
-    let iframe = window.parent.querySelector("app-uploader dialog-modal iframe[src='"+window.location.href+"']");
+    let iframe = window.parent.querySelector("app-uploader dialog-modal template iframe[src='"+window.location.href+"']");
     this.__uploader = iframe.closest("app-uploader");
   }
   static get observedAttributes() {
