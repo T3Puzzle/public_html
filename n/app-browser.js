@@ -10,6 +10,7 @@
         this.__form = this.querySelector("form");
         //
         this.__grid = this.querySelector("grid-puzzle");
+        console.log(this.__grid);
         let forName = this.__grid.getAttribute("for");
         this.__src = this.querySelector(forName);
         //
