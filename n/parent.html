@@ -1,0 +1,12 @@
+<test-iframe>
+<iframe src="child.html">
+</iframe>
+</test-iframe>
+<script type="module">
+customElement.define("test-iframe",class extends HTMLElement {
+  constructor {
+    super();
+    console.log(this.querySelector("iframe").contentWindow.document.querySelector('test-child'));
+  }
+});
+</script>
