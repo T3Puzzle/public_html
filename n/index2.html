@@ -1,0 +1,111 @@
+<html>
+
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <meta charset="utf-8">
+  <script src="https://www.t3puzzle.com/n/lib/jscheck.js"></script>
+  <script src="https://www.t3puzzle.com/n/lib/touchui.js"></script>
+</head>
+
+<body style="background: rgb(200, 200, 200);">
+  <app-storage id="storage" name="t3p" type="gridpuzzle" base="https://www.t3puzzle.com/n/preset/" onload="[this.value].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data', v))" _init="prs_t3.json">
+    <datalist>
+      <option value="prs_t3.json"></option>
+      <option value="prs_beetle.json"></option>
+    </datalist>
+  </app-storage>
+  <div style="position: absolute;top: 0px;padding-left: 1em;z-index: 5;">
+    <button-text text="🔙" onclick="[storage.getAttribute('_previously_modified')].filter(v=>v).map(v=>t3puzzle.setAttribute('_load_data',v))">
+    </button-text>
+    <switch-text onchange="t3puzzle.setAttribute('_color',this.value)" value="blue">
+      <datalist>
+        <option value="blue"></option>
+        <option value="green"></option>
+        <option value="pink"></option>
+        <option value="mint"></option>
+      </datalist>
+    </switch-text>
+    <button-text text="➰" onclick="t3puzzle.setAttribute('_flip_all','');">
+    </button-text>
+    <button-text text="⌖" onclick="t3puzzle.setAttribute('_fit','');">
+    </button-text>
+    <button-text text="⤿" onclick="t3puzzle.setAttribute('_rotate',Math.PI/6);">
+    </button-text>
+    <button-text text="↑⎵" onclick="uploader.setAttribute('_open','')">
+    </button-text>
+    <button-text text="📖" onclick="browser.setAttribute('_open','')">
+    </button-text>
+  </div>
+  <grid-puzzle onchange="storage.setAttribute('_last_modified',(this.value))" id="t3puzzle" mode="hand">
+  </grid-puzzle>
+
+  <app-uploader name="t3p" id="uploader">
+    <dialog-modal-iframe>
+      <iframe src="upload.html">
+      </iframe>
+    </dialog-modal>
+  </app-uploader>
+
+  <app-browser id="browser" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);">
+    <dialog-modal>
+      <iframe src="browser.html">
+      </iframe>
+    </dialog-modal>
+  </app-browser>
+
+  <script defer type="module" src="https://www.t3puzzle.com/n/button-text.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/pallete-text.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/dialog-modal.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/switch-text.js"></script>
+
+  <script defer type="module">
+    importModules(
+      "tileUtil",
+      "./tileUtil.js",
+      "https://codepen.io/alytile/pen/dyRZgga.js?x",
+      (tileUtil) => {
+        importModules(
+          "t3Util",
+          "./t3Util.js",
+          "https://codepen.io/alytile/pen/xxrPQob.js",
+          (t3Util) => {
+            importModules(
+              "gridPuzzle",
+              "./grid-puzzle.js",
+              "https://codepen.io/alytile/pen/OJjNeEd.js",
+              (gridPuzzle) => {
+                gridPuzzle.define(tileUtil, t3Util);
+              }
+            );
+          }
+        );
+      }
+    );
+
+    function importModules(moduleName, first, second, callback) {
+      let ret = null;
+      import(first)
+        .then((module) => {
+          ret = new module[moduleName]();
+          callback(ret);
+        })
+        .catch((e) => {
+          import(second)
+            .then((module) => {
+              ret = new module[moduleName]();
+              callback(ret);
+            })
+            .catch((e) => {
+              console.log("error");
+            });
+        });
+    }
+  </script>
+
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-storage.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-browser.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-uploader.js"></script>
+  <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
+</body>
+
+</html>
