@@ -2,10 +2,11 @@
 </test-child>
 <script type="module">
 customElements.define("test-child",class extends HTMLElement {
-  constructor {
+  constructor() {
+    super();
     let href = window.location.href;  
     console.log(href);
-    let test = window.parent.querySelector("test-parent iframe[src="+href+"]");
+    let test = window.parent.querySelector("test-iframe iframe[src="+href+"]");
     console.log(test);
   }
 });
