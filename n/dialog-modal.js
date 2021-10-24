@@ -24,6 +24,7 @@
           let iframe = this.__iframe;
           iframe.addEventListener("load",()=>{
             setup(me,iframe.contentWindow.document.body.innerHTML);  
+            me.dispatchEvent(new CustomEvent("load",null));
           });
         }
       }
