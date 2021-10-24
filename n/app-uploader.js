@@ -11,15 +11,23 @@ import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.j
       constructor() {
         super();
         // common
-        this.__form = this.querySelector("form");
         this.__modal = this.querySelector("dialog-modal");
         this.__modal.addEventListener("change", (e) => {
           if (e.detail.value === "close") {
             this.setAttribute("_close", "");
           }
-        });
-        this.__grid = this.querySelector("grid-puzzle");
-        //
+        });  
+       this.__grid = this.querySelector("grid-puzzle");
+       if (!this.__grid) {
+          let me = this;
+          this.__modal.addEventListener("load",()=>{
+            me.__grid = me.querySelector("grid-puzzle");
+            me.__form = me.querySelector("form");
+          });
+        } else {
+          this.__form = this.querySelector("form");
+        }
+          //
         this.__name = this.getAttribute("name");
         this.__storage = document.querySelector(
           "app-storage[name=" + this.__name + "]"
