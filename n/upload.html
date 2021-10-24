@@ -13,7 +13,7 @@
               <button-text text="⌖" onclick="this.closest('grid-puzzle').setAttribute('_fit','')" size="20px">
               </button-text>
             </div>
-            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_save','');return false;" x-onsubmit-end="uploader.setAttribute('_close','');return false;">
+            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_save','');return false;" x-onsubmit-end="uploader.querySelector('dialog-modal').setAttribute('_close','');return false;">
               <input name="artist" type="hidden">
               <input name="type" value="image/png" type="hidden">
               <input name="content" type="hidden">
