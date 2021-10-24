@@ -4,10 +4,14 @@
 customElements.define("test-child",class extends HTMLElement {
   constructor() {
     super();
+    /*
     let href = window.location.href;  
     console.log(href);
     let test = window.parent.document.querySelector("test-iframe iframe[src='"+href+"']");
     console.log(test);
+    */
+    let iframe = parent.document.getElementById(window.name);
+    iframe.setAttribute("_child","");
   }
 });
 </script>
