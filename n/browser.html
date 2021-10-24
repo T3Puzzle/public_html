@@ -1,4 +1,5 @@
-<proxy-browser id="browser">
+
+<!--proxy-browser id="browser"-->
         <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
           <div class="src" style="background: rgb(200, 200, 200);"></div>
           <div style="width:100%;height:90%;margin: 3px;text-align: center;">
@@ -24,8 +25,8 @@
             </form>
           </div>
         </grid-puzzle>
-</proxy-browser>
-<script type="module">
+<!--/proxy-browser-->
+<!--script type="module">
 customElements.define("proxy-browser",class extends HTMLElement {
   constructor() {
     super();
@@ -42,8 +43,8 @@ customElements.define("proxy-browser",class extends HTMLElement {
     this.__browser.setAttribute(name,newValue);      
   }
 });
-</script>
-  <script defer type="module">
+</script-->
+  <!--script defer type="module">
     importModules(
       "tileUtil",
       "./tileUtil.js",
@@ -86,4 +87,4 @@ customElements.define("proxy-browser",class extends HTMLElement {
         });
     }
   </script>
-  <script defer type="module" src="https://www.t3puzzle.com/n/app-browser.js"></script>
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-browser.js"></script-->
