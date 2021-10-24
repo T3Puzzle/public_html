@@ -6,7 +6,7 @@ customElements.define("test-child",class extends HTMLElement {
     super();
     let href = window.location.href;  
     console.log(href);
-    let test = window.parent.document.querySelector("test-iframe iframe[src="+href+"]");
+    let test = window.parent.document.querySelector("test-iframe iframe[src='"+href+"']");
     console.log(test);
   }
 });
