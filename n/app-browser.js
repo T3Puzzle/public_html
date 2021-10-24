@@ -9,12 +9,13 @@
         //
         this.__grid = this.querySelector("grid-puzzle");
         if (!this.__grid) {
+          let me = this;
           this.__modal.addEventListener("load",()=>{
-            this.__grid = this.querySelector("grid-puzzle");
-            let forName = this.__grid.getAttribute("for");
-            this.__src = this.querySelector(forName);
-            this.__form = this.querySelector("form");
-            this.__deck = this.querySelector("div.deck");
+            me.__grid = me.querySelector("grid-puzzle");
+            let forName = me.__grid.getAttribute("for");
+            me.__src = me.querySelector(forName);
+            me.__form = me.querySelector("form");
+            me.__deck = me.querySelector("div.deck");
           });
         } else {
           let forName = this.__grid.getAttribute("for");
