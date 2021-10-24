@@ -40,16 +40,20 @@
   </grid-puzzle>
 
   <app-uploader name="t3p" id="uploader">
-    <dialog-modal-iframe>
+    <dialog-modal>
+      <template>
       <iframe src="upload.html">
       </iframe>
+      </template>
     </dialog-modal>
   </app-uploader>
 
   <app-browser id="browser" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);">
     <dialog-modal>
+      <template>
       <iframe src="browser.html">
       </iframe>
+      </template>
     </dialog-modal>
   </app-browser>
 
