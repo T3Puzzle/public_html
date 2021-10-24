@@ -1,0 +1,94 @@
+<proxy-uploader id="uploader">
+</proxy-uploader)
+        <grid-puzzle width="320px" height="320px" mode="readonly" for="div.src">
+          <div class="src" style="background: rgb(200, 200, 200);"></div>
+
+          <div style="width:100%;height:90%;margin: 3px;text-align: center;">
+            <div class="ui__pc">
+              <button-text text="⤿" onclick="this.closest('grid-puzzle').setAttribute('_rotate', Math.PI/6)" size="20px">
+              </button-text>
+              <button-text text="🔍" onclick="this.closest('grid-puzzle').setAttribute('_zoom', 0.9)" size="20px">
+              </button-text>
+
+              <button-text text="⌖" onclick="this.closest('grid-puzzle').setAttribute('_fit','')" size="20px">
+              </button-text>
+            </div>
+            <form action="#" style="text-align:left;" onsubmit="uploader.setAttribute('_save','');return false;" x-onsubmit-end="uploader.setAttribute('_close','');return false;">
+              <input name="artist" type="hidden">
+              <input name="type" value="image/png" type="hidden">
+              <input name="content" type="hidden">
+              <input name="data" type="hidden">
+              <input name="meta" type="hidden">
+              <label>ねんれい:</label>
+              <input required name="age" type="number" min="0" max="150" style="width:35px;" onchange="uploader.setAttribute('_age',this.value)">
+              <div style="display:inline-block;margin-top:10px;border-width:1px;">
+                <input type="submit" value="ほぞんする" x-value-wait="ほぞんちゅう" x-value-end="とじる" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
+              </div>
+              <br />
+              <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
+              <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+            </form>
+          </div>
+        </grid-puzzle>
+
+
+<script type="module">
+customElements.define("proxy-uploader", class extends HTMLElement {
+  constructor () {
+    super();
+    let iframe = window.parent.querySelector("app-uploader dialog-modal iframe[src='"+window.location.href+"']");
+    this.__uploader = iframe.closest("app-uploader");
+  }
+  static get observedAttributes() {
+    return ["_save","_close","_age"];
+  }
+  changedAttributeCallback(name, oldValue, newValue) {
+    this.__uploader.setAttribute(name,newValue);
+  }
+});
+</script>
+  <script defer type="module">
+    importModules(
+      "tileUtil",
+      "./tileUtil.js",
+      "https://codepen.io/alytile/pen/dyRZgga.js?x",
+      (tileUtil) => {
+        importModules(
+          "t3Util",
+          "./t3Util.js",
+          "https://codepen.io/alytile/pen/xxrPQob.js",
+          (t3Util) => {
+            importModules(
+              "gridPuzzle",
+              "./grid-puzzle.js",
+              "https://codepen.io/alytile/pen/OJjNeEd.js",
+              (gridPuzzle) => {
+                gridPuzzle.define(tileUtil, t3Util);
+              }
+            );
+          }
+        );
+      }
+    );
+
+    function importModules(moduleName, first, second, callback) {
+      let ret = null;
+      import(first)
+        .then((module) => {
+          ret = new module[moduleName]();
+          callback(ret);
+        })
+        .catch((e) => {
+          import(second)
+            .then((module) => {
+              ret = new module[moduleName]();
+              callback(ret);
+            })
+            .catch((e) => {
+              console.log("error");
+            });
+        });
+    }
+  </script>
+
+  <script defer type="module" src="https://www.t3puzzle.com/n/app-uploader.js"></script>
