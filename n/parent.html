@@ -1,9 +1,9 @@
 <test-iframe>
-<iframe src="child.html">
+<iframe src="https://www.t3puzzle.com/n/child.html">
 </iframe>
 </test-iframe>
 <script type="module">
-customElement.define("test-iframe",class extends HTMLElement {
+customElements.define("test-iframe",class extends HTMLElement {
   constructor {
     super();
     console.log(this.querySelector("iframe").contentWindow.document.querySelector('test-child'));
