@@ -18,38 +18,53 @@
       }      
       constructor () {
         super();
-        let html = this.querySelector("template").innerHTML;
-        
-        this._root = document.createElement("div");
-        this._area = document.createElement("div");
-        this._background = document.createElement("div");
-        this._wrapper = document.createElement("div");
-        this._close = document.createElement("div");
-
-        this._area.classList.add("modalArea");
-        this._background.classList.add("modalBg");
-        this._wrapper.classList.add("modalWrapper");
-        this._close.classList.add("closeModal");
-        this._close.innerHTML = "×";
-
-        this.insertAdjacentElement('afterend',this._root);
-        
-        this._root.insertAdjacentHTML("beforeend", getStyle());
-        this._root.append(this._area);
-        this._area.append(this._background);
-        this._area.append(this._wrapper);
-        this._wrapper.insertAdjacentHTML("beforeend", html);
-        this._wrapper.append(this._close);
-
-        this._close.addEventListener("click", (e) => {
-          close(this, this._area);
-        });
-        this._background.addEventListener("click", (e) => {
-          close(this, this._area);
-        });
+        this.__iframe  = this.querySelector("iframe");
+        if (this.__iframe) {
+          let me = this;
+          let iframe = this.__iframe;
+          iframe.addEventListener("load",()={
+            setup(me,iframe.contentWindow.document.body.innerHTML);  
+          });
+        }
+      }
+      connectedCallback () {
+        if (!this.__iframe) {
+          let html = this.querySelector("template").innerHTML;
+          setup(this,html);
+        }
       }
     }
   );
+  function setup(me, html) {
+        me._root = document.createElement("div");
+        me._area = document.createElement("div");
+        me._background = document.createElement("div");
+        me._wrapper = document.createElement("div");
+        me._close = document.createElement("div");
+
+        me._area.classList.add("modalArea");
+        me._background.classList.add("modalBg");
+        me._wrapper.classList.add("modalWrapper");
+        me._close.classList.add("closeModal");
+        me._close.innerHTML = "×";
+
+        me.insertAdjacentElement('afterend',me._root);
+        
+        me._root.insertAdjacentHTML("beforeend", getStyle());
+        me._root.append(me._area);
+        me._area.append(me._background);
+        me._area.append(me._wrapper);
+        me._wrapper.insertAdjacentHTML("beforeend", html);
+        me._wrapper.append(me._close);
+
+        me._close.addEventListener("click", (e) => {
+          close(me, me._area);
+        });
+        me._background.addEventListener("click", (e) => {
+          close(me, me._area);
+        });
+      }
+
   function getStyle() {
     return `<style>
 .modalArea {
