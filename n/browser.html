@@ -30,7 +30,7 @@ customElements.define("proxy-browser",class extends HTMLElement {
   constructor() {
     super();
     let grid = this.querySelector("grid-puzzle");
-    let iframe = window.parent.querySelector("app-browser dialog-modal template iframe[src='"+window.location.href+"']");
+    let iframe = window.parent.document.querySelector("app-browser dialog-modal template iframe[src='"+window.location.href+"']");
     ["width","height"].map(a=>iframe.setAttribute(a,grid.getAttribute(a)));
           
     this.__browser = iframe.closest("app-browser");
