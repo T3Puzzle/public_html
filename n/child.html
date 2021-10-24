@@ -11,8 +11,7 @@ customElements.define("test-child",class extends HTMLElement {
     //console.log(iframe);
     
     //let iframe = parent.document.getElementById(window.name);
-    console.log(iframe);
-    iframe.setAttribute("_child","");
+    iframe.closest("test-iframe").setAttribute("_child","");
     
   }
 });
