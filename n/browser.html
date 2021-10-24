@@ -30,7 +30,7 @@
 customElements.define("proxy-browser",class extends HTMLElement {
   contructor() {
     super();
-    let iframe = window.parent.querySelector("app-browser dialog-modal iframe[src='"+window.location.href+"']");
+    let iframe = window.parent.querySelector("app-browser dialog-modal template iframe[src='"+window.location.href+"']");
     this.__browser = iframe.closest("app-browser");
   }
   static get observedAttributes () {
