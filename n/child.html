@@ -1,18 +1,54 @@
-<test-child>
-</test-child>
-<script type="module">
-customElements.define("test-child",class extends HTMLElement {
+<body style="background:gray;">
+<app-uploader id="uploader">
+  <div class="top" style="width:320px;height:320px;">
+<button onclick="uploader.setAttribute('_save',6)">age</button>
+  </div>
+</app-uploader>
+<script defer type="module">
+customElements.define("app-uploader",class extends HTMLElement {
+  static get observedAttributes () {
+    return ["_init","_check","_close","_save"];
+  }
   constructor() {
     super();
-    
-    let href = window.location.href;  
-    //console.log(href);
-    let iframe = window.parent.document.querySelector("test-iframe iframe[src='"+href+"']");
-    //console.log(iframe);
-    
-    //let iframe = parent.document.getElementById(window.name);
-    iframe.closest("test-iframe").setAttribute("_child","");
-    
+    init(this);
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    attributeChanged(this,name,oldValue,newValue);
   }
 });
+function init(me) {
+  let top = me.querySelector("div.top");
+  changeAttribute("_init",{
+    width: top.style.width,
+    height: top.style.height
+  });
+}
+function changeAttribute (name,value) {
+ if (parent) {
+    parent.postMessage({name,oldValue:null,newValue:value},getOrigin("sender"));
+ } else {
+    // TODO: unit test
+ }
+}
+function attributeChanged(me, name, oldValue, newValue) {
+  console.log(name);
+  if (parent) {
+    parent.postMessage({name,oldValue,newValue},getOrigin("sender"));
+  } else {
+    // TODO: unit test
+  }
+}
+function getOrigin (type){
+  if (window.location.protocol==='file:') {
+    if (type==="sender") {
+      return "*";
+    } else {
+      return "null";
+    }
+  } else {
+    return window.location.origin+window.location.pathname.replace(/\/[^\/]+$/,"")+"/";
+  }
+}
 </script>
+</body>
