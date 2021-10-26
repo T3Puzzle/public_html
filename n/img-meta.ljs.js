@@ -34,6 +34,7 @@ function imageMeta (buffer,readMetadata) {
     );
   } else {
     Array.from(document.querySelectorAll("img-meta")).map((i) => {
+      i.classList.add("meta"); 
       let src = i.getAttribute("src");
       let width = this.getAttribute("width");
       let height = this.getAttribute("height");
