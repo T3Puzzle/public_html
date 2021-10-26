@@ -12,6 +12,7 @@ function imageMeta (buffer,readMetadata) {
           getImage(this, src, (metaData) => {
             this.value = metaData;
             let img = document.createElement("img");
+            img.classList.add("meta"); 
             img.src = src;
             if (width) {
               img.widht = width;
@@ -34,11 +35,11 @@ function imageMeta (buffer,readMetadata) {
     );
   } else {
     Array.from(document.querySelectorAll("img-meta")).map((i) => {
-      i.classList.add("meta"); 
       let src = i.getAttribute("src");
       let width = this.getAttribute("width");
       let height = this.getAttribute("height");
       let img = document.createElement("img");
+      img.classList.add("meta"); 
       img.src = src;
       if (width) {
         img.width = width;
