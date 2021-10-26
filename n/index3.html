@@ -39,11 +39,11 @@
   <grid-puzzle onchange="storage.setAttribute('_last_modified',this.value)" id="t3puzzle" mode="hand">
   </grid-puzzle>
   
-  <dialog-proxy name="t3p" id="uploader" src="upload.html">
-  </dialog-proxy>
+  <app-dialog name="t3p" id="uploader" src="upload.html">
+  </app-dialog>
   
-  <dialog-proxy name="t3p" id="browser" src="browser.html" name="t3p" onchange="t3puzzle.setAttribute('_load_data',this.value);">
-  </dialog-proxy>
+  <app-dialog name="t3p" id="browser" src="browser.html" onchange="t3puzzle.setAttribute('_load_data',this.value);">
+  </app-dialog>
 
   <script defer src="https://www.t3puzzle.com/n/button-text.js"></script>
   <script defer src="https://www.t3puzzle.com/n/pallete-text.js"></script>
@@ -113,8 +113,7 @@
   </script>
 
   <script defer src="https://www.t3puzzle.com/n/app-storage.js"></script>
-  <script defer src="https://www.t3puzzle.com/n/app-browser.js"></script>
-  <script defer src="https://www.t3puzzle.com/n/app-uploader.js"></script>
+  <script defer src="https://www.t3puzzle.com/n/app-dialog.js"></script>
   <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
 
