@@ -1,7 +1,5 @@
 (()=>{
- return _export ({ writeMetadata });
-  
-function writeMetadata(buf, metadata) {
+function writeMetadata(buf, metadata,buffer) {
 let uint8 = new Uint8Array(4);
 let int32 = new Int32Array(uint8.buffer);
 let uint32 = new Uint32Array(uint8.buffer);
@@ -10,7 +8,7 @@ let T = signed_crc_table();
   const chunks = extractChunks(buf);
   insertMetadata(chunks, metadata);
   // Buffer is for NodeJS
-  return buffer.Buffer.from(encodeChunks(chunks));
+  return buffer().Buffer.from(encodeChunks(chunks));
 
 function encodeChunks(chunks) {
   let totalSize = 8;
@@ -334,4 +332,7 @@ function sliced(args, slice, sliceEnd) {
   return ret;
 }
 }
-function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
+//export {writeMetadata};
+return _export ({ writeMetadata });
+function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
+})();
