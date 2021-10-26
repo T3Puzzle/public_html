@@ -1,5 +1,5 @@
 (() => {
- function buffer () {
+ function _buffer () {
      let __r = {
         1: [
           function (t, r, e) {
@@ -3138,8 +3138,9 @@
         return i;
     }
  }
-  //export { buffer as buffer };
-  _export({ buffer: buffer });
+ let __buffer = _buffer();
+  //export { __buffer as buffer };
+  _export({ buffer: __buffer });
   function _export(j) {
     document.currentScript.setAttribute(
       "x-module",
