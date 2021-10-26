@@ -52,41 +52,38 @@
 
   <script>
     importModules(
-      "tileUtil",
       "./tileUtil._module.js",
       "https://codepen.io/alytile/pen/dyRZgga.js?x",
-      (tileUtil) => {
+      (mti) => {
         importModules(
-          "t3Util",
           "./t3Util._module.js",
           "https://codepen.io/alytile/pen/xxrPQob.js",
-          (t3Util) => {
+          (mt3) => {
             importModules(
-              "tapspace",
               "./tapspace._module.min.js",
               "https://codepen.io/alytile/pen/xxxx.js",
-              (tapspace) => {
+              (mtp) => {
                 importModules(
                   "gridPuzzle",
                   "./grid-puzzle._module.js",
                   "https://codepen.io/alytile/pen/OJjNeEd.js",
-                  (gridPuzzle) => {
-                    gridPuzzle.define(tileUtil, t3Util,tapspace);
+                  (mgp) => {
+                    mgp.gridPuzzle().define(mti.tileUtil, mt3.t3Util,mtp.tapspace);
                   });              
              });
          });
     });
 
-    function importModules(moduleName, first, second, callback) {
+    function importModules(first, second, callback) {
       let ret = null;
       _import(first)
         .then((module) => {
-          callback(module[moduleName]);
+          callback(module);
         })
         .catch((e) => {
           _import(second)
             .then((module) => {
-              callback(module[moduleName]);
+              callback(module);
             })
             .catch((e) => {
               console.log("error");
