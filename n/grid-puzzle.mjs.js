@@ -1,7 +1,6 @@
-import { tapspace } from 'https://www.t3puzzle.com/n/tapspace.mjs.min.js';
 export {gridPuzzle};
 function gridPuzzle () {
-  return { define: (tileUtil, t3Util) {
+  return { define: function (tileUtil, t3Util,tapspace) {
   customElements.define(
     "grid-puzzle",
     class extends HTMLElement {
