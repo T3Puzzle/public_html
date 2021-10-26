@@ -36,11 +36,14 @@ function imageMeta (buffer,readMetadata) {
     let img = document.createElement("img");
     img.src = src;
     if (width) {
+      me.setAttribute("width", width);
       img.setAttribute("width", width);
     }
     if (height) {
+      me.setAttribute("height", height);
       img.setAttribute("height", height);
     }
+    
     return img;
   }
   function getImage(me, src, callback) {
