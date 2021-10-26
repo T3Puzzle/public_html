@@ -3138,18 +3138,7 @@
         return i;
     }
  }
- let __buffer = _buffer();
- 
-console.log(_buffer());
-console.log(_buffer().Buffer);
-console.log(_buffer().Buffer.from);
-  //export { __buffer as buffer };
-  _export({ buffer: __buffer });
-  function _export(j) {
-    document.currentScript.setAttribute(
-      "x-module",
-      JSON.stringify(j, (k, v) => (typeof v === "function" ? v.toString() : v))
-    );
-  }
-})();
+  //export { buffer as _buffer };
+  _export({ buffer: _buffer });
+function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}})();
 
