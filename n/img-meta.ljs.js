@@ -63,6 +63,8 @@ function imageMeta (buffer,readMetadata) {
          let dataurl = reader.result;
          let txt = (dataurl.split(',')[1]);
          console.log(buffer);
+         console.log(buffer.Buffer);
+         console.log(buffer.Buffer.from);
          console.log(readMetadata);
          let buf = buffer.Buffer.from(txt, 'base64');
          callback(readMetadata(buf));
