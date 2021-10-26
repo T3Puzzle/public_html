@@ -92,6 +92,7 @@
    function _import(url) {
      return {
        then: (successCallback) => {
+         let div = document.createElement("div");
          let script = document.createElement("script");
          script.setAttribute("src", url);
          script.addEventListener("load",()=>
@@ -102,7 +103,8 @@
          return { 
            catch: (errorCallback) => {
              script.addEventListener("error", errorCallback);
-             document.head.appendChild(script);
+             document.head.appendChild(div);
+             dic.appendChild(script);
            }
          }
        }
