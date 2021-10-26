@@ -21,7 +21,6 @@ function imageMeta (buffer,readMetadata) {
             }
             this.attachShadow({mode:'open'});
             this.shadowRoot.append(img);
-            
             let value = {
               detail: {
                 value: this.value
