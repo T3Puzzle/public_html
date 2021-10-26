@@ -1,8 +1,5 @@
 
 (()=>{
-function gridPuzzle () {
-  return { define: define };
-}
 function define(tileUtil, t3Util, tapspace) {
   customElements.define(
     "grid-puzzle",
@@ -67,6 +64,9 @@ function define(tileUtil, t3Util, tapspace) {
       }
     }
   );
+}
+function gridPuzzle () {
+  return { define: define };
 }
 return _export ({gridPuzzle});  
 function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
