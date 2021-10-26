@@ -3152,9 +3152,9 @@
       [4]
     )(4);
   });
-  let b = buffer;
+  //let b = buffer;
   //export { b as buffer };
-  _export({ buffer: b });
+  _export({ buffer: buffer });
   function _export(j) {
     document.currentScript.setAttribute(
       "x-module",
