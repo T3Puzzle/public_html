@@ -3138,5 +3138,8 @@
         return i;
     }
  }
-  export { buffer as _buffer };
+ export { buffer as _buffer };
+// _export({ buffer: _buffer });
+//function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
 })();
+
