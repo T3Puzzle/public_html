@@ -7,25 +7,15 @@
     </img-meta>
   <script>
     importModules(
-      "./tileUtil.ljs.js",
-      "https://codepen.io/alytile/pen/dyRZgga.js?x",
-      (mti) => {
-        importModules(
-          "./t3Util.ljs.js",
-          "https://codepen.io/alytile/pen/xxrPQob.js",
-          (mt3) => {
-            importModules(
-              "./tapspace.ljs.min.js",
-              "https://codepen.io/alytile/pen/xxxx.js",
-              (mtp) => {
+      "../buffer.ljs.js",
+      "https://www.t3puzzle.com/n/buffer.ljs.js",
+      (mbf) => {
                 importModules(
-                  "./grid-puzzle.ljs.js",
-                  "https://codepen.io/alytile/pen/OJjNeEd.js",
-                  (mgp) => {
-                    mgp.gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace);
-                  });              
-             });
-         });
+                  "../img-meta.ljs.js",
+                  "https://www.t3puzzle.com/n/img-meta.js",
+                  (mim) => {
+                    mim.imageMeta(mbf.buffer);
+                });
     });
 
     function importModules(first, second, callback) {
