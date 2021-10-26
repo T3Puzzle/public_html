@@ -1,3 +1,4 @@
+(()=>{
  function _buffer () {
      let __r = {
         1: [
@@ -3138,3 +3139,4 @@
     }
  }
   export { buffer as _buffer };
+})();
