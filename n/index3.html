@@ -81,14 +81,12 @@
       let ret = null;
       _import(first)
         .then((module) => {
-          ret = new module[moduleName]();
-          callback(ret);
+          callback(module[moduleName]);
         })
         .catch((e) => {
           _import(second)
             .then((module) => {
-              ret = new module[moduleName]();
-              callback(ret);
+              callback(module[moduleName]);
             })
             .catch((e) => {
               console.log("error");
