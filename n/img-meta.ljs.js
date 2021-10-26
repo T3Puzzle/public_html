@@ -31,16 +31,17 @@ function imageMeta (buffer,readMetadata) {
     });
   }    
   function setupImage (me,src) {
-      let width = me.getAttribute("width") || "110px";
-      let height = me.getAttribute("height") || "110px";
-      let img = document.createElement("img");
-      img.src = src;
-      if (width) {
-        img.width = width;
-      }
-      if (height) {
-        img.height = height;
-      }
+    let width = me.getAttribute("width") || "110px";
+    let height = me.getAttribute("height") || "110px";
+    let img = document.createElement("img");
+    img.src = src;
+    if (width) {
+      img.width = width;
+    }
+    if (height) {
+      img.height = height;
+    }
+    return img;
   }
   function getImage(me, src, callback) {
     const image = document.getElementById("img");
