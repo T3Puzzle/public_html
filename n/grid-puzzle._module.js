@@ -66,7 +66,7 @@ function gridPuzzle () {
       }
     }
   );
- }
+ }}
 }
 return _export ({gridPuzzle});  
 function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
