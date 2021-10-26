@@ -65,17 +65,17 @@
   <script defer type="module">
     importModules(
       "tileUtil",
-      "./tileUtil.js",
+      "./tileUtil.mjs.js",
       "https://codepen.io/alytile/pen/dyRZgga.js?x",
       (tileUtil) => {
         importModules(
           "t3Util",
-          "./t3Util.js",
+          "./t3Util.mjs.js",
           "https://codepen.io/alytile/pen/xxrPQob.js",
           (t3Util) => {
             importModules(
               "gridPuzzle",
-              "./grid-puzzle.js",
+              "./grid-puzzle.mjs.js",
               "https://codepen.io/alytile/pen/OJjNeEd.js",
               (gridPuzzle) => {
                 gridPuzzle.define(tileUtil, t3Util);
