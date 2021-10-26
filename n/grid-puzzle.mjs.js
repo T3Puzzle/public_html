@@ -1,6 +1,6 @@
-export {gridPuzzle};
+(()=>{
 function gridPuzzle () {
-  return { define: function (tileUtil, t3Util,tapspace) {
+  return { define: function (tileUtil, t3Util, tapspace) {
   customElements.define(
     "grid-puzzle",
     class extends HTMLElement {
@@ -64,5 +64,9 @@ function gridPuzzle () {
       }
     }
   );
-}}
+ }}
 }
+export {gridPuzzle};
+//return _export ({gridPuzzle});  
+//function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
+})();
