@@ -1,6 +1,6 @@
-import { domtoimage } from "https://www.t3puzzle.com/n/dom-to-image.module.min.js";
-import { buffer } from "https://www.t3puzzle.com/n/buffer.module.js";
-import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.module.js?m";
+import { domtoimage } from "https://www.t3puzzle.com/n/dom-to-image.mjs.min.js";
+import { buffer } from "https://www.t3puzzle.com/n/buffer.mjs.js";
+import { writeMetadata } from "https://www.t3puzzle.com/n/writeMetadata.mjs.js?m";
 
 (() => {
   const SERVER_URL =
