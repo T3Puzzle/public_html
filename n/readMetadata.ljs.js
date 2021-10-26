@@ -257,4 +257,4 @@ function extractChunks (data) {
 	}
   /** CRC32 **/
 }
-function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
+function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}})();
