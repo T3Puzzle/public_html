@@ -100,7 +100,7 @@
          script.setAttribute("src", url);
          script.addEventListener("load",()=>
            successCallback(
-             JSON.parse(script.getAttribute("x-module"))
+             JSON.parse(script.getAttribute("x-module"),(k,v)=>(typeof v==="string"&&v.match(/^function/))?Function.call(this,'return '+v)():v)
            )
          );
          return { 
