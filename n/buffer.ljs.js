@@ -1,4 +1,5 @@
 (() => {
+  function _buffer () {
   !(function (t) {
     if ("object" == typeof exports && "undefined" != typeof module)
       module.exports = t();
@@ -3152,9 +3153,11 @@
       [4]
     )(4);
   });
-  //let b = buffer;
+  let b = buffer;
+  return b;
+  }
   //export { b as buffer };
-  _export({ buffer: buffer });
+  _export({ buffer: _buffer() });
   function _export(j) {
     document.currentScript.setAttribute(
       "x-module",
