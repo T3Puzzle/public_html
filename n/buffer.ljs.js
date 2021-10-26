@@ -3139,6 +3139,10 @@
     }
  }
  let __buffer = _buffer();
+ 
+console.log(_buffer());
+console.log(_buffer().Buffer);
+console.log(_buffer().Buffer.from);
   //export { __buffer as buffer };
   _export({ buffer: __buffer });
   function _export(j) {
