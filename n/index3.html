@@ -52,19 +52,19 @@
 
   <script>
     importModules(
-      "./tileUtil._module.js",
+      "./tileUtil.ljs.js",
       "https://codepen.io/alytile/pen/dyRZgga.js?x",
       (mti) => {
         importModules(
-          "./t3Util._module.js",
+          "./t3Util.ljs.js",
           "https://codepen.io/alytile/pen/xxrPQob.js",
           (mt3) => {
             importModules(
-              "./tapspace._module.min.js",
+              "./tapspace.ljs.min.js",
               "https://codepen.io/alytile/pen/xxxx.js",
               (mtp) => {
                 importModules(
-                  "./grid-puzzle._module.js",
+                  "./grid-puzzle.ljs.js",
                   "https://codepen.io/alytile/pen/OJjNeEd.js",
                   (mgp) => {
                     mgp.gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace);
