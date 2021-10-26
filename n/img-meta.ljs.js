@@ -7,19 +7,9 @@ function imageMeta (buffer,readMetadata) {
         connectedCallback() {
           this.__meta = [];
           let src = this.getAttribute("src");
-          let width = this.getAttribute("width");
-          let height = this.getAttribute("height");
           getImage(this, src, (metaData) => {
             this.value = metaData;
-            let img = document.createElement("img");
-            img.classList.add("meta"); 
-            img.src = src;
-            if (width) {
-              img.widht = width;
-            }
-            if (height) {
-              img.height = height;
-            }
+            let img = setupImage(this);
             this.attachShadow({mode:'open'});
             this.shadowRoot.append(img);
             let value = {
@@ -36,10 +26,14 @@ function imageMeta (buffer,readMetadata) {
   } else {
     Array.from(document.querySelectorAll("img-meta")).map((i) => {
       let src = i.getAttribute("src");
-      let width = this.getAttribute("width");
-      let height = this.getAttribute("height");
+      let img = setupImage(this);
+      i.insertAdjacentElement("beforeend", img);
+    });
+  }    
+  function setupImage (me) {
+      let width = me.getAttribute("width") || "110px";
+      let height = me.getAttribute("height") || "110px";
       let img = document.createElement("img");
-      img.classList.add("meta"); 
       img.src = src;
       if (width) {
         img.width = width;
@@ -47,9 +41,7 @@ function imageMeta (buffer,readMetadata) {
       if (height) {
         img.height = height;
       }
-      i.insertAdjacentElement("beforeend", img);
-    });
-  }    
+  }
   function getImage(me, src, callback) {
     const image = document.getElementById("img");
     fetch(src,{
