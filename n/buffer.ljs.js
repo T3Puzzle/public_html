@@ -3101,7 +3101,7 @@
       let __e = {};
       let __n = [4];
 
-      return t(__r, __e, __n);
+      return t(__r, __e, __n)(4);
 
       function t(r, e, n) {
         function i(f, u) {
