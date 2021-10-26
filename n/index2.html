@@ -62,45 +62,42 @@
   <script defer src="https://www.t3puzzle.com/n/dialog-modal.js"></script>
   <script defer src="https://www.t3puzzle.com/n/switch-text.js"></script>
 
-  <script defer type="module">
+  <script type="module">
     importModules(
-      "tileUtil",
       "./tileUtil.mjs.js",
       "https://codepen.io/alytile/pen/dyRZgga.js?x",
-      (tileUtil) => {
+      (mti) => {
         importModules(
-          "t3Util",
           "./t3Util.mjs.js",
           "https://codepen.io/alytile/pen/xxrPQob.js",
-          (t3Util) => {
+          (mt3) => {
             importModules(
-              "gridPuzzle",
-              "./grid-puzzle.mjs.js",
-              "https://codepen.io/alytile/pen/OJjNeEd.js",
-              (gridPuzzle) => {
-                gridPuzzle.define(tileUtil, t3Util);
-              }
-            );
-          }
-        );
-      }
-    );
+              "./tapspace.mjs.min.js",
+              "https://codepen.io/alytile/pen/xxxx.js",
+              (mtp) => {
+                importModules(
+                  "./grid-puzzle.mjs.js",
+                  "https://codepen.io/alytile/pen/OJjNeEd.js",
+                  (mgp) => {
+                    mgp.gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace);
+                  });              
+             });
+         });
+    });
 
-    function importModules(moduleName, first, second, callback) {
+    function importModules(first, second, callback) {
       let ret = null;
       import(first)
         .then((module) => {
-          ret = new module[moduleName]();
-          callback(ret);
+          callback(module);
         })
         .catch((e) => {
           import(second)
             .then((module) => {
-              ret = new module[moduleName]();
-              callback(ret);
+              callback(module);
             })
             .catch((e) => {
-              console.log("error");
+              console.log(e);
             });
         });
     }
