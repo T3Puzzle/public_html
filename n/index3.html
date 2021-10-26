@@ -62,17 +62,20 @@
           "https://codepen.io/alytile/pen/xxrPQob.js",
           (t3Util) => {
             importModules(
-              "gridPuzzle",
-              "./grid-puzzle._module.js",
-              "https://codepen.io/alytile/pen/OJjNeEd.js",
-              (gridPuzzle) => {
-                gridPuzzle.define(tileUtil, t3Util);
-              }
-            );
-          }
-        );
-      }
-    );
+              "tapspace",
+              "./tapspace._module.min.js",
+              "https://codepen.io/alytile/pen/xxxx.js",
+              (tapspace) => {
+                importModules(
+                  "gridPuzzle",
+                  "./grid-puzzle._module.js",
+                  "https://codepen.io/alytile/pen/OJjNeEd.js",
+                  (gridPuzzle) => {
+                    gridPuzzle.define(tileUtil, t3Util,tapspace);
+                  });              
+             });
+         });
+    });
 
     function importModules(moduleName, first, second, callback) {
       let ret = null;
