@@ -1,5 +1,4 @@
-(()=>{ return _export ({ t3Util });
-
+(()=>{
 function t3Util() {
   return function internal() {
     const XSIZE = 100;
@@ -401,4 +400,7 @@ img.white--once {
     }
   };
 }
-function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
+//export {t3Util};
+return _export ({ t3Util });
+function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
+})();
