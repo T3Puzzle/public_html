@@ -1,4 +1,4 @@
-(()=>{
+//(()=>{
 function writeMetadata(buf, metadata,buffer) {
 let uint8 = new Uint8Array(4);
 let int32 = new Int32Array(uint8.buffer);
@@ -335,4 +335,4 @@ function sliced(args, slice, sliceEnd) {
 export {writeMetadata};
 //return _export ({ writeMetadata });
 //function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
-})();
+//})();
