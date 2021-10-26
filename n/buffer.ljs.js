@@ -1,57 +1,6 @@
 (() => {
-  function _buffer () {
-  !(function (t) {
-    if ("object" == typeof exports && "undefined" != typeof module)
-      module.exports = t();
-    else if ("function" == typeof define && define.amd) define([], t);
-    else {
-      ("undefined" != typeof window
-        ? window
-        : "undefined" != typeof global
-        ? global
-        : "undefined" != typeof self
-        ? self
-        : this
-      ).buffer = t();
-    }
-  })(function () {
-    return (function () {
-      return function t(r, e, n) {
-        function i(f, u) {
-          if (!e[f]) {
-            if (!r[f]) {
-              var s = "function" == typeof require && require;
-              if (!u && s) return s(f, !0);
-              if (o) return o(f, !0);
-              var h = new Error("Cannot find module '" + f + "'");
-              throw ((h.code = "MODULE_NOT_FOUND"), h);
-            }
-            var a = (e[f] = { exports: {} });
-            r[f][0].call(
-              a.exports,
-              function (t) {
-                return i(r[f][1][t] || t);
-              },
-              a,
-              a.exports,
-              t,
-              r,
-              e,
-              n
-            );
-          }
-          return e[f].exports;
-        }
-        for (
-          var o = "function" == typeof require && require, f = 0;
-          f < n.length;
-          f++
-        )
-          i(n[f]);
-        return i;
-      };
-    })()(
-      {
+ function buffer () {
+     let __r = {
         1: [
           function (t, r, e) {
             "use strict";
@@ -3148,16 +3097,49 @@
           },
           {}
         ]
-      },
-      {},
-      [4]
-    )(4);
-  });
-  let b = buffer;
-  return b;
-  }
-  //export { b as buffer };
-  _export({ buffer: _buffer() });
+      };
+      let __e = {};
+      let __n = [4];
+
+      return t(__r, __e, __n);
+
+      function t(r, e, n) {
+        function i(f, u) {
+          if (!e[f]) {
+            if (!r[f]) {
+              var s = "function" == typeof require && require;
+              if (!u && s) return s(f, !0);
+              if (o) return o(f, !0);
+              var h = new Error("Cannot find module '" + f + "'");
+              throw ((h.code = "MODULE_NOT_FOUND"), h);
+            }
+            var a = (e[f] = { exports: {} });
+            r[f][0].call(
+              a.exports,
+              function (t) {
+                return i(r[f][1][t] || t);
+              },
+              a,
+              a.exports,
+              t,
+              r,
+              e,
+              n
+            );
+          }
+          return e[f].exports;
+        }
+        for (
+          var o = "function" == typeof require && require, f = 0;
+          f < n.length;
+          f++
+        )
+        i(n[f]);
+        return i;
+    }
+ }
+  //export { buffer as buffer };
+  _export({ buffer: buffer });
   function _export(j) {
     document.currentScript.setAttribute(
       "x-module",
@@ -3165,3 +3147,4 @@
     );
   }
 })();
+
