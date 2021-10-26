@@ -44,10 +44,10 @@
          let div = document.createElement("div");
          let script = document.createElement("script");
          script.setAttribute("src", url);
-         script.addEventListener("load",()=>
-           successCallback(
-             JSON.parse(script.getAttribute("x-module"),(k,v)=>(typeof v==="string"&&v.match(/^function/))?Function.call(this,'return '+v)():v)
-           )
+         script.addEventListener("load",()=>                      
+           let j = JSON.parse(script.getAttribute("x-module"));
+           for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
+           successCallback(j)
          );
          return { 
            catch: (errorCallback) => {
