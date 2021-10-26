@@ -50,7 +50,7 @@
   <script defer src="https://www.t3puzzle.com/n/dialog-modal.js"></script>
   <script defer src="https://www.t3puzzle.com/n/switch-text.js"></script>
 
-  <script defer type="module">
+  <script>
     importModiles(
       "tileUtil",
       "./tileUtil.js",
@@ -76,13 +76,13 @@
 
     function importModules(moduleName, first, second, callback) {
       let ret = null;
-      import(first)
+      _import(first)
         .then((module) => {
           ret = new module[moduleName]();
           callback(ret);
         })
         .catch((e) => {
-          import(second)
+          _import(second)
             .then((module) => {
               ret = new module[moduleName]();
               callback(ret);
@@ -92,6 +92,26 @@
             });
         });
     }
+   function _import(url) {
+    return {
+    then: (successCallback) => {
+      let script = document.createElement("script");
+      script.setAttribute("src", url);
+      script.addEventListener("load",()=>
+        successCallback(
+          JSON.parse(script.getAttribute("x-module"))
+        )
+      );
+      return { 
+        catch: (errorCallback) => {
+         script.addEventListener("error", errorCallback);
+         document.head.appendChild(script);
+        }
+      }
+    }
+  }
+}
+})();
   </script>
 
   <script defer src="https://www.t3puzzle.com/n/app-storage.js"></script>
