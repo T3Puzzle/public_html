@@ -44,7 +44,6 @@ function gridPuzzle () {
       constructor() {
         super();
         this.__tile = tileUtil();
-        console.log(this.__tile);
         this.__t3 = t3Util();
         this.mode = "";/*
       }
