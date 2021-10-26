@@ -9,7 +9,7 @@ function imageMeta (buffer,readMetadata) {
           let src = this.getAttribute("src");
           getImage(this, src, (metaData) => {
             this.value = metaData;
-            let img = setupImage(this);
+            let img = setupImage(this,src);
             this.attachShadow({mode:'open'});
             this.shadowRoot.append(img);
             let value = {
@@ -26,11 +26,11 @@ function imageMeta (buffer,readMetadata) {
   } else {
     Array.from(document.querySelectorAll("img-meta")).map((i) => {
       let src = i.getAttribute("src");
-      let img = setupImage(this);
+      let img = setupImage(this,src);
       i.insertAdjacentElement("beforeend", img);
     });
   }    
-  function setupImage (me) {
+  function setupImage (me,src) {
       let width = me.getAttribute("width") || "110px";
       let height = me.getAttribute("height") || "110px";
       let img = document.createElement("img");
