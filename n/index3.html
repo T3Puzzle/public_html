@@ -96,25 +96,24 @@
         });
     }
    function _import(url) {
-    return {
-    then: (successCallback) => {
-      let script = document.createElement("script");
-      script.setAttribute("src", url);
-      script.addEventListener("load",()=>
-        successCallback(
-          JSON.parse(script.getAttribute("x-module"))
-        )
-      );
-      return { 
-        catch: (errorCallback) => {
-         script.addEventListener("error", errorCallback);
-         document.head.appendChild(script);
-        }
-      }
-    }
-  }
-}
-})();
+     return {
+       then: (successCallback) => {
+         let script = document.createElement("script");
+         script.setAttribute("src", url);
+         script.addEventListener("load",()=>
+           successCallback(
+             JSON.parse(script.getAttribute("x-module"))
+           )
+         );
+         return { 
+           catch: (errorCallback) => {
+             script.addEventListener("error", errorCallback);
+             document.head.appendChild(script);
+           }
+         }
+       }
+     }
+   }
   </script>
 
   <script defer src="https://www.t3puzzle.com/n/app-storage.js"></script>
