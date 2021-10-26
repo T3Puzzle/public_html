@@ -47,11 +47,11 @@
          let div = document.createElement("div");
          let script = document.createElement("script");
          script.setAttribute("src", url);
-         script.addEventListener("load",()=>                      
+         script.addEventListener("load",()=>{    
            let j = JSON.parse(script.getAttribute("x-module"));
            for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
            successCallback(j)
-         );
+         });
          return { 
            catch: (errorCallback) => {
              script.addEventListener("error", errorCallback);
