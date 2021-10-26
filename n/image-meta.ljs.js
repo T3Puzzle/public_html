@@ -1,6 +1,6 @@
 (()=>{
 function imageMeta (buffer,readMetadata) {
-  if (typeof customElements !== "undefined") {
+  if (typeof customElements !== "undefined" && /^http/.test(window.location.href) ) {
     customElements.define(
       "img-meta",
       class extends HTMLElement {
