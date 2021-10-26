@@ -1,6 +1,6 @@
 
 (()=>{
-function define(tileUtil, t3Util, tapspace) {
+let define = function (tileUtil, t3Util, tapspace) {
   customElements.define(
     "grid-puzzle",
     class extends HTMLElement {
