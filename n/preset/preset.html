@@ -11,10 +11,15 @@
       "https://www.t3puzzle.com/n/buffer.ljs.js",
       (mbf) => {
         importModules(
-          "../img-meta.ljs.js",
-          "https://www.t3puzzle.com/n/img-meta.js",
-          (mim) => {
-            mim.imageMeta(mbf.buffer);
+          "../readMetadata.ljs.js",
+          "https://www.t3puzzle.com/n/readMetadata.js",
+          (mrm) => {
+            importModules(
+              "../img-meta.ljs.js",
+              "https://www.t3puzzle.com/n/img-meta.js",
+              (mim) => {
+                mim.imageMeta(mbf.buffer, mrm.readMetadata);
+            });
         });
     });
     function importModules(first, second, callback) {
