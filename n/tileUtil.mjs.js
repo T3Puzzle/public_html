@@ -1,5 +1,4 @@
-export { tileUtil };
-
+(()=>{
 function tileUtil() {
   return function internal() {
     let me = null;
@@ -1058,3 +1057,7 @@ function tileUtil() {
     }
   };
 }
+export {tileUtil};
+//return _export ({ tileUtil });
+//function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}}
+)();
