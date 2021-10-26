@@ -10,14 +10,13 @@
       "../buffer.ljs.js",
       "https://www.t3puzzle.com/n/buffer.ljs.js",
       (mbf) => {
-                importModules(
-                  "../img-meta.ljs.js",
-                  "https://www.t3puzzle.com/n/img-meta.js",
-                  (mim) => {
-                    mim.imageMeta(mbf.buffer);
-                });
+        importModules(
+          "../img-meta.ljs.js",
+          "https://www.t3puzzle.com/n/img-meta.js",
+          (mim) => {
+            mim.imageMeta(mbf.buffer);
+        });
     });
-
     function importModules(first, second, callback) {
       let ret = null;
       _import(first)
