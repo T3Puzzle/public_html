@@ -9,19 +9,16 @@
     importModules(
       "../buffer.ljs.js",
       "https://www.t3puzzle.com/n/buffer.ljs.js",
-      (mbf) => {
+      (buffer) => {
         importModules(
           "../readMetadata.ljs.js",
           "https://www.t3puzzle.com/n/readMetadata.ljs.js",
-          (mrm) => {
+          (readMetadata) => {
             importModules(
               "../img-meta.ljs.js",
               "https://www.t3puzzle.com/n/img-meta.ljs.js",
-              (mim) => {
-                console.log(mbf.buffer());
-                console.log(mbf.buffer().Buffer);
-                console.log(mbf.buffer().Buffer.from);
-                mim.imageMeta(mbf.buffer(), mrm.readMetadata);
+              (imageMeta) => {
+                imageMeta(buffer, readMetadata);
             });
         });
     });
