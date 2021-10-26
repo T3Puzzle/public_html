@@ -12,11 +12,11 @@
       (mbf) => {
         importModules(
           "../readMetadata.ljs.js",
-          "https://www.t3puzzle.com/n/readMetadata.js",
+          "https://www.t3puzzle.com/n/readMetadata.ljs.js",
           (mrm) => {
             importModules(
               "../img-meta.ljs.js",
-              "https://www.t3puzzle.com/n/img-meta.js",
+              "https://www.t3puzzle.com/n/img-meta.ljs.js",
               (mim) => {
                 mim.imageMeta(mbf.buffer, mrm.readMetadata);
             });
