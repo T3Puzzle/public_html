@@ -65,7 +65,7 @@
               (mtp) => {
                 importModules(
                   "./grid-puzzle.mjs.js",
-                  "./grid-puzzle.mjs.js",
+                  "https://www.t3puzzle.com/n/grid-puzzle.mjs.js",
                   //"https://codepen.io/alytile/pen/OJjNeEd.js",
                   (mgp) => {
                     mgp.gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace);
@@ -86,7 +86,7 @@
               callback(module);
             })
             .catch((e) => {
-              console.log("error");
+              console.log(e);
             });
         });
     }
