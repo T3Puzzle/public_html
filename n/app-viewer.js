@@ -29,7 +29,7 @@ function appViewer () {
       div.addEventListener ("click",(e)=>{
         let target = e.target;
         if (target.tagName==="IMG-META") { 
-          target.setAttribute("_select","");
+          target.style.border = "1px solid red";
         }
       });
       Array.from(this.querySelectorAll("img-meta"))
