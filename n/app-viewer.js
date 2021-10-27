@@ -20,19 +20,24 @@ function appViewer () {
       super();
       this.__width = this.getAttribute("width");
       let div = document.createElement("div");
-      [document.body]
-      .map(n=> {
-        n.style.position = "absolute";
-        n.style.padding = "0px";
-        n.style.margin = "0px";
-      });
+      div.insertAdjacentHTML("beforeend",`
+      <style>div.frame {
+        border : "2px solid";
+      }
+      div.frame--selected {
+        border-color : "red";
+      }</style>
+      `);
       div.addEventListener ("click",(e)=>{
+        Array.from(document.querySelectorAll("div.frame"))
+        .map(n=>n.classList.remove("frame--selected"));
         let target = e.target.closest("div"); 
-        target.style.border = "1px solid red";
+        target.classList.add("frame--selected");
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
         let parent = document.createElement("div");
+        parent.classList.add("frame");
         parent.style.display = "inline-block";
         parent.style.border = "1px solid white";
         div.appendChild(parent);
@@ -43,6 +48,12 @@ function appViewer () {
       }
       this.attachShadow({mode:"open"});
       this.shadowRoot.appendChild(div);
+      [document.body]
+      .map(n=> {
+        n.style.position = "absolute";
+        n.style.padding = "0px";
+        n.style.margin = "0px";
+      });
     }
   });
   function setWidth (me,val) {
