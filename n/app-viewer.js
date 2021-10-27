@@ -1,9 +1,17 @@
 (()=>{
   customElements.define("app-viewer",class extends HTMLElement {
     static get obserbedAttributes () {
-      return ["width"];
+      return ["width","_append","_get_data"];
     }
     attributeChangedCallback(name,oldValue,newValue) {
+      let me = this.shadowRoot;
+      if (name==="width") {
+        setWidth(me,newValue);
+      } else if (name==="_append") {
+        append(me,newValue);
+      } else if (name==="_get_data") {
+        getData(me);
+      }
     }
     constructor () {
       super();
@@ -24,4 +32,28 @@
       this.shadowRoot.appendChild(div);
     }
   });
+  function setupImage (img) {
+    img.addEventListener ("click",(e)=>{
+      let target = e.target;
+      target.style["border-width"] = "1px";
+      target.style["border-color"] = "red";
+    });
+  }
+  function setWidth (me,val) {
+    let width = null;
+    if (/^\d+$/.test(val)) {
+      width = val+"px";
+    } else if (/^\d+px$/.test(val)) {
+      width = val;
+    }
+    if (width) {
+      me.querySelector("div").style.width = width;
+    }
+  }
+  function append (me, val) {
+    // TODO: what is val anyway?
+  }
+  function getData (me) {
+    
+  }
 })();
