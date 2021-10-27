@@ -26,6 +26,12 @@ function appViewer () {
         n.style.padding = "0px";
         n.style.margin = "0px";
       });
+      div.addEventListener ("click",(e)=>{
+        let target = e.target;
+        console.log(target.tagName); 
+        target.style["border-width"] = "1px";
+        target.style["border-color"] = "red";
+      });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>div.appendChild(n));
       if (/^\d+$/.test(this.__width)) {
@@ -35,13 +41,6 @@ function appViewer () {
       this.shadowRoot.appendChild(div);
     }
   });
-  function setupImage (img) {
-    img.addEventListener ("click",(e)=>{
-      let target = e.target;
-      target.style["border-width"] = "1px";
-      target.style["border-color"] = "red";
-    });
-  }
   function setWidth (me,val) {
     let width = null;
     if (/^\d+$/.test(val)) {
