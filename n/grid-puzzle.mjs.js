@@ -1,4 +1,4 @@
-//(()=>{
+(()=>{
 function gridPuzzle () {
   return { define: function (tileUtil, t3Util, tapspace) {
   customElements.define(
@@ -66,7 +66,60 @@ function gridPuzzle () {
   );
  }}
 }
-export {gridPuzzle};
-//return _export ({gridPuzzle});  
-//function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
-//})();
+    importModules(
+      "./tileUtil.ljs.js",
+      "https://codepen.io/alytile/pen/dyRZgga.js",
+      (mti) => {
+        importModules(
+          "./t3Util.ljs.js",
+          "https://codepen.io/alytile/pen/xxrPQob.js",
+          (mt3) => {
+            importModules(
+              "./tapspace.ljs.min.js",
+              "https://codepen.io/alytile/pen/xxxx.js",
+              (mtp) => {
+                gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace());             
+             });
+         });
+    });
+
+    function importModules(first, second, callback) {
+      let ret = null;
+      _import(first)
+        .then((module) => {
+          callback(module);
+        })
+        .catch((e) => {
+          _import(second)
+            .then((module) => {
+              callback(module);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+    }
+   function _import(url) {
+     return import(url);
+     /*
+     return {
+       then: (successCallback) => {
+         let div = document.createElement("div");
+         let script = document.createElement("script");
+         script.setAttribute("src", url);
+         script.addEventListener("load",()=>{    
+           let j = JSON.parse(script.getAttribute("x-module"));
+           for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
+           successCallback(j)
+         });
+         return { 
+           catch: (errorCallback) => {
+             script.addEventListener("error", errorCallback);
+             document.head.appendChild(div);
+             div.appendChild(script);
+           }
+         }
+       }
+     }*/
+   }
+})();
