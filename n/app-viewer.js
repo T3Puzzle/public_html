@@ -11,7 +11,9 @@
       let div = document.createElement("div");
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>div.appendChild(n));
-      div.setAttribute("width",this.__width);
+      if (/^\d+$/.test(this.__width)) {
+        div.style.width = this.__width+"px";
+      }
       this.attachShadow({mode:"open"});
       this.shadowRoot.appendChild(div);
     }
