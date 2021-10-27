@@ -9,6 +9,12 @@
       super();
       this.__width = this.getAttribute("width");
       let div = document.createElement("div");
+      [document.body, div]
+      .map(n=> {
+        n.style.position = "absolute";
+        n.style.padding = "0px";
+        n.style.margin = "0px";
+      });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>div.appendChild(n));
       if (/^\d+$/.test(this.__width)) {
