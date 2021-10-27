@@ -27,7 +27,7 @@ function appViewer () {
         n.style.margin = "0px";
       });
       div.addEventListener ("click",(e)=>{
-        let target = e.target.querySelector("div"); 
+        let target = e.target.closest("div"); 
         target.style.border = "1px solid red";
       });
       Array.from(this.querySelectorAll("img-meta"))
