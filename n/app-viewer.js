@@ -8,7 +8,7 @@
     constructor () {
       super();
       this.__width = this.getAttribute("width");
-      let div = docuement.createElement("div");
+      let div = document.createElement("div");
       [this.querySelectorAll("img-meta")]
       .map(n=>div.appendChild(n));
       div.setAttribute("width",this.__width);
