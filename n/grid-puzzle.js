@@ -68,15 +68,15 @@ function gridPuzzle () {
 }
     importModules(
       "./tileUtil.ljs.js",
-      "https://codepen.io/alytile/pen/dyRZgga.js",
+      "./tileUtil.mjs.js",
       (mti) => {
         importModules(
           "./t3Util.ljs.js",
-          "https://codepen.io/alytile/pen/xxrPQob.js",
+          "./t3Util.mjs.js",
           (mt3) => {
             importModules(
               "./tapspace.ljs.min.js",
-              "https://codepen.io/alytile/pen/xxxx.js",
+              "./tapspace.mjs.min.js",
               (mtp) => {
                 gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace());             
              });
@@ -99,18 +99,21 @@ function gridPuzzle () {
             });
         });
     }
-   function _import(url) {
+  function _import(url) {
+  if (window.location.protocol!=="file:" && /:mjs:/.test(window.location.search)) {
+     return import(url);
+  } else {
      return {
        then: (successCallback) => {
          let div = document.createElement("div");
          let script = document.createElement("script");
          script.setAttribute("src", url);
-         script.addEventListener("load",()=>{    
+         script.addEventListener("load",()=>{
            let j = JSON.parse(script.getAttribute("x-module"));
            for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
            successCallback(j)
          });
-         return { 
+         return {
            catch: (errorCallback) => {
              script.addEventListener("error", errorCallback);
              document.head.appendChild(div);
@@ -119,5 +122,6 @@ function gridPuzzle () {
          }
        }
      }
-   }
+  }
+}
 })();
