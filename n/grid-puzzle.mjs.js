@@ -67,15 +67,15 @@ function gridPuzzle () {
  }}
 }
     importModules(
-      "./tileUtil.ljs.js",
+      "./tileUtil.mjs.js",
       "https://codepen.io/alytile/pen/dyRZgga.js",
       (mti) => {
         importModules(
-          "./t3Util.ljs.js",
+          "./t3Util.mjs.js",
           "https://codepen.io/alytile/pen/xxrPQob.js",
           (mt3) => {
             importModules(
-              "./tapspace.ljs.min.js",
+              "./tapspace.mjs.min.js",
               "https://codepen.io/alytile/pen/xxxx.js",
               (mtp) => {
                 gridPuzzle().define(mti.tileUtil(), mt3.t3Util(),mtp.tapspace());             
