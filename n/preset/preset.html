@@ -6,60 +6,6 @@
     <app-viewer style="width:350px;"><img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta><img-meta src="https://www.t3puzzle.com/b/test_gphoto.png">
     </img-meta><img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta><img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta>
     </app-viewer>
-  <script>
-    importModules(
-      "../buffer.ljs.js",
-      "https://www.t3puzzle.com/n/buffer.ljs.js",
-      (mbf) => {
-        importModules(
-          "../readMetadata.ljs.js",
-          "https://www.t3puzzle.com/n/readMetadata.ljs.js",
-          (mrm) => {
-            importModules(
-              "../img-meta.ljs.js",
-              "https://www.t3puzzle.com/n/img-meta.ljs.js",
-              (mim) => {
-                mim.imageMeta(mbf.buffer, mrm.readMetadata);
-            });
-        });
-    });
-    function importModules(first, second, callback) {
-      let ret = null;
-      _import(first)
-        .then((module) => {
-          callback(module);
-        })
-        .catch((e) => {
-          _import(second)
-            .then((module) => {
-              callback(module);
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        });
-    }
-   function _import(url) {
-     return {
-       then: (successCallback) => {
-         let div = document.createElement("div");
-         let script = document.createElement("script");
-         script.setAttribute("src", url);
-         script.addEventListener("load",()=>{    
-           let j = JSON.parse(script.getAttribute("x-module"));
-           for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
-           successCallback(j)
-         });
-         return { 
-           catch: (errorCallback) => {
-             script.addEventListener("error", errorCallback);
-             document.head.appendChild(div);
-             div.appendChild(script);
-           }
-         }
-       }
-     }
-   }
-  </script>
+  <script src="../image-meta.js"></script>
   </body>
 </html>
