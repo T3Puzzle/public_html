@@ -1,6 +1,4 @@
 (()=>{
-return _export ({ readMetadata });
-  
 function readMetadata(buf){
   let T = signed_crc_table();
   let uint8 = new Uint8Array(4)
@@ -257,4 +255,7 @@ function extractChunks (data) {
 	}
   /** CRC32 **/
 }
-function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}})();
+// export {readMetadata};
+return _export ({ readMetadata });
+function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}
+})();
