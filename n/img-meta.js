@@ -69,5 +69,54 @@ function imageMeta (buffer,readMetadata) {
     });
   }
 }
-return _export ({imageMeta});  
-function _export(j){document.currentScript.setAttribute("x-module",(()=>{for(let k in j){j[k]=j[k].toString()};return JSON.stringify(j)})())}})();
+    importModules(
+      "./buffer.ljs.js","./buffer.mjs.js",
+      (mbf) => {
+        importModules(
+          "./readMetadata.ljs.js","./readMetadata.mjs.js",
+          (mrm) => {
+            imageMeta(mbf.buffer, mrm.readMetadata);
+        });
+    });
+    function importModules(first, second, callback) {
+      let ret = null;
+      _import(first)
+        .then((module) => {
+          callback(module);
+        })
+        .catch((e) => {
+          _import(second)
+            .then((module) => {
+              callback(module);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+    }
+function _import(url) {
+  if (window.location.protocol!=="file:" && /:mjs:/.test(window.location.search)) {
+     return import(url);
+  } else {
+     return {
+       then: (successCallback) => {
+         let div = document.createElement("div");
+         let script = document.createElement("script");
+         script.setAttribute("src", url);
+         script.addEventListener("load",()=>{
+           let j = JSON.parse(script.getAttribute("x-module"));
+           for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
+           successCallback(j)
+         });
+         return {
+           catch: (errorCallback) => {
+             script.addEventListener("error", errorCallback);
+             document.head.appendChild(div);
+             div.appendChild(script);
+           }
+         }
+       }
+     }
+  }
+}
+})();
