@@ -29,7 +29,7 @@ function appViewer () {
       }</style>
       `);
       div.addEventListener ("click",(e)=>{
-        Array.from(document.querySelectorAll("div.frame"))
+        Array.from(this.shadowRoot.querySelectorAll("div.frame"))
         .map(n=>n.classList.remove("frame--selected"));
         let target = e.target.closest("div"); 
         target.classList.add("frame--selected");
