@@ -20,7 +20,7 @@ function appViewer () {
       super();
       this.__width = this.getAttribute("width");
       let div = document.createElement("div");
-      [document.body, div]
+      [document.body]
       .map(n=> {
         n.style.position = "absolute";
         n.style.padding = "0px";
@@ -28,9 +28,9 @@ function appViewer () {
       });
       div.addEventListener ("click",(e)=>{
         let target = e.target;
-        console.log(target.tagName); 
-        target.style["border-width"] = "1px";
-        target.style["border-color"] = "red";
+        if (target.tagName==="IMG-META") { 
+          target.setAttribute("_select","");
+        }
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>div.appendChild(n));
