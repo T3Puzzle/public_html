@@ -39,7 +39,6 @@ function appViewer () {
         let parent = document.createElement("div");
         parent.classList.add("frame");
         parent.style.display = "inline-block";
-        parent.style.border = "1px solid white";
         div.appendChild(parent);
         parent.appendChild(n);
       });
