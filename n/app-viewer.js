@@ -27,15 +27,13 @@ function appViewer () {
         n.style.margin = "0px";
       });
       div.addEventListener ("click",(e)=>{
-        let target = e.target;
-        console.log(target.tagName);
-        if(true) { 
-          target.style.border = "1px solid red";
-        }
+        let target = e.target.querySelector("div"); 
+        target.style.border = "1px solid red";
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
         let parent = document.createElement("div");
+        parent.style.display = "inline-block";
         parent.style.border = "1px solid white";
         div.appendChild(parent);
         parent.appendChild(n);
