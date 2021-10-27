@@ -22,10 +22,10 @@ function appViewer () {
       let div = document.createElement("div");
       div.insertAdjacentHTML("beforeend",`
       <style>div.frame {
-        border : "2px solid";
+        border : "2px solid white";
       }
       div.frame--selected {
-        border-color : "red";
+        border : "2px solid red";
       }</style>
       `);
       div.addEventListener ("click",(e)=>{
