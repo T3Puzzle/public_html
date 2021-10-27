@@ -31,8 +31,8 @@ function imageMeta (buffer,readMetadata) {
     });
   }    
   function setupImage (me,src) {
-    let width = me.getAttribute("width") || "110px";
-    let height = me.getAttribute("height") || "110px";
+    let width = me.getAttribute("width") || "110";
+    let height = me.getAttribute("height") || "110";
     let img = document.createElement("img");
     img.src = src;
     if (width) {
