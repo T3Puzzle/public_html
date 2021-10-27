@@ -1,4 +1,7 @@
 (()=>{
+
+function appViewer () {
+  return { define: function (messageIframe) {
   customElements.define("app-viewer",class extends HTMLElement {
     static get obserbedAttributes () {
       return ["width","_append","_get_data"];
@@ -56,4 +59,53 @@
   function getData (me) {
     
   }
+ }}
+}
+    importModules(
+      "./messageIframe.ljs.js",
+      "./messageIframe.mjs.js",
+      (mmi) => {
+        appViewer().define(mmi.messageIframe());             
+    });
+    function importModules(first, second, callback) {
+      let ret = null;
+      _import(first)
+        .then((module) => {
+          callback(module);
+        })
+        .catch((e) => {
+          _import(second)
+            .then((module) => {
+              callback(module);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+    }
+  function _import(url) {
+  if (window.location.protocol!=="file:" && /:mjs:/.test(window.location.search)) {
+     return import(url);
+  } else {
+     return {
+       then: (successCallback) => {
+         let div = document.createElement("div");
+         let script = document.createElement("script");
+         script.setAttribute("src", url);
+         script.addEventListener("load",()=>{
+           let j = JSON.parse(script.getAttribute("x-module"));
+           for (let k in j) {j[k] = eval('(() =>('+j[k]+'))()')}
+           successCallback(j)
+         });
+         return {
+           catch: (errorCallback) => {
+             script.addEventListener("error", errorCallback);
+             document.head.appendChild(div);
+             div.appendChild(script);
+           }
+         }
+       }
+     }
+  }
+}
 })();
