@@ -3,12 +3,13 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <app-viewer width="350">
+    <app-viewer id="viewer" width="350">
       <img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta>
       <img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta>
       <img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta>
       <img-meta src="https://www.t3puzzle.com/b/test_gphoto.png"></img-meta>
     </app-viewer>
+    <button onclick="viewer.setAttribute('_get_data')">get data</button>
   <script src="./img-meta.js"></script>
   <script src="./app-viewer.js"></script>
   </body>
