@@ -28,12 +28,18 @@ function appViewer () {
       });
       div.addEventListener ("click",(e)=>{
         let target = e.target;
-        if (target.tagName==="IMG-META") { 
+        console.log(target.tagName);
+        if(true) { 
           target.style.border = "1px solid red";
         }
       });
       Array.from(this.querySelectorAll("img-meta"))
-      .map(n=>div.appendChild(n));
+      .map(n=>{
+        let parent = document.createElement("div");
+        parent.style.border = "1px solid white";
+        div.appendChild(parent);
+        parent.appendChild(n);
+      });
       if (/^\d+$/.test(this.__width)) {
         div.style.width = this.__width+"px";
       }
