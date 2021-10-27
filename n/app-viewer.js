@@ -10,7 +10,7 @@
       this.__width = this.getAttribute("width");
       let div = document.createElement("div");
       [this.querySelectorAll("img-meta")]
-      .map(n=>div.appendChild(n));
+      .map(n=>div.append(n));
       div.setAttribute("width",this.__width);
       this.attachShadow({mode:"open"});
       this.shadowRoot.appendChild(div);
