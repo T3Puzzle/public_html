@@ -36,12 +36,18 @@ function imageMeta (buffer,readMetadata) {
     let img = document.createElement("img");
     img.src = src;
     if (width) {
-      me.setAttribute("width", width);
-      img.setAttribute("width", width);
+      if (/^\d$/.test(width)) {
+        width += "px";
+      }
+      me.style.width =  width;
+      img.style.width =  width;
     }
     if (height) {
-      me.setAttribute("height", height);
-      img.setAttribute("height", height);
+      if (/^\d$/.test(height)) {
+        height += "px";
+      }
+      me.style.height =  height;
+      img.style.height =  height;
     }
     
     return img;
