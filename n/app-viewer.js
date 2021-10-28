@@ -31,8 +31,11 @@ function appViewer () {
       div.addEventListener ("click",(e)=>{
         Array.from(this.shadowRoot.querySelectorAll("div.frame"))
         .map(n=>n.classList.remove("frame--selected"));
-        let target = e.target.closest("div"); 
-        target.classList.add("frame--selected");
+        let target = e.target;
+        let frame = target.closest("div"); 
+        frame.classList.add("frame--selected");
+        console.log(target.getAttribute("data"));
+        // messageIframe.send
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
@@ -70,7 +73,13 @@ function appViewer () {
     // TODO: what is val anyway?
   }
   function getData (me) {
-    
+    // 
+    let data = [];
+    Array.from(me.querySelectorAll("img-meta"))
+    .map(n=>{
+       data.push(n.getAttribute("data"));
+     });
+    console.log(data);
   }
  }}
 }
