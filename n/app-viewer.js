@@ -28,6 +28,9 @@ function appViewer () {
         border : 2px solid red;
       }</style>
       `);
+      div.addEventListener ("load",(e)=>{
+        console.log(e);
+      });
       div.addEventListener ("click",(e)=>{
         Array.from(this.shadowRoot.querySelectorAll("div.frame"))
         .map(n=>n.classList.remove("frame--selected"));
@@ -39,6 +42,7 @@ function appViewer () {
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
+        
         let parent = document.createElement("div");
         parent.classList.add("frame");
         parent.style.display = "inline-block";
