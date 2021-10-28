@@ -40,10 +40,9 @@ function appViewer () {
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
         n.addEventListener ("load",(e)=>{
-          console.log(e.detail.value);
-          let json = JSON.parse(e.detail.value);
+          let json = e.detail.value.tEXT.meta;
           json.meta = {
-            id: n.src
+            id: n.getAttribute("src")
           };
           this.shadowRoot.__data.push(JSON.striginfy(json));
         });
