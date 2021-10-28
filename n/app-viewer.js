@@ -44,7 +44,7 @@ function appViewer () {
           json.meta = {
             id: n.getAttribute("src")
           };
-          this.shadowRoot.__data.push(JSON.striginfy(json));
+          this.shadowRoot.__data.push(json);
         });
         let parent = document.createElement("div");
         parent.classList.add("frame");
