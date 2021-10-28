@@ -1,5 +1,7 @@
 (()=>{
-let data = [
+let data = {
+meta: "",
+data: [
 {
       "meta": {
         "id": "prs_t3",
@@ -83,6 +85,7 @@ let data = [
         [0, -3, 1, 2, 0, 2, 0]
       ]
 }
-];
+]
+};
 return _export({data});
 function _export(j){document.currentScript.setAttribute("x-module",JSON.stringify(j,(k,v)=>(typeof v==="function")?v.toString():v))}})();
