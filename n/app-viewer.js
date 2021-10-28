@@ -45,7 +45,7 @@ function appViewer () {
           json.meta = {
             id: n.src
           };
-          this.__data.push(JSON.striginfy(json));
+          this.shadowRoot.__data.push(JSON.striginfy(json));
         });
         let parent = document.createElement("div");
         parent.classList.add("frame");
@@ -81,13 +81,7 @@ function appViewer () {
     // TODO: what is val anyway?
   }
   function getData (me) {
-    // 
-    let data = [];
-    Array.from(me.querySelectorAll("img-meta"))
-    .map(n=>{
-       data.push(n.getAttribute("data"));
-     });
-    console.log(data);
+    console.log(me.__data);
   }
  }}
 }
