@@ -28,9 +28,6 @@ function appViewer () {
         border : 2px solid red;
       }</style>
       `);
-      div.addEventListener ("load",(e)=>{
-        console.log(e);
-      });
       div.addEventListener ("click",(e)=>{
         Array.from(this.shadowRoot.querySelectorAll("div.frame"))
         .map(n=>n.classList.remove("frame--selected"));
@@ -42,7 +39,14 @@ function appViewer () {
       });
       Array.from(this.querySelectorAll("img-meta"))
       .map(n=>{
-        
+        n.addEventListener ("load",(e)=>{
+          console.log(e.detail.value);
+          let json = JSON.parse(e.detail.value);
+          json.meta = {
+            id: n.src
+          };
+          this.__data.push(JSON.striginfy(json));
+        });
         let parent = document.createElement("div");
         parent.classList.add("frame");
         parent.style.display = "inline-block";
