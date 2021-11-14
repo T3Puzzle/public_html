@@ -9,9 +9,9 @@
     <script src="https://script.google.com/macros/s/AKfycbxrE0LfVhf6g7YM2iLxnPjlrnYdA6erE4I59ZKnZ7Ah7gnQNjhBv594h_fV1lcIRCOD/exec">
     </script>
     <script src="https://apis.google.com/js/api.js" x-once="true"
-      onload="[document.currentScript.getAttribute('x-once')].filter(v=>v).map(v=>
+      onload="[this.getAttribute('x-once')].filter(v=>v).map(v=>
               {
-                document.currentScript.removeAttribute('x-once');
+                this.removeAttribute('x-once');
                 handleClientLoad()
               });">
     </script>
