@@ -65,7 +65,9 @@ function updateSigninStatus(isSignedIn) {
         }
       } else {
 
-        console.log("appendPre");
+        console.log(resp);
+        console.log(resp.response);
+        console.log(resp.response.result);
         // エラーなし
         appendPre(resp.response.result);
       }
