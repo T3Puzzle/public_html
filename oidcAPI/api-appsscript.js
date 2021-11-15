@@ -45,8 +45,8 @@ import {gapi} from "./gapi.js";
      let apibutton = this.shadowRoot.querySelector('api-button');
      if (apibutton) {
        this._BUTTON = document.createElement("button");
-       this._BUTTON_SIGNIN = api.getAttribute("value") || "authorize";
-       this._BUTTON_SIGNOUT= api.getAttribute("value-signout") || "sign out";
+       this._BUTTON_SIGNIN = apibutton.getAttribute("value") || "authorize";
+       this._BUTTON_SIGNOUT= apibutton.getAttribute("value-signout") || "sign out";
        this.append(this._BUTTON);
        setStatus(this,false);
      }
