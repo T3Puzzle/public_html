@@ -65,9 +65,9 @@ function signOut() {
 function setStatus (me,flag) {
   if (!me._BUTTON) {
     if (flag) {
-      dispatchEvent(me,"changed","authorized");
+      dispatchEvent(me,"change","authorized");
     } else {
-      dispatchEvent(me,"changed","signed out");
+      dispatchEvent(me,"change","signed out");
     }
   } else {
     if (flag) {
@@ -137,7 +137,7 @@ function updateSigninStatus(me,api_call,api_name,api_args,isSignedIn) {
           if (api_name === "load") {
             dispatchEvent(caller,"load",resp.response.result);
           } else {
-            dispatchEvent(caller,"changed",resp.response.result);
+            dispatchEvent(caller,"change",resp.response.result);
           }
         }
       }
