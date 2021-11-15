@@ -71,12 +71,12 @@ function setStatus (me,flag) {
     }
   } else {
     if (flag) {
-      me._BUTTON.removeEventListener(signIn);
-      me._BUTTON.addEventListener(signOut);
+      me._BUTTON.removeEventListener("click",signIn);
+      me._BUTTON.addEventListener("click",signOut);
       me._BUTTON.textContent = me._BUTTON_SIGNOUT;
     } else {
-      me._BUTTON.removeEventListener(signOut);
-      me._BUTTON.addEventListener(signIn);
+      me._BUTTON.removeEventListener("click",signOut);
+      me._BUTTON.addEventListener("click",signIn);
       me._BUTTON.textContent = me._BUTTON_SIGNIN;
     }
   }
