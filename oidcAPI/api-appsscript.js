@@ -97,16 +97,15 @@ function initClient(me) {
     scope: me._SCOPES,
     discoveryDocs: ["https://script.googleapis.com/$discovery/rest?version=v1"],
   }).then(function () {
-   console.log(me._API_KEY);
-   console.log(me._CLIENT_ID);
-   console.log(me._SCOPES);
-   console.log(gapi.auth2);
-   console.log(gapi.auth2.getAuthInstance());
+    let auth = gapi.auth2.getAuthInstance();
+    if (!auth) {
+      dispatchEvent(me,"error","Not initialized. check parameters.");
+    }
     updateSigninStatus(
       me,
       null,
       "load",[],
-      gapi.auth2.getAuthInstance().isSignedIn.get()
+      auth.isSignedIn.get()
     );
   }, function(error) {
     dispatchEvent(me,"error",JSON.stringify(error, null, 2));
