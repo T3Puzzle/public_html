@@ -29,7 +29,7 @@ import {gapi} from "./gapi.js";
       );
       this._API_CALL = null;
       this._API_NAME = null;
-      this._API_ARGS = ull;
+      this._API_ARGS = null;
      }
    }
    constructor () {
