@@ -39,7 +39,7 @@ import {gapi} from "./gapi.js";
      this._SCRIPT_ID = this.getAttribute("script-id");
      this._SCOPES = this.getAttribute("scopes");
      this.attachShadow({mode:"open"});
-     this.getChildNodes().map(v=>
+     this.childNodes.map(v=>
        this.shadowRoot.appendChild(v)
      );
      let apibutton = this.shadowRoot.querySelector('api-button');
