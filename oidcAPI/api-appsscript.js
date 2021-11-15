@@ -115,7 +115,7 @@ function initClient(me) {
 function updateSigninStatus(me,api_call,api_name,api_args,isSignedIn) {
   let caller = api_call;
   if (!api_call) {
-    api_call = me;
+    caller = me;
   }
   if (isSignedIn) {
     setStatus(me,true);
