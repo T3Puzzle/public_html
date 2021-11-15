@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script defer type="module" src="api-appsscript.js"></script>
+  </head>
+  <body>
+    <api-appsscript id="appsscript"
+      onload="
+        call.removeAttribute('disabled');
+      "
+    >
+      <api-button 
+         value="Authorize"
+         value-signout="Sign Out"
+         api-key="AIzaSyB5bQnfRqdH5ZiXFPu4zBhR7irMpo0UJYI"
+         client-id="757914426275-c4igci7q523pgui4idj1o8ll9hic3ao9.apps.googleusercontent.com"
+         script-id="AKfycbyrUlU5jdTrKll9nos-JDXpwaLt1xHCuSmhgQz0slNoHRKa0Mao6M1mbyZoaEEPklQ2"
+         scopes="https://www.googleapis.com/auth/drive"
+      >
+      </api-button>
+    </api-appsscript>
+    <button id="call" disabled="disabled"
+      onclick="
+        appsscript.setAttribute('_api','test')
+        appsscript.setAttribute('_args','xxx')
+        appsscript.setAttribute('_call',this.id)
+      "
+      onchange="
+        alert(this.value)
+      "
+      onerror="
+        alert(this.value)
+      "
+     >call
+    </button>
+  </body>
+</html>
