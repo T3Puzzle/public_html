@@ -2,7 +2,7 @@ import {gapi} from "./gapi.js";
 (()=>{
  customElements.define("api-appsscript", class extends HTMLElement { 
    static get observedAttributes () {
-     return ["_api","_args"];
+     return ["_api","_args","_call"];
    }
    attributeChangedCallback (name, oldValue, newValue) {
      if (name==="_api") {
