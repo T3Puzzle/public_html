@@ -85,7 +85,7 @@ function dispatchEvent (me,type,data) {
   me.value = data;
   let value = {
     detail: {
-      value: value
+      value: data
     }
   }
   me.dispatchEvent(new CustomEvent(type,value));
