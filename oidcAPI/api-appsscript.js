@@ -113,7 +113,7 @@ function initClient(me) {
 }
 
 function updateSigninStatus(me,api_call,api_name,api_args,isSignedIn) {
-  let caller = caller = document.querySelector("#"+api_call);
+  let caller = document.querySelector("#"+api_call);
   if (!api_call) {
     caller = me;
   }
