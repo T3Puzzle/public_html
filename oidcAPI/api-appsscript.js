@@ -47,7 +47,7 @@ import {gapi} from "./gapi.js";
        this._BUTTON = document.createElement("button");
        this._BUTTON_SIGNIN = apibutton.getAttribute("value") || "authorize";
        this._BUTTON_SIGNOUT= apibutton.getAttribute("value-signout") || "sign out";
-       this.append(this._BUTTON);
+       this._BUTTON.append(this._BUTTON);
        setStatus(this,false);
      }
    }
