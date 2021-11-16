@@ -6,6 +6,7 @@
     <script defer type="module" src="api-appsscript.js"></script>
   </head>
   <body>
+    <div>test
     <api-appsscript id="appsscript"
       onload="if(this.value) {
         call.removeAttribute('disabled');
@@ -18,8 +19,13 @@
       script-id="AKfycbyrUlU5jdTrKll9nos-JDXpwaLt1xHCuSmhgQz0slNoHRKa0Mao6M1mbyZoaEEPklQ2"
       scopes="https://www.googleapis.com/auth/drive"
     >
-      <api-button value="Authorize"></api-button>
+      <div>[Authorize]</div>
+      <button>Authorize</button>
     </api-appsscript>
+    <div>
+      xxxx
+      </div>
+    </div>
     <button id="call" disabled="disabled"
       onclick="
         appsscript.setAttribute('_api','test')
