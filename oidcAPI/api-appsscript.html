@@ -7,19 +7,18 @@
   </head>
   <body>
     <api-appsscript id="appsscript"
-      onload="
+      onload="if(this.value) {
         call.removeAttribute('disabled');
+      } else {
+        call.setAttribute('disabled','disabled');
+      }
       "
       api-key="AIzaSyB5bQnfRqdH5ZiXFPu4zBhR7irMpo0UJYI"
       client-id="757914426275-c4igci7q523pgui4idj1o8ll9hic3ao9.apps.googleusercontent.com"
       script-id="AKfycbyrUlU5jdTrKll9nos-JDXpwaLt1xHCuSmhgQz0slNoHRKa0Mao6M1mbyZoaEEPklQ2"
       scopes="https://www.googleapis.com/auth/drive"
     >
-      <api-button 
-         value="Authorize"
-         value-signout="Sign Out"
-      >
-      </api-button>
+      <api-button>Authorize</api-button>
     </api-appsscript>
     <button id="call" disabled="disabled"
       onclick="
