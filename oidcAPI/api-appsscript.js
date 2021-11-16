@@ -47,6 +47,7 @@ import {gapi} from "./gapi.js";
      let apibutton = this.shadowRoot.querySelector('api-button');
      if (apibutton) {
        this._BUTTON = document.createElement("button");
+       this._BUTTON.style.display = "none";
        this._BUTTON.addEventListener("click",signIn);
        this._BUTTON.textContent = apibutton.getAttribute("value") || "authorize";
        apibutton.append(this._BUTTON);
