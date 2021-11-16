@@ -107,12 +107,12 @@ div.menu {
         <input name="content" type="hidden">
         <input id="dialog__meta" name="meta" type="hidden">
         <label for="dialog__age">ねんれい:</label>
-        <input required id="dialog__age" name="age" type="number" min="0" max="150" style="width:35px;">
+        <input required id="dialog__age" name="age" value="8" type="number" min="0" max="150" style="width:35px;">
         <div style="display:inline-block;margin-top:10px;border-width:1px;">
           <input type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
         </div>
         <br />
-        <input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
+        <input placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
         <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="4" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
       </form>
   </template>
