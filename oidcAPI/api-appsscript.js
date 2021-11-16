@@ -2,10 +2,12 @@ import {gapi} from "./gapi.js";
 (()=>{
  customElements.define("api-appsscript", class extends HTMLElement { 
    static get observedAttributes () {
-     return ["_api","_args","_call"];
+     return ["_api","_args","_call","_disable"];
    }
    attributeChangedCallback (name, oldValue, newValue) {
-     if (name==="_api") {
+     if (name==="_disable") {
+        signOut();
+     } else if (name==="_api") {
         this._API_NAME = newValue;
         this._API_ARGS = [];
      } else if (name==="_args") {
@@ -45,8 +47,8 @@ import {gapi} from "./gapi.js";
      let apibutton = this.shadowRoot.querySelector('api-button');
      if (apibutton) {
        this._BUTTON = document.createElement("button");
-       this._BUTTON_SIGNIN = apibutton.getAttribute("value") || "authorize";
-       this._BUTTON_SIGNOUT= apibutton.getAttribute("value-signout") || "sign out";
+       this._BUTTON.addEventListener("click",signIn);
+       this._BUTTON.textContent = apibutton.innerText || "authorize";
        apibutton.append(this._BUTTON);
        setStatus(this,false);
      }
@@ -71,13 +73,9 @@ function setStatus (me,flag) {
     }
   } else {
     if (flag) {
-      me._BUTTON.removeEventListener("click",signIn);
-      me._BUTTON.addEventListener("click",signOut);
-      me._BUTTON.textContent = me._BUTTON_SIGNOUT;
+      me._BUTTON.style.display = "none";
     } else {
-      me._BUTTON.removeEventListener("click",signOut);
-      me._BUTTON.addEventListener("click",signIn);
-      me._BUTTON.textContent = me._BUTTON_SIGNIN;
+      me._BUTTON.style.display = "inline-block";
     }
   }
 }
@@ -101,7 +99,10 @@ function initClient(me) {
     if (!auth) {
       dispatchEvent(me,"error","Not initialized. check parameters.");
     }
-    auth.isSignedIn.listen((v)=>setStatus(me,v));
+    auth.isSignedIn.listen((v)=> {
+      setStatus(me,v);
+      dispatchEvent(me,"load",v);
+    });
     updateSigninStatus(
       me,
       null,
@@ -136,7 +137,7 @@ function updateSigninStatus(me,api_call,api_name,api_args,isSignedIn) {
           }
         } else {
           if (api_name === "load") {
-            dispatchEvent(caller,"load",resp.response.result);
+            // nop
           } else {
             dispatchEvent(caller,"change",resp.response.result);
           }
