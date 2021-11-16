@@ -48,7 +48,7 @@ import {gapi} from "./gapi.js";
      if (apibutton) {
        this._BUTTON = document.createElement("button");
        this._BUTTON.addEventListener("click",signIn);
-       this._BUTTON.textContent = apibutton.innerText || "authorize";
+       this._BUTTON.textContent = apibutton.getAttribute("value") || "authorize";
        apibutton.append(this._BUTTON);
        setStatus(this,false);
      }
