@@ -61,16 +61,6 @@ function signIn() {
 }
 function signOut() {
   gapi.auth2.getAuthInstance().signOut();
-  // reset cookie
-  [
-   "__Secure-3PSIDCC","SIDCC",
-   "__Secure-3PAPISID","SSID",
-   "__Secure-1PAPISID","HSID",
-   "__Secure-1PSID","SID",
-   "__Secure-3PSID","SAPISID",
-   "APISID","NID",
-   "G_ENABLED_IDPS","G_AUTHUSER_H"
-  ].map(v=>document.cookie = v+"=; max-age=-1");
 }
 function setStatus (me,flag) {
   if (!me._BUTTON) {
