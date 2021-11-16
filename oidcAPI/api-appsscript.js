@@ -62,6 +62,7 @@ function signIn() {
 function signOut() {
   gapi.auth2.getAuthInstance().signOut();
   // reset cookie
+  console.log('clear');
   document.cookie = "";
 }
 function setStatus (me,flag) {
@@ -103,6 +104,7 @@ function initClient(me) {
     if (!auth) {
       dispatchEvent(me,"error","Not initialized. check parameters.");
     }
+    auth.isSignedIn.listen((v)=>setStatus(me,v));
     updateSigninStatus(
       me,
       null,
