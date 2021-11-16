@@ -49,7 +49,6 @@ import {gapi} from "./gapi.js";
      Array.from(datalist.childNodes).map(v=>
        this._BUTTON.appendChild(v)
      );
-     setStatus(this,false);
    }
    connectedCallback () { 
      gapi.load('client:auth2', ()=>initClient(this));
