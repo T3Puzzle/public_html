@@ -70,7 +70,7 @@ function signOut() {
    "__Secure-3PSID","SAPISID",
    "APISID","NID",
    "G_ENABLED_IDPS","G_AUTHUSER_H"
-  ].map(v=>document.cookie = v+"=;"};
+  ].map(v=>document.cookie = v+"=;");
 }
 function setStatus (me,flag) {
   if (!me._BUTTON) {
