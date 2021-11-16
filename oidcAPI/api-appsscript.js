@@ -97,7 +97,6 @@ function initClient(me) {
       dispatchEvent(me,"error","Not initialized. check parameters.");
     }
     auth.isSignedIn.listen((v)=> {
-      console.log('listen:'+v);
       setStatus(me,v);
       dispatchEvent(me,"load",v);
     });
