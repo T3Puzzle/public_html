@@ -41,18 +41,15 @@ import {gapi} from "./gapi.js";
      this._SCRIPT_ID = this.getAttribute("script-id");
      this._SCOPES = this.getAttribute("scopes");
      this.attachShadow({mode:"open"});
-     Array.from(this.childNodes).map(v=>
-       this.shadowRoot.appendChild(v)
+     this._BUTTON = document.createElement('div');
+     this._BUTTON.style.display = "none";
+     this._BUTTON.addEventListener("click",signIn);
+     this.shadowRoot.append(this._BUTTON);
+     let datalist = this.querySelector('datalist');
+     Array.from(datalist.childNodes).map(v=>
+       this._BUTTON.appendChild(v)
      );
-     let apibutton = this.shadowRoot.querySelector('api-button');
-     if (apibutton) {
-       this._BUTTON = document.createElement("button");
-       this._BUTTON.style.display = "none";
-       this._BUTTON.addEventListener("click",signIn);
-       this._BUTTON.textContent = apibutton.getAttribute("value") || "authorize";
-       apibutton.append(this._BUTTON);
-       setStatus(this,false);
-     }
+     setStatus(this,false);
    }
    connectedCallback () { 
      gapi.load('client:auth2', ()=>initClient(this));
