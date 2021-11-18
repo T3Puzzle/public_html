@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script defer type="module" src="api-appsscript.js"></script>
+  </head>
+  <body>
+    <div>test
+    <api-appsscript id="appsscript"
+      onload="if(this.value) {
+        call.removeAttribute('disabled');
+      } else {
+        call.setAttribute('disabled','disabled');
+      }
+      "
+      api-key="AIzaSyCbhDdwRhuhTbzxneykv1Ddu8soSohPmLA"
+      client-id="299529979613-03ktr42mpslhuku1n1epglfpouqckugl.apps.googleusercontent.com"
+      script-id="AKfycbxGRAxYXV46waIpiL3r_H46u9GOjZzru264m3USeEz65T0nsPZtX_D462j_MHvfgjpg"
+      scopes="https://www.googleapis.com/auth/drive"
+    >
+    <datalist>
+      <div>[Authorize]</div>
+      <button>Authorize</button>
+    </datalist>
+    </api-appsscript>
+    <div>
+      xxxx
+      </div>
+    </div>
+    <button id="call"
+      onclick="
+        appsscript.setAttribute('_api','test')
+        appsscript.setAttribute('_args','xxx')
+        appsscript.setAttribute('_call',this.id)
+      "
+      onchange="
+        alert(this.value)
+      "
+      onerror="
+        alert(this.value)
+      "
+     >call
+    </button>
+    <button onclick="appsscript.setAttribute('_disable','')"
+    >disable</button>
+  </body>
+</html>
