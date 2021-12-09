@@ -1,5 +1,5 @@
 (()=>{
-  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycby5VPCryuVS-ZqQ1hYN63e4gs-YIkOOqfRsCOAlF3L0xwQSKG6F2gIwXOhuHVbwuftynQ/exec';
+  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw9lhdthuEjrSuw_Ky7HVTh2KIZM9kbQARIv8-W0KIpZwGXp-JOIbIgJ1JEufdKoPrb/exec';
   let reg = '';
   let emailreq = '';
   //if (!checkRegistered()) {
