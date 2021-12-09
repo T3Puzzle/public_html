@@ -47,7 +47,7 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<h2>T3サマーコンテスト2021 応募</h2>
+<h2>T3初夢コンテスト2022 応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
 応募作品、ねんれい、だいめい、工夫した点は、<br/>
@@ -74,8 +74,8 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.tessellation.jp/t3summer">コンテストページ</a>
-<li><a href="https://www.t3puzzle.com/c">T3パズル ウェブ版</a>
+<li><a href="https://www.tessellation.jp/t3dream">コンテストページ</a>
+<li><a href="https://www.t3puzzle.com/b">T3パズル ウェブ版</a>
 `);
 ;
   document.addEventListener('DOMContentLoaded',()=>{
