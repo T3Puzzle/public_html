@@ -35,7 +35,10 @@ div.menu {
   APP.restored = localStorage.getItem(APP.name + '__DATA__LASTMODIFIED');
 </script>
 <div class="menu">
+  
   <button-text text="🔙" size="40px" onclick="historyback();">
+  </button-text>
+  <button-text text="✗" size="40px" onclick="clearall();">
   </button-text>
   <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
     <datalist>
@@ -802,17 +805,31 @@ div.menu {
     ///
     count--;
     localStorage.setItem(APP.name + '__MIN', count);
-    localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
-      'meta': {
-        'id': '',
-        'base': '',
-        'origin': '',
-        artist: '_',
-        'title': 'おなじむきにちがうもようでならべよう',
-        'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
-      }, "orientation":2.0919229374524506,
-      "tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
-    }));
+    if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
+      localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+        'meta': {
+          'id': '',
+          'base': '',
+          'origin': '',
+          artist: '_',
+          'title': 'おなじむきにちがうもようでならべよう',
+          'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
+        }, "orientation":2.0919229374524506,
+        "tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      }));
+    } else {
+      localStorage.setItem(APP.name + '__DATA__' + count, JSON.stringify({
+        'meta': {
+          'id': '',
+          'base': '',
+          'origin': '',
+          artist: '_',
+          'title': 'おなじむきにちがうもようでならべよう',
+          'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
+        }, "orientation":2.0919229374524506,
+        "tiles":[[0,-8,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      }));
+    }
   }
 
   function Unwrap(jsonStr) {
@@ -850,7 +867,33 @@ div.menu {
       t3puzzle.setAttribute('loaddata', HISTORY.back);
     }
   }
-
+  function clearall() {
+    if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
+      t3puzzle.setAttribute('loaddata', JSON.stringify({
+        'meta': {
+          'id': '',
+          'base': '',
+          'origin': '',
+          artist: '_',
+          'title': 'おなじむきにちがうもようでならべよう',
+          'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
+        }, "orientation":2.0919229374524506,
+        "tiles":[[0,-3,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      }));
+    } else {
+      t3puzzle.setAttribute('loaddata', JSON.stringify({
+        'meta': {
+          'id': '',
+          'base': '',
+          'origin': '',
+          artist: '_',
+          'title': 'おなじむきにちがうもようでならべよう',
+          'note': '６しゅるいのおきかたをぜんぶためしてみよう!'
+        }, "orientation":2.0919229374524506,
+        "tiles":[[0,-8,1,1,1,0,0],[0,-1,1,1,0,0,0]]
+      }));
+    }
+  }
   function processData(value) {
     localStorage.setItem('DEBUG', JSON.stringify(
       value.detail.debug));
