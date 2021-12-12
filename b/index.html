@@ -74,6 +74,8 @@ div.menu {
                                   load__form,
                                   LOAD)" size="40px">
   </button-text>
+  <button-text text="？" onclick="dialog__help__modal.setAttribute('open');" size="40px">
+  </button-text>
 </div>
 <grid-puzzle style="margin-left:0px;" id="t3puzzle" mode="hand" onChange="processData(this.value)">
   <datalist>
@@ -84,6 +86,9 @@ div.menu {
   </datalist>
 </grid-puzzle>
 
+<dialog-modal id="dialog__help__modal">
+  <div>xxxx</div>
+  </dialog-modal>
 <dialog-modal id="dialog__form__modal">
   <template>
     <div id="dialog__src" style="margin-left:0px;width:320px;height:320px; background: rgb(200, 200, 200);"></div>
