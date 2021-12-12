@@ -74,7 +74,7 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.tessellation.jp/t3dream">コンテストページ</a>
+<li><a href="https://www.tessellation.jp/t3dream/2022">コンテストページ</a>
 <li><a href="https://www.t3puzzle.com/b">T3パズル ウェブ版</a>
 `);
 ;
