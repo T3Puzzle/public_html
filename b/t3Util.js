@@ -182,23 +182,27 @@ function t3Util() {
       let j = 0;
       let k = 0;
       let o = 0;
-      let { dx, dy, pk } = detectPositionPoint(tx, ty);
-      i = Math.floor(dx);
+      let dx = tx/XSIZE;
+      let dy = ty/YSIZE;
+      let dz = dx+dy/2;
+      let dw = dx-dy/2;
+      i = Math.floor(dz);
       j = Math.floor(dy);
+      let ii = Math.floor(dw);
+      if (i!==ii) {
+        k =1;
+      }
       if (i === -0) {
         i = 0;
       }
       if (j === -0) {
         j = 0;
       }
-      let ox = dx - i;
-      let oy = dy - j;
-      if (ox < oy) {
-        k = 1;
-      }
       let l = 0;
       let m = stateAccess.last().m; // default
       let n = TILECOLOR_NOW;
+      let ox = dz - i;
+      let oy = dy - j;
       let f0, f1, f2;
       if (k === 0) {
         f1 = sq(ox, oy);
