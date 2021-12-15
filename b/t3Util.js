@@ -190,7 +190,7 @@ function t3Util() {
       i = Math.floor(dz);
       j = Math.floor(dy);
       let ii = Math.floor(dw);
-      if (Math.abs(i-ii)%2!==j%2) {
+      if (Math.abs(i-ii)%2!==Math.abs(j)%2) {
         k =1;
       }
       if (i === -0) {
