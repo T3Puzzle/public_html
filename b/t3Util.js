@@ -95,7 +95,9 @@ function t3Util() {
       let frozen = state.o;
 
       if (dir === idx) {
-        base = (base + 1) % 2;
+        if (state.n === TILECOLOR_NOW ) {
+          base = (base + 1) % 2;
+        }
       } else {
         dir = idx;
       }
