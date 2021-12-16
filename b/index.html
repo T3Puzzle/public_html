@@ -184,7 +184,7 @@ div.menu {
       </div>
       <br />
       <input readonly id="load__title" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;">
-      <textarea readonly name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+      <textarea readonly id="load__note" name="note" rows="4" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
     </form>
   </template>
 </dialog-modal>
@@ -709,6 +709,8 @@ div.menu {
     let jsonStr = '';
     if (action === 'load') {
       load__history.style.display = 'inline-block';
+      load__title.style.display = 'inline-block';
+      load__note.style.display = 'inline-block';
       let {
         str,
         i
@@ -717,6 +719,8 @@ div.menu {
       setStrToForm(form, jsonStr, i);
     } else if (action === 'download') {
       load__history.style.display = 'none';
+      load__title.style.display = 'none';
+      load__note.style.display = 'none';
       goto(t3work, form, OBJ.jsonStr, null);
     } else {
       //  
