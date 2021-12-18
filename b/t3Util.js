@@ -240,6 +240,9 @@ function t3Util() {
     }
     function isNeighbor(i,j,k) {
       let last = stateAccess.last();
+      if (!last) {
+        return false;
+      }
       if (k===last.k) {
         return false;
       } else {
