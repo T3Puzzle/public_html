@@ -104,7 +104,7 @@ function t3Util() {
       }
       setFaceColor(target, { m: base, n: color, o: frozen });
 
-      stateAccess.set(id, { l: dir, m: base, n: color, o: frozen });
+      stateAccess.set(id, { i:state.i, j:state.j, k:state.k, l: dir, m: base, n: color, o: frozen });
       rotateTile(tile, dir);
       rotateTile(img, dir);
     }
