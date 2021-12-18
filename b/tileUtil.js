@@ -35,6 +35,9 @@ function tileUtil() {
       enabled: false
     };
     let LASTSTATE = {
+      i: 0,
+      j: 0,
+      k: 0,
       l: 0,
       m: 1, // fujisan by default
       n: 0,
@@ -311,13 +314,19 @@ function tileUtil() {
         });
       }
     }
-    function setPartialState(id, state) {
+    function setState(id, state) {
       if (id in STATE) {
+        STATE[id].i = state.i;
+        STATE[id].j = state.j;
+        STATE[id].k = state.k;
         STATE[id].l = state.l;
         STATE[id].m = state.m;
         STATE[id].n = state.n;
         STATE[id].o = state.o;
       } else if (id in ridHash) {
+        STATE[ridHash[id]].i = state.i;
+        STATE[ridHash[id]].j = state.j;
+        STATE[ridHash[id]].k = state.k;
         STATE[ridHash[id]].l = state.l;
         STATE[ridHash[id]].m = state.m;
         STATE[ridHash[id]].n = state.n;
@@ -326,12 +335,15 @@ function tileUtil() {
         //
         console.log("never happen:set:" + id);
       }
+      LASTSTATE.i = state.i;
+      LASTSTATE.j = state.j;
+      LASTSTATE.k = state.k;
       LASTSTATE.l = state.l;
       LASTSTATE.m = state.m;
       LASTSTATE.n = state.n;
       LASTSTATE.o = state.o;
     }
-    function getLastPartialState() {
+    function getLastState() {
       return LASTSTATE;
     }
     function getState(id) {
@@ -556,7 +568,7 @@ function tileUtil() {
         root
       ).setSize(0, 0);
 
-      puz.init(view, { set: setPartialState, get: getState, last: getLastPartialState});
+      puz.init(view, { set: setState, get: getState, last: getLastState});
       callback();
       final();
       shareStateAll();
