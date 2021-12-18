@@ -63,6 +63,7 @@ function t3Util() {
       rotateTile(img, data.l);
       frozeTile(target, data.o);
       setFaceColor(target, data);
+      stateAccess.set(top.id, data);
     }
     function frozeTile(target, value) {
       let tile = target.tile;
@@ -202,7 +203,6 @@ function t3Util() {
         j = 0;
       }
       let l = 0;
-      let m = stateAccess.last().m; // default
       let n = TILECOLOR_NOW;
       let ox = dz - i;
       let oy = dy - j;
@@ -225,8 +225,28 @@ function t3Util() {
       if (f2 <= f0 && f2 <= f1) {
         l = 2;
       }
+      let last = stateAccess.last()
+      let m = last.m; // default
+
+      if(isNeighbor(i,j,k)) {
+        if (l===last.l) {
+           m = Math.floor(!last.m);
+        }
+        console.log(i+' '+j+' '+k+': '+l+' '+last.l);
+      } else {
+      }
       // TODO: l,m too.
       return { i, j, k, l, m, n, o };
+    }
+    function isNeighbor(i,j,k) {
+      let last = stateAccess.last();
+      if (k===last.k) {
+        return false;
+      } else {
+        let ii = Math.abs(last.i-i);
+        let jj = Math.abs(last.j-j);
+        return ((ii===0&&jj===0) || (ii===1&&jj===0) || (ii===0&&jj===1));
+      }
     }
     function sq(x, y) {
       return x * x + y * y;
