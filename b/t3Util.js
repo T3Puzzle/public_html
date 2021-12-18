@@ -232,7 +232,7 @@ function t3Util() {
         if (l===last.l) {
            m = Math.floor(!last.m);
         }
-        console.log(i+' '+j+' '+k+': '+l+' '+last.l);
+        //console.log(i+' '+j+' '+k+': '+l+' '+last.l);
       } else {
       }
       // TODO: l,m too.
