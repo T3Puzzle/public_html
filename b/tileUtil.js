@@ -333,7 +333,7 @@ function tileUtil() {
         STATE[ridHash[id]].o = state.o;
       } else {
         //
-        console.log("never happen:set:" + id);
+        // console.log("never happen:set:" + id);
       }
       LASTSTATE.i = state.i;
       LASTSTATE.j = state.j;
