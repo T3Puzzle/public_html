@@ -12,7 +12,7 @@ let text = `
 <a target="_blank" href="${url}">使い方</a> / 
 <a href="#" onclick="javascript:document.querySelector('a.pngview').click();return false;">保存</a> /
 <a target="_blank" href="${sub}">応募</a> / 
-<a target="_blank" href="https://www.t3puzzle.com/b">最新版</a>
+<a target="_blank" href="https://www.t3puzzle.com/b">新アプリ</a>
 `;
 document.addEventListener('DOMContentLoaded',()=>{
   let output = document.body.querySelector(`output.${config}`);
