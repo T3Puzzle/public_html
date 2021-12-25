@@ -637,6 +637,11 @@ div.menu {
       return;
     }
     let json = JSON.parse(jsonStr);
+    if (navigator.userAgent.indexOf("Safari")!== -1) {
+      if (json.tiles.length>254) {
+        json.tiles.length=254;
+      }
+    }
     json.tiles.map(t => {
       if (t[6] > 1) {
         t[6] = 0;
