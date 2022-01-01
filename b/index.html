@@ -1028,7 +1028,6 @@ div.menu {
   }
 
   function fetch_initdata() {
-    return;
     if (/#!history=(\d+)/.test(location.href)) {
       let val = parseInt(RegExp.$1, 10);
       let minStr = localStorage.getItem(APP.name + '__MIN');
