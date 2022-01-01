@@ -50,7 +50,7 @@ div.menu {
   </button-text>
   <button-text text="✗" size="40px" onclick="clearall();">
   </button-text>
-  <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="blue" size="40px">
+  <switch-text onchange="t3puzzle.setAttribute('color',this.value)" value="green" size="40px">
     <datalist>
       <option value="blue"></option>
       <option value="green"></option>
@@ -228,12 +228,14 @@ div.menu {
     }
   }
   document.addEventListener('DOMContentLoaded', () => {
+    alert(0);
     bodyMovePrevent();
     if (('ontouchend' in document)) {
       Array.from(document.querySelectorAll('.ui__pc')).map(u => {
         u.style['display'] = 'none';
       });
     }
+    alert(1);
     return;
     loadInitData();
     loadPreset();
