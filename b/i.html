@@ -226,7 +226,7 @@ div.menu {
           </select>    
         </div>
         <div class="email">
-        <br /><input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
+        <input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
         </div>
           <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
       </form>
@@ -295,12 +295,14 @@ div.menu {
     }
     let index = form.querySelector('select[name="index"]').value;
     if (index !== '0') {
-      let email = form.querySelector('input[name="email"]');
-      let grade = form.querySelector('select[name="grade"]').value;
       let group = form.querySelector('select[name="group"]').value;
-      email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-      email.onchange();
-      console.log(email.value);
+      if (group !== '0') {
+        let email = form.querySelector('input[name="email"]');
+        let grade = form.querySelector('select[name="grade"]').value;
+        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+        email.onchange();
+        console.log(email.value);
+      }
     }
   }
   function putmeta(str) {
