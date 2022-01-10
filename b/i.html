@@ -148,7 +148,7 @@ div.menu {
         </div>
         <br /><input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
         <div class="classselect">
-          <select name="grade">
+          <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
             <option value="2">2年</option>
             <option value="3">3年</option>
@@ -156,7 +156,7 @@ div.menu {
             <option value="5" selected>5年</option>
             <option value="6">6年</option>
           </select>
-          <select name="group">
+          <select name="group" onchange="updateEmailBySelect(this.form)">
             <option value="1">1組</option>
             <option value="2">2組</option>
             <option value="3">3組</option>
@@ -170,7 +170,7 @@ div.menu {
             <option value="e">E組</option>
             <option value="f">F組</option>
           </select>
-          <select name="index">
+          <select name="index" onchange="updateEmailBySelect(this.form)">
             <option value="1">1番</option>
             <option value="2">2番</option>
             <option value="3">3番</option>
@@ -185,7 +185,8 @@ div.menu {
             <option value="12">12番</option>
             <option value="13">13番</option>
             <option value="14">14番</option>
-            <option value="15" selected>15番</option>
+            <option value="15">15番</option>
+            <option value="0" selected>??番</option>
             <option value="16">16番</option>
             <option value="17">17番</option>
             <option value="18">18番</option>
@@ -222,9 +223,10 @@ div.menu {
             <option value="49">49番</option>
             <option value="50">50番</option>
           </select>          
-        </div>
+        <div class="email">
         <br /><input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
-        <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+        </div>
+          <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
       </form>
   </template>
 </dialog-modal>
@@ -277,7 +279,26 @@ div.menu {
     status: '',
     back: ''
   };
-
+  function updateEmailBySelect(form) {
+    let search = document.loocation.search;
+    if (!search) {
+      return;
+    }
+    let qs = search.replace(/^\?/,'');
+    if (!qs) {
+      return;
+    }
+    if (! /^[a-z0-9]+$/.test(qs)) {
+      return;
+    }
+    let index = form.querySelector('select[name="index"]').value;
+    if (index !== '0') {
+      let email = form.querySelector('input[name="email"]');
+      let grade = form.querySelector('select[name="grade"]').value;
+      let group = form.querySelector('select[name="group"]').value;
+      email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+    }
+  }
   function putmeta(str) {
     if (!str) {
       return;
@@ -838,16 +859,15 @@ div.menu {
       note.value = UPLOAD.note;
       jsonStr = Unlock(jsonStr);
       
-      let inputemail = dialog__form.querySelector('input[name=email]');
+      let classemail = dialog__form.querySelector('div.email');
       let classselect = dialog__form.querySelector('div.classselect');
       if (document.location.search) {
-        let qs = document.location.search.replace(/^\?/,'');
-        inputemail.value = 'info+'+qs+'@tessellation.jp';
-        inputemail.style.display = 'none';
+        inputemail.value = '';
+        classemail.style.display = 'none';
         classselect.style.display = 'block';
       } else {
         inputemail.value = '';
-        inputemail.style.display = 'block';
+        classemail.style.display = 'block';
         classselect.style.display = 'none';
       }
     }
