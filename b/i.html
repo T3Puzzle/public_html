@@ -280,7 +280,7 @@ div.menu {
     back: ''
   };
   function updateEmailBySelect(form) {
-    let search = document.loocation.search;
+    let search = location.search;
     if (!search) {
       return;
     }
@@ -861,7 +861,7 @@ div.menu {
       let inputemail = dialog__form.querySelector('input[name="email"]');
       let classemail = dialog__form.querySelector('div.email');
       let classselect = dialog__form.querySelector('div.classselect');
-      if (document.location.search) {
+      if (location.search) {
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
