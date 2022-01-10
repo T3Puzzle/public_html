@@ -297,6 +297,8 @@ div.menu {
       let grade = form.querySelector('select[name="grade"]').value;
       let group = form.querySelector('select[name="group"]').value;
       email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+      email.onchange();
+      console.log(email.value);
     }
   }
   function putmeta(str) {
