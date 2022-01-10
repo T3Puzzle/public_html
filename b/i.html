@@ -159,6 +159,7 @@ div.menu {
           <select name="group" onchange="updateEmailBySelect(this.form)">
             <option value="1">1組</option>
             <option value="2">2組</option>
+            <option value="0" selected>??組</option>
             <option value="3">3組</option>
             <option value="4">4組</option>
             <option value="5">5組</option>
@@ -222,7 +223,8 @@ div.menu {
             <option value="48">48番</option>
             <option value="49">49番</option>
             <option value="50">50番</option>
-          </select>          
+          </select>    
+        </div>
         <div class="email">
         <br /><input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
         </div>
@@ -866,10 +868,10 @@ div.menu {
       if (location.search) {
         inputemail.value = '';
         classemail.style.display = 'none';
-        classselect.style.display = 'inline-block';
+        classselect.style.display = 'block';
       } else {
         inputemail.value = '';
-        classemail.style.display = 'inline-block';
+        classemail.style.display = 'block';
         classselect.style.display = 'none';
       }
     }
