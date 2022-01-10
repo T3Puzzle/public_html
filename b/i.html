@@ -147,6 +147,82 @@ div.menu {
           <input class="submit" type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
         </div>
         <br /><input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
+        <div class="classselect">
+          <select name="grade">
+            <option value="1">1年</option>
+            <option value="2">2年</option>
+            <option value="3">3年</option>
+            <option value="4">4年</option>
+            <option value="5" selected>5年</option>
+            <option value="6">6年</option>
+          </select>
+          <select name="group">
+            <option value="1">1組</option>
+            <option value="2">2組</option>
+            <option value="3">3組</option>
+            <option value="4">4組</option>
+            <option value="5">5組</option>
+            <option value="6">6組</option>
+            <option value="a">A組</option>
+            <option value="b">B組</option>
+            <option value="c">C組</option>
+            <option value="d">D組</option>
+            <option value="e">E組</option>
+            <option value="f">F組</option>
+          </select>
+          <select name="index">
+            <option value="1">1番</option>
+            <option value="2">2番</option>
+            <option value="3">3番</option>
+            <option value="4">4番</option>
+            <option value="5">5番</option>
+            <option value="6">6番</option>
+            <option value="7">7番</option>
+            <option value="8">8番</option>
+            <option value="9">9番</option>
+            <option value="10">10番</option>
+            <option value="11">11番</option>
+            <option value="12">12番</option>
+            <option value="13">13番</option>
+            <option value="14">14番</option>
+            <option value="15" selected>15番</option>
+            <option value="16">16番</option>
+            <option value="17">17番</option>
+            <option value="18">18番</option>
+            <option value="19">19番</option>
+            <option value="20">20番</option>
+            <option value="21">21番</option>
+            <option value="22">22番</option>
+            <option value="23">23番</option>
+            <option value="24">24番</option>
+            <option value="25">25番</option>
+            <option value="26">26番</option>
+            <option value="27">27番</option>
+            <option value="28">28番</option>
+            <option value="29">29番</option>
+            <option value="30">30番</option>
+            <option value="31">31番</option>
+            <option value="32">32番</option>
+            <option value="33">33番</option>
+            <option value="34">34番</option>
+            <option value="35">35番</option>
+            <option value="36">36番</option>
+            <option value="37">37番</option>
+            <option value="38">38番</option>
+            <option value="39">39番</option>
+            <option value="40">40番</option>
+            <option value="41">41番</option>
+            <option value="42">42番</option>
+            <option value="43">43番</option>
+            <option value="44">44番</option>
+            <option value="45">45番</option>
+            <option value="46">46番</option>
+            <option value="47">47番</option>
+            <option value="48">48番</option>
+            <option value="49">49番</option>
+            <option value="50">50番</option>
+          </select>          
+        </div>
         <br /><input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
         <textarea placeholder="くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
       </form>
@@ -761,6 +837,19 @@ div.menu {
       }
       note.value = UPLOAD.note;
       jsonStr = Unlock(jsonStr);
+      
+      let inputemail = dialog__form.querySelector('input[name=email]');
+      let classselect = dialog__form.querySelector('div.classselect');
+      if (document.location.search) {
+        let qs = document.location.search.replace(/^\?/,'');
+        inputemail.value = 'info+'+qs+'@tessellation.jp';
+        inputemail.style.display = 'none';
+        classselect.style.display = 'block';
+      } else {
+        inputemail.value = '';
+        inputemail.style.display = 'block';
+        classselect.style.display = 'none';
+      }
     }
     if (jsonStr) {
       t3work.setAttribute('loaddata', jsonStr);
