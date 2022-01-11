@@ -1099,6 +1099,8 @@ div.menu {
     } else {
       submit.value = 'おうぼちゅう';
     }
+    
+    setTimeout(()=>{
     addDataToLocal(form);
     localStorage.setItem(APP.type + '__INFO--AGE', age.value);
     saveImage(src, dataStr, OBJ, (value) => {
@@ -1146,6 +1148,7 @@ div.menu {
     }, () => {
       submit.value = '🤔';
     })
+  },0);
   }
 
   function fetch_initdata() {
