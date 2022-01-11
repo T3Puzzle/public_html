@@ -864,14 +864,20 @@ div.menu {
       }
       note.value = UPLOAD.note;
       jsonStr = Unlock(jsonStr);
+      let inputage = dialog__form.querySelector('input[name="age"]');
+      let inputtitle = dialog__form.querySelector('input[name="title"]');
       let inputemail = dialog__form.querySelector('input[name="email"]');
       let classemail = dialog__form.querySelector('div.email');
       let classselect = dialog__form.querySelector('div.classselect');
       if (location.search) {
+        inputage.required = false;
+        inputtitle.required = false;
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
       } else {
+        inputage.required = true;
+        inputtitle.required = true;
         inputemail.value = '';
         classemail.style.display = 'block';
         classselect.style.display = 'none';
