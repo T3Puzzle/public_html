@@ -48,6 +48,10 @@
   if (location.search && /^\?id=/.test(location.search)) {
     id = location.search.replace(/^\?id=/,'');
   }
+  let xxid = '';
+  if (id) {
+    xxid = '?id='+id;
+  }
   let input = `
 <div class="classselect" style="display:none;">
           <input type="hidden" name="id" value="${id}">
@@ -186,7 +190,7 @@ ${input}
 ${back}
 <p/>
 <li><a href="https://www.tessellation.jp/t3dream/2022">コンテストページ</a>
-<li><a href="https://www.t3puzzle.com/b">T3パズル ウェブ版</a>
+<li><a href="https://www.t3puzzle.com/b/${xxid}">T3パズル ウェブ版</a>
 `);
 ;
   
