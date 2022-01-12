@@ -18,7 +18,7 @@
         let email = form.querySelector('input[name="email"]');
         let grade = form.querySelector('select[name="grade"]').value;
         email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-        email.onchange();
+        //email.onchange();
         console.log(email.value);
       }
     }
