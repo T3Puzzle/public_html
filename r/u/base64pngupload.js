@@ -2,6 +2,7 @@
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw9lhdthuEjrSuw_Ky7HVTh2KIZM9kbQARIv8-W0KIpZwGXp-JOIbIgJ1JEufdKoPrb/exec';
   let reg = '';
   let emailreq = '';
+  
   //if (!checkRegistered()) {
     reg = `
 <dt>おなまえ</dt>
@@ -19,8 +20,88 @@
     back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
   }
   let input = `
+<div class="classselect" style="display:none;">
+          <select name="grade" onchange="updateEmailBySelect(this.form)">
+            <option value="1">1年</option>
+            <option value="2">2年</option>
+            <option value="3">3年</option>
+            <option value="4">4年</option>
+            <option value="5" selected>5年</option>
+            <option value="6">6年</option>
+          </select>
+          <select name="group" onchange="updateEmailBySelect(this.form)">
+            <option value="1">1組</option>
+            <option value="2">2組</option>
+            <option value="0" selected>??組</option>
+            <option value="3">3組</option>
+            <option value="4">4組</option>
+            <option value="5">5組</option>
+            <option value="6">6組</option>
+            <option value="a">A組</option>
+            <option value="b">B組</option>
+            <option value="c">C組</option>
+            <option value="d">D組</option>
+            <option value="e">E組</option>
+            <option value="f">F組</option>
+          </select>
+          <select name="index" onchange="updateEmailBySelect(this.form)">
+            <option value="1">1番</option>
+            <option value="2">2番</option>
+            <option value="3">3番</option>
+            <option value="4">4番</option>
+            <option value="5">5番</option>
+            <option value="6">6番</option>
+            <option value="7">7番</option>
+            <option value="8">8番</option>
+            <option value="9">9番</option>
+            <option value="10">10番</option>
+            <option value="11">11番</option>
+            <option value="12">12番</option>
+            <option value="13">13番</option>
+            <option value="14">14番</option>
+            <option value="15">15番</option>
+            <option value="0" selected>??番</option>
+            <option value="16">16番</option>
+            <option value="17">17番</option>
+            <option value="18">18番</option>
+            <option value="19">19番</option>
+            <option value="20">20番</option>
+            <option value="21">21番</option>
+            <option value="22">22番</option>
+            <option value="23">23番</option>
+            <option value="24">24番</option>
+            <option value="25">25番</option>
+            <option value="26">26番</option>
+            <option value="27">27番</option>
+            <option value="28">28番</option>
+            <option value="29">29番</option>
+            <option value="30">30番</option>
+            <option value="31">31番</option>
+            <option value="32">32番</option>
+            <option value="33">33番</option>
+            <option value="34">34番</option>
+            <option value="35">35番</option>
+            <option value="36">36番</option>
+            <option value="37">37番</option>
+            <option value="38">38番</option>
+            <option value="39">39番</option>
+            <option value="40">40番</option>
+            <option value="41">41番</option>
+            <option value="42">42番</option>
+            <option value="43">43番</option>
+            <option value="44">44番</option>
+            <option value="45">45番</option>
+            <option value="46">46番</option>
+            <option value="47">47番</option>
+            <option value="48">48番</option>
+            <option value="49">49番</option>
+            <option value="50">50番</option>
+          </select>    
+        </div>
+<div class="email" style="display:none;">
 <dt>メールアドレス</dt>
 <dd><input name="email" type="email" size="34" ${emailreq}></dd>
+</div>
 <dt>ねんれい</dt>
 <dd><input name="age" type="number" size="3"></dd>
 ${reg}
@@ -76,12 +157,58 @@ ${back}
 <p/>
 <li><a href="https://www.tessellation.jp/t3dream/2022">コンテストページ</a>
 <li><a href="https://www.t3puzzle.com/b">T3パズル ウェブ版</a>
+<script>
+  function updateEmailBySelect(form) {
+    let search = location.search;
+    if (!search) {
+      return;
+    }
+    let qs = search.replace(/^\?id=/,'');
+    if (!qs) {
+      return;
+    }
+    if (! /^[a-z0-9]+$/.test(qs)) {
+      return;
+    }
+    let index = form.querySelector('select[name="index"]').value;
+    if (index !== '0') {
+      let group = form.querySelector('select[name="group"]').value;
+      if (group !== '0') {
+        let email = form.querySelector('input[name="email"]');
+        let grade = form.querySelector('select[name="grade"]').value;
+        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+        email.onchange();
+        console.log(email.value);
+      }
+    }
+  }
+</script>
 `);
 ;
+  
   document.addEventListener('DOMContentLoaded',()=>{
     let disp = document.querySelector('canvas');
     document.querySelector('input#ui').addEventListener('change', 
       (e)=>drawImage(e,disp,callback));
+    
+      let inputage = document.querySelector('input[name="age"]');
+      let inputtitle = document.querySelector('input[name="title"]');
+      let inputemail = document.querySelector('input[name="email"]');
+      let classemail = document.querySelector('div.email');
+      let classselect = document.querySelector('div.classselect');
+      if (location.search && /^\?id=/.test(location.search)) {
+        inputage.required = false;
+        inputtitle.required = false;
+        inputemail.value = '';
+        classemail.style.display = 'none';
+        classselect.style.display = 'block';
+      } else {
+        inputage.required = true;
+        inputtitle.required = true;
+        inputemail.value = '';
+        classemail.style.display = 'block';
+        classselect.style.display = 'none';
+      }
   });
   return;
 
