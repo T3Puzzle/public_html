@@ -44,8 +44,13 @@
   } else if (search && search==='?back'){
     back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
   }
+  let id = '';
+  if (location.search && /^\?id=/.test(location.search)) {
+    id = location.search.replace(/^\?id=/,'');
+  }
   let input = `
 <div class="classselect" style="display:none;">
+          <input type="hidden" name="id" value="${id}">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
             <option value="2">2年</option>
