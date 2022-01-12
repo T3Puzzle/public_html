@@ -1,26 +1,4 @@
-(()=>{
-  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw9lhdthuEjrSuw_Ky7HVTh2KIZM9kbQARIv8-W0KIpZwGXp-JOIbIgJ1JEufdKoPrb/exec';
-  let reg = '';
-  let emailreq = '';
-  
-  //if (!checkRegistered()) {
-    reg = `
-<dt>おなまえ</dt>
-<dd><input name="name" size="15" required></dd>
-`;
-    emailreq = 'required';
-  //} else {
-  //  reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
-  //}
-  let back = '';
-  let search = document.location.search;
-  if (search && search==='?pop') {
-    back = '<p/><li><a href="#" onclick="javascript:window.close();">戻る</a>';
-  } else if (search && search==='?back'){
-    back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
-  }
-  let input = `
-<script>
+
   function updateEmailBySelect(form) {
     let search = location.search;
     if (!search) {
@@ -45,8 +23,28 @@
       }
     }
   }
-
-</script>
+(()=>{
+  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw9lhdthuEjrSuw_Ky7HVTh2KIZM9kbQARIv8-W0KIpZwGXp-JOIbIgJ1JEufdKoPrb/exec';
+  let reg = '';
+  let emailreq = '';
+  
+  //if (!checkRegistered()) {
+    reg = `
+<dt>おなまえ</dt>
+<dd><input name="name" size="15" required></dd>
+`;
+    emailreq = 'required';
+  //} else {
+  //  reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
+  //}
+  let back = '';
+  let search = document.location.search;
+  if (search && search==='?pop') {
+    back = '<p/><li><a href="#" onclick="javascript:window.close();">戻る</a>';
+  } else if (search && search==='?back'){
+    back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
+  }
+  let input = `
 <div class="classselect" style="display:none;">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
