@@ -95,7 +95,7 @@ div.menu {
     </grid-data>
   </datalist>
 </grid-puzzle>
-
+<script>document.write('beforebegin',`
 <dialog-modal id="dialog__help__modal">
   <template>
     <div style="margin-left:0px;width:320px;height:320px;">
@@ -104,7 +104,7 @@ div.menu {
       応募方法、副賞などは<a target="_blank" href="https://www.tessellation.jp/t3dream/2022">コンテストページへ</a><br/>
       <br/>
       <h3>応募が成功しない場合(メールが来ない、ピースが欠ける)</h3>
-      1) 画面キャプチャをとり、画像を<a target="_blank" href="https://www.t3puzzle.com/r">アップロードてください</a>
+      1) 画面キャプチャをとり、画像を<a target="_blank" href="https://www.t3puzzle.com/r/u/${location.search}">アップロードてください</a>
       <br/>
       2) Mac/iOSでSafariなら別ブラウザをご利用ください(Chrome/Googleアプリ/Firefoxなど)
       <br/> <br/>
@@ -113,6 +113,8 @@ div.menu {
     </div>
   </template>
   </dialog-modal>
+`);
+</script>
 <dialog-modal id="dialog__form__modal">
   <template>
     <div id="dialog__src" style="margin-left:0px;width:320px;height:320px; background: rgb(200, 200, 200);"></div>
