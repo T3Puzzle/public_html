@@ -192,18 +192,21 @@ ${back}
     
       let inputage = document.querySelector('input[name="age"]');
       let inputtitle = document.querySelector('input[name="title"]');
+      let inputname = document.querySelector('input[name="name"]');
       let inputemail = document.querySelector('input[name="email"]');
       let classemail = document.querySelector('div.email');
       let classselect = document.querySelector('div.classselect');
       if (location.search && /^\?id=/.test(location.search)) {
         inputage.required = false;
         inputtitle.required = false;
+        inputname.required = false;
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
       } else {
         inputage.required = true;
         inputtitle.required = true;
+        inputname.required = true;
         inputemail.value = '';
         classemail.style.display = 'block';
         classselect.style.display = 'none';
