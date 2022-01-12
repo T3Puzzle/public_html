@@ -20,6 +20,33 @@
     back = '<p/><li><a href="#" onclick="javascript:history.go(-3);return false;">戻る</a>';
   }
   let input = `
+<script>
+  function updateEmailBySelect(form) {
+    let search = location.search;
+    if (!search) {
+      return;
+    }
+    let qs = search.replace(/^\?id=/,'');
+    if (!qs) {
+      return;
+    }
+    if (! /^[a-z0-9]+$/.test(qs)) {
+      return;
+    }
+    let index = form.querySelector('select[name="index"]').value;
+    if (index !== '0') {
+      let group = form.querySelector('select[name="group"]').value;
+      if (group !== '0') {
+        let email = form.querySelector('input[name="email"]');
+        let grade = form.querySelector('select[name="grade"]').value;
+        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+        email.onchange();
+        console.log(email.value);
+      }
+    }
+  }
+
+</script>
 <div class="classselect" style="display:none;">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
@@ -249,27 +276,3 @@ ${back}
     document.querySelector('form input[name="filename"]').value = filename;
   }
 })();
-  function updateEmailBySelect(form) {
-    let search = location.search;
-    if (!search) {
-      return;
-    }
-    let qs = search.replace(/^\?id=/,'');
-    if (!qs) {
-      return;
-    }
-    if (! /^[a-z0-9]+$/.test(qs)) {
-      return;
-    }
-    let index = form.querySelector('select[name="index"]').value;
-    if (index !== '0') {
-      let group = form.querySelector('select[name="group"]').value;
-      if (group !== '0') {
-        let email = form.querySelector('input[name="email"]');
-        let grade = form.querySelector('select[name="grade"]').value;
-        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-        email.onchange();
-        console.log(email.value);
-      }
-    }
-  }
