@@ -170,7 +170,7 @@ form dl dd{
 <input type="hidden" name="content" style="display:none;"/>
 ${input}
 </dl>
-<input type="submit" disabled="disabled" value="作品を応募" style="-webkit-appearance: none; appearance: none;
+<input type="submit" disabled="disabled" value="作品を応募" onclick="this.value='応募中...';" style="-webkit-appearance: none; appearance: none;
   border: 0;
   border-radius: 5px;
   background: #4676D7;
