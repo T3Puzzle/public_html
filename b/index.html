@@ -877,6 +877,10 @@ div.menu {
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
+        let inputgrade = dialog__form.querySelector('select[name="grade"]');
+        if (location.search==='?nitobe') {
+          inputgrade.value = 2;  
+        }
       } else {
         inputage.required = true;
         inputtitle.required = true;
