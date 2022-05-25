@@ -24,7 +24,7 @@
     }
   }
 (()=>{
-  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw9lhdthuEjrSuw_Ky7HVTh2KIZM9kbQARIv8-W0KIpZwGXp-JOIbIgJ1JEufdKoPrb/exec';
+  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw1-Dr_NNqBgFkSXXU1eNKsh6MRoiWHnUlPGZjGAwWD_7BJ0E1_Hh4rRi8UPslyKYPG/exec';
   let reg = '';
   let emailreq = '';
   
@@ -162,11 +162,11 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<h2>T3パズルデータアップロード</h2>
+<h2>T3サマーコンテスト2022 応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
-保存作品、ねんれい、だいめい、工夫した点は、<br/>
-ウェブページやSNSなどで<br/>
+応募作品、ねんれい、だいめい、工夫した点は、<br/>
+コンテストに関連してウェブページやSNSなどで<br/>
 紹介させていただくことがあります。
 <p/>
 <input id="ui" type="file" accept="image/*"/><br/>
@@ -179,7 +179,7 @@ form dl dd{
 <input type="hidden" name="content" style="display:none;"/>
 ${input}
 </dl>
-<input type="submit" disabled="disabled" value="作品を保存" onclick="this.value='保存中...';" style="-webkit-appearance: none; appearance: none;
+<input type="submit" disabled="disabled" value="作品を応募" onclick="this.value='応募中...';" style="-webkit-appearance: none; appearance: none;
   border: 0;
   border-radius: 5px;
   background: #4676D7;
@@ -189,6 +189,7 @@ ${input}
 </form>
 ${back}
 <p/>
+<li><a href="https://www.tessellation.jp/t3summer/2022">コンテストページ</a>
 <li><a href="https://www.t3puzzle.com/b/${xid}">T3パズル ウェブ版</a>
 `);
 ;
