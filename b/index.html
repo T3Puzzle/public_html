@@ -285,6 +285,7 @@ div.menu {
     back: ''
   };
   function updateEmailBySelect(form) {
+    console.log(1111);
     let search = location.search;
     if (!search) {
       return;
@@ -305,9 +306,11 @@ div.menu {
           let email = form.querySelector('input[name="email"]');
           email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
           email.onchange();
+          console.log(email.value);
         }
       }
     }
+    console.log(2222);
   }
   function putmeta(str) {
     if (!str) {
@@ -537,6 +540,7 @@ div.menu {
   }
 
   function dialogopen(action, modal, t3work, form, OBJ) {
+    console.log(4444);
     let submit = form.querySelector('input[type=submit]');
     let age = form.querySelector('input[name=age]');
     let filename = form.querySelector('input[name=filename]');
@@ -599,6 +603,8 @@ div.menu {
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
+        
+    console.log(999);
         let inputgrade = dialog__form.querySelector('select[name="grade"]');
         let inputgroup = dialog__form.querySelector('select[name="group"]');
         if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
@@ -625,6 +631,8 @@ div.menu {
       submit.removeAttribute('disabled');
     }
     modal.setAttribute('open', '');
+    
+    console.log(55555);
   }
 
   function loadData(modal) {
