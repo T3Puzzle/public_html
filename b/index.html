@@ -537,6 +537,7 @@ div.menu {
   }
 
   function dialogopen(action, modal, t3work, form, OBJ) {
+    let school=false;
     let submit = form.querySelector('input[type=submit]');
     let age = form.querySelector('input[name=age]');
     let filename = form.querySelector('input[name=filename]');
@@ -608,6 +609,7 @@ div.menu {
             inputgroup.value = RegExp.$2; 
           }
         } else {
+          school = true;
           console.log(inputemail.value);
         }
       } else {
@@ -628,6 +630,9 @@ div.menu {
       submit.value = OBJ.submitMessage;
       form.setAttribute('onsubmit', OBJ.submitEvent);
       submit.removeAttribute('disabled');
+    }
+    if (school) {
+      updateEmailBySelect(dialog__form);
     }
     modal.setAttribute('open', '');
   }
