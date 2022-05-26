@@ -87,7 +87,9 @@ function tileUtil() {
       shareStateAll();
     }
     function loadData(jsonStr, callback) {
-      console.log(jsonStr);
+      if (jsonStr.trim()==='') {
+        return false;
+      }
       try {
         let data = JSON.parse(jsonStr);
         if (callback) {
