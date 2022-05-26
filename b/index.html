@@ -151,9 +151,10 @@ div.menu {
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
             <option value="2">2年</option>
+            <option value="0" selected>??年</option>
             <option value="3">3年</option>
             <option value="4">4年</option>
-            <option value="5" selected>5年</option>
+            <option value="5">5年</option>
             <option value="6">6年</option>
           </select>
           <select name="group" onchange="updateEmailBySelect(this.form)">
@@ -295,15 +296,16 @@ div.menu {
     if (! /^[a-z0-9]+$/.test(qs)) {
       return;
     }
-    let index = form.querySelector('select[name="index"]').value;
-    if (index !== '0') {
-      let group = form.querySelector('select[name="group"]').value;
-      if (group !== '0') {
-        let email = form.querySelector('input[name="email"]');
-        let grade = form.querySelector('select[name="grade"]').value;
-        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-        email.onchange();
-        console.log(email.value);
+    let grade = form.querySelector('select[name="grade"]').value;
+    if (grade !== '0') {
+      let index = form.querySelector('select[name="index"]').value;
+      if (index !== '0') {
+        let group = form.querySelector('select[name="group"]').value;
+        if (group !== '0') {
+          let email = form.querySelector('input[name="email"]');
+          email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+          email.onchange();
+        }
       }
     }
   }
@@ -598,8 +600,8 @@ div.menu {
         classemail.style.display = 'none';
         classselect.style.display = 'block';
         let inputgrade = dialog__form.querySelector('select[name="grade"]');
-        if (location.search==='?nitobe') {
-          inputgrade.value = 2;  
+        if (/\0([1-6])$/.test(location.search)) {
+          inputgrade.value = parseInt(RegExp.$1,10);  
         }
       } else {
         inputage.required = true;
