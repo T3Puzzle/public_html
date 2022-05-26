@@ -600,8 +600,10 @@ div.menu {
         classemail.style.display = 'none';
         classselect.style.display = 'block';
         let inputgrade = dialog__form.querySelector('select[name="grade"]');
-        if (/0([1-6])$/.test(location.search)) {
-          inputgrade.value = parseInt(RegExp.$1,10);  
+        let inputgroup = dialog__form.querySelector('select[name="group"]');
+        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+          inputgrade.value = RegExp.$1;  
+          inputgroup.value = RegExp.$2; 
         }
       } else {
         inputage.required = true;
