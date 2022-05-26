@@ -600,7 +600,7 @@ div.menu {
         classemail.style.display = 'none';
         classselect.style.display = 'block';
         let inputgrade = dialog__form.querySelector('select[name="grade"]');
-        if (/\0([1-6])$/.test(location.search)) {
+        if (/0([1-6])$/.test(location.search)) {
           inputgrade.value = parseInt(RegExp.$1,10);  
         }
       } else {
