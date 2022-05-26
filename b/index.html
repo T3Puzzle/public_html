@@ -600,13 +600,15 @@ div.menu {
         classemail.style.display = 'none';
         classselect.style.display = 'block';
         updateEmailBySelect(dialog__form);
-        if (inputemail.value!=="") {
+        if (inputemail.value==="") {
           if (/0([1-6])0([0-6a-f])$/.test(location.search)) {    
             let inputgrade = dialog__form.querySelector('select[name="grade"]');
             let inputgroup = dialog__form.querySelector('select[name="group"]');
             inputgrade.value = RegExp.$1;  
             inputgroup.value = RegExp.$2; 
           }
+        } else {
+          console.log(inputemail.value);
         }
       } else {
         inputage.required = true;
