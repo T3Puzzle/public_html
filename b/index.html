@@ -604,10 +604,12 @@ div.menu {
         classemail.style.display = 'none';
         classselect.style.display = 'block';
         
-    console.log(999);
+    console.log(location.search);
         let inputgrade = dialog__form.querySelector('select[name="grade"]');
         let inputgroup = dialog__form.querySelector('select[name="group"]');
         if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+          
+    console.log(999);
           inputgrade.value = RegExp.$1;  
           inputgroup.value = RegExp.$2; 
         }
