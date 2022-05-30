@@ -24,6 +24,25 @@
       }
     }
   }
+  function updateEmailByUnique(form) {
+    let search = location.search;
+    if (!search) {
+      return;
+    }
+    let qs = search.replace(/^\?id=/,'');
+    if (!qs) {
+      return;
+    }
+    if (! /0x0x$/.test(qs)) {
+      return;
+    }
+    let unique = form.querySelector('input[name="unique"]').value;
+    if (unique !== '') {
+      let email = form.querySelector('input[name="email"]');
+      email.value = 'info+'+unique+'@tessellation.jp';
+      email.onchange();
+    }
+  }
 (()=>{
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw1-Dr_NNqBgFkSXXU1eNKsh6MRoiWHnUlPGZjGAwWD_7BJ0E1_Hh4rRi8UPslyKYPG/exec';
   let reg = '';
@@ -54,6 +73,10 @@
     xid = '?'+id;
   }
   let input = `
+
+<div class="classsunique" style="display:none;">
+          学籍番号: <input type="text" name="unique" value="" onchange="updateEmailByUnique(this.form)">
+</div>
 <div class="classselect" style="display:none;">
           <input type="hidden" name="id" value="${id}">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
@@ -209,20 +232,25 @@ ${back}
       let inputemail = document.querySelector('input[name="email"]');
       let classemail = document.querySelector('div.email');
       let classselect = document.querySelector('div.classselect');
+      let classunique = document.querySelector('div.classunique');
       if (location.search && /^\?id=/.test(location.search)) {
         inputage.required = false;
         inputtitle.required = false;
         inputname.required = false;
         inputtext.required = false;
         inputemail.value = '';
-        classemail.style.display = 'none';
-        classselect.style.display = 'block';
-        
-        let inputgrade = document.querySelector('select[name="grade"]');
-        let inputgroup = document.querySelector('select[name="group"]');
         if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+          classemail.style.display = 'none';
+          classselect.style.display = 'block';
+          classunique.style.display = 'none';
+          let inputgrade = document.querySelector('select[name="grade"]');
+          let inputgroup = document.querySelector('select[name="group"]');
           inputgrade.value = RegExp.$1;  
           inputgroup.value = RegExp.$2; 
+        } else if (/0x0x$/.test(location.search)) {
+          classemail.style.display = 'none';
+          classselect.style.display = 'none';
+          classunique.style.display = 'block';
         }
       } else {
         inputage.required = true;
@@ -232,6 +260,7 @@ ${back}
         inputemail.value = '';
         classemail.style.display = 'block';
         classselect.style.display = 'none';
+        classunique.style.display = 'none';
       }
   });
   return;
