@@ -11,15 +11,16 @@
     if (! /^[a-z0-9]+$/.test(qs)) {
       return;
     }
-    let index = form.querySelector('select[name="index"]').value;
-    if (index !== '0') {
-      let group = form.querySelector('select[name="group"]').value;
-      if (group !== '0') {
-        let email = form.querySelector('input[name="email"]');
-        let grade = form.querySelector('select[name="grade"]').value;
-        email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-        //email.onchange();
-        console.log(email.value);
+    let grade = form.querySelector('select[name="grade"]').value;
+    if (grade !== '0') {
+      let index = form.querySelector('select[name="index"]').value;
+      if (index !== '0') {
+        let group = form.querySelector('select[name="group"]').value;
+        if (group !== '0') {
+          let email = form.querySelector('input[name="email"]');
+          email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
+          email.onchange();
+        }
       }
     }
   }
@@ -79,6 +80,8 @@
             <option value="f">F組</option>
           </select>
           <select name="index" onchange="updateEmailBySelect(this.form)">
+            <option value="-1">先生1</option>
+            <option value="-2">先生2</option>
             <option value="1">1番</option>
             <option value="2">2番</option>
             <option value="3">3番</option>
