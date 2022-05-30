@@ -147,6 +147,9 @@ div.menu {
           <input class="submit" type="submit" value="ほぞんする" style="background:#4676FF;-webkit-appearance: none;color:white;border-radius: 5px;border-width:0px;font-size:110%;">
         </div>
         <br /><input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
+        <div class="classunique" style="display:none;">
+          学籍番号: <input type="text" name="unique" value="" onchange="updateEmailByUnique(this.form)">
+        </div>
         <div class="classselect">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
@@ -307,6 +310,25 @@ div.menu {
           email.onchange();
         }
       }
+    }
+  }
+  function updateEmailByUnique(form) {
+    let search = location.search;
+    if (!search) {
+      return;
+    }
+    let qs = search.replace(/^\?id=/,'');
+    if (!qs) {
+      return;
+    }
+    if (! /0x0x$/.test(qs)) {
+      return;
+    }
+    let unique = form.querySelector('input[name="unique"]').value;
+    if (unique !== '') {
+      let email = form.querySelector('input[name="email"]');
+      email.value = 'info+'+unique+'@tessellation.jp';
+      email.onchange();
     }
   }
   function putmeta(str) {
@@ -594,19 +616,29 @@ div.menu {
       let inputemail = dialog__form.querySelector('input[name="email"]');
       let classemail = dialog__form.querySelector('div.email');
       let classselect = dialog__form.querySelector('div.classselect');
+      let classunique = document.querySelector('div.classunique');
       if (location.search) {
         inputage.required = false;
         inputtitle.required = false;
         inputemail.value = '';
-        classemail.style.display = 'none';
-        classselect.style.display = 'block';
-        updateEmailBySelect(dialog__form);
+        
+        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {   
+          classemail.style.display = 'none';
+          classselect.style.display = 'block';
+          classunique.style.display = 'none';
+          updateEmailBySelect(dialog__form);
+        } else if (/0x0x$/.test(location.search)) {
+          classemail.style.display = 'none';
+          classselect.style.display = 'none';
+          classunique.style.display = 'block';
+          updateEmailByUnique(dialog__form);
+        }
         if (inputemail.value==="") {
           if (/0([1-6])0([0-6a-f])$/.test(location.search)) {    
             let inputgrade = dialog__form.querySelector('select[name="grade"]');
             let inputgroup = dialog__form.querySelector('select[name="group"]');
             inputgrade.value = RegExp.$1;  
-            inputgroup.value = RegExp.$2; 
+            inputgroup.value = RegExp.$2;
           }
         } else {
           school = true;
@@ -618,6 +650,7 @@ div.menu {
         inputemail.value = '';
         classemail.style.display = 'block'; // for contest
         classselect.style.display = 'none';
+        classunique.style.display = 'none';
       }
     }
     if (jsonStr) {
