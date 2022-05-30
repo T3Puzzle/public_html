@@ -74,7 +74,7 @@
   }
   let input = `
 
-<div class="classsunique" style="display:none;">
+<div class="classunique" style="display:none;">
           学籍番号: <input type="text" name="unique" value="" onchange="updateEmailByUnique(this.form)">
 </div>
 <div class="classselect" style="display:none;">
