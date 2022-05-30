@@ -217,6 +217,13 @@ ${back}
         inputemail.value = '';
         classemail.style.display = 'none';
         classselect.style.display = 'block';
+        
+        let inputgrade = document.querySelector('select[name="grade"]');
+        let inputgroup = document.querySelector('select[name="group"]');
+        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+          inputgrade.value = RegExp.$1;  
+          inputgroup.value = RegExp.$2; 
+        }
       } else {
         inputage.required = true;
         inputtitle.required = true;
