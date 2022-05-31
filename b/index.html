@@ -665,7 +665,11 @@ div.menu {
       submit.removeAttribute('disabled');
     }
     if (school) {
-      updateEmailBySelect(dialog__form);
+      if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+        updateEmailBySelect(dialog__form);
+      } else if (/0x0x$/.test(location.search)) {
+        updateEmailByUnique(dialog__form);
+      }
     }
     modal.setAttribute('open', '');
   }
