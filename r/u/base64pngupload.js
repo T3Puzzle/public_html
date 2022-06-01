@@ -19,7 +19,6 @@
         if (group !== '') {
           let email = form.querySelector('input[name="email"]');
           email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
-          email.onchange();
         }
       }
     }
