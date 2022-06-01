@@ -252,16 +252,17 @@ ${back}
           inputgrade.required = true; 
           inputgroup.required = true; 
           inputindex.required = true; 
-          inputunique.required = false; 
+          //inputunique.required = false; 
         } else if (/0x0x$/.test(location.search)) {
-          inputemail.value = 'info@tessellation.jp';
+          let qs = location.search.replace(/^\?id=/,'');
+          inputemail.value = 'info'+qs+'@tessellation.jp';
           classemail.style.display = 'none';
           classselect.style.display = 'none';
           classunique.style.display = 'block';
           inputgrade.required = false; 
           inputgroup.required = false; 
           inputindex.required = false; 
-          inputunique.required = true; 
+          //inputunique.required = true; 
         }
       } else {
         inputage.required = true;
@@ -275,7 +276,7 @@ ${back}
         inputgrade.required = false; 
         inputgroup.required = false; 
         inputindex.required = false; 
-        inputunique.required = false; 
+        //inputunique.required = false; 
       }
   });
   return;
