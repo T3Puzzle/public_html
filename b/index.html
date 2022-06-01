@@ -148,13 +148,13 @@ div.menu {
         </div>
         <br /><input required placeholder="だいめい" name="title" type="text" style="width:305px;margin-top:3px;border-width:1px;" onchange="UPLOAD.title = this.value;">
         <div class="classunique" style="display:none;">
-          学籍番号: <input type="text" name="unique" value="" onchange="updateEmailByUnique(this.form)">
+          学籍番号: <input type="text" name="unique" pattern="^[a-zA-Z0-9]*$" value="" onchange="updateEmailByUnique(this.form)">
         </div>
         <div class="classselect">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
             <option value="2">2年</option>
-            <option value="0" selected>??年</option>
+            <option value="" selected>??年</option>
             <option value="3">3年</option>
             <option value="4">4年</option>
             <option value="5">5年</option>
@@ -163,7 +163,7 @@ div.menu {
           <select name="group" onchange="updateEmailBySelect(this.form)">
             <option value="1">1組</option>
             <option value="2">2組</option>
-            <option value="0" selected>??組</option>
+            <option value="" selected>??組</option>
             <option value="3">3組</option>
             <option value="4">4組</option>
             <option value="5">5組</option>
@@ -193,7 +193,7 @@ div.menu {
             <option value="13">13番</option>
             <option value="14">14番</option>
             <option value="15">15番</option>
-            <option value="0" selected>??番</option>
+            <option value="" selected>??番</option>
             <option value="16">16番</option>
             <option value="17">17番</option>
             <option value="18">18番</option>
@@ -300,11 +300,11 @@ div.menu {
       return;
     }
     let grade = form.querySelector('select[name="grade"]').value;
-    if (grade !== '0') {
+    if (grade !== '') {
       let index = form.querySelector('select[name="index"]').value;
-      if (index !== '0') {
+      if (index !== '') {
         let group = form.querySelector('select[name="group"]').value;
-        if (group !== '0') {
+        if (group !== '') {
           let email = form.querySelector('input[name="email"]');
           email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
           email.onchange();
@@ -327,7 +327,7 @@ div.menu {
     let unique = form.querySelector('input[name="unique"]').value;
     if (unique !== '') {
       let email = form.querySelector('input[name="email"]');
-      email.value = 'info+'+unique+'@tessellation.jp';
+      email.value = 'info+'+qs+'_'+unique+'@tessellation.jp';
       email.onchange();
     }
   }
@@ -617,6 +617,9 @@ div.menu {
       let classemail = dialog__form.querySelector('div.email');
       let classselect = dialog__form.querySelector('div.classselect');
       let classunique = document.querySelector('div.classunique');
+      let inputgrade = dialog__form.querySelector('select[name="grade"]');
+      let inputgroup = dialog__form.querySelector('select[name="group"]');
+      let inputindex = dialog__form.querySelector('select[name="index"]');
       if (location.search) {
         inputage.required = false;
         inputtitle.required = false;
@@ -627,16 +630,20 @@ div.menu {
           classselect.style.display = 'block';
           classunique.style.display = 'none';
           updateEmailBySelect(dialog__form);
+          inputgrade.required = true;
+          inputgroup.required = true;
+          inputindex.required = true;
         } else if (/0x0x$/.test(location.search)) {
           classemail.style.display = 'none';
           classselect.style.display = 'none';
           classunique.style.display = 'block';
           updateEmailByUnique(dialog__form);
+          inputgrade.required = false;
+          inputgroup.required = false;
+          inputindex.required = false;
         }
         if (inputemail.value==="") {
           if (/0([1-6])0([0-6a-f])$/.test(location.search)) {    
-            let inputgrade = dialog__form.querySelector('select[name="grade"]');
-            let inputgroup = dialog__form.querySelector('select[name="group"]');
             inputgrade.value = RegExp.$1;  
             inputgroup.value = RegExp.$2;
           }
@@ -651,6 +658,9 @@ div.menu {
         classemail.style.display = 'block'; // for contest
         classselect.style.display = 'none';
         classunique.style.display = 'none';
+        inputgrade.required = false;
+        inputgroup.required = false;
+        inputindex.required = false;
       }
     }
     if (jsonStr) {
@@ -1048,3 +1058,4 @@ div.menu {
 <noscript><iframe width="600" height="1000" src="./support.html"></iframe></noscript>
 </body>
 </html>
+
