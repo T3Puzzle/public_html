@@ -39,7 +39,6 @@
     if (unique !== '') {
       let email = form.querySelector('input[name="email"]');
       email.value = 'info+'+qs+'_'+unique+'@tessellation.jp';
-      email.onchange();
     }
   }
 (()=>{
