@@ -12,11 +12,11 @@
       return;
     }
     let grade = form.querySelector('select[name="grade"]').value;
-    if (grade !== '0') {
+    if (grade !== '') {
       let index = form.querySelector('select[name="index"]').value;
-      if (index !== '0') {
+      if (index !== '') {
         let group = form.querySelector('select[name="group"]').value;
-        if (group !== '0') {
+        if (group !== '') {
           let email = form.querySelector('input[name="email"]');
           email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
           email.onchange();
@@ -39,7 +39,7 @@
     let unique = form.querySelector('input[name="unique"]').value;
     if (unique !== '') {
       let email = form.querySelector('input[name="email"]');
-      email.value = 'info+'+unique+'@tessellation.jp';
+      email.value = 'info+'+qs+'_'+unique+'@tessellation.jp';
       email.onchange();
     }
   }
@@ -75,13 +75,14 @@
   let input = `
 
 <div class="classunique" style="display:none;">
-          学籍番号: <input type="text" name="unique" value="" onchange="updateEmailByUnique(this.form)">
+          学籍番号: <input type="text" name="unique" pattern="^[a-zA-Z0-9]*$" value="" onchange="updateEmailByUnique(this.form)">
 </div>
 <div class="classselect" style="display:none;">
           <input type="hidden" name="id" value="${id}">
           <select name="grade" onchange="updateEmailBySelect(this.form)">
             <option value="1">1年</option>
             <option value="2">2年</option>
+            <option value="" selected>??年</option>
             <option value="3">3年</option>
             <option value="4">4年</option>
             <option value="5" selected>5年</option>
@@ -90,7 +91,7 @@
           <select name="group" onchange="updateEmailBySelect(this.form)">
             <option value="1">1組</option>
             <option value="2">2組</option>
-            <option value="0" selected>??組</option>
+            <option value="" selected>??組</option>
             <option value="3">3組</option>
             <option value="4">4組</option>
             <option value="5">5組</option>
@@ -120,7 +121,7 @@
             <option value="13">13番</option>
             <option value="14">14番</option>
             <option value="15">15番</option>
-            <option value="0" selected>??番</option>
+            <option value="" selected>??番</option>
             <option value="16">16番</option>
             <option value="17">17番</option>
             <option value="18">18番</option>
@@ -233,6 +234,9 @@ ${back}
       let classemail = document.querySelector('div.email');
       let classselect = document.querySelector('div.classselect');
       let classunique = document.querySelector('div.classunique');
+      let inputgrade = document.querySelector('select[name="grade"]');
+      let inputgroup = document.querySelector('select[name="group"]');
+      let inputindex = document.querySelector('select[name="index"]');
       if (location.search && /^\?id=/.test(location.search)) {
         inputage.required = false;
         inputtitle.required = false;
@@ -243,14 +247,21 @@ ${back}
           classemail.style.display = 'none';
           classselect.style.display = 'block';
           classunique.style.display = 'none';
-          let inputgrade = document.querySelector('select[name="grade"]');
-          let inputgroup = document.querySelector('select[name="group"]');
           inputgrade.value = RegExp.$1;  
           inputgroup.value = RegExp.$2; 
+          inputgrade.required = true; 
+          inputgroup.required = true; 
+          inputindex.required = true; 
+          inputunique.required = false; 
         } else if (/0x0x$/.test(location.search)) {
+          inputemail.value = 'info@tessellation.jp';
           classemail.style.display = 'none';
           classselect.style.display = 'none';
           classunique.style.display = 'block';
+          inputgrade.required = false; 
+          inputgroup.required = false; 
+          inputindex.required = false; 
+          inputunique.required = true; 
         }
       } else {
         inputage.required = true;
@@ -261,6 +272,10 @@ ${back}
         classemail.style.display = 'block';
         classselect.style.display = 'none';
         classunique.style.display = 'none';
+        inputgrade.required = false; 
+        inputgroup.required = false; 
+        inputindex.required = false; 
+        inputunique.required = false; 
       }
   });
   return;
