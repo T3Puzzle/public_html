@@ -255,7 +255,7 @@ ${back}
           //inputunique.required = false; 
         } else if (/0x0x$/.test(location.search)) {
           let qs = location.search.replace(/^\?id=/,'');
-          inputemail.value = 'info'+qs+'@tessellation.jp';
+          inputemail.value = 'info+'+qs+'@tessellation.jp';
           classemail.style.display = 'none';
           classselect.style.display = 'none';
           classunique.style.display = 'block';
