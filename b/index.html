@@ -625,22 +625,21 @@ div.menu {
         inputtitle.required = false;
         inputemail.value = '';
         
-        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {   
-          classemail.style.display = 'none';
-          classselect.style.display = 'block';
-          classunique.style.display = 'none';
-          updateEmailBySelect(dialog__form);
-          inputgrade.required = true;
-          inputgroup.required = true;
-          inputindex.required = true;
-        } else if (/0x0x$/.test(location.search)) {
-          classemail.style.display = 'none';
+        classemail.style.display = 'none';
+        if (/0x0x$/.test(location.search)) {
           classselect.style.display = 'none';
           classunique.style.display = 'block';
           updateEmailByUnique(dialog__form);
           inputgrade.required = false;
           inputgroup.required = false;
           inputindex.required = false;
+        } else {  
+          classselect.style.display = 'block';
+          classunique.style.display = 'none';
+          updateEmailBySelect(dialog__form);
+          inputgrade.required = true;
+          inputgroup.required = true;
+          inputindex.required = true;
         }
         if (inputemail.value==="") {
           if (/0([1-6])0([0-6a-f])$/.test(location.search)) {    
