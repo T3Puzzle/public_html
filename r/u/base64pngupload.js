@@ -241,26 +241,26 @@ ${back}
         inputname.required = false;
         inputtext.required = false;
         inputemail.value = '';
-        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
-          classemail.style.display = 'none';
-          classselect.style.display = 'block';
-          classunique.style.display = 'none';
-          inputgrade.value = RegExp.$1;  
-          inputgroup.value = RegExp.$2; 
-          inputgrade.required = true; 
-          inputgroup.required = true; 
-          inputindex.required = true; 
-          //inputunique.required = false; 
-        } else if (/0x0x$/.test(location.search)) {
+        
+        classemail.style.display = 'none';
+        if (/0x0x$/.test(location.search)) {
           let qs = location.search.replace(/^\?id=/,'');
           inputemail.value = 'info+'+qs+'@tessellation.jp';
-          classemail.style.display = 'none';
           classselect.style.display = 'none';
           classunique.style.display = 'block';
           inputgrade.required = false; 
           inputgroup.required = false; 
           inputindex.required = false; 
-          //inputunique.required = true; 
+        } else {
+          classselect.style.display = 'block';
+          classunique.style.display = 'none';
+          inputgrade.required = true; 
+          inputgroup.required = true; 
+          inputindex.required = true; 
+        }
+        if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
+          inputgrade.value = RegExp.$1;  
+          inputgroup.value = RegExp.$2; 
         }
       } else {
         inputage.required = true;
