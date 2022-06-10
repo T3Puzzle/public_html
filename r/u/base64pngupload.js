@@ -261,6 +261,9 @@ ${back}
         if (/0([1-6])0([0-6a-f])$/.test(location.search)) {
           inputgrade.value = RegExp.$1;  
           inputgroup.value = RegExp.$2; 
+          if (RegExp.$2==="0") {
+            inputgroup.value = ""; 
+          }
         }
       } else {
         inputage.required = true;
