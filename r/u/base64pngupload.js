@@ -43,18 +43,9 @@
   }
 (()=>{
   let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw1-Dr_NNqBgFkSXXU1eNKsh6MRoiWHnUlPGZjGAwWD_7BJ0E1_Hh4rRi8UPslyKYPG/exec';
-  let reg = '';
   let emailreq = '';
   
-  //if (!checkRegistered()) {
-    reg = `
-<dt>おなまえ</dt>
-<dd><input name="name" size="15" required></dd>
-`;
-    emailreq = 'required';
-  //} else {
-  //  reg = `<dd><input type="hidden" value="${getArtist()}"></dd>`;
-  //}
+  emailreq = 'required';
   let back = '';
   let search = document.location.search;
   if (search && search==='?pop') {
@@ -163,7 +154,6 @@
 </div>
 <dt>ねんれい</dt>
 <dd><input name="age" type="number" size="3"></dd>
-${reg}
 <dt>だいめい</dt>
 <dd><input name="title" size="34" required></dd>
 <dt>工夫した点</dt>
