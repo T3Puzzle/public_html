@@ -83,7 +83,7 @@
             <option value="" selected>??年</option>
             <option value="3">3年</option>
             <option value="4">4年</option>
-            <option value="5" selected>5年</option>
+            <option value="5">5年</option>
             <option value="6">6年</option>
           </select>
           <select name="group" onchange="updateEmailBySelect(this.form)">
