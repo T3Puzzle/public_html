@@ -1,130 +1,468 @@
-<!DOCTYPE html>
-<html><head>
+
+<!doctype html>
+<html>
+<head>
  <meta charset="utf-8">
  <base href="https://soma-arc.net/SchottkyV3/">
 </head>
 <body>
+<div style="display: flex;
+    justify-content: flex-end;position:sticky;top:0;">
+<div style="position:absolute;">
+<svg width="400px" height="400px" style="border:solid 1px #404040;">
+  <defs>
+    <marker id="endarrow" markerWidth="3" markerHeight="7" 
+    refX="3" refY="2" orient="auto">
+      <polygon fill="blue" points="0 0, 3 2, 0 4" />
+    </marker>
+    <marker id="startarrow" markerWidth="3" markerHeight="7" 
+    refX="0" refY="2" orient="auto">
+      <polygon fill="blue" points="3 0, 3 4, 0 2" />
+    </marker>
+    <marker id="purpleendarrow" markerWidth="3" markerHeight="7" 
+    refX="3" refY="2" orient="auto">
+      <polygon fill="purple" points="0 0, 3 2, 0 4" />
+    </marker>
+    <marker id="purplestartarrow" markerWidth="3" markerHeight="7" 
+    refX="0" refY="2" orient="auto">
+      <polygon fill="purple" points="3 0, 3 4, 0 2" />
+    </marker>
+    <marker id="greenendarrow" markerWidth="3" markerHeight="7" 
+    refX="3" refY="2" orient="auto">
+      <polygon fill="green" points="0 0, 3 2, 0 4" />
+    </marker>
+    <marker id="greenstartarrow" markerWidth="3" markerHeight="7" 
+    refX="0" refY="2" orient="auto">
+      <polygon fill="green" points="3 0, 3 4, 0 2" />
+    </marker>
+    <marker id="redendarrow" markerWidth="3" markerHeight="7" 
+    refX="3" refY="2" orient="auto">
+      <polygon fill="red" points="0 0, 3 2, 0 4" />
+    </marker>
+    <marker id="redstartarrow" markerWidth="3" markerHeight="7" 
+    refX="0" refY="2" orient="auto">
+      <polygon fill="red" points="3 0, 3 4, 0 2" />
+    </marker>
+  </defs>
+<g class="base" transform="translate(200,200)scale(70,-70)">
+<circle cx="0" cy="0" r="0.03">
+</g>
+</svg>
+<br/>
+<input name="title" size="50">
+<p/>
+<div style="display:flex;">
+<div>
+<select onchange="_detail(this.value)" style="width:150px;height:100px;" multiple="multiple">
+</select>
+</div>
+<div id="detail_label" style="width:80px;margin-left:10px;">
+</div>
+<div id="detail_input" style="margin-left:10px;">
+</div>
+</div>
+</div>
+</div>
 <script>
+function qs (wp) {
+  return Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')
+}
+function svg(wp,title) {
+  document.querySelector('svg g.base').innerHTML = _svg(wp)+_origin();
+  document.querySelector('input[name=title]').value = title; 
+  document.querySelector('select').innerHTML = _opt(wp);
+}
+function _input (labels,values) {
+   document.querySelector('div#detail_label').innerHTML 
+   = labels.map(label=>{
+     return `<input size="12" disabled="disabled" value="${label}"><br/>`
+   }).join('');
+
+   let ret = [];
+   values.forEach((value,i)=>{
+     ret.push(`<input size="15" name="${labels[i]}" value="${value}"><br/>`);
+   });
+   document.querySelector('div#detail_input').innerHTML = ret.join('');
+}
+function _detail (kv) {
+   let [key,valstr]=kv.split(':');
+   let values = valstr.split(',');
+   if (key==='HalfPlane[]') {
+     _input(['pointX', 'pointY', 'normalX', 'normalY'], values);
+   } else if (key==='CrossingInversions[]') {
+     _input(['pointX', 'pointY', 'directionX', 'directionY', 'degrees'], values);
+   } else if (key==='GlideReflection[]') {
+     _input(['pointX', 'pointY', 'directionX', 'directionY', 'planeDistance'], values);
+   } else if (key==='ParallelInversions[]') {
+     _input(['pointX', 'pointY', 'directionX', 'directionY', 'planeDistance'], values);
+   } else if (key==='ParallelTranslation[]') {
+     _input(['pointX', 'pointY', 'directionX', 'directionY', 'planeDistance'], values);
+   } else if (key==='Rotation[]') {
+     _input(['pointX', 'pointY', 'directionX', 'directionY', 'degrees'], values);
+   }
+}
+function _opt(wp) {
+  return Object.values(wp)[0].map(g=>{ 
+   let key = Object.keys(g)[0];
+   let value = Object.values(g)[0];
+   return `<option value="${key}:${value}">${key}</option>`;
+  }).join('');
+}
+function _origin () {
+  return '<circle cx="0" cy="0" r="0.03"></circle>';
+}
+function _svg (wp) {
+  let plane = () => `<g transform="scale(6)"><rect x="-1" y="-1" width="1" height="2" opacity="0.2"></rect></g>`;
+  let segment = () => `<line x1="0" y1="0" x2="0" y2="1"></line>`;
+  let line = () => `<g transform="scale(1,6)"><line x1="0" y1="-1" x2="0" y2="1"></line></g>`;
+  let arc = (deg) => {
+    let theta = deg*Math.PI/180;
+    let x1 = Math.cos(theta);
+    let y1 = Math.sin(theta);
+    return `<path d="M ${x1} ${y1} A 1 1 ${deg} 0 0 1 0"></path>`;
+  }
+  return Object.values(wp)[0].map(g=>{ 
+   let key = Object.keys(g)[0];
+   let value = Object.values(g)[0]
+   if (key==='HalfPlane[]') {
+     let [pointX, pointY, normalX, normalY] = value;
+     let [x1,y1]= [pointX, pointY];
+     let rot = Math.atan2(normalY,normalX)*180/Math.PI;
+     let ret = `<g transform="translate(${x1},${y1})rotate(${rot})" fill="red">${plane()}</g>`;
+     return ret;
+   } else if (key==='CrossingInversions[]') {
+     let [pointX, pointY, directionX, directionY, degrees] = value;
+     let [x1,y1]= [pointX, pointY];
+     let rot = Math.atan2(directionY,directionX)*180/Math.PI;
+     let ret = `<g stroke="purple">
+<g transform="translate(${x1},${y1})rotate(${rot})">
+<g stroke-width="0.02" transform="rotate(90)">
+${line()}
+</g>
+<g stroke-width="0.02" transform="rotate(90)rotate(${degrees})">
+${line()}
+</g>
+<g stroke-width="0.05" fill="none" marker-end="url(#purpleendarrow)" marker-start="url(#purplestartarrow)">
+${arc(degrees)}
+</g>
+<g stroke-width="0.02">
+<circle cx="0" cy="0" r="0.05">
+</g>
+</g>
+</g>`;
+     return ret;
+   } else if (key==='GlideReflection[]') {
+     let [pointX, pointY, directionX, directionY, planeDistance] = value;
+     let [x1,y1]= [pointX, pointY];
+     let rot = Math.atan2(directionY,directionX)*180/Math.PI;
+     let ret = `<g stroke-width="0.01" stroke="red">
+<g transform="translate(${x1},${y1})rotate(${rot})">
+${line()}
+<g transform="rotate(-90)scale(1,${planeDistance})" stroke="red" stroke-width="0.05" marker-end="url(#redendarrow)" marker-start="url(#redstartarrow)">
+${segment()}
+</g>
+<g transform="translate(${planeDistance})">
+${line()}
+</g>
+</g>
+</g>`;
+     return ret;
+/*
+   } else if (key==='ParallelInversions[]') {
+     let [pointX, pointY, directionX, directionY, planeDistance] = value;
+*/
+   } else if (key==='ParallelTranslation[]') {
+     let [pointX, pointY, directionX, directionY, planeDistance] = value;
+     let [x1,y1]= [pointX, pointY];
+     let rot = Math.atan2(directionY,directionX)*180/Math.PI;
+     let ret = `<g stroke-width="0.01" stroke="blue">
+<g transform="translate(${x1},${y1})rotate(${rot})">
+${line()}
+<g transform="rotate(-90)scale(1,${planeDistance})" stroke="blue" stroke-width="0.05" marker-end="url(#endarrow)" marker-start="url(#startarrow)">
+${segment()}
+</g>
+<g transform="translate(${planeDistance})">
+${line()}
+</g>
+</g>
+</g>`;
+     return ret;
+   } else if (key==='Rotation[]') {
+     let  [pointX, pointY, directionX, directionY, degrees] = value;
+     let [x1,y1]= [pointX, pointY];
+     let rot = Math.atan2(directionY,directionX)*180/Math.PI;
+     let ret = `<g stroke="green">
+<g transform="translate(${x1},${y1})rotate(${rot})">
+<g stroke-width="0.02" transform="rotate(90)">
+${line()}
+</g>
+<g stroke-width="0.02" transform="rotate(90)rotate(${degrees})">
+${line()}
+</g>
+<g stroke-width="0.05" fill="none" marker-end="url(#greenendarrow)" marker-start="url(#greenstartarrow)">
+${arc(degrees)}
+</g>
+<g stroke-width="0.02">
+<circle cx="0" cy="0" r="0.05">
+</g>
+</g>
+</g>`;
+     return ret;
+   }
+   return '';
+  }).join('')
+}
+let param_x=1.2;
+let param_d=80;
+let param_t=param_d/180*Math.PI;
 const wps = [
-{ "p6m = halfp x3": [
+{ "IH77: p6m = halfp x3 [OK]": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "p6 = rot x3 [wip]": [
+{ "IH31: p6 = rot x2 [wip]": [
      {"Rotation[]":[0,0, 1, 0, 120]},
      {"Rotation[]":[1,1, 1, 0, 120]},
 ]},
-{ "p31m = halfp x3 +rot": [
+{ "IH39: p6 = rot x2 [wip]": [
+     {"Rotation[]":[0,0, 1, 0, 120]},
+     {"Rotation[]":[1,1, 1, 0, 120]},
+]},
+{ "IH88: p6 = rot x2 [wip]": [
+     {"Rotation[]":[0,0, 1, 0, 120]},
+     {"Rotation[]":[1,1, 1, 0, 120]},
+]},
+{ "IH38: p31m = halfp x3 +rot [DUP]": [
      {"HalfPlane[]":[-1.2,0, 1, 0]},
      {"HalfPlane[]":[-1.2, 1.2*Math.sqrt(3), -1, -Math.sqrt(3)]},
      {"HalfPlane[]":[-1.2,-1.2*Math.sqrt(3), -1,  Math.sqrt(3)]},
      {"Rotation[]":[0,0, 1, 0, 120]},
 ]},
-{ "p3m1 = halfp x3": [
+{ "IH38: p31m = halfp x1 +rot [OK]": [
+     {"HalfPlane[]":[-1.2, 1.2*Math.sqrt(3), -1, -Math.sqrt(3)]},
+     {"Rotation[]":[0,0, 1, 0, 120]},
+]},
+{ "IH30: p3m1 = rot +halfpx2 [wip]": [
      {"HalfPlane[]":[-0.3,0, 0, 1]},
      {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "p3 = rot x2 [wip]": [
+{ "IH87: p3m1 = halfp x3 [OK]": [
+     {"HalfPlane[]":[-0.3,0, 0, 1]},
+     {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
+     {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
+]},
+{ "IH33: p3 = rot x2 [wip]": [
      {"Rotation[]":[0,0, 1, 0, 120]},
      {"Rotation[]":[1,1, -1, 0, 120]},
 ]},
-{ "p4g = rot +halfp [BUG?]": [
+{ "IH56: p4g = rot +halfp [LESS]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[1,0, -1, 0]},
 ]},
-{ "p4g = rot +halfp [TODO]": [
+{ "IH56: p4g = rot +halfp x2 [OK]": [
+     {"Rotation[]":[0,0, 1, 0, 90]},
+     {"HalfPlane[]":[1,0, -1, 0]},
+     {"HalfPlane[]":[0,1, 0, -1]},
+]},
+{ "IH81: p4g = rot +halfp [OK]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
 ]},
-{ "p4g = halfp x3": [
-     {"HalfPlane[]":[-Math.sqrt(2)+1,0, 0, 1]},
-     {"HalfPlane[]":[-Math.sqrt(2)+1,0, 1, -1]},
-     {"HalfPlane[]":[1,0, -1, 0]},
+{ "IH82: p4m = crossinginv +halfp x2 [OK]": [
+     {"CrossingInversions[]":[0,0, 1, 0, 90]},
+     {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
+     {"HalfPlane[]":[0,0, 0, 1]},
 ]},
-{ "p4m = halfp x3": [
+{ "IH80: p4m = halfp x3 [OK]": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.6,0,-1,-1]},
 ]},
-{ "p4 = rot x2 [BUG]": [
+{ "IH55: p4 = rot x2 [BUG]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"Rotation[]":[1,1, -1,0, 90]},
 ]},
-{ "cmm = halfplane x3": [
+{ "IH79: p4 = rot x2 [BUG]": [
+     {"Rotation[]":[0,0, 1, 0, 90]},
+     {"Rotation[]":[1,1, -1,0, 90]},
+]},
+{ "IH78: cmm = rot +halfplane x2 [wip]": [
      {"HalfPlane[]":[0,0, 1,0]},
      {"HalfPlane[]":[0,0, 0,1]},
      {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
 ]},
-{ "cmm = crossinginv +halfp": [
-     {"CrossingInversions[]":[0,0, 1, 0, 90]},
-     {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
-]},
-{ "pgg = glide x2 at sqrt(2) [TODO]": [
+{ "IH86: pgg = glide +rotate[wip]": [
      {"GlideReflection[]":[0, 0, 1, 1, Math.sqrt(2)]},
      {"GlideReflection[]":[1, 0, -1, 1, Math.sqrt(2)]},
 ]},
-{ "pgg = glide x2": [
-     {"GlideReflection[]":[  0, 0.5, 1, 0, 1]},
-     {"GlideReflection[]":[0.5,   0, 0, 1, 1]},
+/*
+{ "IH53: pgg = gliderotate +rotate x2 [wip]": [
+     {"GlideReflection[]":[0, 0, 1, 1, Math.sqrt(2)]},
+     {"GlideReflection[]":[1, 0, -1, 1, Math.sqrt(2)]},
 ]},
-{ "pmg = rot +halfp +para": [
-     {"Rotation[]":[0.5,0, 1, 0, 180]},
+*/
+{ "IH52: pgg = glide x2 [OK]": [
+     {"GlideReflection[]":[  0, 0.5, 1, 0, param_x]},
+     {"GlideReflection[]":[param_x/2,   0, 0, 1, 1]},
+]},
+{ "IH51: pgg = glide +rotate x2 [BUG]": [
+     {"GlideReflection[]":[0, 0, 1, 0, param_x]},
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[param_x/2,1, -1, 0, 180]},
+]},
+{ "IH69=85: pmg [wip]": [
+]},
+{ "IH66=50: pmg [wip]": [
+]},
+{ "IH58: pmg = rot +halfp +para [LESS]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
-     {"ParallelTranslation[]":[0,0, 0, -1, 2]}, /* -1がポイント*/
+     {"ParallelTranslation[]":[param_x/2,-1, 0, 1, 2]},
 ]},
-{ "pmm = rot +para +halfp x2 [TODO]": [
+{ "IH58: pmg = rot +halfp +para [DUP]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"ParallelTranslation[]":[param_x/2,0, 0, -1, 2]},
+]},
+{ "IH58: pmg = rot +halfp +para [OK]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"HalfPlane[]":[param_x,0, -1, 0]},
+     {"ParallelTranslation[]":[param_x/2,-1, 0, 1, 2]},
+]},
+{ "IH50: pmg = rot +para +halfp[OK]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"HalfPlane[]":[0,1, 0, -1]},
+     {"ParallelTranslation[]":[0, 0.5, 1, 0, param_x]},
+]},
+{ "IH49: pmg = rot x2 +halfp x2 [BUG]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[param_x/2,1,-1, 0, 180]},
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"HalfPlane[]":[param_x, 0, -1,0]},
+]},
+{ "IH72: pmm = para x2 +halfp x2 [OK]": [
+     {"HalfPlane[]":[0,1, 0,-1]},
+     {"HalfPlane[]":[param_x,0, -1,0]},
+     {"ParallelTranslation[]":[param_x/2, 0, 0, 1, 2]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x*2]},
+]},
+{ "IH65: pmm = rot +para +halfp x2 [DUP]": [
      {"Rotation[]":[1,0, 1, 0, 180]},
      {"HalfPlane[]":[0,1, 0,-1]},
      {"HalfPlane[]":[0,0, 0,-1]},
-     {"ParallelTranslation[]":[0,0, 1, 0, 2]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, 2]},
 ]},
-{ "pmm = halfp x2": [
+{ "IH65: pmm = para +halfp x3 [OK]": [
+     {"HalfPlane[]":[0,1, 0,-1]},
+     {"HalfPlane[]":[0,0, 0,1]},
+     {"HalfPlane[]":[param_x,0, -1,0]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x*2]},
+]},
+{ "IH48: pmm = halfp x4 [OK]": [
      {"HalfPlane[]":[0,0, 1, 0]},
-     {"HalfPlane[]":[1,1,-1, 0]},
+     {"HalfPlane[]":[param_x,0,-1, 0]},
      {"HalfPlane[]":[0,0, 0, 1]},
-     {"HalfPlane[]":[1,1, 0,-1]},
+     {"HalfPlane[]":[0,1, 0,-1]},
 ]},
-{ "cm = halfp x2 +glide": [
+{ "IH68: cm = para x2 + halfp [BUG]": [
+     {"ParallelTranslation[]":[0,0.5, Math.cos(Math.PI/4.3), Math.sin(Math.PI/4.3), 1.5]},
+     {"ParallelTranslation[]":[0,0.5, Math.cos(Math.PI/4.3),-Math.sin(Math.PI/4.3), 1.5]},
+     {"HalfPlane[]":[1.5*Math.sin(Math.PI/4.3),0, -1, 0]},
+]},
+{ "IH68: cm = para x2 + halfp [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 1, 1.5]},
+     {"ParallelTranslation[]":[0,0.5, 1, -1,1.5]},
+     {"HalfPlane[]":[1.5/Math.sqrt(2),0, -1, 0]},
+]},
+{ "IH45: cm = halfp x2 +glide [OK]": [
+     {"HalfPlane[]":[0,0,  1,0]},
+     {"HalfPlane[]":[1,1, -1,0]},
+     {"GlideReflection[]":[0.5,0, 0, 1, param_x]},
+]},
+/*
+{ "IH83: cm = halfp +gliderot [wip]": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
      {"GlideReflection[]":[0,0.5, 1, 0, 1]},
 ]},
-{ "pg = para +glide": [
+*/
+{ "IH43: pg = para +glide [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
+     {"GlideReflection[]":[param_x/2,0, 0, 1, 1]},
+]},
+/*
+{ "IH44: pg = para +gliderot": [
      {"ParallelTranslation[]":[0,0, 1, 0, 1]},
      {"GlideReflection[]":[0.5,0, 0, 1, 1]},
 ]},
-{ "pm = para x2	+halfp [TODO]": [
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]},
+*/
+{ "IH64: pm = para x2	+halfp [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
      {"HalfPlane[]":[0,0, 0, 1]},
-     {"ParallelTranslation[]":[0,-1, 0, 1, 2]}, /* この設定による*/
+     {"ParallelTranslation[]":[0.5,-1, 0, 1, 2]}, 
 ]},
-{ "pm = para	+halfp x2": [
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]},
+{ "IH64: pm = param x 2 +halfp x3 [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[0,1, 0, -1]},
+     {"HalfPlane[]":[0,-1, 0, 1]},
+]},
+{ "IH42: pm = para	+halfp x2 [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
 ]},
-{ "p2 = para +rot x2 [BUG]": [
+{ "IH84: p2 = rot x3 [BUG]": [
+     {"Rotation[]":[1,0, 1, 0, 180]},
+     {"Rotation[]":[0,1, 0,-1, 180]},
+     {"Rotation[]":[1,1,-1, 1, 180]},
+]},
+{ "IH57: p2 = para x2	+rot [DUP]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"ParallelTranslation[]":[0,-0.5, 1, 0, param_x]}, 
+     {"ParallelTranslation[]":[param_x/2,0, 0, -1, 2]},
+]},
+{ "IH57: p2 = para x2	+rot [OK]": [
+     {"Rotation[]":[param_x/2,1, -1, 0, 180]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
+     {"ParallelTranslation[]":[param_x/2,2, 0, -1, 2]}, 
+]},
+{ "IH57: p2 = para x2	+rot [OK]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
+     {"ParallelTranslation[]":[param_x/2,1, 0, -1, 2]}, 
+]},
+{ "IH47: p2 = para +rot x2 [BUG]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[param_x/2,-1,1, 0, 180]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
+]},
+{ "IH47: p2 = para +rot x2 [BUG]": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[param_x/2,1,-1, 0, 180]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
+]},
+{ "IH46: p2 = rot x4 [BUG]": [
      {"Rotation[]":[0.5,0, 1, 0, 180]},
      {"Rotation[]":[0.5,1,-1, 0, 180]},
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]}, 
+     {"Rotation[]":[0,0.5, 0,-1, 180]},
+     {"Rotation[]":[1,0.5, 0, 1, 180]},
 ]},
-{ "p2 = para x2	+rot [TODO]": [
-     {"Rotation[]":[0.5,0, 1, 0, 180]},
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]}, 
-     {"ParallelTranslation[]":[0,0, 0, -1, 2]},  /* -1がポイント*/
+{ "IH41: p1 = para x2 [BUG]": [
+     {"ParallelTranslation[]":[0,0.5, 1,0, param_x]},
+     {"ParallelTranslation[]":[param_x/2,0, Math.cos(param_t), Math.sin(param_t), 1]},
 ]},
-{ "p1 = para x2": [
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]},
-     {"ParallelTranslation[]":[0,0, 0, 1, 1]},
+{ "IH41: p1 = para x2 [OK]": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
+     {"ParallelTranslation[]":[param_x/2,0, 0, 1, 1]},
 ]},
 ];
-wps.map(wp=>{
-document.currentScript.insertAdjacentHTML('afterend',`<li><a target="_blank" href="?scale=8&OrbitSeed[]=0,0,1,1&${Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')}">${Object.keys(wp)[0]}</a>`)
+wps.forEach((wp,i)=>{
+document.currentScript.insertAdjacentHTML('afterend',`<li><a target="_blank" onmouseover="svg(wps[${i}],this.textContent);" href="?scale=8&OrbitSeed[]=0,0,1,1&${qs(wp)}">${Object.keys(wp)[0]}</a>`)
 });
-</script><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;ParallelTranslation[]=0,0,1,0,1&amp;ParallelTranslation[]=0,0,0,1,1">p1 = para x2</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0.5,0,1,0,180&amp;ParallelTranslation[]=0,0,1,0,1&amp;ParallelTranslation[]=0,0,0,-1,2">p2 = para x2	+rot [TODO]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0.5,0,1,0,180&amp;Rotation[]=0.5,1,-1,0,180&amp;ParallelTranslation[]=0,0,1,0,1">p2 = para +rot x2 [BUG]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;ParallelTranslation[]=0,0,1,0,1&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=1,1,0,-1">pm = para	+halfp x2</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;ParallelTranslation[]=0,0,1,0,1&amp;HalfPlane[]=0,0,0,1&amp;ParallelTranslation[]=0,-1,0,1,2">pm = para x2	+halfp [TODO]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;ParallelTranslation[]=0,0,1,0,1&amp;GlideReflection[]=0.5,0,0,1,1">pg = para +glide</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=1,1,0,-1&amp;GlideReflection[]=0,0.5,1,0,1">cm = halfp x2 +glide</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,1,0&amp;HalfPlane[]=1,1,-1,0&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=1,1,0,-1">pmm = halfp x2</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=1,0,1,0,180&amp;HalfPlane[]=0,1,0,-1&amp;HalfPlane[]=0,0,0,-1&amp;ParallelTranslation[]=0,0,1,0,2">pmm = rot +para +halfp x2 [TODO]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0.5,0,1,0,180&amp;HalfPlane[]=0,0,1,0&amp;ParallelTranslation[]=0,0,0,-1,2">pmg = rot +halfp +para</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;GlideReflection[]=0,0.5,1,0,1&amp;GlideReflection[]=0.5,0,0,1,1">pgg = glide x2</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;GlideReflection[]=0,0,1,1,1.4142135623730951&amp;GlideReflection[]=1,0,-1,1,1.4142135623730951">pgg = glide x2 at sqrt(2) [TODO]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;CrossingInversions[]=0,0,1,0,90&amp;HalfPlane[]=1.614213562373095,0,-1,-1">cmm = crossinginv +halfp</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,1,0&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=1.614213562373095,0,-1,-1">cmm = halfplane x3</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0,0,1,0,90&amp;Rotation[]=1,1,-1,0,90">p4 = rot x2 [BUG]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=0,0,1,0&amp;HalfPlane[]=1.6,0,-1,-1">p4m = halfp x3</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=-0.41421356237309515,0,0,1&amp;HalfPlane[]=-0.41421356237309515,0,1,-1&amp;HalfPlane[]=1,0,-1,0">p4g = halfp x3</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0,0,1,0,90&amp;HalfPlane[]=1.614213562373095,0,-1,-1">p4g = rot +halfp [TODO]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0,0,1,0,90&amp;HalfPlane[]=1,0,-1,0">p4g = rot +halfp [BUG?]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0,0,1,0,120&amp;Rotation[]=1,1,-1,0,120">p3 = rot x2 [wip]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=-0.3,0,0,1&amp;HalfPlane[]=-0.3,0,1.7320508075688772,-1&amp;HalfPlane[]=1.4,0,-1.7320508075688772,-1">p3m1 = halfp x3</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=-1.2,0,1,0&amp;HalfPlane[]=-1.2,2.0784609690826525,-1,-1.7320508075688772&amp;HalfPlane[]=-1.2,-2.0784609690826525,-1,1.7320508075688772&amp;Rotation[]=0,0,1,0,120">p31m = halfp x3 +rot</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;Rotation[]=0,0,1,0,120&amp;Rotation[]=1,1,1,0,120">p6 = rot x3 [wip]</a></li><li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=0,0,1,0&amp;HalfPlane[]=1.4,0,-1.7320508075688772,-1">p6m = halfp x3</a></li>
- <li><a target="_blank" href="?scale=8&amp;OrbitSeed[]=0,0,1,1&amp;HalfPlane[]=0,0,0,1&amp;HalfPlane[]=0,0,1,0&amp;HalfPlane[]=1,1,0,-1&amp;HalfPlane[]=1,1,-1,0">test</a>
-
-
-</li></body></html>
+</script>
+</body>
+</html>
