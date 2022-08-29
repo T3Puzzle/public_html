@@ -228,223 +228,185 @@ let param_x=1.2;
 let param_d=80;
 let param_t=param_d/180*Math.PI;
 const wps = [
-{ "IH92: p6m = rot +halfp x2 [OK]": [
+{ "IH92: p6m = rot +halfp x2 ": [
      {"Rotation[]":[-1/2,0, Math.sqrt(3),-1, 60]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,0, -1, 0]},
 ]},
-{ "IH77=93: p6m = halfp x3 [OK]": [
+{ "IH77=93: p6m = halfp x3 ": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "IH90: p6 = rot x3 [wip]": [
+{ "IH90: p6 = rot x3 ": [
      {"Rotation[]":[1-1.5/2, 1.5/2/Math.sqrt(3)+0.5,-Math.sqrt(3),-1, 180]},
      {"Rotation[]":[1-1.5/2,-1.5/2/Math.sqrt(3)+0.5, Math.sqrt(3),-1, 180]},
      {"Rotation[]":[1,0.5, 0, 1, 180]},
 ]},
-{ "IH88: p6 = rot x2 [wip]": [
+{ "IH88: p6 = rot x2 ": [
      {"Rotation[]":[-1/2,0.5, Math.sqrt(3),-1, 60]},
      {"Rotation[]":[1,0.5, 0, 1, 180]},
 ]},
-{ "IH39: p6 = rot x2 [wip]": [
+{ "IH39: p6 = rot x2 ": [
      {"Rotation[]":[-1/3,0.5, 1, -Math.sqrt(3), 120]},
      {"Rotation[]":[1, 0.5, 0, 1, 180]},
 ]},
-{ "IH31: p6 = rot x2 [wip]": [
+{ "IH31: p6 = rot x2 ": [
      {"Rotation[]":[0,0.5, 1, -Math.sqrt(3), 120]},
      {"Rotation[]":[2,0.5, -Math.sqrt(3), 1, 60]},
 ]},
-{ "IH30: p31m = rot +halfp x2 [wip]": [
-     {"Rotation[]":[-1/2/Math.sqrt(3),1/2, 1, -Math.sqrt(3), 120]},
-     {"HalfPlane[]":[0,0, 0, 1]},
-     {"HalfPlane[]":[1,0, -Math.sqrt(3),-1]},
-]},
-{ "IH38=36=89: p31m = halfp x1 +rot [OK]": [
+{ "IH38=36=89: p31m = halfp x1 +rot ": [
      {"HalfPlane[]":[-1.2, 1.2*Math.sqrt(3), -1, -Math.sqrt(3)]},
      {"Rotation[]":[0,0, 1, 0, 120]},
 ]},
-{ "IH30: p31m = rot +halfpx2 [wip]": [
+{ "IH30: p31m = rot +halfp x2 ": [
+     {"Rotation[]":[-1/Math.sqrt(3),1, 1, -Math.sqrt(3), 120]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[0,2, -Math.sqrt(3),-1]},
+]},
+{ "IH87=19: p3m1 = halfp x3 ": [
      {"HalfPlane[]":[-0.3,0, 0, 1]},
      {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "IH87=19: p3m1 = halfp x3 [OK]": [
-     {"HalfPlane[]":[-0.3,0, 0, 1]},
-     {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
-     {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
-]},
-{ "IH33: p3 = rot x2 [wip]": [
+{ "IH33: p3 = rot x2 ": [
      {"Rotation[]":[-0.2,0.5, 1, -Math.sqrt(3), 120]},
      {"Rotation[]":[1.2,0.5, -1, Math.sqrt(3), 120]},
 ]},
-{ "IH81=68: p4g = rot +halfp [OK]": [
+{ "IH81: p4g = rot +halfp ": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
 ]},
-{ "IH71: p4g = halfp + glide [OK]": [
-     {"GlideReflection[]":[0, 0.5, 1,1, Math.sqrt(2)]},
-     {"GlideReflection[]":[0, 0.5, 1,-1, Math.sqrt(2)]},
-     {"HalfPlane[]":[1,0, -1, 0]},
+{ "IH71: p4g = halfp + glide ": [
+     {"GlideReflection[]":[0+1.5/2/Math.sqrt(2),0.5-1.5/2/Math.sqrt(2), 1, 1, 1.5]},
+     {"GlideReflection[]":[0+1.5/2/Math.sqrt(2),0.5+1.5/2/Math.sqrt(2), 1, -1,1.5]},
+     {"HalfPlane[]":[1.5/Math.sqrt(2),0, -1, 0]},
 ]},
-{ "IH56: p4g = rot +halfp x2 [OK]": [
+{ "IH56: p4g = rot +halfp x2 ": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[1,0, -1, 0]},
      {"HalfPlane[]":[0,1, 0, -1]},
 ]},
-{ "IH82: p4m = crossinginv +halfp x2 [OK]": [
-     {"CrossingInversions[]":[0,0, 1, 0, 90]},
-     {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
-     {"HalfPlane[]":[0,0, 0, 1]},
-]},
-{ "IH80: p4m = halfp x3 [OK]": [
+{ "IH80=82: p4m = halfp x3 ": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.6,0,-1,-1]},
 ]},
-{ "IH79: p4 = rot x2 [OK]": [
+{ "IH79: p4 = rot x2 ": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"Rotation[]":[1,1, -1,1, 180]},
 ]},
-{ "IH55: p4 = rot x2 [OK]": [
+{ "IH55: p4 = rot x2 ": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"Rotation[]":[1,1, -1,0, 90]},
 ]},
-{ "IH78: cmm = rot +halfplane x2 [wip]": [
+{ "IH78=74: cmm = rot +halfplane x2 ": [
      {"HalfPlane[]":[0,0, 1,0]},
      {"HalfPlane[]":[0,0, 0,1]},
      {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
 ]},
-{ "IH86: pgg = glide +rotate[wip]": [
-     {"GlideReflection[]":[0, 0, 1, 1, Math.sqrt(2)]},
-     {"GlideReflection[]":[1, 0, -1, 1, Math.sqrt(2)]},
-]},
-/*
-{ "IH53: pgg = gliderotate +rotate x2 [wip]": [
-     {"GlideReflection[]":[0, 0, 1, 1, Math.sqrt(2)]},
-     {"GlideReflection[]":[1, 0, -1, 1, Math.sqrt(2)]},
-]},
-*/
-{ "IH52: pgg = glide x2 [OK]": [
+{ "IH52: pgg = glide x2 ": [
      {"GlideReflection[]":[  0, 0.5, 1, 0, param_x]},
      {"GlideReflection[]":[param_x/2,   0, 0, 1, 1]},
 ]},
-{ "IH51: pgg = glide +rotate x2 [OK]": [
-     {"GlideReflection[]":[0, 0, 1, 0, param_x]},
+{ "IH51: pgg = glide +rotate x2 ": [
+     {"GlideReflection[]":[0, 0.5, 1, 0, param_x]},
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1, -1, 0, 180]},
 ]},
-{ "IH69=85: pmg [wip]": [
+{ "IH85=69: pmg rot x2 + halfp ": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[0,1/2, 0, -1, 180]},
+     {"HalfPlane[]":[param_x,0,-1, -param_x]},
 ]},
-{ "IH66=50: pmg [wip]": [
-]},
-{ "IH58: pmg = rot +halfp +para [OK]": [
+{ "IH58: pmg = rot +halfp +para ": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[param_x,0, -1, 0]},
      {"ParallelTranslation[]":[param_x/2,-1, 0, 1, 2]},
 ]},
-{ "IH50: pmg = rot +para +halfp[OK]": [
+{ "IH50=66: pmg = rot +para +halfp": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,1, 0, -1]},
      {"ParallelTranslation[]":[0, 0.5, 1, 0, param_x]},
 ]},
-{ "IH49: pmg = rot x2 +halfp x2 [OK]": [
+{ "IH49: pmg = rot x2 +halfp x2 ": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1,-1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[param_x, 0, -1,0]},
 ]},
-{ "IH72: pmm = para x2 +halfp x2 [OK]": [
+{ "IH72: pmm = para x2 +halfp x2 ": [
      {"HalfPlane[]":[0,1, 0,-1]},
      {"HalfPlane[]":[param_x,0, -1,0]},
      {"ParallelTranslation[]":[param_x/2, 0, 0, 1, 2]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x*2]},
 ]},
-{ "IH65: pmm = para +halfp x3 [OK]": [
+{ "IH65: pmm = para +halfp x3 ": [
      {"HalfPlane[]":[0,1, 0,-1]},
      {"HalfPlane[]":[0,0, 0,1]},
      {"HalfPlane[]":[param_x,0, -1,0]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x*2]},
 ]},
-{ "IH48: pmm = halfp x4 [OK]": [
+{ "IH48: pmm = halfp x4 ": [
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[param_x,0,-1, 0]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,1, 0,-1]},
 ]},
-{ "IH68: cm = para x2 + halfp [BUG]": [
-     {"ParallelTranslation[]":[0,0.5, Math.cos(Math.PI/4.3), Math.sin(Math.PI/4.3), 1.5]},
-     {"ParallelTranslation[]":[0,0.5, Math.cos(Math.PI/4.3),-Math.sin(Math.PI/4.3), 1.5]},
-     {"HalfPlane[]":[1.5*Math.sin(Math.PI/4.3),0, -1, 0]},
-]},
-{ "IH68: cm = para x2 + halfp [OK]": [
-     {"ParallelTranslation[]":[0,0.5, 1, 1, 1.5]},
-     {"ParallelTranslation[]":[0,0.5, 1, -1,1.5]},
+{ "IH68: cm = para x2 + halfp ": [
+     {"ParallelTranslation[]":[0+1.5/2/Math.sqrt(2),0.5-1.5/2/Math.sqrt(2), 1, 1, 1.5]},
+     {"ParallelTranslation[]":[0+1.5/2/Math.sqrt(2),0.5+1.5/2/Math.sqrt(2), 1, -1,1.5]},
      {"HalfPlane[]":[1.5/Math.sqrt(2),0, -1, 0]},
 ]},
-{ "IH45: cm = halfp x2 +glide [OK]": [
-     {"HalfPlane[]":[0,0,  1,0]},
-     {"HalfPlane[]":[1,1, -1,0]},
-     {"GlideReflection[]":[0.5,0, 0, 1, param_x]},
+{ "IH45: cm = halfp x2 +glide ": [
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[1,1, 0,-1]},
+     {"GlideReflection[]":[0,0.5, 1, 0, param_x]},
 ]},
 /*
-{ "IH83: cm = halfp +gliderot [wip]": [
+{ "IH83: cm = halfp +gliderot ": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
      {"GlideReflection[]":[0,0.5, 1, 0, 1]},
 ]},
 */
-{ "IH44: pg = glide x2 [BUG]": [
-     {"GlideReflection[]":[0.5,0, 1,1, 1/Math.sqrt(2)]},
-     {"GlideReflection[]":[0,0.5, 1,1, 1/Math.sqrt(2)]},
+{ "IH43: pg = para +glide ": [
+     {"GlideReflection[]":[0,0.5, 1, 0, param_x]},
+     {"ParallelTranslation[]":[param_x/2,0, 0, 1, 1]},
 ]},
-{ "IH43: pg = para +glide [OK]": [
+{ "IH64: pm = para x2	+halfp ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
-     {"GlideReflection[]":[param_x/2,0, 0, 1, 1]},
-]},
-{ "IH64: pm = para x2	+halfp [OK]": [
-     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
      {"HalfPlane[]":[0,0, 0, 1]},
-     {"ParallelTranslation[]":[0.5,-1, 0, 1, 2]}, 
+     {"ParallelTranslation[]":[param_x/2,-1, 0, 1, 2]}, 
 ]},
-{ "IH64: pm = param x 2 +halfp x3 [OK]": [
-     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
-     {"HalfPlane[]":[0,0, 0, 1]},
-     {"HalfPlane[]":[0,1, 0, -1]},
-     {"HalfPlane[]":[0,-1, 0, 1]},
-]},
-{ "IH42: pm = para	+halfp x2 [OK]": [
-     {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
+{ "IH42=64: pm = para	+halfp x2 ": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
 ]},
-{ "IH84: p2 = rot x3 [OK]": [
-     {"Rotation[]":[1,0, 1, 0, 180]},
+{ "IH84: p2 = rot x3 ": [
+     {"Rotation[]":[param_x,0, 1, 0, 180]},
      {"Rotation[]":[0,1, 0,-1, 180]},
-     {"Rotation[]":[1,1,-1, 1, 180]},
+     {"Rotation[]":[param_x,1,-param_x, 1, 180]},
 ]},
-{ "IH57: p2 = para x2	+rot [OK]": [
+{ "IH57: p2 = para x2	+rot ": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
      {"ParallelTranslation[]":[param_x/2,1, 0, -1, 2]}, 
 ]},
-{ "IH47: p2 = para +rot x2 [OK]": [
+{ "IH47: p2 = para +rot x2 ": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1,-1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
 ]},
-{ "IH46: p2 = rot x4 [OK]": [
-     {"Rotation[]":[0.5,0, 1, 0, 180]},
-     {"Rotation[]":[0.5,1,-1, 0, 180]},
+{ "IH46: p2 = rot x4 ": [
+     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
+     {"Rotation[]":[param_x/2,1,-1, 0, 180]},
      {"Rotation[]":[0,0.5, 0,-1, 180]},
-     {"Rotation[]":[1,0.5, 0, 1, 180]},
+     {"Rotation[]":[param_x,0.5, 0, 1, 180]},
 ]},
-{ "IH41: p1 = para x2 [BUG]": [
-     {"ParallelTranslation[]":[0,0.5, 1,0, param_x]},
-     {"ParallelTranslation[]":[param_x/2,0, Math.cos(param_t), Math.sin(param_t), 1]},
-]},
-{ "IH41: p1 = para x2 [OK]": [
+{ "IH41: p1 = para x2 ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
      {"ParallelTranslation[]":[param_x/2,0, 0, 1, 1]},
 ]},
