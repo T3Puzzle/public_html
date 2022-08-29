@@ -9,6 +9,18 @@
 <div style="display: flex;
     justify-content: flex-end;position:sticky;top:0;">
 <div style="position:absolute;">
+<form>
+<input size="50" value="https://soma-arc.net/SchottkyV3/" onchange="
+ localStorage.setItem('base_href',this.value);
+ document.querySelector('html >  head > base').setAttribute('href',this.value); 
+">
+<script>
+let base_href = localStorage.getItem('base_href');
+if (base_href && /^https*:\/\//.test(base_href)) {
+  document.currentScript.closest('form').querySelector('input').value = base_href;
+}
+</script>
+</form>
 <svg width="400px" height="400px" style="border:solid 1px #404040;">
   <defs>
     <marker id="endarrow" markerWidth="3" markerHeight="7" 
@@ -35,13 +47,13 @@
     refX="0" refY="2" orient="auto">
       <polygon fill="green" points="3 0, 3 4, 0 2" />
     </marker>
-    <marker id="redendarrow" markerWidth="3" markerHeight="7" 
+    <marker id="orangeendarrow" markerWidth="3" markerHeight="7" 
     refX="3" refY="2" orient="auto">
-      <polygon fill="red" points="0 0, 3 2, 0 4" />
+      <polygon fill="orange" points="0 0, 3 2, 0 4" />
     </marker>
-    <marker id="redstartarrow" markerWidth="3" markerHeight="7" 
+    <marker id="orangestartarrow" markerWidth="3" markerHeight="7" 
     refX="0" refY="2" orient="auto">
-      <polygon fill="red" points="3 0, 3 4, 0 2" />
+      <polygon fill="orange" points="3 0, 3 4, 0 2" />
     </marker>
   </defs>
 <g class="base" transform="translate(200,200)scale(70,-70)">
@@ -155,14 +167,14 @@ ${arc(degrees)}
      let [pointX, pointY, directionX, directionY, planeDistance] = value;
      let [x1,y1]= [pointX, pointY];
      let rot = Math.atan2(directionY,directionX)*180/Math.PI;
-     let ret = `<g stroke-width="0.01" stroke="red">
+     let ret = `<g stroke-width="0.01" fill="orange">
 <g transform="translate(${x1},${y1})rotate(${rot})">
-${line()}
-<g transform="rotate(-90)scale(1,${planeDistance})" stroke="red" stroke-width="0.05" marker-end="url(#redendarrow)" marker-start="url(#redstartarrow)">
+${plane()}
+<g stroke="orange" transform="rotate(-90)scale(1,${planeDistance})" stroke-width="0.05" marker-end="url(#orangeendarrow)" marker-start="url(#orangestartarrow)">
 ${segment()}
 </g>
-<g transform="translate(${planeDistance})">
-${line()}
+<g transform="translate(${planeDistance})rotate(180)">
+${plane()}
 </g>
 </g>
 </g>`;
@@ -175,14 +187,14 @@ ${line()}
      let [pointX, pointY, directionX, directionY, planeDistance] = value;
      let [x1,y1]= [pointX, pointY];
      let rot = Math.atan2(directionY,directionX)*180/Math.PI;
-     let ret = `<g stroke-width="0.01" stroke="blue">
+     let ret = `<g stroke-width="0.01" fill="blue">
 <g transform="translate(${x1},${y1})rotate(${rot})">
-${line()}
-<g transform="rotate(-90)scale(1,${planeDistance})" stroke="blue" stroke-width="0.05" marker-end="url(#endarrow)" marker-start="url(#startarrow)">
+${plane()}
+<g stroke="blue" transform="rotate(-90)scale(1,${planeDistance})" stroke="blue" stroke-width="0.05" marker-end="url(#endarrow)" marker-start="url(#startarrow)">
 ${segment()}
 </g>
-<g transform="translate(${planeDistance})">
-${line()}
+<g transform="translate(${planeDistance})rotate(180)">
+${plane()}
 </g>
 </g>
 </g>`;
@@ -191,15 +203,15 @@ ${line()}
      let  [pointX, pointY, directionX, directionY, degrees] = value;
      let [x1,y1]= [pointX, pointY];
      let rot = Math.atan2(directionY,directionX)*180/Math.PI;
-     let ret = `<g stroke="green">
+     let ret = `<g fill="green">
 <g transform="translate(${x1},${y1})rotate(${rot})">
 <g stroke-width="0.02" transform="rotate(90)">
-${line()}
+${plane()}
 </g>
-<g stroke-width="0.02" transform="rotate(90)rotate(${degrees})">
-${line()}
+<g stroke-width="0.02" transform="rotate(270)rotate(${degrees})">
+${plane()}
 </g>
-<g stroke-width="0.05" fill="none" marker-end="url(#greenendarrow)" marker-start="url(#greenstartarrow)">
+<g stroke="green" stroke-width="0.05" fill="none" marker-end="url(#greenendarrow)" marker-start="url(#greenstartarrow)">
 ${arc(degrees)}
 </g>
 <g stroke-width="0.02">
@@ -216,59 +228,69 @@ let param_x=1.2;
 let param_d=80;
 let param_t=param_d/180*Math.PI;
 const wps = [
-{ "IH77: p6m = halfp x3 [OK]": [
+{ "IH92: p6m = rot +halfp x2 [OK]": [
+     {"Rotation[]":[-1/2,0, Math.sqrt(3),-1, 60]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[1,0, -1, 0]},
+]},
+{ "IH77=93: p6m = halfp x3 [OK]": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "IH31: p6 = rot x2 [wip]": [
-     {"Rotation[]":[0,0, 1, 0, 120]},
-     {"Rotation[]":[1,1, 1, 0, 120]},
-]},
-{ "IH39: p6 = rot x2 [wip]": [
-     {"Rotation[]":[0,0, 1, 0, 120]},
-     {"Rotation[]":[1,1, 1, 0, 120]},
+{ "IH90: p6 = rot x3 [wip]": [
+     {"Rotation[]":[1-1.5/2, 1.5/2/Math.sqrt(3)+0.5,-Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[1-1.5/2,-1.5/2/Math.sqrt(3)+0.5, Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[1,0.5, 0, 1, 180]},
 ]},
 { "IH88: p6 = rot x2 [wip]": [
-     {"Rotation[]":[0,0, 1, 0, 120]},
-     {"Rotation[]":[1,1, 1, 0, 120]},
+     {"Rotation[]":[-1/2,0.5, Math.sqrt(3),-1, 60]},
+     {"Rotation[]":[1,0.5, 0, 1, 180]},
 ]},
-{ "IH38: p31m = halfp x3 +rot [DUP]": [
-     {"HalfPlane[]":[-1.2,0, 1, 0]},
+{ "IH39: p6 = rot x2 [wip]": [
+     {"Rotation[]":[-1/3,0.5, 1, -Math.sqrt(3), 120]},
+     {"Rotation[]":[1, 0.5, 0, 1, 180]},
+]},
+{ "IH31: p6 = rot x2 [wip]": [
+     {"Rotation[]":[0,0.5, 1, -Math.sqrt(3), 120]},
+     {"Rotation[]":[2,0.5, -Math.sqrt(3), 1, 60]},
+]},
+{ "IH30: p31m = rot +halfp x2 [wip]": [
+     {"Rotation[]":[-1/2/Math.sqrt(3),1/2, 1, -Math.sqrt(3), 120]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[1,0, -Math.sqrt(3),-1]},
+]},
+{ "IH38=36=89: p31m = halfp x1 +rot [OK]": [
      {"HalfPlane[]":[-1.2, 1.2*Math.sqrt(3), -1, -Math.sqrt(3)]},
-     {"HalfPlane[]":[-1.2,-1.2*Math.sqrt(3), -1,  Math.sqrt(3)]},
      {"Rotation[]":[0,0, 1, 0, 120]},
 ]},
-{ "IH38: p31m = halfp x1 +rot [OK]": [
-     {"HalfPlane[]":[-1.2, 1.2*Math.sqrt(3), -1, -Math.sqrt(3)]},
-     {"Rotation[]":[0,0, 1, 0, 120]},
-]},
-{ "IH30: p3m1 = rot +halfpx2 [wip]": [
+{ "IH30: p31m = rot +halfpx2 [wip]": [
      {"HalfPlane[]":[-0.3,0, 0, 1]},
      {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
-{ "IH87: p3m1 = halfp x3 [OK]": [
+{ "IH87=19: p3m1 = halfp x3 [OK]": [
      {"HalfPlane[]":[-0.3,0, 0, 1]},
      {"HalfPlane[]":[-0.3,0, Math.sqrt(3),-1]},
      {"HalfPlane[]":[1.4,0,-Math.sqrt(3),-1]},
 ]},
 { "IH33: p3 = rot x2 [wip]": [
-     {"Rotation[]":[0,0, 1, 0, 120]},
-     {"Rotation[]":[1,1, -1, 0, 120]},
+     {"Rotation[]":[-0.2,0.5, 1, -Math.sqrt(3), 120]},
+     {"Rotation[]":[1.2,0.5, -1, Math.sqrt(3), 120]},
 ]},
-{ "IH56: p4g = rot +halfp [LESS]": [
+{ "IH81=68: p4g = rot +halfp [OK]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
+     {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
+]},
+{ "IH71: p4g = halfp + glide [OK]": [
+     {"GlideReflection[]":[0, 0.5, 1,1, Math.sqrt(2)]},
+     {"GlideReflection[]":[0, 0.5, 1,-1, Math.sqrt(2)]},
      {"HalfPlane[]":[1,0, -1, 0]},
 ]},
 { "IH56: p4g = rot +halfp x2 [OK]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[1,0, -1, 0]},
      {"HalfPlane[]":[0,1, 0, -1]},
-]},
-{ "IH81: p4g = rot +halfp [OK]": [
-     {"Rotation[]":[0,0, 1, 0, 90]},
-     {"HalfPlane[]":[Math.sqrt(2)+0.2,0, -1, -1]},
 ]},
 { "IH82: p4m = crossinginv +halfp x2 [OK]": [
      {"CrossingInversions[]":[0,0, 1, 0, 90]},
@@ -280,11 +302,11 @@ const wps = [
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[1.6,0,-1,-1]},
 ]},
-{ "IH55: p4 = rot x2 [BUG]": [
+{ "IH79: p4 = rot x2 [OK]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
-     {"Rotation[]":[1,1, -1,0, 90]},
+     {"Rotation[]":[1,1, -1,1, 180]},
 ]},
-{ "IH79: p4 = rot x2 [BUG]": [
+{ "IH55: p4 = rot x2 [OK]": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"Rotation[]":[1,1, -1,0, 90]},
 ]},
@@ -307,7 +329,7 @@ const wps = [
      {"GlideReflection[]":[  0, 0.5, 1, 0, param_x]},
      {"GlideReflection[]":[param_x/2,   0, 0, 1, 1]},
 ]},
-{ "IH51: pgg = glide +rotate x2 [BUG]": [
+{ "IH51: pgg = glide +rotate x2 [OK]": [
      {"GlideReflection[]":[0, 0, 1, 0, param_x]},
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1, -1, 0, 180]},
@@ -315,16 +337,6 @@ const wps = [
 { "IH69=85: pmg [wip]": [
 ]},
 { "IH66=50: pmg [wip]": [
-]},
-{ "IH58: pmg = rot +halfp +para [LESS]": [
-     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
-     {"HalfPlane[]":[0,0, 1, 0]},
-     {"ParallelTranslation[]":[param_x/2,-1, 0, 1, 2]},
-]},
-{ "IH58: pmg = rot +halfp +para [DUP]": [
-     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
-     {"HalfPlane[]":[0,0, 1, 0]},
-     {"ParallelTranslation[]":[param_x/2,0, 0, -1, 2]},
 ]},
 { "IH58: pmg = rot +halfp +para [OK]": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
@@ -337,7 +349,7 @@ const wps = [
      {"HalfPlane[]":[0,1, 0, -1]},
      {"ParallelTranslation[]":[0, 0.5, 1, 0, param_x]},
 ]},
-{ "IH49: pmg = rot x2 +halfp x2 [BUG]": [
+{ "IH49: pmg = rot x2 +halfp x2 [OK]": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1,-1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
@@ -348,12 +360,6 @@ const wps = [
      {"HalfPlane[]":[param_x,0, -1,0]},
      {"ParallelTranslation[]":[param_x/2, 0, 0, 1, 2]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x*2]},
-]},
-{ "IH65: pmm = rot +para +halfp x2 [DUP]": [
-     {"Rotation[]":[1,0, 1, 0, 180]},
-     {"HalfPlane[]":[0,1, 0,-1]},
-     {"HalfPlane[]":[0,0, 0,-1]},
-     {"ParallelTranslation[]":[0,0.5, 1, 0, 2]},
 ]},
 { "IH65: pmm = para +halfp x3 [OK]": [
      {"HalfPlane[]":[0,1, 0,-1]},
@@ -389,16 +395,14 @@ const wps = [
      {"GlideReflection[]":[0,0.5, 1, 0, 1]},
 ]},
 */
+{ "IH44: pg = glide x2 [BUG]": [
+     {"GlideReflection[]":[0.5,0, 1,1, 1/Math.sqrt(2)]},
+     {"GlideReflection[]":[0,0.5, 1,1, 1/Math.sqrt(2)]},
+]},
 { "IH43: pg = para +glide [OK]": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
      {"GlideReflection[]":[param_x/2,0, 0, 1, 1]},
 ]},
-/*
-{ "IH44: pg = para +gliderot": [
-     {"ParallelTranslation[]":[0,0, 1, 0, 1]},
-     {"GlideReflection[]":[0.5,0, 0, 1, 1]},
-]},
-*/
 { "IH64: pm = para x2	+halfp [OK]": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, 1]},
      {"HalfPlane[]":[0,0, 0, 1]},
@@ -415,37 +419,22 @@ const wps = [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
 ]},
-{ "IH84: p2 = rot x3 [BUG]": [
+{ "IH84: p2 = rot x3 [OK]": [
      {"Rotation[]":[1,0, 1, 0, 180]},
      {"Rotation[]":[0,1, 0,-1, 180]},
      {"Rotation[]":[1,1,-1, 1, 180]},
-]},
-{ "IH57: p2 = para x2	+rot [DUP]": [
-     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
-     {"ParallelTranslation[]":[0,-0.5, 1, 0, param_x]}, 
-     {"ParallelTranslation[]":[param_x/2,0, 0, -1, 2]},
-]},
-{ "IH57: p2 = para x2	+rot [OK]": [
-     {"Rotation[]":[param_x/2,1, -1, 0, 180]},
-     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
-     {"ParallelTranslation[]":[param_x/2,2, 0, -1, 2]}, 
 ]},
 { "IH57: p2 = para x2	+rot [OK]": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
      {"ParallelTranslation[]":[param_x/2,1, 0, -1, 2]}, 
 ]},
-{ "IH47: p2 = para +rot x2 [BUG]": [
-     {"Rotation[]":[param_x/2,0, 1, 0, 180]},
-     {"Rotation[]":[param_x/2,-1,1, 0, 180]},
-     {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
-]},
-{ "IH47: p2 = para +rot x2 [BUG]": [
+{ "IH47: p2 = para +rot x2 [OK]": [
      {"Rotation[]":[param_x/2,0, 1, 0, 180]},
      {"Rotation[]":[param_x/2,1,-1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]}, 
 ]},
-{ "IH46: p2 = rot x4 [BUG]": [
+{ "IH46: p2 = rot x4 [OK]": [
      {"Rotation[]":[0.5,0, 1, 0, 180]},
      {"Rotation[]":[0.5,1,-1, 0, 180]},
      {"Rotation[]":[0,0.5, 0,-1, 180]},
@@ -461,8 +450,10 @@ const wps = [
 ]},
 ];
 wps.forEach((wp,i)=>{
-document.currentScript.insertAdjacentHTML('afterend',`<li><a target="_blank" onmouseover="svg(wps[${i}],this.textContent);" href="?scale=8&OrbitSeed[]=0,0,1,1&${qs(wp)}">${Object.keys(wp)[0]}</a>`)
+document.currentScript.insertAdjacentHTML('afterend',`<li><a target="_blank" onmouseover="svg(wps[${i}],this.textContent);" href="?title=${Object.keys(wp)[0]}&scale=8&OrbitSeed[]=0,0,1,1&${qs(wp)}">${Object.keys(wp)[0]}</a>`)
 });
 </script>
+<br/>
+<br/>
 </body>
 </html>
