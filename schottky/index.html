@@ -63,6 +63,9 @@ if (base_href && /^https*:\/\//.test(base_href)) {
 <br/>
 <input name="title" size="50">
 <p/>
+<input name="param_x" type="range" min="0.8" max="2" value="1.2" step="0.1" onchange="updateMenu(this.value);svg();">
+<button onclick="view()">view</button>
+<p/>
 <div style="display:flex;">
 <div>
 <select onchange="_detail(this.value)" style="width:150px;height:100px;" multiple="multiple">
@@ -75,14 +78,30 @@ if (base_href && /^https*:\/\//.test(base_href)) {
 </div>
 </div>
 </div>
+<div id="menu"></div>
 <script>
 function qs (wp) {
   return Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')
 }
-function svg(wp,title) {
+function view() {
+  let wpi = localStorage.getItem('wpi');
+  if (wpi===null || wpi==="") {
+    return;
+  }
+  wpi = parseInt(wpi,10);
+  document.querySelector('a#a'+wpi).click();
+}
+function svg(wpi,title) {
+  if (!wpi) {
+    wpi = parseInt(localStorage.getItem('wpi'),10);
+  }
+  let wp = wps[wpi];
   document.querySelector('svg g.base').innerHTML = _svg(wp)+_origin();
-  document.querySelector('input[name=title]').value = title; 
+  if (title) {
+    document.querySelector('input[name=title]').value = title; 
+  }
   document.querySelector('select').innerHTML = _opt(wp);
+  localStorage.setItem('wpi',wpi);
 }
 function _input (labels,values) {
    document.querySelector('div#detail_label').innerHTML 
@@ -224,10 +243,12 @@ ${arc(degrees)}
    return '';
   }).join('')
 }
-let param_x=1.2;
-let param_d=80;
-let param_t=param_d/180*Math.PI;
-const wps = [
+let wps = [];
+localStorage.removeItem('wpi');
+updateMenu(1.2);
+
+function updateMenu(param_x) {
+const _wps = [
 { "IH92: p6m = rot +halfp x2 ": [
      {"Rotation[]":[-1/2,0, Math.sqrt(3),-1, 60]},
      {"HalfPlane[]":[0,0, 0, 1]},
@@ -336,6 +357,12 @@ const wps = [
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[param_x, 0, -1,0]},
 ]},
+{ "IH13: pmg = para +halfp +rot x2 ": [
+     {"ParallelTranslation[]":[0,3/4/Math.sqrt(3), 1, 0,1]},
+     {"HalfPlane[]":[0.5,0.5/Math.sqrt(3), 0, 1]},
+     {"Rotation[]":[1/4,5/4/Math.sqrt(3), -Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[3/4,5/4/Math.sqrt(3),-Math.sqrt(3),1, 180]},
+]},
 { "IH72: pmm = para x2 +halfp x2 ": [
      {"HalfPlane[]":[0,1, 0,-1]},
      {"HalfPlane[]":[param_x,0, -1,0]},
@@ -406,14 +433,39 @@ const wps = [
      {"Rotation[]":[0,0.5, 0,-1, 180]},
      {"Rotation[]":[param_x,0.5, 0, 1, 180]},
 ]},
+{ "IH8=23: p2 = para  +rot x3 ": [
+     {"ParallelTranslation[]":[0,3/4/Math.sqrt(3), 1, 0,1]},
+     {"Rotation[]":[0.5,0.5/Math.sqrt(3), 1, 0,180]},
+     {"Rotation[]":[1/4,5/4/Math.sqrt(3), -Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[3/4,5/4/Math.sqrt(3),-Math.sqrt(3),1, 180]},
+]},
+{ "IH2: p2 = para +rot x4 ": [
+     {"ParallelTranslation[]":[0,0.5/Math.sqrt(3), 1, 0,1]},
+     {"Rotation[]":[1/4,-1/4/Math.sqrt(3),Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[1/4,5/4/Math.sqrt(3), -Math.sqrt(3),-1, 180]},
+     {"Rotation[]":[3/4,5/4/Math.sqrt(3),-Math.sqrt(3),1, 180]},
+     {"Rotation[]":[3/4,-1/4/Math.sqrt(3), Math.sqrt(3),1, 180]},
+]},
 { "IH41: p1 = para x2 ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, param_x]},
      {"ParallelTranslation[]":[param_x/2,0, 0, 1, 1]},
 ]},
+{ "IH1: p1 = para x3 ": [
+     {"ParallelTranslation[]":[0,0.5/Math.sqrt(3), 1, 0,1]},
+     {"ParallelTranslation[]":[1/4,-1/4/Math.sqrt(3), 1,Math.sqrt(3), 1]},
+     {"ParallelTranslation[]":[1/4,5/4/Math.sqrt(3), 1,-Math.sqrt(3), 1]},
+]},
 ];
-wps.forEach((wp,i)=>{
-document.currentScript.insertAdjacentHTML('afterend',`<li><a target="_blank" onmouseover="svg(wps[${i}],this.textContent);" href="?title=${Object.keys(wp)[0]}&scale=8&OrbitSeed[]=0,0,1,1&${qs(wp)}">${Object.keys(wp)[0]}</a>`)
+wps.length=0;
+let menu = document.querySelector('div#menu');
+menu.innerHTML = '';
+
+_wps.forEach((wp,i)=>{
+wps.push(wp);
+menu.insertAdjacentHTML('afterbegin',`<li><a id="a${i}" target="_blank" onmouseover="svg(${i},this.textContent);" href="?title=${Object.keys(wp)[0]}&scale=8&OrbitSeed[]=0,0,1,1&${qs(wp)}">${Object.keys(wp)[0]}</a>`);
 });
+
+}
 </script>
 <br/>
 <br/>
