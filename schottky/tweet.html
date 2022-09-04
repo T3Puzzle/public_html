@@ -1,0 +1,85 @@
+
+<script>
+
+function qs (wp) {
+  return Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')
+}
+function save () {
+  let UPLOAD_URL = '';
+  UPLOAD_URL = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbxvOHV4YIuHy8mzDx0cCNnxG_g24I1WaL11aV-0nEAgkO_WDjGS2iN5nf_HWl3DxxNOHQ/exec';
+  let svgtag = document.querySelector("svg");
+  let formtag = document.querySelector("form");
+  getContent(svgtag,formtag,()=>{
+    if (!true) {
+      formtag.submit();
+    } else {
+      doPost(formtag);
+    }
+  });
+}
+function doPost (formtag) {
+  let body = new FormData(formtag);
+  fetch_upload(UPLOAD_URL,body,(json)=>{
+    let hash = HASH_TAG;
+    let url = 'https://drive.google.com/file/d/' + json.id + '/view';
+    let array = [title, note, hash, url];
+    let tweet = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(array.join('\n'));
+    window.open(tweet);
+  });
+}
+function getContent ( svgtag, formtag, callback ) {
+  let canvas = document.createElement("canvas");
+  canvas.width = svgtag.width.baseVal.value;
+  canvas.height = svgtag.height.baseVal.value;
+  let ctx = canvas.getContext("2d");
+  let image = new Image;
+  image.addEventListener('load',()=>{
+    ctx.drawImage( image,0,0);
+    let content= canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/,'');
+    let filename= (new Date()).getTime()+'.png';
+    let type= 'image/png';
+    formtag.action = UPLOAD_URL;
+    formtag.querySelector("input[name='filename']").value = filename;
+    formtag.querySelector("input[name='type']").value = type; 
+    formtag.querySelector("input[name='content']").value = content;
+    callback();
+  });
+  image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(svgtag)))); 
+}
+function fetch_upload( url, body, successCallback, errorCallback) {
+  fetch(url, {
+    method: 'POST',
+    body: body,
+    mode: 'cors',
+    redirect: 'follow',
+  })
+  .then(r => r.json())
+  .then(j => {
+    if (successCallback) {
+      successCallback(j);
+    }
+  }).catch(e => {
+    if (errorCallback) {
+      errorCallback(e);
+    } else {
+      console.error(e);
+    }
+  });
+}
+</script>
+<form method="post">
+<input disabled="disabled" size="8" value="title">
+<input name="title" value="Untitled"><br/>
+<input disabled="disabled" size="8" value="note">
+<input name="note" value="..."><br/>
+<input disabled="disabled" size="8" value="filename">
+<input name="filename" value="a.png"><br/>
+<input disabled="disabled" size="8" value="content">
+<input name="content" value="<auto-filled>"><br/>
+<input disabled="disabled" size="8" value="type">
+<input name="type" value="image/png">
+<input type="submit" onclick="save();return false;">
+</form>
+<svg width="400" height="300" style="border:solid 1px #404040;">
+<circle cx="200" cy="150" r="100" fill="red"></circle>
+</svg>
