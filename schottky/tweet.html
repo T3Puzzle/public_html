@@ -9,7 +9,13 @@ function saveAndTweet () {
     if (!true) {
       formtag.submit();
     } else {
+      let submit = formtag.querySelector('input[type="submit"]');
+      let submitOrgValue = submit.value;
+      submit.value = 'Sending...';
+      submit.disabled = 'disabled';
       fetch_upload(UPLOAD_URL,new FormData(formtag),(json)=>{
+        submit.disabled = '';
+        submit.value = submitOrgValue;
         let url = 'https://drive.google.com/file/d/' + json.id + '/view';
         let array = [
           formtag.querySelector('input[name="title"]').value,
@@ -19,10 +25,15 @@ function saveAndTweet () {
         ];
         let tweet = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(array.join('\n'));
         window.open(tweet);
+      },(e)=>{
+        submit.disabled = '';
+        submit.value = submitOrgValue;
+        alert('Error: '+e);
       });
     }
   });
   return;
+
 function getContent ( svgtag, formtag, callback ) {
   let canvas = document.createElement("canvas");
   canvas.width = svgtag.width.baseVal.value;
@@ -76,7 +87,7 @@ function fetch_upload( url, body, successCallback, errorCallback) {
 <input name="content" size="27" value="<auto-filled>"><br/>
 <input disabled="disabled" size="8" value="type">
 <input name="type" size="27" value="image/png">
-<input type="submit" onclick="saveAndTweet();return false;">
+<input type="submit" value="Save&Tweet" onclick="saveAndTweet();return false;">
 </form>
 <svg width="400" height="300" style="border:solid 1px #404040;">
 <circle cx="200" cy="150" r="100" fill="red"></circle>
