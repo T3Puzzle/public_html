@@ -1,14 +1,10 @@
 
 <script>
-
-function qs (wp) {
-  return Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')
-}
 function save () {
-  let UPLOAD_URL = '';
-  UPLOAD_URL = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbxvOHV4YIuHy8mzDx0cCNnxG_g24I1WaL11aV-0nEAgkO_WDjGS2iN5nf_HWl3DxxNOHQ/exec';
+  const UPLOAD_URL = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbxvOHV4YIuHy8mzDx0cCNnxG_g24I1WaL11aV-0nEAgkO_WDjGS2iN5nf_HWl3DxxNOHQ/exec';
   let svgtag = document.querySelector("svg");
   let formtag = document.querySelector("form");
+  formtag.action = UPLOAD_URL;
   getContent(svgtag,formtag,()=>{
     if (!true) {
       formtag.submit();
@@ -16,13 +12,18 @@ function save () {
       doPost(formtag);
     }
   });
-}
+  return;
+
 function doPost (formtag) {
   let body = new FormData(formtag);
   fetch_upload(UPLOAD_URL,body,(json)=>{
-    let hash = HASH_TAG;
     let url = 'https://drive.google.com/file/d/' + json.id + '/view';
-    let array = [title, note, hash, url];
+    let array = [
+      formtag.querySelector('input[name="title"]').value,
+      formtag.querySelector('input[name="note"]').value,
+      formtag.querySelector('input[name="hashtag"]').value,
+      url,
+    ];
     let tweet = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(array.join('\n'));
     window.open(tweet);
   });
@@ -38,7 +39,6 @@ function getContent ( svgtag, formtag, callback ) {
     let content= canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/,'');
     let filename= (new Date()).getTime()+'.png';
     let type= 'image/png';
-    formtag.action = UPLOAD_URL;
     formtag.querySelector("input[name='filename']").value = filename;
     formtag.querySelector("input[name='type']").value = type; 
     formtag.querySelector("input[name='content']").value = content;
@@ -66,18 +66,21 @@ function fetch_upload( url, body, successCallback, errorCallback) {
     }
   });
 }
+}
 </script>
 <form method="post">
 <input disabled="disabled" size="8" value="title">
-<input name="title" value="Untitled"><br/>
+<input name="title" size="27" value="Untitled"><br/>
 <input disabled="disabled" size="8" value="note">
-<input name="note" value="..."><br/>
+<input name="note" size="27" value="..."><br/>
+<input disabled="disabled" size="8" value="hashtag">
+<input name="hashtag" size="27" value="#FMS特別講義 #SchottkyLink"><br/>
 <input disabled="disabled" size="8" value="filename">
-<input name="filename" value="a.png"><br/>
+<input name="filename" size="27" value="a.png"><br/>
 <input disabled="disabled" size="8" value="content">
-<input name="content" value="<auto-filled>"><br/>
+<input name="content" size="27" value="<auto-filled>"><br/>
 <input disabled="disabled" size="8" value="type">
-<input name="type" value="image/png">
+<input name="type" size="27" value="image/png">
 <input type="submit" onclick="save();return false;">
 </form>
 <svg width="400" height="300" style="border:solid 1px #404040;">
