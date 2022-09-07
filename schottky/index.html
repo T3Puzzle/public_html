@@ -446,11 +446,38 @@ function getBBox () {
 }
 function getWps (pval) {
 return [
-{ "IH1: p1 = para x3 ": [
-     {"ParallelTranslation[]":[0,0.5/Math.sqrt(3), 1, 0,1]},
-     {"ParallelTranslation[]":[1/4,-1/4/Math.sqrt(3), 1,Math.sqrt(3), 1]},
-     {"ParallelTranslation[]":[1/4,5/4/Math.sqrt(3), 1,-Math.sqrt(3), 1]},
-]},
+{ "IH1: p1 = para x3 [xa]": (()=>{
+     let [xc,yc]=[pval.x/2,1/2];
+     let [x1,y1]=[0,1];
+     let [dxc1,dyc1]=[x1-xc,y1-yc];
+     let rad = Math.sqrt(dxc1*dxc1+dyc1*dyc1);
+     let [x2,y2]=[xc+rad*Math.cos(pval.a*Math.PI/2),
+                  yc+rad*Math.sin(pval.a*Math.PI/2)];
+     let [x3,y3]=[pval.x,1];
+     let [dx21,dy21]=[x1-x2,y1-y2];
+     let [dx23,dy23]=[x3-x2,y3-y2];
+     let [mx21,my21]=[(x1+x2)/2,(y1+y2)/2];
+     let [dxca,dyca]=[mx21-xc,my21-yc];
+     let distca = Math.sqrt(dxca*dxca+dyca*dyca);
+     let [mx23,my23]=[(x3+x2)/2,(y3+y2)/2];
+     let [dxcb,dycb]=[mx23-xc,my23-yc];
+     let distcb = Math.sqrt(dxcb*dxcb+dycb*dycb);
+     //if (dx21+dy21<0 && dx23+dy23>0) {
+     let ang = Math.atan(dy21,dx21);
+     if (ang<0) {
+       return [
+         {"ParallelTranslation[]":[mx21,my21,-dy21,dx21,distca*2]},
+         {"ParallelTranslation[]":[mx23,my23,dy23,-dx23,distcb*2]},
+         {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
+       ];
+     } else {
+       return [
+         {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
+         {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
+       ];
+     }
+ })()
+},
 { "IH41: p1 = para x2 ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
@@ -568,10 +595,13 @@ return [
      {"GlideReflection[]":[  0, 0.5, 1, 0, pval.x]},
      {"GlideReflection[]":[pval.x/2,   0, 0, 1, 1]},
 ]},
-{ "IH78=74: cmm = rot +halfplane x2 [todo:param] ": [
+{ "IH78=74: cmm = rot +halfplane x2 [x] ": [
      {"HalfPlane[]":[0,0, 1,-1]},
      {"HalfPlane[]":[0,0, 1,1]},
-     {"Rotation[]":[1,0, 0,1, 180]},
+     {"Rotation[]":[(pval.x+1/pval.x)/2,(pval.x-1/pval.x)/2, 
+      (-1/pval.x+pval.x), 
+      (1/pval.x+pval.x),
+      180]},
 ]},
 { "IH55: p4 = rot x2 ": [
      {"Rotation[]":[0,0, 1, 0, 90]},
@@ -609,10 +639,11 @@ return [
      {"HalfPlane[]":[0,0, 1, Math.sqrt(3)]},
      {"HalfPlane[]":[0,0, 1, -Math.sqrt(3)]},
 ]},
-{ "IH30: p31m = rot +halfp x2 [todo: param]": [
+{ "IH30: p31m = rot +halfp x2 [x]": [
      {"HalfPlane[]":[2,0,-1, 0]},
      {"HalfPlane[]":[0,0, 1, Math.sqrt(3)]},
-     {"Rotation[]":[4/3,0, 1, -3, 120]},
+     {"Rotation[]":[4/3,0, Math.cos(pval.x*Math.PI/3+Math.PI), Math.sin(pval.x*Math.PI/3+Math.PI), 120]},
+     //{"Rotation[]":[4/3,0, 1, -3, 120]},
 ]},
 { "IH38=36=89: p31m = halfp x1 +rot ": [
      {"HalfPlane[]":[2,0,-1, 0]},
@@ -630,7 +661,7 @@ return [
      {"Rotation[]":[0,0, 1,0, 60]},
      {"Rotation[]":[9/8,Math.sqrt(3)*3/8, -1, Math.sqrt(3), 180]},
 ]},
-{ "IH90: p6 = rot x3 [todo:arrow]": [
+{ "IH90: p6 = rot x3": [
      {"Rotation[]":[9/8,Math.sqrt(3)*3/8, -1, Math.sqrt(3), 180]},
      {"Rotation[]":[3/4,0, 1, 0, 180]},
      {"Rotation[]":[3/8,Math.sqrt(3)*3/8, -1,-Math.sqrt(3), 180]},
