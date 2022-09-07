@@ -112,7 +112,7 @@ function draw() {
       line.translate([x1,y1]);
       let tip = 0.12;
       let arrow = new Path({
-        segments: [[0,0],[tip*3/7,tip],[0,tip]],
+        segments: [[0,0],[tip*3/7,0],[0,tip]],
         fillColor: color,
       });
       let arrow2;
@@ -120,7 +120,7 @@ function draw() {
         arrow2 = arrow.clone();
       } else {
         arrow2 = new Path({
-          segments: [[0,0],[-tip*3/7,tip],[0,tip]],
+          segments: [[0,0],[-tip*3/7,0],[0,tip]],
           fillColor: color,
         });
       }
@@ -130,6 +130,14 @@ function draw() {
       arrow2.translate(0,-tip);
       arrow2.rotate(rot-90,[0,0]);
       arrow2.translate([x2,y2]);
+
+      if (key==='GlideReflection[]') {
+        new Shape.Circle({
+          center: [x1,y1],
+          radius: 0.03,
+          fillColor: color
+        });
+      }
 
     } else if (key==='Rotation[]') {
       let inst = WALLPAPER.defs[key].place();
@@ -193,6 +201,12 @@ function draw() {
       arrow2.translate(0,-tip);
       arrow2.rotate(rot2,[0,0]);
       arrow2.translate(x1+tx,y1+ty);
+
+      new Shape.Circle({
+        center: [x1,y1],
+        radius: 0.03,
+        fillColor: color
+      });
     }
   });
   if (booled) {
@@ -409,10 +423,13 @@ function init(callback) {
       let a = document.createElement('a');
       let title = Object.keys(g)[0];
       a.innerText = title;
-      a.href = encodeURI(`?title=${title}&scale=8&OrbitSeed[]=${getBBox()}&${qs(g)}`);
+      a.href = '#';
       a.setAttribute('x-id',xid); 
       a.target = '_blank';
-      a.addEventListener('mouseover',redraw);
+      a.addEventListener('mouseover',(ev)=>{
+        redraw(ev);
+        a.href = encodeURI(`?title=${title}&scale=8&OrbitSeed[]=${getBBox()}&${qs(g)}`);
+      });
       menu.insertAdjacentHTML('beforeend','<dd>');
       menu.insertAdjacentElement('beforeend',a);
       xid++;
