@@ -18,6 +18,7 @@
 let base_href = localStorage.getItem('base_href');
 if (base_href && /^https*:\/\//.test(base_href)) {
   document.currentScript.closest('form').querySelector('input').value = base_href;
+  document.querySelector('html >  head > base').setAttribute('href',base_href);
 }
 </script>
 </form>
@@ -46,13 +47,12 @@ function draw() {
    
     if (key==='HalfPlane[]') {
       let inst = WALLPAPER.defs[key].place();
-      let [pointX, pointY, normalX, normalY] = value;
+      let [pointX, pointY, normalAngle] = value;
       let [x1,y1]= [pointX, pointY];
-      let rot = Math.atan2(normalY,normalX)*180/Math.PI;
-      inst.rotate(rot,[0,0]);
+      inst.rotate(normalAngle,[0,0]);
       inst.translate(x1,y1);
       let tmp = inst.definition.item.children[1].copyTo(project);
-      tmp.rotate(rot,[0,0]);
+      tmp.rotate(normalAngle,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
       tmp.strokeWidth = 0.012;
@@ -65,24 +65,23 @@ function draw() {
     } else if ((key==='ParallelTranslation[]')
       || (key==='GlideReflection[]')) {
       let inst = WALLPAPER.defs[key].place();
-      let [pointX, pointY, directionX, directionY, planeDistance] = value;
+      let [pointX, pointY, normalAngle, planeDistance] = value;
       let [x1,y1]= [pointX, pointY];
-      let rot = Math.atan2(directionY,directionX)*180/Math.PI;
-      inst.rotate(rot,[0,0]);
+      inst.rotate(normalAngle,[0,0]);
       inst.translate(x1,y1);
 
-      let theta = rot*Math.PI/180;
+      let theta = normalAngle*Math.PI/180;
       let [x2,y2] = [
         x1+planeDistance*Math.cos(theta),
         y1+planeDistance*Math.sin(theta)
       ];
-      let rot2 = rot + 180;
+      let rot2 = normalAngle + 180;
       let inst2 = WALLPAPER.defs[key].place();
       inst2.rotate(rot2,[0,0]);
       inst2.translate(x2,y2);
 
       let tmp = inst.definition.item.children[1].copyTo(project);
-      tmp.rotate(rot,[0,0]);
+      tmp.rotate(normalAngle,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
       tmp.strokeWidth = 0.01;
@@ -108,7 +107,7 @@ function draw() {
         strokeColor: color,
         strokeWidth: 0.015
       });
-      line.rotate(rot,[0,0]);
+      line.rotate(normalAngle,[0,0]);
       line.translate([x1,y1]);
       let tip = 0.12;
       let arrow = new Path({
@@ -124,11 +123,11 @@ function draw() {
           fillColor: color,
         });
       }
-      arrow.rotate(rot-90,[0,0]);
+      arrow.rotate(normalAngle-90,[0,0]);
       arrow.translate([x1,y1]);
 
       arrow2.translate(0,-tip);
-      arrow2.rotate(rot-90,[0,0]);
+      arrow2.rotate(normalAngle-90,[0,0]);
       arrow2.translate([x2,y2]);
 
       if (key==='GlideReflection[]') {
@@ -141,19 +140,18 @@ function draw() {
 
     } else if (key==='Rotation[]') {
       let inst = WALLPAPER.defs[key].place();
-      let  [pointX, pointY, directionX, directionY, degrees] = value;
+      let  [pointX, pointY, boundaryAngle, degrees] = value;
       let [x1,y1]= [pointX, pointY];
-      let rot = Math.atan2(directionY,directionX)*180/Math.PI;
-      inst.rotate(rot+90,[0,0]);
+      inst.rotate(boundaryAngle+90,[0,0]);
       inst.translate(x1,y1);
 
-      let rot2 = rot + degrees;
+      let rot2 = boundaryAngle + degrees;
       let inst2 = WALLPAPER.defs[key].place();
       inst2.rotate(rot2+90+180,[0,0]);
       inst2.translate(x1,y1);
 
       let tmp = inst.definition.item.children[1].copyTo(project);
-      tmp.rotate(rot+90,[0,0]);
+      tmp.rotate(boundaryAngle+90,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
       tmp.strokeWidth = 0.01;
@@ -174,9 +172,9 @@ function draw() {
       tmp2.remove();
 
       let size = 1.2;
-      let theta = rot*Math.PI/180;
-      let theta2 = (rot+degrees/2)*Math.PI/180;
-      let theta3 = (rot+degrees)*Math.PI/180;
+      let theta = boundaryAngle*Math.PI/180;
+      let theta2 = (boundaryAngle+degrees/2)*Math.PI/180;
+      let theta3 = (boundaryAngle+degrees)*Math.PI/180;
       let [fx,fy] = [size*Math.cos(theta),size*Math.sin(theta)];
       let [hx,hy] = [size*Math.cos(theta2),size*Math.sin(theta2)];
       let [tx,ty] = [size*Math.cos(theta3),size*Math.sin(theta3)];
@@ -195,7 +193,7 @@ function draw() {
         fillColor: color,
       });
       let arrow2 = arrow.clone();
-      arrow.rotate(rot,[0,0]);
+      arrow.rotate(boundaryAngle,[0,0]);
       arrow.translate(x1+fx,y1+fy);
 
       arrow2.translate(0,-tip);
@@ -231,9 +229,8 @@ function draw() {
       if ( s.point.x > maxX ) { maxX = s.point.x.toFixed(4); }
       if ( s.point.y < minY ) { minY = s.point.y.toFixed(4); }
       if ( s.point.y > maxY ) { maxY = s.point.y.toFixed(4); }
-      //console.log(s.point.x+' '+s.point.y);
     });
-    WALLPAPER.svgbase.setAttribute('x-bbox',[minX,minY,maxX,maxY].join(','));
+    WALLPAPER.svgbase.setAttribute('x-bbox',[minX,minY,maxX-minX,maxY-minY].join(','));
     let path = new Path.Rectangle({
       from: [minX,minY],
       to: [maxX,maxY],
@@ -376,13 +373,13 @@ function init(callback) {
     let [key,valstr]=kv.split(':');
     let values = valstr.split(',');
     if (key==='HalfPlane[]') {
-      _input(['pointX', 'pointY', 'normalX', 'normalY'], values);
+      _input(['pointX', 'pointY', 'normalAngle'], values);
     } else if (key==='GlideReflection[]') {
-      _input(['pointX', 'pointY', 'directionX', 'directionY', 'planeDistance'], values);
+      _input(['pointX', 'pointY', 'normalAngle', 'planeDistance'], values);
     } else if (key==='ParallelTranslation[]') {
-     _input(['pointX', 'pointY', 'directionX', 'directionY', 'planeDistance'], values);
+     _input(['pointX', 'pointY', 'normalAngle', 'planeDistance'], values);
     } else if (key==='Rotation[]') {
-      _input(['pointX', 'pointY', 'directionX', 'directionY', 'degrees'], values);
+      _input(['pointX', 'pointY', 'boundaryAngle', 'degrees'], values);
     }
     return;
 
@@ -399,7 +396,9 @@ function init(callback) {
     }
   }
   function qs (wp) {
-    return Object.values(wp)[0].map(g=>{ return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')}).join('&')
+    return Object.values(wp)[0].map(g=>{ 
+      return Object.keys(g)[0]+'='+Object.values(g)[0].join(',')
+    }).join('&')
   }
   function setWpi (wpi) {
     WALLPAPER.svgbase.setAttribute('x-id',wpi);
@@ -441,12 +440,43 @@ function getBBox () {
   if (bbox) {
     return bbox;
   } else {
-    return '-0.5,-0.5,0.5,0.5';
+    return '-0.5,-0.5,1,1';
   }
 }
+function conv(array) {
+  let ret = array.map(o=>{
+    let ret2 = {};
+    let k = Object.keys(o)[0];
+    let v= Object.values(o)[0].map(p=>{
+      let key = Object.keys(p)[0];
+      let vals = Object.values(p)[0];
+      let len = vals.length;
+      let ret3={};
+      if (key==='HalfPlane[]') {
+        if (len===4) {
+          let rot = Math.atan2(vals[3],vals[2])*180/Math.PI;
+          ret3[key] = [vals[0],vals[1],rot];
+        } else {
+          return p;
+        }
+      } else {
+        if (len===5) {
+          let rot = Math.atan2(vals[3],vals[2])*180/Math.PI;
+          ret3[key] = [vals[0],vals[1],rot,vals[4]];
+        } else {
+          return p;
+        }
+      }
+      return ret3;
+    });
+    ret2[k] = v;
+    return ret2;
+  });
+  return ret;
+}
 function getWps (pval) {
-return [
-{ "IH1: p1 = para x3 [xa]": (()=>{
+return conv([
+{ "IH1(IH41): p1 = para x3(x2) [xa]": (()=>{
      let [xc,yc]=[pval.x/2,1/2];
      let [x1,y1]=[0,1];
      let [dxc1,dyc1]=[x1-xc,y1-yc];
@@ -462,7 +492,6 @@ return [
      let [mx23,my23]=[(x3+x2)/2,(y3+y2)/2];
      let [dxcb,dycb]=[mx23-xc,my23-yc];
      let distcb = Math.sqrt(dxcb*dxcb+dycb*dycb);
-     //if (dx21+dy21<0 && dx23+dy23>0) {
      let ang = Math.atan(dy21,dx21);
      if (ang<0) {
        return [
@@ -478,10 +507,6 @@ return [
      }
  })()
 },
-{ "IH41: p1 = para x2 ": [
-     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
-     {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
-]},
 { "IH2: p2 = para +rot x4 ": [
      {"ParallelTranslation[]":[0,0.5/Math.sqrt(3), 1, 0,1]},
      {"Rotation[]":[1/4,-1/4/Math.sqrt(3),Math.sqrt(3),-1, 180]},
@@ -655,16 +680,11 @@ return [
 ]},
 { "IH39: p6 = rot x2 ": [
      {"Rotation[]":[3/2,0, 1,Math.sqrt(3), 120]},
-     {"Rotation[]":[9/4, Math.sqrt(3)*3/4, -Math.sqrt(3), -1, 180]},
+     {"Rotation[]":[9/8, Math.sqrt(3)*3/8, -Math.sqrt(3), -1, 180]},
 ]},
 { "IH88: p6 = rot x2 ": [
      {"Rotation[]":[0,0, 1,0, 60]},
      {"Rotation[]":[9/8,Math.sqrt(3)*3/8, -1, Math.sqrt(3), 180]},
-]},
-{ "IH90: p6 = rot x3": [
-     {"Rotation[]":[9/8,Math.sqrt(3)*3/8, -1, Math.sqrt(3), 180]},
-     {"Rotation[]":[3/4,0, 1, 0, 180]},
-     {"Rotation[]":[3/8,Math.sqrt(3)*3/8, -1,-Math.sqrt(3), 180]},
 ]},
 { "IH77=93: p6m = halfp x3 ": [
      {"HalfPlane[]":[0,0, 0, 1]},
@@ -676,7 +696,7 @@ return [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[3/2,0, -1, 0]},
 ]},
-    ];
+    ]);
 }
 }})();
 </script>
