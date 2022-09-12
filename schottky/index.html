@@ -289,10 +289,20 @@ function init(callback) {
   </div>
 </div>
 `);
-  let button = document.createElement('button');
-  button.innerText = 'view';
-  button.addEventListener('click',_view);
-  WALLPAPER.svgbase.insertAdjacentElement('afterend',button);
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
+  ['renderGenerator','videoOrbit'].map(name=>{
+    let label = document.createElement('input');
+    label.disabled = 'disabled';
+    label.size = 15;
+    label.value = name;
+    WALLPAPER.svgbase.insertAdjacentElement('afterend',label);
+    let input = document.createElement('input');
+    input.name = name;
+    input.type = 'checkbox';
+    input.addEventListener('change',redraw);
+    WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
+  });
 
   WALLPAPER.input = {}; 
   pkey.reverse().map(p=>{
@@ -312,6 +322,16 @@ function init(callback) {
 <input name="title" size="50">
 <br/>
 `);
+  let button = document.createElement('button');
+  button.innerText = 'view';
+  button.style['background-color'] = 'blue';
+  button.style['border'] = 'none';
+  button.style['padding'] = '10px 15px';
+  button.style['font-size'] = '16px';
+  button.style['color'] = 'white';
+  button.addEventListener('click',_view);
+  WALLPAPER.svgbase.insertAdjacentElement('afterend',button);
+
   document.querySelector('select[name="detail"]').addEventListener('change',_detail);
   WALLPAPER.color = {
     'HalfPlane[]': 'red',
@@ -334,7 +354,7 @@ function init(callback) {
       if (target.tagName.toLowerCase()==='a') {
         source='anchor';
       } else {
-        source='range';
+        source='input';
       }
     }
     let wpi = 0;
@@ -343,7 +363,7 @@ function init(callback) {
       if (xid && xid.length>0) {
         wpi = parseInt(xid,10);
       }
-    } else if (source==='range') {
+    } else if (source==='input') {
       wpi = getWpi();
     }
     WALLPAPER.wp = _wps[wpi];
@@ -422,12 +442,13 @@ function init(callback) {
       let a = document.createElement('a');
       let title = Object.keys(g)[0];
       a.innerText = title;
-      a.href = '#';
+      let getHref = ()=>encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator")}${getChecked("videoOrbit")}&${qs(g)}`);
+      a.href = getHref();
       a.setAttribute('x-id',xid); 
       a.target = '_blank';
       a.addEventListener('mouseover',(ev)=>{
         redraw(ev);
-        a.href = encodeURI(`?title=${title}&scale=8&OrbitSeed[]=${getBBox()}&${qs(g)}`);
+        a.href = getHref();
       });
       menu.insertAdjacentHTML('beforeend','<dd>');
       menu.insertAdjacentElement('beforeend',a);
@@ -435,6 +456,20 @@ function init(callback) {
     });
   }
 } // init
+function getChecked (name) {
+  let checked = document.querySelector(`input[name="${name}"]`).checked;
+  if (name === 'videoOrbit') {
+    let type = 'OrbitSeed[]';
+    if (checked) {
+      type = `VideoOrbit[]`;
+    }
+    return `&${type}=${getBBox()}`;
+  } else if (name==='renderGenerator') {
+    if (checked) {
+      return `&renderGenerator=true`;
+    }
+  }
+}
 function getBBox () {
   let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
   if (bbox) {
