@@ -2,6 +2,7 @@
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
+  WALLPAPER.transform = '&scale=5&translateX=1.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
@@ -443,7 +444,7 @@ function init(callback) {
       a.innerText = title;
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
-        return base_href + encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
+        return base_href + encodeURI(`?title=${title}${WALLPAPER.transform}${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
