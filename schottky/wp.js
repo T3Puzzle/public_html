@@ -286,6 +286,9 @@ function init(callback) {
     let input = document.createElement('input');
     input.name = name;
     input.type = 'checkbox';
+    if (name==='renderGenerator') {
+      input.checked = true;
+    }
     input.addEventListener('change',(ev)=>{
       redraw(ev);_view();
     });
