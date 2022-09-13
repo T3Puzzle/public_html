@@ -33,6 +33,9 @@ if (base_href && /^https*:\/\//.test(base_href)) {
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
+  if (/full/.test(document.location.search)) {
+    WALLPAPER.full = true;
+  }
   window.addEventListener('load',()=>{setup(draw);});
   init(draw);
   return;
