@@ -32,6 +32,7 @@ if (base_href && /^https*:\/\//.test(base_href)) {
 <script>
 (()=>{with(paper){
   const WALLPAPER = { };
+  WALLPAPER.full = false;
   window.addEventListener('load',()=>{setup(draw);});
   init(draw);
   return;
@@ -269,7 +270,10 @@ function setup(callback) {
 function init(callback) {
   const WIDTH = 500;
   const HEIGHT = 500;
-  const pkey = ['x','a','b','c'];
+  let pkey = ['x'];
+  if (WALLPAPER.full) {
+    pkey = pkey.concat(['a','b','c']);
+  }
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="display:none;" id="myCanvas" width="${WIDTH}" height="${HEIGHT}"></canvas>
@@ -510,7 +514,15 @@ function conv(array) {
   return ret;
 }
 function getWps (pval) {
+let reg = new RegExp('');
+if (!WALLPAPER.full) {
+  reg = new RegExp(':rect:');
+}
 return conv([
+{ "IH41: p1 = para x2 :rect: ": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
+     {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
+]},
 { "IH1(IH41): p1 = para x3(x2) [xa]": (()=>{
      let [xc,yc]=[pval.x/2,1/2];
      let [x1,y1]=[0,1];
@@ -555,13 +567,13 @@ return conv([
      {"Rotation[]":[1/4,-1/4/Math.sqrt(3),Math.sqrt(3),-1, 180]},
      {"Rotation[]":[3/4,-1/4/Math.sqrt(3), Math.sqrt(3),1, 180]},
 ]}, 
-{ "IH46: p2 = rot x4 ": [
+{ "IH46: p2 = rot x4 :rect: ": [
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
      {"Rotation[]":[0,0.5, 0,-1, 180]},
      {"Rotation[]":[pval.x,0.5, 0, 1, 180]},
 ]},
-{ "IH47: p2 = para +rot x2 ": [
+{ "IH47: p2 = para +rot x2 :rect: ": [
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
@@ -576,7 +588,7 @@ return conv([
      {"Rotation[]":[0,1, 0,-1, 180]},
      {"Rotation[]":[pval.x,1,-pval.x, 1, 180]},
 ]},
-{ "IH42=64: pm = para   +halfp x2 ": [
+{ "IH42=64: pm = para   +halfp x2 :rect: ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
@@ -586,11 +598,11 @@ return conv([
      {"HalfPlane[]":[0,0, 0, 1]},
      {"ParallelTranslation[]":[pval.x/2,-1, 0, 1, 2]},
 ]},
-{ "IH43: pg = para +glide ": [
+{ "IH43: pg = para +glide :rect:": [
      {"GlideReflection[]":[0,0.5, 1, 0, pval.x]},
      {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
 ]},
-{ "IH45: cm = halfp x2 +glide ": [
+{ "IH45: cm = halfp x2 +glide :rect:": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]}, 
      {"GlideReflection[]":[0,0.5, 1, 0, pval.x]},
@@ -600,7 +612,7 @@ return conv([
      {"ParallelTranslation[]":[0+1.5/2/Math.sqrt(2),0.5+1.5/2/Math.sqrt(2), 1, -1,1.5]},
      {"HalfPlane[]":[1.5/Math.sqrt(2),0, -1, 0]},
 ]},
-{ "IH48: pmm = halfp x4 ": [ 
+{ "IH48: pmm = halfp x4 :rect:": [ 
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[pval.x,0,-1, 0]},
      {"HalfPlane[]":[0,0, 0, 1]},
@@ -624,13 +636,13 @@ return conv([
      {"Rotation[]":[1/4,5/4/Math.sqrt(3), -Math.sqrt(3),-1, 180]},
      {"Rotation[]":[3/4,5/4/Math.sqrt(3),-Math.sqrt(3),1, 180]},
 ]},
-{ "IH49: pmg = rot x2 +halfp x2 ": [
+{ "IH49: pmg = rot x2 +halfp x2 :rect:": [
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[pval.x, 0, -1,0]},
 ]},
-{ "IH50=66: pmg = rot +para +halfp": [ 
+{ "IH50=66: pmg = rot +para +halfp :rect:": [ 
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,1, 0, -1]},
      {"ParallelTranslation[]":[0, 0.5, 1, 0, pval.x]},
@@ -646,12 +658,12 @@ return conv([
      {"Rotation[]":[0,1/2, 0, -1, 180]},
      {"HalfPlane[]":[pval.x,0,-1, -pval.x]},
 ]},
-{ "IH51: pgg = glide +rotate x2 ": [
+{ "IH51: pgg = glide +rotate x2 :rect:": [
      {"GlideReflection[]":[0, 0.5, 1, 0, pval.x]},
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"Rotation[]":[pval.x/2,1, -1, 0, 180]},
 ]},
-{ "IH52: pgg = glide x2 ": [
+{ "IH52: pgg = glide x2 :rect:": [
      {"GlideReflection[]":[  0, 0.5, 1, 0, pval.x]},
      {"GlideReflection[]":[pval.x/2,   0, 0, 1, 1]},
 ]},
@@ -663,7 +675,7 @@ return conv([
       (1/pval.x+pval.x),
       180]},
 ]},
-{ "IH55: p4 = rot x2 ": [
+{ "IH55: p4 = rot x2 :rect:": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"Rotation[]":[1,1, -1,0, 90]},
 ]},
@@ -671,12 +683,12 @@ return conv([
      {"Rotation[]":[0,0, 1,-1, 90]},
      {"Rotation[]":[1,0, 0,1, 180]},
 ]},
-{ "IH80=82: p4m = halfp x3 ": [
+{ "IH80=82: p4m = halfp x3": [
      {"HalfPlane[]":[0,0, 1,-1]},
      {"HalfPlane[]":[0,0, 1,1]},
      {"HalfPlane[]":[1,0,-1,0]},
 ]},
-{ "IH56: p4g = rot +halfp x2 ": [
+{ "IH56: p4g = rot +halfp x2 :rect:": [
      {"Rotation[]":[0,0, 1, 0, 90]},
      {"HalfPlane[]":[1,0, -1, 0]},
      {"HalfPlane[]":[0,1, 0, -1]},
@@ -731,7 +743,8 @@ return conv([
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[3/2,0, -1, 0]},
 ]},
-    ]);
+    ].filter(o=> reg.test(Object.keys(o)[0]))
+);
 }
 }})();
 </script>
