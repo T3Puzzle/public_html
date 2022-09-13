@@ -201,7 +201,6 @@ function draw() {
     }
   } else {
     if (Object.values(WALLPAPER.wp)[0].length===0) {
-console.log(111);
       saveBBox([0,0,_pval_x,1]);
     }
   }
@@ -440,7 +439,7 @@ function init(callback) {
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
-      let title = /(^IH\d+|^[A-Z][a-zA-Z]+$)/.exec(Object.keys(g)[0])[1];
+      let title = /(^IH\d+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])[1];
       a.innerText = title;
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
@@ -523,7 +522,7 @@ function conv(array) {
 function getWps (pval) {
 let reg = new RegExp('');
 if (!WALLPAPER.full) {
-  reg = new RegExp('(:rect:|^[A-Z][a-zA-Z]+)$');
+  reg = new RegExp('(:rect:|^[A-Z][a-zA-Z0-9]+)$');
 }
 return conv([
 { "Identify" : [
@@ -535,8 +534,11 @@ return conv([
 { "ParallelTranslation": [
      {"ParallelTranslation[]":[0,0.5,0,pval.x]},]
 },
-{ "Rotation" : [
+{ "Rotation180" : [
      {"Rotation[]":[0.5,0,0,180]},]
+},
+{ "Rotation90" : [
+     {"Rotation[]":[0,0,0,90]},]
 },
 { "GlideReflection" : [
      {"GlideReflection[]":[0,0.5,0,pval.x]},]
