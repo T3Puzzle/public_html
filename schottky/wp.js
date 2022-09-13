@@ -416,15 +416,15 @@ function init(callback) {
   function _menu (_wps) {
     let menu = document.querySelector('div#menu');
     menu.innerHTML = '';
-    menu.insertAdjacentHTML('beforeend','<br/>');
+    menu.style['line-height'] = '50px';
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
-      let title = /(^IH\d+):/.exec(Object.keys(g)[0])[1];
+      let title = /(^IH\d+|^[A-Z][a-zA-Z]+$)/.exec(Object.keys(g)[0])[1];
       a.innerText = title;
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
-        return base_href + encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator")}${getChecked("videoOrbit")}&${qs(g)}`)
+        return base_href + encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator",title)}${getChecked("videoOrbit",title)}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
@@ -445,14 +445,18 @@ function init(callback) {
       xid++;
     });
   }
-function getChecked (name) {
+function getChecked (name,title) {
   let checked = document.querySelector(`input[name="${name}"]`).checked;
   if (name === 'videoOrbit') {
     let type = 'OrbitSeed[]';
     if (checked) {
       type = `VideoOrbit[]`;
     }
-    return `&${type}=${getBBox()}`;
+    if (/^IH\d+/.test(title)) {
+      return `&${type}=${getBBox()}`;
+    } else {
+      return `&${type}=0,0,1,1`;
+    }
   } else if (name==='renderGenerator') {
     if (!checked) {
       return '&renderGenerator=false';
@@ -503,10 +507,25 @@ function conv(array) {
 function getWps (pval) {
 let reg = new RegExp('');
 if (!WALLPAPER.full) {
-  reg = new RegExp(':rect:');
+  reg = new RegExp('(:rect:|^[A-Z][a-zA-Z]+)$');
 }
 return conv([
-{ "IH41: p1 = para x2 :rect: ": [
+{ "Identify" : [
+  ]
+},
+{ "HalfPlane" : [
+     {"HalfPlane[]":[0,0,0]},]
+},
+{ "ParallelTranslation": [
+     {"ParallelTranslation[]":[0,0,0,pval.x]},]
+},
+{ "Rotation" : [
+     {"Rotation[]":[0,0,0,180]},]
+},
+{ "GlideReflection" : [
+     {"GlideReflection[]":[0,0,0,pval.x]},]
+},
+{ "IH41: p1 = para x2 :rect:": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
 ]},
