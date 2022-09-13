@@ -472,8 +472,10 @@ function getChecked (name) {
     }
     return `&${type}=${getBBox()}`;
   } else if (name==='renderGenerator') {
-    if (checked) {
-      return `&renderGenerator=true`;
+    if (!checked) {
+      return '&renderGenerator=false';
+    } else {
+      return '';
     }
   }
 }
