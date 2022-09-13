@@ -199,6 +199,11 @@ function draw() {
       booled.addTo(project.activeLayer);
       saveBBox(calcBBox(booled));
     }
+  } else {
+    if (Object.values(WALLPAPER.wp)[0].length===0) {
+console.log(111);
+      saveBBox([0,0,_pval_x,1]);
+    }
   }
   new Shape.Circle({
     center: [0,0],
