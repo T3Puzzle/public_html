@@ -1,4 +1,3 @@
-
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
@@ -309,21 +308,6 @@ function init(callback) {
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
     WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/><input size="5" disabled="disabled" value="${p}">`);
   });
-/*
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
-<input name="title" size="50">
-<br/>
-`);
-  let button = document.createElement('button');
-  button.innerText = 'view';
-  button.style['background-color'] = 'blue';
-  button.style['border'] = 'none';
-  button.style['padding'] = '10px 15px';
-  button.style['font-size'] = '16px';
-  button.style['color'] = 'white';
-  button.addEventListener('click',_view);
-  WALLPAPER.svgbase.insertAdjacentElement('afterend',button);
-*/
 
   [document.querySelector('select[name="detail"]')].map(s=>{
     if (s) {
@@ -368,12 +352,6 @@ function init(callback) {
       project.clear()
       callback(ev);
     }
-/*
-    let title = Object.keys(WALLPAPER.wp)[0];
-    if (title) {
-      document.querySelector('input[name=title]').value = title;
-    }
-*/
     setWpi(wpi);
     [document.querySelector('select')].map(s=>{
       if(s) { s.innerHTML = _opt(); }
@@ -446,17 +424,14 @@ function init(callback) {
       a.innerText = title;
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
-console.log(base_href);
         return base_href + encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator")}${getChecked("videoOrbit")}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
       a.target = '_blank';
-      a.addEventListener('mouseover',(ev)=>{
+      a.addEventListener('click',(ev)=>{
         redraw(ev);
         a.href = getHref();
-      });
-      a.addEventListener('click',(ev)=>{
         document.querySelector('iframe').src = ev.target.href;
         ev.preventDefault();
       });
