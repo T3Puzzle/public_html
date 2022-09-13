@@ -7,7 +7,7 @@
 </head>
 <body>
 <div style="display: flex;justify-content: flex-end;position:sticky;top:0;">
-  <div style="position:absolute;">
+  <div style="position:absolute;background-color:#ffffffda;">
 
 <form>
 <input size="50" value="https://soma-arc.net/SchottkyV3/" onchange="
@@ -25,6 +25,7 @@ if (base_href && /^https*:\/\//.test(base_href)) {
     <div id="svgbase"></div>
   </div>
 </div>
+<iframe width="100%" height="600" src="./"></iframe>
 <div id="menu">
 </div>
 
@@ -42,7 +43,16 @@ if (base_href && /^https*:\/\//.test(base_href)) {
 
 function draw() {
   let booled = null;
+
+  let len = 3.1;
+  new Path.Rectangle({
+    from: [-len,-len],
+    to: [len,len],
+    fillColor: 'white',
+    opacity: 0.95,
+  });
   Object.values(WALLPAPER.wp)[0].map(kv=>{
+
     let key = Object.keys(kv)[0];
     let value = Object.values(kv)[0];
     let color = WALLPAPER.color[key];
@@ -283,7 +293,8 @@ function init(callback) {
   <svg width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
+  if (WALLPAPER.full) {
+    WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
 <p>
 <div style="display:flex;">
   <div>
@@ -296,6 +307,7 @@ function init(callback) {
   </div>
 </div>
 `);
+  }
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
   ['renderGenerator','videoOrbit'].map(name=>{
@@ -307,7 +319,9 @@ function init(callback) {
     let input = document.createElement('input');
     input.name = name;
     input.type = 'checkbox';
-    input.addEventListener('change',redraw);
+    input.addEventListener('change',(ev)=>{
+      redraw(ev);_view();
+    });
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
   });
 
@@ -321,10 +335,13 @@ function init(callback) {
     input.setAttribute('min','0');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
-    input.addEventListener('change',redraw);
+    input.addEventListener('change',(ev)=>{
+      redraw(ev);_view();
+    });
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
     WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/><input size="5" disabled="disabled" value="${p}">`);
   });
+/*
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
 <input name="title" size="50">
 <br/>
@@ -338,8 +355,13 @@ function init(callback) {
   button.style['color'] = 'white';
   button.addEventListener('click',_view);
   WALLPAPER.svgbase.insertAdjacentElement('afterend',button);
+*/
 
-  document.querySelector('select[name="detail"]').addEventListener('change',_detail);
+  [document.querySelector('select[name="detail"]')].map(s=>{
+    if (s) {
+    document.querySelector('select[name="detail"]').addEventListener('change',_detail);
+    }
+  });
   WALLPAPER.color = {
     'HalfPlane[]': 'red',
     'ParallelTranslation[]': 'blue',
@@ -378,12 +400,16 @@ function init(callback) {
       project.clear()
       callback(ev);
     }
+/*
     let title = Object.keys(WALLPAPER.wp)[0];
     if (title) {
       document.querySelector('input[name=title]').value = title;
     }
+*/
     setWpi(wpi);
-    document.querySelector('select').innerHTML = _opt();
+    [document.querySelector('select')].map(s=>{
+      if(s) { s.innerHTML = _opt(); }
+    });
     if (!(source==='anchor')) {
       _menu(_wps);
     }
@@ -444,10 +470,11 @@ function init(callback) {
   function _menu (_wps) {
     let menu = document.querySelector('div#menu');
     menu.innerHTML = '';
+    menu.insertAdjacentHTML('beforeend','<br/>');
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
-      let title = Object.keys(g)[0];
+      let title = /(^IH\d+):/.exec(Object.keys(g)[0])[1];
       a.innerText = title;
       let getHref = ()=>encodeURI(`?title=${title}&scale=8${getChecked("renderGenerator")}${getChecked("videoOrbit")}&${qs(g)}`);
       a.href = getHref();
@@ -457,12 +484,20 @@ function init(callback) {
         redraw(ev);
         a.href = getHref();
       });
-      menu.insertAdjacentHTML('beforeend','<dd>');
+      a.addEventListener('click',(ev)=>{
+        document.querySelector('iframe').src = ev.target.href;
+        ev.preventDefault();
+      });
+      menu.insertAdjacentHTML('beforeend',' ');
       menu.insertAdjacentElement('beforeend',a);
+      a.style['background-color'] = '#199319';
+      a.style['color'] = 'white';
+      a.style['border-radius'] = '5px';
+      a.style['padding'] = '15px 15px';
+      a.style['text-decoration'] = 'none';
       xid++;
     });
   }
-} // init
 function getChecked (name) {
   let checked = document.querySelector(`input[name="${name}"]`).checked;
   if (name === 'videoOrbit') {
@@ -478,7 +513,6 @@ function getChecked (name) {
       return '';
     }
   }
-}
 function getBBox () {
   let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
   if (bbox) {
@@ -486,6 +520,7 @@ function getBBox () {
   } else {
     return '-0.5,-0.5,1,1';
   }
+}
 }
 function conv(array) {
   let ret = array.map(o=>{
@@ -593,7 +628,7 @@ return conv([
      {"Rotation[]":[0,1, 0,-1, 180]},
      {"Rotation[]":[pval.x,1,-pval.x, 1, 180]},
 ]},
-{ "IH42=64: pm = para   +halfp x2 :rect: ": [
+{ "IH42:(64) pm = para   +halfp x2 :rect: ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]},
@@ -647,7 +682,7 @@ return conv([
      {"HalfPlane[]":[0,0, 1, 0]},
      {"HalfPlane[]":[pval.x, 0, -1,0]},
 ]},
-{ "IH50=66: pmg = rot +para +halfp :rect:": [ 
+{ "IH50:(66) pmg = rot +para +halfp :rect:": [ 
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,1, 0, -1]},
      {"ParallelTranslation[]":[0, 0.5, 1, 0, pval.x]},
@@ -751,6 +786,7 @@ return conv([
     ].filter(o=> reg.test(Object.keys(o)[0]))
 );
 }
+} // init
 }})();
 </script>
 </body>
