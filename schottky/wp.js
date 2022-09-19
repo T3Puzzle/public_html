@@ -260,8 +260,8 @@ function draw(type) {
     let xratio = view.zoom/1000*swidth;
     let yratio = view.zoom/1000*sheight;
     let dst = document.querySelector('canvas#dst');
-    dst.width = rwidth * xratio;
-    dst.height = rheight * yratio;
+    dst.width = rwidth * view.zoom;
+    dst.height = rheight * view.zoom;
     let sx = swidth/2 +minX * xratio*2;
     let sy = sheight/2+minY * yratio*2;
     let width = rwidth *xratio*2; 
