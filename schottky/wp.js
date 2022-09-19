@@ -325,7 +325,7 @@ function init(callback) {
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
-  <canvas style="xdisplay:none;" id="dst"></canvas>
+  <canvas style="display:none;" id="dst"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
