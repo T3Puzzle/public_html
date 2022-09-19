@@ -2,7 +2,8 @@
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
-  WALLPAPER.transform = '&scale=5&translateX=1.5';
+  WALLPAPER.qsdefault = '&displayMode=iframe';
+  WALLPAPER.transform = '&scale=5,1,10&translateX=1.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
@@ -442,9 +443,12 @@ function init(callback) {
       let a = document.createElement('a');
       let title = /(^IH\d+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])[1];
       a.innerText = title;
+      if (/IH55/.test(title)) {
+        title += "&maxIterations=50";
+      }
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
-        return base_href + encodeURI(`?title=${title}${WALLPAPER.transform}${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
+        return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
