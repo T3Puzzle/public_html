@@ -269,7 +269,7 @@ function draw(type) {
     dst.getContext('2d').drawImage(src,sx,sy,width,height,0,0,dst.width,dst.height);
     if (WALLPAPER.canvas) {
       let data = dst.toDataURL();
-      document.getElementById('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
     }
   }
 }
