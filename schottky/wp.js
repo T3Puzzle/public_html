@@ -1,17 +1,24 @@
-
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
+  WALLPAPER.canvas = false;
   WALLPAPER.qsdefault = '&displayMode=iframe';
   WALLPAPER.transform = '&scale=5,1,10&translateX=1.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
-  window.addEventListener('load',()=>{setup(draw);});
+  if (/canvas/.test(document.location.search)) {
+    WALLPAPER.canvas = true;
+  }
+  window.addEventListener('load',()=>{load(draw);});
   init(draw);
   return;
 
-function draw() {
+function draw(type) {
+  if (type==='bbox') {
+    drawBBox();
+    return;
+  }
   let booled = null;
   let _pval_x = 1;
 
@@ -194,6 +201,13 @@ function draw() {
       });
     }
   });
+  new Shape.Circle({
+    center: [0,0],
+    radius: 0.03,
+    fillColor: "black"
+  });
+  view.draw();
+
   if (booled) {
     if (Object.values(WALLPAPER.wp)[0].length===1) {
       saveBBox([0,0,_pval_x,1]);
@@ -206,11 +220,6 @@ function draw() {
       saveBBox([0,0,_pval_x,1]);
     }
   }
-  new Shape.Circle({
-    center: [0,0],
-    radius: 0.03,
-    fillColor: "black"
-  });
   WALLPAPER.svgbase.querySelector('svg > g').innerHTML = (project.exportSVG().innerHTML);
   return;
 
@@ -237,12 +246,37 @@ function draw() {
       strokeColor: 'black',
       dashArray: [0.03,0.03],
     });
+    drawBBox();
+  }
+  function drawBBox () {
+    let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
+    if (!bbox || bbox.length===0) {
+      return;
+    }
+    let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
+    let src = document.querySelector('canvas#src');
+    let swidth = src.width;
+    let sheight= src.height;
+    let xratio = view.zoom/1000*swidth;
+    let yratio = view.zoom/1000*sheight;
+    let dst = document.querySelector('canvas#dst');
+    dst.width = rwidth * xratio;
+    dst.height = rheight * yratio;
+    let sx = swidth/2 +minX * xratio*2;
+    let sy = sheight/2+minY * yratio*2;
+    let width = rwidth *xratio*2; 
+    let height = rheight*yratio*2; 
+    dst.getContext('2d').drawImage(src,sx,sy,width,height,0,0,dst.width,dst.height);
+    if (WALLPAPER.canvas) {
+      let data = dst.toDataURL();
+      document.getElementById('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+    }
   }
 }
-function setup(callback) {
-  paper.setup(document.getElementById('myCanvas'));
-  paper.view.center = [0,0];
-  paper.view.zoom = 80;
+function load(callback) {
+  setup(document.getElementById('src'));
+  view.center = [0,0];
+  view.zoom = 100;
   WALLPAPER.defs = {};
   Object.keys(WALLPAPER.color).map(key=>{
     WALLPAPER.defs[key] = plane(WALLPAPER.color[key]);
@@ -266,6 +300,22 @@ function setup(callback) {
   }
 }
 function init(callback) {
+
+  let tool = new Tool();
+  let path = null;
+  tool.onMouseDown = (e) => {
+    path = new Path();
+    path.strokeColor = 'black';
+    path.strokeWidth = 0.01;
+    path.add(e.point);
+  };
+  tool.onMouseDrag = (e) => {
+    path.add(e.point);
+  };
+  tool.onMouseUp = (e) => {
+    callback('bbox');
+  };
+
   const WIDTH = 500;
   const HEIGHT = 500;
   let pkey = ['x'];
@@ -274,8 +324,9 @@ function init(callback) {
   }
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
-  <canvas style="display:none;" id="myCanvas" width="${WIDTH}" height="${HEIGHT}"></canvas>
-  <svg width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
+  <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
+  <canvas style="xdisplay:none;" id="dst"></canvas>
+  <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
   if (WALLPAPER.full) {
@@ -473,6 +524,9 @@ function getChecked (name,title,pval) {
   let checked = document.querySelector(`input[name="${name}"]`).checked;
   if (name === 'videoOrbit') {
     let type = 'OrbitSeed[]';
+    if (WALLPAPER.canvas) {
+      type = 'CanvasSeed[]'; 
+    }
     if (checked) {
       type = `VideoOrbit[]`;
     }
