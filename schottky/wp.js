@@ -306,7 +306,7 @@ function init(callback) {
   tool.onMouseDown = (e) => {
     path = new Path();
     path.strokeColor = 'red';
-    path.strokeWidth = 0.03;
+    path.strokeWidth = 0.1;
     path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
