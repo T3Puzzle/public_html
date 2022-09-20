@@ -499,6 +499,9 @@ function init(callback) {
       }
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
+        if (!base_href || base_href.length==0) {
+          base_href = './';
+        }
         return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
       };
       a.href = getHref();
