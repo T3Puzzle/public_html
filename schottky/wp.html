@@ -10,13 +10,18 @@
   <div style="position:absolute;background-color:#ffffffda;">
 
 <form>
-<input size="50" value="https://soma-arc.net/SchottkyV3/v3/1/" onchange="
+<input size="50" value="https://soma-arc.net/SchottkyV3/v3/2/" onchange="
  localStorage.setItem('base_href',this.value);
 ">
 <script>
 (()=>{
-let base_href = localStorage.getItem('base_href');
 let input= document.currentScript.closest('form').querySelector('input');
+if (/^(soma-arc\.net|schottky\.jp)$/.test(document.location.hostname)) {
+  localStorage.removeItem('base_href');
+  input.style.display = 'none';
+  return;
+}
+let base_href = localStorage.getItem('base_href');
 if (base_href && /^https*:\/\//.test(base_href)) {
   input.value = base_href;
 } else {
