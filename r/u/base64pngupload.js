@@ -204,7 +204,7 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.tessellation.jp/t3summer/2022">コンテストページ</a>
+<li><a href="https://www.t3puzzle.com/contest">コンテストページ</a>
 <li><a href="https://www.t3puzzle.com/b/${xid}">T3パズル ウェブ版</a>
 `);
 ;
