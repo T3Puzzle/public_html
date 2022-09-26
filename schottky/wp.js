@@ -37,6 +37,7 @@ function draw(type) {
     drawBBox();
     return;
   }
+  src_scope.activate();
   let booled = null;
   let _pval_x = 1;
 
@@ -335,10 +336,14 @@ function init(callback) {
   if (WALLPAPER.full) {
     pkey = pkey.concat(['a','b','c']);
   }
+  let top = 150;
+  if (document.querySelector('form input').style.display !== 'none') {
+    top = 175;
+  }
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
-  <canvas style="xdisplay:none;position:absolute;top:175px;left:100px;" id="dst" resize="false"></canvas>
+  <canvas style="xdisplay:none;position:absolute;top:${top}px;left:100px;" id="dst" resize="false"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
