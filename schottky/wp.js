@@ -3,7 +3,7 @@
   const WALLPAPER = { };
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
-  WALLPAPER.qsdefault = '&displayMode=iframe';
+  WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0';
   WALLPAPER.transform = '&scale=4,1,10&translateX=0.0&translateY=0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
