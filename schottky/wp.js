@@ -11,12 +11,22 @@
   if (/canvas/.test(document.location.search)) {
     WALLPAPER.canvas = true;
   }
+  window.addEventListener('DOMContentLoaded',()=>{bodyMovePrevent();});
+
   window.addEventListener('load',()=>{load(draw);});
   document.querySelector('iframe').width = '60%';
   document.querySelector('iframe').src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   init(draw);
   return;
 
+  function bodyMovePrevent() {
+    document.addEventListener('touchmove', e => e.preventDefault(), {
+      passive: false
+    });
+    document.addEventListener('mousewheel', e => e.preventDefault(), {
+      passive: false
+    });
+  }
 function draw(type) {
   if (type==='bbox') {
     drawBBox();
