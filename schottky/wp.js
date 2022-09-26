@@ -274,11 +274,17 @@ function draw(type) {
     }
     let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
     let dst = document.querySelector('canvas#dst');
+    let tmp = document.querySelector('canvas#tmp');
     let dwidth = rwidth * src_scope.view.zoom;
     let dheight = rheight * src_scope.view.zoom;
     if (dwidth!== dst.width || dheight !== dst.height) {
+      tmp.width = dst.width;
+      tmp.height = dst.height;
+      tmp.getContext('2d').drawImage(dst,0,0,dst.width,dst.height);
       dst.width = dwidth;
       dst.height = dheight;
+      dst.getContext('2d').drawImage(tmp,0,0,tmp.width,tmp.height,0,0,dst.width,dst.height);
+console.log(tmp.width+' '+dst.width);
     }
     if (WALLPAPER.canvas) {
       let data = dst.toDataURL();
@@ -344,6 +350,7 @@ function init(callback) {
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
   <canvas style="xdisplay:none;position:absolute;top:${top}px;left:100px;" id="dst" resize="false"></canvas>
+  <canvas style="display:none;" id="tmp" resize="false"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
