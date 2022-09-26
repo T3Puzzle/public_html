@@ -13,7 +13,7 @@
   }
   window.addEventListener('load',()=>{load(draw);});
   document.querySelector('iframe').width = '60%';
-  document.querySelector('iframe').src = `./?OrbitSeed=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+  document.querySelector('iframe').src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   init(draw);
   return;
 
