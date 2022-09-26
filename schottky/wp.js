@@ -348,6 +348,29 @@ function init(callback) {
 `);
   }
 
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  onclick="
+  try {
+    document.querySelector('iframe').contentWindow.executeCommandTweet();
+  } catch (e) {
+    alert('CORS limitation');
+  }
+  " >Tweet</button>`);
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  onclick="
+  try {
+    document.querySelector('iframe').contentWindow.executeCommandSaveScene();
+  } catch (e) {
+    alert('CORS limitation');
+  }
+  " >Save</button>`);
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  onclick="
+    document.querySelector('iframe').src = document.querySelector('iframe').src;
+  " >Reset</button>`);
+
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
   ['renderGenerator','videoOrbit'].map(name=>{
     let label = document.createElement('input');
@@ -600,7 +623,7 @@ return conv([
      {"ParallelTranslation[]":[0,0.5,0,pval.x]},]
 },
 { "Rotation180" : [
-     {"Rotation[]":[0.5,0,0,180]},]
+     {"Rotation[]":[0,0.5,270,180]},]
 },
 { "Rotation90" : [
      {"Rotation[]":[0,0,0,90]},]
