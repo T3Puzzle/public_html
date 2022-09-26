@@ -1,8 +1,9 @@
 
+const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
   const dst_scope = new PaperScope();
-  const WALLPAPER = { };
+  WALLPAPER.dst_scope = dst_scope;
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
   WALLPAPER.origin = [0.5,0.5];
@@ -274,17 +275,15 @@ function draw(type) {
     }
     let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
     let dst = document.querySelector('canvas#dst');
-    let tmp = document.querySelector('canvas#tmp');
     let dwidth = rwidth * src_scope.view.zoom;
     let dheight = rheight * src_scope.view.zoom;
     if (dwidth!== dst.width || dheight !== dst.height) {
-      tmp.width = dst.width;
-      tmp.height = dst.height;
-      tmp.getContext('2d').drawImage(dst,0,0,dst.width,dst.height);
+      dst_scope.project.getItems({class: Path}).map(i=>{
+        i.scale(dwidth/dst.width,dheight/dst.height,0,0);
+        i.strokeWidth = 15*Math.sqrt(dwidth/100);
+      });
       dst.width = dwidth;
       dst.height = dheight;
-      dst.getContext('2d').drawImage(tmp,0,0,tmp.width,tmp.height,0,0,dst.width,dst.height);
-console.log(tmp.width+' '+dst.width);
     }
     if (WALLPAPER.canvas) {
       let data = dst.toDataURL();
@@ -325,8 +324,9 @@ function init(callback) {
   let path = null;
   tool.onMouseDown = (e) => {
     path = new dst_scope.Path();
-    path.strokeColor = 'blue';
-    path.strokeWidth = 10;
+    path.strokeColor = '#00ffff';
+    let pval_x = parseFloat(document.querySelector('input[name="x"]').value);
+    path.strokeWidth = 15*Math.sqrt(pval_x);
     path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
@@ -350,7 +350,6 @@ function init(callback) {
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
   <canvas style="xdisplay:none;position:absolute;top:${top}px;left:100px;" id="dst" resize="false"></canvas>
-  <canvas style="display:none;" id="tmp" resize="false"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
@@ -390,6 +389,10 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
   onclick="
+  WALLPAPER.dst_scope.project.clear();
+  [document.querySelector('canvas#dst')].map(c=>{
+    if(c){c.getContext('2d').clearRect(0,0,c.width,c.height)}
+  });
   try {
     document.querySelector('iframe').contentWindow.executeCommandResetScene();
   } catch (e) {
@@ -424,7 +427,7 @@ function init(callback) {
     WALLPAPER.input[p] = input; 
     input.type = 'range';
     input.value = 1;
-    input.setAttribute('min','0');
+    input.setAttribute('min','0.5');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
     input.addEventListener('change',(ev)=>{
