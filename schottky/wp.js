@@ -327,6 +327,7 @@ function load(callback) {
 }
 function init(callback) {
 
+{
   let tool = new dst_scope.Tool();
   let path = null;
   tool.onMouseDown = (e) => {
@@ -337,11 +338,18 @@ function init(callback) {
     path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
-    path.add(e.point);
+    let step = e.delta.divide(2);
+    step.angle += 90;
+    let top = e.middlePoint.add(step);
+    let bottom = e.middlePoint.subtract(step);
+    path.add(top);
+    path.insert(0,bottom);
+    path.smooth();
   };
   tool.onMouseUp = (e) => {
     callback('bbox');
   };
+}
 
   const WIDTH = WALLPAPER.width;
   const HEIGHT = WALLPAPER.height;
@@ -376,8 +384,9 @@ function init(callback) {
 </div>
 `);
   }
+  let buttonStyle = `style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 5px; text-decoration: none;background-color: black;border: none;"`;
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   try {
     document.querySelector('iframe').contentWindow.executeCommandTweet();
@@ -389,7 +398,7 @@ function init(callback) {
   }
   " >ツイート</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   this.disabled='disabled';
   window.setTimeout(()=>this.disabled='',11000);
@@ -408,7 +417,7 @@ function init(callback) {
     11000);
   " >撮影</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   WALLPAPER.dst_scope.project.clear();
   [document.querySelector('canvas#dst')].map(c=>{
@@ -569,7 +578,8 @@ function init(callback) {
   function _menu (_wps,pval) {
     let menu = document.querySelector('div#menu');
     menu.innerHTML = '';
-    menu.style['line-height'] = '50px';
+    menu.style['line-height'] = '45px';
+    menu.style['margin-left'] = '8px';
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
@@ -603,7 +613,6 @@ function init(callback) {
       a.style['background-color'] = color;
       a.style['color'] = 'white';
       a.style['border-radius'] = '5px';
-      a.style['margin'] = '10px 5px';
       a.style['padding'] = '10px 10px';
       a.style['text-decoration'] = 'none';
       xid++;
