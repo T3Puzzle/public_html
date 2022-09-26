@@ -6,7 +6,7 @@ const WALLPAPER = { };
   WALLPAPER.dst_scope = dst_scope;
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
-  WALLPAPER.origin = [0.5,0.5];
+  WALLPAPER.origin = [0.75,0.5];
   WALLPAPER.width = 300;
   WALLPAPER.height = 400;
   WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0';
@@ -345,14 +345,15 @@ function init(callback) {
   if (WALLPAPER.full) {
     pkey = pkey.concat(['a','b','c']);
   }
-  let top = 150;
+  let left = WALLPAPER.width/2-WALLPAPER.origin[0]*100;
+  let top = WALLPAPER.height/2-WALLPAPER.origin[1]*100;
   if (document.querySelector('form input').style.display !== 'none') {
     top = 175;
   }
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
-  <canvas style="xdisplay:none;position:absolute;top:${top}px;left:100px;" id="dst" resize="false"></canvas>
+  <canvas style="xdisplay:none;position:absolute;top:${top}px;left:${left}px;" id="dst" resize="false"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
