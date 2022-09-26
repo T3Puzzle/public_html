@@ -3,8 +3,11 @@
   const WALLPAPER = { };
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
+  WALLPAPER.origin = [0.5,0.5];
+  WALLPAPER.width = 300;
+  WALLPAPER.height = 400;
   WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0';
-  WALLPAPER.transform = '&scale=4,1,10&translateX=0.0&translateY=0.5';
+  WALLPAPER.transform = '&scale=4,1,10&translateX=1&translateY=0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
@@ -14,7 +17,7 @@
   window.addEventListener('DOMContentLoaded',()=>{bodyMovePrevent();});
 
   window.addEventListener('load',()=>{load(draw);});
-  document.querySelector('iframe').width = '60%';
+  document.querySelector('iframe').width = '80%';
   document.querySelector('iframe').src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   init(draw);
   return;
@@ -270,8 +273,8 @@ function draw(type) {
     let src = document.querySelector('canvas#src');
     let swidth = src.width;
     let sheight= src.height;
-    let xratio = view.zoom/1000*swidth;
-    let yratio = view.zoom/1000*sheight;
+    let xratio = view.zoom/2/WALLPAPER.width*swidth;
+    let yratio = view.zoom/2/WALLPAPER.height*sheight;
     let dst = document.querySelector('canvas#dst');
     dst.width = rwidth * view.zoom;
     dst.height = rheight * view.zoom;
@@ -288,7 +291,7 @@ function draw(type) {
 }
 function load(callback) {
   setup(document.getElementById('src'));
-  view.center = [0,0];
+  view.center = WALLPAPER.origin;
   view.zoom = 100;
   WALLPAPER.defs = {};
   Object.keys(WALLPAPER.color).map(key=>{
@@ -329,8 +332,8 @@ function init(callback) {
     callback('bbox');
   };
 
-  const WIDTH = 500;
-  const HEIGHT = 500;
+  const WIDTH = WALLPAPER.width;
+  const HEIGHT = WALLPAPER.height;
   let pkey = ['x'];
   if (WALLPAPER.full) {
     pkey = pkey.concat(['a','b','c']);
@@ -403,6 +406,7 @@ function init(callback) {
     });
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
   });
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
 
   WALLPAPER.input = {}; 
   pkey.reverse().map(p=>{
