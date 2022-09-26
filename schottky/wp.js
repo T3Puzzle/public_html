@@ -20,9 +20,13 @@ const WALLPAPER = { };
   window.addEventListener('DOMContentLoaded',()=>{bodyMovePrevent();});
 
   window.addEventListener('load',()=>{load(draw);});
-  document.querySelector('iframe').width = '80%';
-  document.querySelector('iframe').height = '550';
-  document.querySelector('iframe').src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+
+  document.body.style="margin: 0px; padding: 0px; width: 100%; height: 100%;";
+  let iframe = document.querySelector('iframe');
+  iframe.width = '80%';
+  iframe.height = '550';
+  iframe.src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+  iframe.style = 'border:none;';
   init(draw);
   return;
 
@@ -387,9 +391,11 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
   onclick="
-  window.setTimeout(()=>this.textContent='3秒...',1000);
-  window.setTimeout(()=>this.textContent='2秒...',2000);
-  window.setTimeout(()=>this.textContent='1秒...',3000);
+  this.disabled='disabled';
+  window.setTimeout(()=>this.disabled='',11000);
+  for(let i=0;i<10;i++){
+    window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
+  }
   window.setTimeout(
     ()=>{
       try {
@@ -399,7 +405,7 @@ function init(callback) {
       }
       this.textContent = '撮影';
     },
-    4000);
+    11000);
   " >撮影</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
@@ -597,7 +603,8 @@ function init(callback) {
       a.style['background-color'] = color;
       a.style['color'] = 'white';
       a.style['border-radius'] = '5px';
-      a.style['padding'] = '15px 15px';
+      a.style['margin'] = '10px 5px';
+      a.style['padding'] = '10px 10px';
       a.style['text-decoration'] = 'none';
       xid++;
     });
