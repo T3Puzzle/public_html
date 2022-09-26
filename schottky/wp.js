@@ -369,7 +369,7 @@ function init(callback) {
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
   onclick="
   try {
-    document.querySelector('iframe').contentWindow.executeCommandClearScene();
+    document.querySelector('iframe').contentWindow.executeCommandResetScene();
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
