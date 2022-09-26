@@ -10,7 +10,7 @@ const WALLPAPER = { };
   WALLPAPER.width = 300;
   WALLPAPER.height = 400;
   WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0';
-  WALLPAPER.transform = '&scale=4,1,10&translateX=1&translateY=0.5';
+  WALLPAPER.transform = '&scale=5,1,10&translateX=1&translateY=-0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
@@ -21,6 +21,7 @@ const WALLPAPER = { };
 
   window.addEventListener('load',()=>{load(draw);});
   document.querySelector('iframe').width = '80%';
+  document.querySelector('iframe').height = '550';
   document.querySelector('iframe').src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   init(draw);
   return;
@@ -221,15 +222,17 @@ function draw(type) {
       });
     }
   });
-  new src_scope.Shape.Circle({
-    center: [0,0],
-    radius: 0.03,
-    fillColor: "black"
-  });
+  if (false) {
+    new src_scope.Shape.Circle({
+      center: [0,0],
+      radius: 0.03,
+      fillColor: "black"
+    });
+  }
   src_scope.view.draw();
 
   if (booled) {
-    if (Object.values(WALLPAPER.wp)[0].length===1) {
+    if (/:bbox:/.test(Object.keys(WALLPAPER.wp)[0])) {
       saveBBox([0,0,_pval_x,1]);
     } else { 
       booled.addTo(src_scope.project.activeLayer);
@@ -369,25 +372,36 @@ function init(callback) {
 `);
   }
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
   onclick="
   try {
     document.querySelector('iframe').contentWindow.executeCommandTweet();
+    this.disabled = 'disabled';
+    window.setTimeout(()=>this.disabled='',3000);
+    
   } catch (e) {
     alert('CORS limitation: '+e);
   }
-  " >Tweet</button>`);
+  " >ツイート</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
   onclick="
-  try {
-    document.querySelector('iframe').contentWindow.executeCommandSaveImage();
-  } catch (e) {
-    alert('CORS limitation: '+e);
-  }
-  " >Save</button>`);
+  window.setTimeout(()=>this.textContent='3秒...',1000);
+  window.setTimeout(()=>this.textContent='2秒...',2000);
+  window.setTimeout(()=>this.textContent='1秒...',3000);
+  window.setTimeout(
+    ()=>{
+      try {
+         document.querySelector('iframe').contentWindow.executeCommandSaveImage()
+      } catch (e) {
+        alert('CORS limitation: '+e);
+      }
+      this.textContent = '撮影';
+    },
+    4000);
+  " >撮影</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 10px; text-decoration: none;background-color: black;border-width: 0px;"
   onclick="
   WALLPAPER.dst_scope.project.clear();
   [document.querySelector('canvas#dst')].map(c=>{
@@ -398,7 +412,7 @@ function init(callback) {
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
-  " >Reset</button>`);
+  " >やり直し</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
   ['renderGenerator','videoOrbit'].map(name=>{
@@ -426,15 +440,19 @@ function init(callback) {
     input.name = p;
     WALLPAPER.input[p] = input; 
     input.type = 'range';
-    input.value = 1;
     input.setAttribute('min','0.5');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
+    input.value = 1;
     input.addEventListener('change',(ev)=>{
       redraw(ev);_view();
     });
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
-    WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/><input size="5" disabled="disabled" value="${p}">`);
+    if (false) {
+      WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/><input size="5" disabled="disabled" value="${p}">`);
+    } else {
+      WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/> `);
+    }
   });
 
   [document.querySelector('select[name="detail"]')].map(s=>{
@@ -548,10 +566,14 @@ function init(callback) {
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
-      let title = /(^IH\d+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])[1];
+      let color = /:(red|blue|green|orange):/.exec(Object.keys(g)[0])[1];
+      if (!color) {
+        color = 'gray';
+      }
+      let title = /(^IH\d+|^[0-9]+\.[^\s]+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])[1];
       a.innerText = title;
-      if (/IH55/.test(title)) {
-        title += "&maxIterations=50";
+      if ('2.回転'===(title)) {
+        title += "&maxIterations=40";
       }
       let getHref = ()=>{
         let base_href = localStorage.getItem('base_href');
@@ -571,7 +593,7 @@ function init(callback) {
       });
       menu.insertAdjacentHTML('beforeend',' ');
       menu.insertAdjacentElement('beforeend',a);
-      a.style['background-color'] = '#199319';
+      a.style['background-color'] = color;
       a.style['color'] = 'white';
       a.style['border-radius'] = '5px';
       a.style['padding'] = '15px 15px';
@@ -640,30 +662,77 @@ function conv(array) {
 function getWps (pval) {
 let reg = new RegExp('');
 if (!WALLPAPER.full) {
-  reg = new RegExp('(:rect:|^[A-Z][a-zA-Z0-9]+)$');
+  reg = new RegExp('(:rect:|^[0-9]+\.[^\s]+|^[A-Z][a-zA-Z0-9]+$)');
 }
 return conv([
-{ "Identify" : [
+{ "0.はじめ :bbox: :red:" : [
   ]
 },
-{ "HalfPlane" : [
+{ "1.鏡 :bbox: :red:" : [
      {"HalfPlane[]":[0,0,0]},]
 },
-{ "ParallelTranslation": [
+{ "2.鏡 :bbox: :red:": [ 
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"HalfPlane[]":[pval.x,0,-1, 0]},
+]},
+{ "4.鏡 IH48: pmm = halfp x4 :rect: :red:": [ 
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"HalfPlane[]":[pval.x,0,-1, 0]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[0,1, 0,-1]},
+]},
+{ "1.直進 :bbox: :blue:": [
      {"ParallelTranslation[]":[0,0.5,0,pval.x]},]
 },
-{ "Rotation180" : [
-     {"Rotation[]":[0,0.5,270,180]},]
-},
-{ "Rotation90" : [
-     {"Rotation[]":[0,0,0,90]},]
-},
-{ "GlideReflection" : [
-     {"GlideReflection[]":[0,0.5,0,pval.x]},]
-},
-{ "IH41: p1 = para x2 :rect:": [
+{ "2.直進 IH41: p1 = para x2 :rect: :blue:": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
+]},
+{ "1.直進2.鏡 IH42:(64) pm = para   +halfp x2 :rect: :blue:": [
+     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
+     {"HalfPlane[]":[0,0, 0, 1]},
+     {"HalfPlane[]":[1,1, 0,-1]},
+]},
+{ "1.回転 :bbox: :green:" : [
+     {"Rotation[]":[0,0.5,270,180]},]
+},
+{ "2.回転 IH55: p4 = rot x2 :rect: :green:": [
+     {"Rotation[]":[0,0, 1, 0, 90]},
+     {"Rotation[]":[1,1, -1,0, 90]},
+]},
+{ "4.回転 IH46: p2 = rot x4 :rect: :green:": [
+     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
+     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
+     {"Rotation[]":[0,0.5, 0,-1, 180]},
+     {"Rotation[]":[pval.x,0.5, 0, 1, 180]},
+]},
+{ "1.回転2.鏡 IH56: p4g = rot +halfp x2 :rect: :green:": [
+     {"Rotation[]":[0,0, 1, 0, 90]},
+     {"HalfPlane[]":[1,0, -1, 0]},
+     {"HalfPlane[]":[0,1, 0, -1]},
+]},
+{ "2.回転2.鏡 IH49: pmg = rot x2 +halfp x2 :rect: :green:": [
+     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
+     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
+     {"HalfPlane[]":[0,0, 1, 0]},
+     {"HalfPlane[]":[pval.x, 0, -1,0]},
+]},
+{ "2.回転1直進 IH47: p2 = para +rot x2 :rect: :green:": [
+     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
+     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
+     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
+]},
+{ "1.回転1.鏡1.直進 IH50:(66) pmg = rot +para +halfp :rect: :green:": [ 
+     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
+     {"HalfPlane[]":[0,1, 0, -1]},
+     {"ParallelTranslation[]":[0, 0.5, 1, 0, pval.x]},
+]},
+{ "1.滑鏡 :bbox: :orange:" : [
+     {"GlideReflection[]":[0,0.5,0,pval.x]},]
+},
+{ "2.滑鏡 IH52: pgg = glide x2 :rect: :orange:": [
+     {"GlideReflection[]":[  0, 0.5, 1, 0, pval.x]},
+     {"GlideReflection[]":[pval.x/2,   0, 0, 1, 1]},
 ]},
 { "IH1(IH41): p1 = para x3(x2) [xa]": (()=>{
      let [xc,yc]=[pval.x/2,1/2];
@@ -709,17 +778,6 @@ return conv([
      {"Rotation[]":[1/4,-1/4/Math.sqrt(3),Math.sqrt(3),-1, 180]},
      {"Rotation[]":[3/4,-1/4/Math.sqrt(3), Math.sqrt(3),1, 180]},
 ]}, 
-{ "IH46: p2 = rot x4 :rect: ": [
-     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
-     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
-     {"Rotation[]":[0,0.5, 0,-1, 180]},
-     {"Rotation[]":[pval.x,0.5, 0, 1, 180]},
-]},
-{ "IH47: p2 = para +rot x2 :rect: ": [
-     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
-     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
-     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
-]},
 { "IH57: p2 = para x2   +rot ": [
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
@@ -730,35 +788,24 @@ return conv([
      {"Rotation[]":[0,1, 0,-1, 180]},
      {"Rotation[]":[pval.x,1,-pval.x, 1, 180]},
 ]},
-{ "IH42:(64) pm = para   +halfp x2 :rect: ": [
-     {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
-     {"HalfPlane[]":[0,0, 0, 1]},
-     {"HalfPlane[]":[1,1, 0,-1]},
-]},
 { "IH64: pm = para x2   +halfp ": [
      {"ParallelTranslation[]":[0,0.5, 1, 0, pval.x]},
      {"HalfPlane[]":[0,0, 0, 1]},
      {"ParallelTranslation[]":[pval.x/2,-1, 0, 1, 2]},
 ]},
-{ "IH43: pg = para +glide :rect:": [
-     {"GlideReflection[]":[0,0.5, 1, 0, pval.x]},
-     {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
-]},
-{ "IH45: cm = halfp x2 +glide :rect:": [
+{ "1.滑鏡2.鏡 IH45: cm = halfp x2 +glide :rect: :orange:": [
      {"HalfPlane[]":[0,0, 0, 1]},
      {"HalfPlane[]":[1,1, 0,-1]}, 
      {"GlideReflection[]":[0,0.5, 1, 0, pval.x]},
+]},
+{ "1.滑鏡1.直進 IH43: pg = para +glide :rect: :orange:": [
+     {"GlideReflection[]":[0,0.5, 1, 0, pval.x]},
+     {"ParallelTranslation[]":[pval.x/2,0, 0, 1, 1]},
 ]},
 { "IH68: cm = para x2 + halfp ": [
      {"ParallelTranslation[]":[0+1.5/2/Math.sqrt(2),0.5-1.5/2/Math.sqrt(2), 1, 1, 1.5]},
      {"ParallelTranslation[]":[0+1.5/2/Math.sqrt(2),0.5+1.5/2/Math.sqrt(2), 1, -1,1.5]},
      {"HalfPlane[]":[1.5/Math.sqrt(2),0, -1, 0]},
-]},
-{ "IH48: pmm = halfp x4 :rect:": [ 
-     {"HalfPlane[]":[0,0, 1, 0]},
-     {"HalfPlane[]":[pval.x,0,-1, 0]},
-     {"HalfPlane[]":[0,0, 0, 1]},
-     {"HalfPlane[]":[0,1, 0,-1]},
 ]},
 { "IH65: pmm = para +halfp x3 ": [
      {"HalfPlane[]":[0,1, 0,-1]},
@@ -778,17 +825,6 @@ return conv([
      {"Rotation[]":[1/4,5/4/Math.sqrt(3), -Math.sqrt(3),-1, 180]},
      {"Rotation[]":[3/4,5/4/Math.sqrt(3),-Math.sqrt(3),1, 180]},
 ]},
-{ "IH49: pmg = rot x2 +halfp x2 :rect:": [
-     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
-     {"Rotation[]":[pval.x/2,1,-1, 0, 180]},
-     {"HalfPlane[]":[0,0, 1, 0]},
-     {"HalfPlane[]":[pval.x, 0, -1,0]},
-]},
-{ "IH50:(66) pmg = rot +para +halfp :rect:": [ 
-     {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
-     {"HalfPlane[]":[0,1, 0, -1]},
-     {"ParallelTranslation[]":[0, 0.5, 1, 0, pval.x]},
-]},
 { "IH58: pmg = rot +halfp +para ": [
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"HalfPlane[]":[0,0, 1, 0]},
@@ -800,14 +836,10 @@ return conv([
      {"Rotation[]":[0,1/2, 0, -1, 180]},
      {"HalfPlane[]":[pval.x,0,-1, -pval.x]},
 ]},
-{ "IH51: pgg = glide +rotate x2 :rect:": [
+{ "1.滑鏡2.回転 IH51: pgg = glide +rotate x2 :rect: :orange:": [
      {"GlideReflection[]":[0, 0.5, 1, 0, pval.x]},
      {"Rotation[]":[pval.x/2,0, 1, 0, 180]},
      {"Rotation[]":[pval.x/2,1, -1, 0, 180]},
-]},
-{ "IH52: pgg = glide x2 :rect:": [
-     {"GlideReflection[]":[  0, 0.5, 1, 0, pval.x]},
-     {"GlideReflection[]":[pval.x/2,   0, 0, 1, 1]},
 ]},
 { "IH78=74: cmm = rot +halfplane x2 [x] ": [
      {"HalfPlane[]":[0,0, 1,-1]},
@@ -817,10 +849,6 @@ return conv([
       (1/pval.x+pval.x),
       180]},
 ]},
-{ "IH55: p4 = rot x2 :rect:": [
-     {"Rotation[]":[0,0, 1, 0, 90]},
-     {"Rotation[]":[1,1, -1,0, 90]},
-]},
 { "IH79: p4 = rot x2 ": [
      {"Rotation[]":[0,0, 1,-1, 90]},
      {"Rotation[]":[1,0, 0,1, 180]},
@@ -829,11 +857,6 @@ return conv([
      {"HalfPlane[]":[0,0, 1,-1]},
      {"HalfPlane[]":[0,0, 1,1]},
      {"HalfPlane[]":[1,0,-1,0]},
-]},
-{ "IH56: p4g = rot +halfp x2 :rect:": [
-     {"Rotation[]":[0,0, 1, 0, 90]},
-     {"HalfPlane[]":[1,0, -1, 0]},
-     {"HalfPlane[]":[0,1, 0, -1]},
 ]},
 { "IH71: p4g = halfp + glide ": [
      {"GlideReflection[]":[0+1.5/2/Math.sqrt(2),-1.5/2/Math.sqrt(2), 1, 1, 1.5]},
