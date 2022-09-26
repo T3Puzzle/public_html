@@ -353,22 +353,26 @@ function init(callback) {
   try {
     document.querySelector('iframe').contentWindow.executeCommandTweet();
   } catch (e) {
-    alert('CORS limitation');
+    alert('CORS limitation: '+e);
   }
   " >Tweet</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
   onclick="
   try {
-    document.querySelector('iframe').contentWindow.executeCommandSaveScene();
+    document.querySelector('iframe').contentWindow.executeCommandSaveImage();
   } catch (e) {
-    alert('CORS limitation');
+    alert('CORS limitation: '+e);
   }
   " >Save</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button
   onclick="
+  try {
+    document.querySelector('iframe').contentWindow.executeCommandClearScene();
+  } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
+  }
   " >Reset</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
