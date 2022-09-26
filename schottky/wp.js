@@ -1,5 +1,7 @@
 
 (()=>{with(paper){
+  const src_scope = new PaperScope();
+  const dst_scope = new PaperScope();
   const WALLPAPER = { };
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
@@ -39,7 +41,7 @@ function draw(type) {
   let _pval_x = 1;
 
   let len = 3.1;
-  new Path.Rectangle({
+  new src_scope.Path.Rectangle({
     from: [-len,-len],
     to: [len,len],
     fillColor: 'white',
@@ -59,7 +61,7 @@ function draw(type) {
       let [x1,y1]= [pointX, pointY];
       inst.rotate(normalAngle,[0,0]);
       inst.translate(x1,y1);
-      let tmp = inst.definition.item.children[1].copyTo(project);
+      let tmp = inst.definition.item.children[1].copyTo(src_scope.project);
       tmp.rotate(normalAngle,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
@@ -90,13 +92,13 @@ function draw(type) {
       inst2.rotate(rot2,[0,0]);
       inst2.translate(x2,y2);
 
-      let tmp = inst.definition.item.children[1].copyTo(project);
+      let tmp = inst.definition.item.children[1].copyTo(src_scope.project);
       tmp.rotate(normalAngle,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
       tmp.strokeWidth = 0.01;
 
-      let tmp2 = inst2.definition.item.children[1].copyTo(project);
+      let tmp2 = inst2.definition.item.children[1].copyTo(src_scope.project);
       tmp2.rotate(rot2,[0,0]);
       tmp2.translate(x2,y2);
       tmp2.strokeColor = color_a;
@@ -111,7 +113,7 @@ function draw(type) {
       tmp.remove();
       tmp2.remove();
 
-      let line = new Path.Line({
+      let line = new src_scope.Path.Line({
         from: [0,0],
         to: [planeDistance,0],
         strokeColor: color,
@@ -120,7 +122,7 @@ function draw(type) {
       line.rotate(normalAngle,[0,0]);
       line.translate([x1,y1]);
       let tip = 0.12;
-      let arrow = new Path({
+      let arrow = new src_scope.Path({
         segments: [[0,0],[tip*3/7,0],[0,tip]],
         fillColor: color,
       });
@@ -128,7 +130,7 @@ function draw(type) {
       if (key==='ParallelTranslation[]') {
         arrow2 = arrow.clone();
       } else {
-        arrow2 = new Path({
+        arrow2 = new src_scope.Path({
           segments: [[0,0],[-tip*3/7,0],[0,tip]],
           fillColor: color,
         });
@@ -141,7 +143,7 @@ function draw(type) {
       arrow2.translate([x2,y2]);
 
       if (key==='GlideReflection[]') {
-        new Shape.Circle({
+        new src_scope.Shape.Circle({
           center: [x1,y1],
           radius: 0.03,
           fillColor: color
@@ -160,13 +162,13 @@ function draw(type) {
       inst2.rotate(rot2+90+180,[0,0]);
       inst2.translate(x1,y1);
 
-      let tmp = inst.definition.item.children[1].copyTo(project);
+      let tmp = inst.definition.item.children[1].copyTo(src_scope.project);
       tmp.rotate(boundaryAngle+90,[0,0]);
       tmp.translate(x1,y1);
       tmp.strokeColor = color_a;
       tmp.strokeWidth = 0.01;
 
-      let tmp2 = inst2.definition.item.children[1].copyTo(project);
+      let tmp2 = inst2.definition.item.children[1].copyTo(src_scope.project);
       tmp2.rotate(rot2+90+180,[0,0]);
       tmp2.translate(x1,y1);
       tmp2.strokeColor = color_a;
@@ -198,7 +200,7 @@ function draw(type) {
       arc.translate(x1,y1);
 
       let tip = 0.1;
-      let arrow = new Path({
+      let arrow = new src_scope.Path({
         segments: [[-tip*2/7,0],[tip*2/7,0],[0,tip]],
         fillColor: color,
       });
@@ -210,25 +212,25 @@ function draw(type) {
       arrow2.rotate(rot2,[0,0]);
       arrow2.translate(x1+tx,y1+ty);
 
-      new Shape.Circle({
+      new src_scope.Shape.Circle({
         center: [x1,y1],
         radius: 0.03,
         fillColor: color
       });
     }
   });
-  new Shape.Circle({
+  new src_scope.Shape.Circle({
     center: [0,0],
     radius: 0.03,
     fillColor: "black"
   });
-  view.draw();
+  src_scope.view.draw();
 
   if (booled) {
     if (Object.values(WALLPAPER.wp)[0].length===1) {
       saveBBox([0,0,_pval_x,1]);
     } else { 
-      booled.addTo(project.activeLayer);
+      booled.addTo(src_scope.project.activeLayer);
       saveBBox(calcBBox(booled));
     }
   } else {
@@ -236,7 +238,7 @@ function draw(type) {
       saveBBox([0,0,_pval_x,1]);
     }
   }
-  WALLPAPER.svgbase.querySelector('svg > g').innerHTML = (project.exportSVG().innerHTML);
+  WALLPAPER.svgbase.querySelector('svg > g').innerHTML = (src_scope.project.exportSVG().innerHTML);
   return;
 
   function calcBBox () {
@@ -255,7 +257,7 @@ function draw(type) {
   function saveBBox (val) {
     let [minX,minY,maxX,maxY] = val;
     WALLPAPER.svgbase.setAttribute('x-bbox',[minX,minY,maxX-minX,maxY-minY].join(','));
-    let path = new Path.Rectangle({
+    let path = new src_scope.Path.Rectangle({
       from: [minX,minY],
       to: [maxX,maxY],
       strokeWidth: 0.01,
@@ -270,19 +272,13 @@ function draw(type) {
       return;
     }
     let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
-    let src = document.querySelector('canvas#src');
-    let swidth = src.width;
-    let sheight= src.height;
-    let xratio = view.zoom/2/WALLPAPER.width*swidth;
-    let yratio = view.zoom/2/WALLPAPER.height*sheight;
     let dst = document.querySelector('canvas#dst');
-    dst.width = rwidth * view.zoom;
-    dst.height = rheight * view.zoom;
-    let sx = swidth/2 +(minX-WALLPAPER.origin[0]) * xratio*2;
-    let sy = sheight/2+(minY-WALLPAPER.origin[1]) * yratio*2;
-    let width = rwidth *xratio*2; 
-    let height = rheight*yratio*2; 
-    dst.getContext('2d').drawImage(src,sx,sy,width,height,0,0,dst.width,dst.height);
+    let dwidth = rwidth * src_scope.view.zoom;
+    let dheight = rheight * src_scope.view.zoom;
+    if (dwidth!== dst.width || dheight !== dst.height) {
+      dst.width = dwidth;
+      dst.height = dheight;
+    }
     if (WALLPAPER.canvas) {
       let data = dst.toDataURL();
       document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
@@ -290,9 +286,10 @@ function draw(type) {
   }
 }
 function load(callback) {
-  setup(document.getElementById('src'));
-  view.center = WALLPAPER.origin;
-  view.zoom = 100;
+  src_scope.setup(document.getElementById('src'));
+  dst_scope.setup(document.getElementById('dst'));
+  src_scope.view.center = WALLPAPER.origin;
+  src_scope.view.zoom = 100;
   WALLPAPER.defs = {};
   Object.keys(WALLPAPER.color).map(key=>{
     WALLPAPER.defs[key] = plane(WALLPAPER.color[key]);
@@ -302,27 +299,27 @@ function load(callback) {
 
   function plane (color) {
     const PLANE_SIZE = 10;
-    let halfp =  new Path.Rectangle( new Rectangle({
+    let halfp =  new src_scope.Path.Rectangle( new src_scope.Rectangle({
       point: [-PLANE_SIZE,-PLANE_SIZE],
       size: [PLANE_SIZE,PLANE_SIZE*2],
     }));
     halfp.fillColor= color;
     halfp.opacity= 0.2;
-    let dummy =  new Path.Rectangle( new Rectangle({
+    let dummy =  new src_scope.Path.Rectangle( new src_scope.Rectangle({
       point: [0,-PLANE_SIZE],
       size: [PLANE_SIZE,PLANE_SIZE*2],
     }));
-    return new SymbolDefinition(new Group([halfp,dummy]));
+    return new src_scope.SymbolDefinition(new src_scope.Group([halfp,dummy]));
   }
 }
 function init(callback) {
 
-  let tool = new Tool();
+  let tool = new dst_scope.Tool();
   let path = null;
   tool.onMouseDown = (e) => {
-    path = new Path();
-    path.strokeColor = 'red';
-    path.strokeWidth = 0.1;
+    path = new dst_scope.Path();
+    path.strokeColor = 'blue';
+    path.strokeWidth = 10;
     path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
@@ -341,7 +338,7 @@ function init(callback) {
   WALLPAPER.svgbase = document.querySelector('div#svgbase');
   WALLPAPER.svgbase.insertAdjacentHTML('beforeend',`
   <canvas style="xdisplay:none;" id="src" width="${WIDTH}" height="${HEIGHT}"></canvas>
-  <canvas style="display:none;" id="dst"></canvas>
+  <canvas style="xdisplay:none;position:absolute;top:175px;left:100px;" id="dst" resize="false"></canvas>
   <svg style="display:none;" width="${WIDTH}" height="${HEIGHT}"><g transform="translate(${WIDTH/2},${HEIGHT/2})scale(1,-1)translate(${-WIDTH/2},${-HEIGHT/2})">
   </g></svg>
 `);
@@ -465,7 +462,7 @@ function init(callback) {
     }
     WALLPAPER.wp = _wps[wpi];
     if (!(source==='init')) {
-      project.clear()
+      src_scope.project.clear()
       callback(ev);
     }
     setWpi(wpi);
