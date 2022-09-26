@@ -1,9 +1,10 @@
+
 (()=>{with(paper){
   const WALLPAPER = { };
   WALLPAPER.full = false;
   WALLPAPER.canvas = false;
   WALLPAPER.qsdefault = '&displayMode=iframe';
-  WALLPAPER.transform = '&scale=5,1,10&translateX=1.5';
+  WALLPAPER.transform = '&scale=4,1,10&translateX=0.0&translateY=0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
   }
@@ -11,6 +12,8 @@
     WALLPAPER.canvas = true;
   }
   window.addEventListener('load',()=>{load(draw);});
+  document.querySelector('iframe').width = '60%';
+  document.querySelector('iframe').src = `./?OrbitSeed=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   init(draw);
   return;
 
