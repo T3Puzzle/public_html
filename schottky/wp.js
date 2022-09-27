@@ -282,7 +282,6 @@ function draw(type) {
   function drawBBox () {
     let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
     if (!bbox || bbox.length===0) {
-console.log(222);
       return;
     }
     let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
