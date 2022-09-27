@@ -423,18 +423,6 @@ function init(callback) {
   }
   let buttonStyle = `style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 5px; text-decoration: none;background-color: black;border: none;"`;
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
-  onclick="
-  try {
-    document.querySelector('iframe').contentWindow.executeCommandTweet();
-    this.disabled = 'disabled';
-    window.setTimeout(()=>this.disabled='',3000);
-    
-  } catch (e) {
-    alert('CORS limitation: '+e);
-  }
-  " >ツイート</button>`);
-
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
   onclick="
   let iframe = document.querySelector('iframe');
@@ -492,24 +480,6 @@ function init(callback) {
   WALLPAPER.canvas = false;
   " >やり直し</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
-  ['renderGenerator','videoOrbit'].map(name=>{
-    let label = document.createElement('input');
-    label.disabled = 'disabled';
-    label.size = 15;
-    label.value = name;
-    WALLPAPER.svgbase.insertAdjacentElement('afterend',label);
-    let input = document.createElement('input');
-    input.name = name;
-    input.type = 'checkbox';
-    if (name==='renderGenerator') {
-      input.checked = true;
-    }
-    input.addEventListener('change',(ev)=>{
-      redraw(ev);_view();
-    });
-    WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
-  });
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
 
   WALLPAPER.input = {}; 
@@ -659,7 +629,7 @@ function init(callback) {
         if (!base_href || base_href.length==0) {
           base_href = './';
         }
-        return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}${getChecked("renderGenerator",title,pval)}${getChecked("videoOrbit",title,pval)}&${qs(g)}`)
+        return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}&OrbitSeed[]=${getBBox()}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
@@ -680,24 +650,6 @@ function init(callback) {
       xid++;
     });
   }
-function getChecked (name,title,pval) {
-  let checked = document.querySelector(`input[name="${name}"]`).checked;
-  if (name === 'videoOrbit') {
-    let type = 'OrbitSeed[]';
-    if (WALLPAPER.canvas) {
-      type = 'CanvasSeed[]'; 
-    }
-    if (checked) {
-      type = `VideoOrbit[]`;
-    }
-      return `&${type}=${getBBox()}`;
-  } else if (name==='renderGenerator') {
-    if (!checked) {
-      return '&renderGenerator=false';
-    } else {
-      return '';
-    }
-  }
 function getBBox () {
   let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
   if (bbox) {
@@ -705,7 +657,6 @@ function getBBox () {
   } else {
     return '-0.5,-0.5,1,1';
   }
-}
 }
 function conv(array) {
   let ret = array.map(o=>{
