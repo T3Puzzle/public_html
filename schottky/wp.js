@@ -35,12 +35,12 @@ const WALLPAPER = { };
       iframewin.changeCanvasSeedTextureURL(data);
       let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
       let timer = 1000*20;
-      let timeOutStatus = 0;
-      timeOutStatus++;
+      WALLPAPER.timeOutStatus = 0;
+      WALLPAPER.timeOutStatus++;
       window.setTimeout(checkTimeOut,timer);
       iframecanvas.addEventListener('click',()=>{
-        if (timeOutStatus>0) {
-          timeOutStatus++;
+        if (WALLPAPER.timeOutStatus>0) {
+          WALLPAPER.timeOutStatus++;
           window.setTimeout(checkTimeOut,timer);
         }
       });
@@ -49,8 +49,8 @@ const WALLPAPER = { };
     }
     return;
     function checkTimeOut () {
-      timeOutStatus--;
-      if (timeOutStatus===0) {
+      WALLPAPER.timeOutStatus--;
+      if (WALLPAPER.timeOutStatus===0) {
         console.log('end');
       }
     }
