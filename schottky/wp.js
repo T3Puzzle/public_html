@@ -58,7 +58,6 @@ function draw(type) {
   }
   src_scope.activate();
   let booled = null;
-  let _pval_x = 1;
 
   let len = 3.1;
   new src_scope.Path.Rectangle({
@@ -96,7 +95,6 @@ function draw(type) {
       || (key==='GlideReflection[]')) {
       let inst = WALLPAPER.defs[key].place();
       let [pointX, pointY, normalAngle, planeDistance] = value;
-      _pval_x = planeDistance;
 
       let [x1,y1]= [pointX, pointY];
       inst.rotate(normalAngle,[0,0]);
@@ -240,6 +238,7 @@ function draw(type) {
     }
   });
   if (false) {
+    // origin
     new src_scope.Shape.Circle({
       center: [0,0],
       radius: 0.03,
@@ -248,16 +247,13 @@ function draw(type) {
   }
   src_scope.view.draw();
 
-  if (booled) {
-    if (/:bbox:/.test(Object.keys(WALLPAPER.wp)[0])) {
-      saveBBox([0,0,_pval_x,1]);
-    } else { 
+  if (/:bbox:/.test(Object.keys(WALLPAPER.wp)[0])) {
+    let pval_x = parseFloat(document.querySelector('input[name="x"]').value);
+    saveBBox([0,0,pval_x,1]);
+  } else {
+    if (booled) {
       booled.addTo(src_scope.project.activeLayer);
       saveBBox(calcBBox(booled));
-    }
-  } else {
-    if (Object.values(WALLPAPER.wp)[0].length===0) {
-      saveBBox([0,0,_pval_x,1]);
     }
   }
   WALLPAPER.svgbase.querySelector('svg > g').innerHTML = (src_scope.project.exportSVG().innerHTML);
