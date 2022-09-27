@@ -5,7 +5,6 @@ const WALLPAPER = { };
   const dst_scope = new PaperScope();
   WALLPAPER.dst_scope = dst_scope;
   WALLPAPER.full = false;
-  WALLPAPER.canvas = false;
   WALLPAPER.origin = [0.75,0.5];
   WALLPAPER.width = 300;
   WALLPAPER.height = 400;
@@ -13,9 +12,6 @@ const WALLPAPER = { };
   WALLPAPER.transform = '&scale=5,1,10&translateX=1&translateY=-0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
-  }
-  if (/canvas/.test(document.location.search)) {
-    WALLPAPER.canvas = true;
   }
   window.addEventListener('DOMContentLoaded',()=>{bodyMovePrevent();});
 
@@ -25,21 +21,19 @@ const WALLPAPER = { };
   let iframe = document.querySelector('iframe');
   iframe.width = '80%';
   iframe.height = '550';
-  iframe.src = `./?OrbitSeed%5B%5D=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+  iframe.src = `./?OrbitSeed%5B%5D=0,0,1,1&CanvasSeed%5B%5D=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   iframe.style = 'border:none;';
   iframe.addEventListener('load',loadIframe);
   init(draw);
   return;
 
   function loadIframe (ev) {
-    if(/CanvasSeed/.test(ev.target.src)) {
-      try {
-        let dst = document.querySelector('canvas#dst');
-        let data = dst.toDataURL();
-        document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
-      } catch (e) {
-        console.log(e);
-      }
+    try {
+      let dst = document.querySelector('canvas#dst');
+      let data = dst.toDataURL();
+      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -303,13 +297,11 @@ console.log(222);
       dst.width = dwidth;
       dst.height = dheight;
     }
-    if (WALLPAPER.canvas) {
-      let data = dst.toDataURL();
-      try {
-        document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
-      } catch (e) {
-        console.log(e);
-      }
+    let data = dst.toDataURL();
+    try {
+      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+    } catch (e) {
+      console.log(e);
     }
   }
 }
@@ -368,11 +360,6 @@ function init(callback) {
     path.add(top);
     path.insert(0,bottom);
     path.smooth();
-
-    if (!WALLPAPER.canvas) {
-      WALLPAPER.canvas = true;
-      switchCanvas();
-    }
   };
   tool.onMouseUp = (e) => {
     if (toBeRemoved) {
@@ -380,12 +367,6 @@ function init(callback) {
     }
     callback('bbox');
   };
-  function switchCanvas () {
-    let iframe = document.querySelector('iframe');
-    if (/OrbitSeed/.test(iframe.src)) {
-      iframe.src = iframe.src.replace(/OrbitSeed/g,'CanvasSeed');
-    }
-  }
 }
 
   const WIDTH = WALLPAPER.width;
@@ -478,7 +459,6 @@ function init(callback) {
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
-  WALLPAPER.canvas = false;
   " >やり直し</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
