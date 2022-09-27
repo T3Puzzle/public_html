@@ -27,8 +27,21 @@ const WALLPAPER = { };
   iframe.height = '550';
   iframe.src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   iframe.style = 'border:none;';
+  iframe.addEventListener('load',loadIframe);
   init(draw);
   return;
+
+  function loadIframe (ev) {
+    if(/CanvasSeed/.test(ev.target.src)) {
+      try {
+        let dst = document.querySelector('canvas#dst');
+        let data = dst.toDataURL();
+        document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
 
   function bodyMovePrevent() {
     document.addEventListener('touchmove', e => e.preventDefault(), {
@@ -294,7 +307,11 @@ function draw(type) {
     }
     if (WALLPAPER.canvas) {
       let data = dst.toDataURL();
-      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      try {
+        document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 }
@@ -353,8 +370,8 @@ function init(callback) {
     path.insert(0,bottom);
     path.smooth();
 
-    if (!WALLPAPER.drawn) {
-      WALLPAPER.drawn = true;
+    if (!WALLPAPER.canvas) {
+      WALLPAPER.canvas = true;
       switchCanvas();
     }
   };
@@ -449,7 +466,7 @@ function init(callback) {
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
-  WALLPAPER.drawn = false;
+  WALLPAPER.canvas = false;
   " >やり直し</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
