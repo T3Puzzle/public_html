@@ -32,6 +32,7 @@ const WALLPAPER = { };
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
       let iframewin = document.querySelector('iframe').contentWindow;
+console.log(iframewin);
       iframewin.changeCanvasSeedTextureURL(data);
       let iframecanvas = iframewin.querySelector('canvas#canvas2d');
       let timer = 1000*20;
