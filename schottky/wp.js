@@ -53,6 +53,7 @@ const WALLPAPER = { };
   }
 function draw(type) {
   if (type==='bbox') {
+    dst_scope.view.draw();
     drawBBox();
     return;
   }
@@ -287,6 +288,7 @@ function draw(type) {
   function drawBBox () {
     let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
     if (!bbox || bbox.length===0) {
+console.log(222);
       return;
     }
     let [minX,minY,rwidth,rheight]=bbox.split(',').map(v=>parseFloat(v));
@@ -354,10 +356,11 @@ function init(callback) {
     }
     let pval_x = parseFloat(document.querySelector('input[name="x"]').value);
     path.strokeWidth = 15*Math.sqrt(pval_x);
-    path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
-    toBeRemoved = false;
+
+    toBeRemoved = null;
+
     let step = e.delta.divide(2);
     step.angle += 90;
     let top = e.middlePoint.add(step);
@@ -434,12 +437,19 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
-  this.disabled='disabled';
   let iframe = document.querySelector('iframe');
-  let oldsrc = iframe.src;//.replace(/&VideoOrbit%5B%5D=([0-9--\.,]+)/g,'');
-  if(/Seed%5B%5D=([0-9--\.,]+)/.test(oldsrc)) {
-    iframe.src = oldsrc+'&VideoOrbit%5B%5D='+RegExp.$1;
+  if (this.textContent==='ビデオ') {
+    iframe.src = iframe.src.replace(/OrbitSeed/g,'VideoOrbit');
+    this.textContent = 'ネ　コ';
+  } else {
+    iframe.src = iframe.src.replace(/VideoOrbit/g,'OrbitSeed');
+    this.textContent = 'ビデオ';
   }
+  " >ビデオ</button>`);
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
+  onclick="
+  this.disabled='disabled';
   window.setTimeout(()=>this.disabled='',11000);
   for(let i=0;i<10;i++){
     window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
@@ -451,7 +461,6 @@ function init(callback) {
       } catch (e) {
         alert('CORS limitation: '+e);
       }
-      iframe.src = oldsrc;
       this.textContent = '撮影';
     },
     11000);
