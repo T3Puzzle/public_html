@@ -21,7 +21,7 @@ const WALLPAPER = { };
   let iframe = document.querySelector('iframe');
   iframe.width = '80%';
   iframe.height = '550';
-  iframe.src = `./?OrbitSeed%5B%5D=0,0,1,1&CanvasSeed%5B%5D=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+  iframe.src = `./?OrbitSeed%5B%5D=0,0,1,1,1&CanvasSeed%5B%5D=0,0,1,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   iframe.style = 'border:none;';
   iframe.addEventListener('load',loadIframe);
   init(draw);
@@ -31,9 +31,28 @@ const WALLPAPER = { };
     try {
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
-      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      let iframewin = document.querySelector('iframe').contentWindow;
+      iframewin.changeCanvasSeedTextureURL(data);
+      let iframecanvas = iframewin.querySelector('canvas#canvas2d');
+      let timer = 1000*20;
+      let timeOutStatus = 0;
+      timeOutStatus++;
+      window.setTimeout(checkTimeOut,timer);
+      iframecanvas.addEventListener('click',()=>{
+        if (timeOutStatus>0) {
+          timeOutStatus++;
+          window.setTimeout(checkTimeOut,timer);
+        }
+      });
     } catch (e) {
       console.log(e);
+    }
+    return;
+    function checkTimeOut () {
+      timeOutStatus--;
+      if (timeOutStatus===0) {
+        console.log('end');
+      }
     }
   }
 
@@ -639,12 +658,13 @@ function getSeed () {
     seed = 'OrbitSeed';
   }
   return '&'+seed+'[]='+bbox+'&CanvasSeed[]='+bbox;
+
 function getBBox () {
   let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
   if (bbox) {
-    return bbox;
+    return bbox+',1';
   } else {
-    return '-0.5,-0.5,1,1';
+    return '-0.5,-0.5,1,1,1';
   }
 }
 }
