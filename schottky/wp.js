@@ -439,6 +439,11 @@ function init(callback) {
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   this.disabled='disabled';
+  let iframe = document.querySelector('iframe');
+  let oldsrc = iframe.src.replace(/&VideoOrbit(\[\]|%5B%5D)=([0-9--\.,]+)/g,'');
+  if(/Seed(\[\]|%5B%5D)=([0-9--\.,]+)/.test(oldsrc)) {
+    iframe.src = oldsrc+'&VideoOrbit[]='+RegExp.$2;
+  }
   window.setTimeout(()=>this.disabled='',11000);
   for(let i=0;i<10;i++){
     window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
@@ -446,10 +451,11 @@ function init(callback) {
   window.setTimeout(
     ()=>{
       try {
-         document.querySelector('iframe').contentWindow.executeCommandSaveImage()
+         iframe.contentWindow.executeCommandSaveImage()
       } catch (e) {
         alert('CORS limitation: '+e);
       }
+      iframe.src = oldsrc;
       this.textContent = '撮影';
     },
     11000);
