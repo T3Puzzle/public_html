@@ -435,7 +435,7 @@ function init(callback) {
   }
   " >ツイート</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
   onclick="
   let iframe = document.querySelector('iframe');
   if (this.textContent==='ビデオ') {
@@ -449,21 +449,33 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
+  let iframe = document.querySelector('iframe');
   this.disabled='disabled';
-  window.setTimeout(()=>this.disabled='',11000);
-  for(let i=0;i<10;i++){
-    window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
-  }
-  window.setTimeout(
+  let video = document.querySelector('button#video').textContent;
+  if (video==='ビデオ') {
+    try {
+      iframe.contentWindow.executeCommandSaveImage()
+    } catch (e) {
+      console.log('CORS limitation: '+e);
+    }
+    this.disabled='';
+  } else {
+    window.setTimeout(()=>this.disabled='',11000);
+    for(let i=0;i<10;i++){
+      window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
+    }
+    window.setTimeout(
     ()=>{
       try {
          iframe.contentWindow.executeCommandSaveImage()
       } catch (e) {
-        alert('CORS limitation: '+e);
+        console.log('CORS limitation: '+e);
       }
       this.textContent = '撮影';
+      this.disabled='';
     },
     11000);
+  }
   " >撮影</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
