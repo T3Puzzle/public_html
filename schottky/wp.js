@@ -1,5 +1,4 @@
 
-
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -369,7 +368,16 @@ function init(callback) {
   tool.onMouseDown = (e) => {
     path = new dst_scope.Path();
 
-    path.strokeColor = '#00ffff';
+    let color = WALLPAPER.color;
+    if (color==='pink') {
+      path.strokeColor = 'rgba(255,122,190,1)';
+    } else if (color==='mint') {
+      path.strokeColor = 'rgba(120,250,240,1)';
+    } else if (color==='green') {
+      path.strokeColor = 'rgba(54,210,102,1)';
+    } else {
+      path.strokeColor = 'rgba(105,195,255,1)';
+    }
     if(e.item) {
       toBeRemoved = e.item;
     }
@@ -429,6 +437,18 @@ function init(callback) {
 </div>
 `);
   }
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
+<switch-text onchange="WALLPAPER.color = this.value;" value="blue" size="30px">
+      <datalist>
+        <option value="blue"></option>
+        <option value="green"></option>
+        <option value="pink"></option>
+        <option value="mint"></option>
+      </datalist>
+    </switch-text>
+`);
+
   let buttonStyle = `style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 5px; text-decoration: none;background-color: black;border: none;"`;
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
