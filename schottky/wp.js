@@ -423,18 +423,6 @@ function init(callback) {
   }
   let buttonStyle = `style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 5px; text-decoration: none;background-color: black;border: none;"`;
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
-  onclick="
-  let iframe = document.querySelector('iframe');
-  if (this.textContent==='ビデオ') {
-    iframe.src = iframe.src.replace(/OrbitSeed/g,'VideoOrbit');
-    this.textContent = 'ネ　コ';
-  } else {
-    iframe.src = iframe.src.replace(/VideoOrbit/g,'OrbitSeed');
-    this.textContent = 'ビデオ';
-  }
-  " >ビデオ</button>`);
-
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   let iframe = document.querySelector('iframe');
@@ -466,6 +454,19 @@ function init(callback) {
   }
   " >撮影</button>`);
 
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
+  onclick="
+  let iframe = document.querySelector('iframe');
+  if (this.textContent==='ビデオ') {
+    iframe.src = iframe.src.replace(/OrbitSeed/g,'VideoOrbit');
+    this.textContent = 'ネ　コ';
+  } else {
+    iframe.src = iframe.src.replace(/VideoOrbit/g,'OrbitSeed');
+    this.textContent = 'ビデオ';
+  }
+  " >ビデオ</button>`);
+
+
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
   WALLPAPER.dst_scope.project.clear();
@@ -488,6 +489,7 @@ function init(callback) {
     input.name = p;
     WALLPAPER.input[p] = input; 
     input.type = 'range';
+    input.style['margin'] = '10px 20px';
     input.setAttribute('min','0.5');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
