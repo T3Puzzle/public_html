@@ -629,7 +629,7 @@ function init(callback) {
         if (!base_href || base_href.length==0) {
           base_href = './';
         }
-        return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}&OrbitSeed[]=${getBBox()}&${qs(g)}`)
+        return base_href + encodeURI(`?title=${title}${WALLPAPER.qsdefault}${WALLPAPER.transform}${getSeed()}&${qs(g)}`)
       };
       a.href = getHref();
       a.setAttribute('x-id',xid); 
@@ -650,6 +650,14 @@ function init(callback) {
       xid++;
     });
   }
+function getSeed () {
+  let bbox = getBBox();
+  let seed = 'VideoOrbit';
+  let video = document.querySelector('button#video').textContent;
+  if (video==='ビデオ') {
+    seed = 'OrbitSeed';
+  }
+  return '&'+seed+'[]='+bbox+'&CanvasSeed[]='+bbox;
 function getBBox () {
   let bbox = WALLPAPER.svgbase.getAttribute('x-bbox');
   if (bbox) {
@@ -657,6 +665,7 @@ function getBBox () {
   } else {
     return '-0.5,-0.5,1,1';
   }
+}
 }
 function conv(array) {
   let ret = array.map(o=>{
