@@ -330,14 +330,21 @@ function init(callback) {
 {
   let tool = new dst_scope.Tool();
   let path = null;
+  let raster = null;
+  let toBeRemoved = null;
   tool.onMouseDown = (e) => {
     path = new dst_scope.Path();
+
     path.strokeColor = '#00ffff';
+    if(e.item) {
+      toBeRemoved = e.item;
+    }
     let pval_x = parseFloat(document.querySelector('input[name="x"]').value);
     path.strokeWidth = 15*Math.sqrt(pval_x);
     path.add(e.point);
   };
   tool.onMouseDrag = (e) => {
+    toBeRemoved = false;
     let step = e.delta.divide(2);
     step.angle += 90;
     let top = e.middlePoint.add(step);
@@ -345,10 +352,24 @@ function init(callback) {
     path.add(top);
     path.insert(0,bottom);
     path.smooth();
+
+    if (!WALLPAPER.drawn) {
+      WALLPAPER.drawn = true;
+      switchCanvas();
+    }
   };
   tool.onMouseUp = (e) => {
+    if (toBeRemoved) {
+      toBeRemoved.remove();
+    }
     callback('bbox');
   };
+  function switchCanvas () {
+    let iframe = document.querySelector('iframe');
+    if (/OrbitSeed/.test(iframe.src)) {
+      iframe.src = iframe.src.replace(/OrbitSeed/g,'CanvasSeed');
+    }
+  }
 }
 
   const WIDTH = WALLPAPER.width;
@@ -428,6 +449,7 @@ function init(callback) {
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
+  WALLPAPER.drawn = false;
   " >やり直し</button>`);
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
