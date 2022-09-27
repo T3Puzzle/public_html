@@ -464,9 +464,8 @@ function init(callback) {
     }
     this.disabled='';
   } else {
-    window.setTimeout(()=>this.disabled='',11000);
-    for(let i=0;i<10;i++){
-      window.setTimeout(()=>this.textContent=(10-i)+'秒...',1000*i);
+    for(let i=0;i<9;i++){
+      window.setTimeout(()=>this.textContent=(9-i)+'秒...',1000*i);
     }
     window.setTimeout(
     ()=>{
@@ -477,8 +476,11 @@ function init(callback) {
       }
       this.textContent = '撮影';
       this.disabled='';
+      if(confirm('ツイートしますか？')) {
+        iframe.contentWindow.executeCommandTweet();
+      }
     },
-    11000);
+    10000);
   }
   " >撮影</button>`);
 
