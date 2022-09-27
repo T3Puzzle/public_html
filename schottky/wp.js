@@ -25,7 +25,7 @@ const WALLPAPER = { };
   let iframe = document.querySelector('iframe');
   iframe.width = '80%';
   iframe.height = '550';
-  iframe.src = `./?OrbitSeed[]=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
+  iframe.src = `./?OrbitSeed%5B%5D=0,0,1,1${WALLPAPER.qsdefault}${WALLPAPER.transform}`;
   iframe.style = 'border:none;';
   iframe.addEventListener('load',loadIframe);
   init(draw);
@@ -440,9 +440,9 @@ function init(callback) {
   onclick="
   this.disabled='disabled';
   let iframe = document.querySelector('iframe');
-  let oldsrc = iframe.src.replace(/&VideoOrbit(\[\]|%5B%5D)=([0-9--\.,]+)/g,'');
-  if(/Seed(\[\]|%5B%5D)=([0-9--\.,]+)/.test(oldsrc)) {
-    iframe.src = oldsrc+'&VideoOrbit[]='+RegExp.$2;
+  let oldsrc = iframe.src;//.replace(/&VideoOrbit%5B%5D=([0-9--\.,]+)/g,'');
+  if(/Seed%5B%5D=([0-9--\.,]+)/.test(oldsrc)) {
+    iframe.src = oldsrc+'&VideoOrbit%5B%5D='+RegExp.$1;
   }
   window.setTimeout(()=>this.disabled='',11000);
   for(let i=0;i<10;i++){
