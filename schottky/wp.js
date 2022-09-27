@@ -33,6 +33,13 @@ const WALLPAPER = { };
       let data = dst.toDataURL();
       let iframewin = document.querySelector('iframe').contentWindow;
       iframewin.changeCanvasSeedTextureURL(data);
+
+      let video = document.querySelector('button#video').textContent;
+      if (video!=='ビデオ') {
+         // TODO: iframewin.enableRenderGenerator(false);
+         return;
+      }
+      // TODO: iframewin.enableRenderGenerator(true);
       let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
       let timer = 1000*20;
       WALLPAPER.timeOutStatus = 0;
@@ -52,6 +59,7 @@ const WALLPAPER = { };
       WALLPAPER.timeOutStatus--;
       if (WALLPAPER.timeOutStatus===0) {
         console.log('end');
+        // TODO: iframewin.enableRenderGenerator(false);
       }
     }
   }
@@ -479,7 +487,6 @@ function init(callback) {
   }
   " >やり直し</button>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<br/>');
 
   WALLPAPER.input = {}; 
   pkey.reverse().map(p=>{
@@ -495,13 +502,15 @@ function init(callback) {
     input.addEventListener('change',(ev)=>{
       redraw(ev);_view();
     });
+    WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/> `);
     WALLPAPER.svgbase.insertAdjacentElement('afterend',input);
     if (false) {
-      WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/><input size="5" disabled="disabled" value="${p}">`);
+      WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<input size="5" disabled="disabled" value="${p}">`);
     } else {
-      WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<br/> `);
     }
   });
+
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<input style="margin-left:10px;" id="title" disabled="disabled" value=""><br/>');
 
   [document.querySelector('select[name="detail"]')].map(s=>{
     if (s) {
@@ -638,6 +647,7 @@ function init(callback) {
         redraw(ev);
         a.href = getHref();
         document.querySelector('iframe').src = ev.target.href;
+        document.querySelector('input#title').value = ev.target.textContent;
         ev.preventDefault();
       });
       menu.insertAdjacentHTML('beforeend',' ');
