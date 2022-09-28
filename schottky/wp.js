@@ -29,6 +29,7 @@ const WALLPAPER = { };
 
   function loadIframe (ev) {
     try {
+      let iframewin = document.querySelector('iframe').contentWindow;
       let video = document.querySelector('button#video').textContent;
       if (video!=='ビデオ') {
          iframewin.enableRenderGenerator(false);
@@ -47,7 +48,6 @@ const WALLPAPER = { };
         });
       }
       // TODO: do this before enableRenderGenerator
-      let iframewin = document.querySelector('iframe').contentWindow;
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
       iframewin.changeCanvasSeedTextureURL(data);
