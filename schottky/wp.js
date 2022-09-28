@@ -368,7 +368,7 @@ function init(callback) {
   tool.onMouseDown = (e) => {
     path = new dst_scope.Path();
 
-    let color = WALLPAPER.color;
+    let color = WALLPAPER.paint;
     if (color==='pink') {
       path.strokeColor = 'rgba(255,122,190,1)';
     } else if (color==='mint') {
@@ -439,7 +439,7 @@ function init(callback) {
   }
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
-<switch-text onchange="WALLPAPER.color = this.value;" value="blue" size="30px">
+<switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="30px">
       <datalist>
         <option value="blue"></option>
         <option value="green"></option>
