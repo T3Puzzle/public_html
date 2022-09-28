@@ -1,3 +1,4 @@
+
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -505,7 +506,11 @@ function init(callback) {
     if(c){c.getContext('2d').clearRect(0,0,c.width,c.height)}
   });
   try {
-    document.querySelector('iframe').contentWindow.executeCommandResetScene();
+    let iframewin = document.querySelector('iframe').contentWindow;
+    iframewin.executeCommandResetScene();
+    let dst = document.querySelector('canvas#dst');
+    let data = dst.toDataURL();
+    iframewin.changeCanvasSeedTextureURL(data);
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
