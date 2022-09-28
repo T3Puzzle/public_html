@@ -8,7 +8,7 @@ const WALLPAPER = { };
   WALLPAPER.origin = [0.75,0.5];
   WALLPAPER.width = 300;
   WALLPAPER.height = 400;
-  WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0';
+  WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0&allowDeleteComponents=false';
   WALLPAPER.transform = '&scale=5,1,10&translateX=1&translateY=-0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
@@ -36,10 +36,10 @@ const WALLPAPER = { };
 
       let video = document.querySelector('button#video').textContent;
       if (video!=='ビデオ') {
-         // TODO: iframewin.enableRenderGenerator(false);
+         iframewin.enableRenderGenerator(false);
          return;
       }
-      // TODO: iframewin.enableRenderGenerator(true);
+      iframewin.enableRenderGenerator(true);
       let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
       let timer = 1000*20;
       WALLPAPER.timeOutStatus = 0;
@@ -453,12 +453,12 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
-  let iframe = document.querySelector('iframe');
+  let iframewin = document.querySelector('iframe');
   this.disabled='disabled';
   let video = document.querySelector('button#video').textContent;
   if (video==='ビデオ') {
     try {
-      iframe.contentWindow.executeCommandSaveImage()
+      iframewin.executeCommandSaveImage()
     } catch (e) {
       console.log('CORS limitation: '+e);
     }
@@ -470,14 +470,16 @@ function init(callback) {
     window.setTimeout(
     ()=>{
       try {
-         iframe.contentWindow.executeCommandSaveImage()
+        iframewin.enableVideoSteam(false);
+        iframewin.executeCommandSaveImage()
       } catch (e) {
         console.log('CORS limitation: '+e);
       }
       this.textContent = '撮影';
       this.disabled='';
       if(confirm('ツイートしますか？')) {
-        iframe.contentWindow.executeCommandTweet();
+        iframewin.executeCommandTweet();
+        iframewin.enableVideoSteam(true);
       }
     },
     10000);
