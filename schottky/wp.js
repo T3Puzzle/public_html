@@ -59,6 +59,7 @@ const WALLPAPER = { };
       WALLPAPER.timeOutStatus--;
       if (WALLPAPER.timeOutStatus===0) {
         console.log('end');
+        let iframewin = document.querySelector('iframe').contentWindow;
         iframewin.enableRenderGenerator(false);
       }
     }
