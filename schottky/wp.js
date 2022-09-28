@@ -29,32 +29,29 @@ const WALLPAPER = { };
 
   function loadIframe (ev) {
     try {
-      let iframewin = document.querySelector('iframe').contentWindow;
-if(!false){
-      let dst = document.querySelector('canvas#dst');
-      let data = dst.toDataURL();
-console.log(111);
-      iframewin.changeCanvasSeedTextureURL(data);
-alert(1);
-}
-
       let video = document.querySelector('button#video').textContent;
       if (video!=='ビデオ') {
          iframewin.enableRenderGenerator(false);
-         return;
+      } else {
+        iframewin.enableRenderGenerator(true);
+        let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
+        let timer = 1000*20;
+        WALLPAPER.timeOutStatus = 0;
+        WALLPAPER.timeOutStatus++;
+        window.setTimeout(checkTimeOut,timer);
+        iframecanvas.addEventListener('click',()=>{
+          if (WALLPAPER.timeOutStatus>0) {
+            WALLPAPER.timeOutStatus++;
+            window.setTimeout(checkTimeOut,timer);
+          }
+        });
       }
-      iframewin.enableRenderGenerator(true);
-      let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
-      let timer = 1000*20;
-      WALLPAPER.timeOutStatus = 0;
-      WALLPAPER.timeOutStatus++;
-      window.setTimeout(checkTimeOut,timer);
-      iframecanvas.addEventListener('click',()=>{
-        if (WALLPAPER.timeOutStatus>0) {
-          WALLPAPER.timeOutStatus++;
-          window.setTimeout(checkTimeOut,timer);
-        }
-      });
+      // TODO: do this before enableRenderGenerator
+      let iframewin = document.querySelector('iframe').contentWindow;
+      let dst = document.querySelector('canvas#dst');
+      let data = dst.toDataURL();
+      iframewin.changeCanvasSeedTextureURL(data);
+
     } catch (e) {
       console.log(e);
     }
