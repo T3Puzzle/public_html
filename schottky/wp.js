@@ -47,10 +47,15 @@ const WALLPAPER = { };
           }
         });
       }
-      // TODO: do this before enableRenderGenerator
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
       iframewin.changeCanvasSeedTextureURL(data);
+
+      window.setTimeout(()=>{
+        let dst = document.querySelector('canvas#dst');
+        let data = dst.toDataURL();
+        iframewin.changeCanvasSeedTextureURL(data);
+      },2000);
 
     } catch (e) {
       console.log(e);
