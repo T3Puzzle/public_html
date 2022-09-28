@@ -479,7 +479,7 @@ function init(callback) {
     ()=>{
       let iframewin = document.querySelector('iframe').contentWindow;
       try {
-        iframewin.enableVideoSteam(false);
+        iframewin.enableVideoStream(false);
         iframewin.executeCommandSaveImage();
       } catch (e) {
         console.log('CORS limitation: '+e);
@@ -488,7 +488,7 @@ function init(callback) {
       this.disabled='';
       if(confirm('ツイートしますか？')) {
         iframewin.executeCommandTweet();
-        iframewin.enableVideoSteam(true);
+        iframewin.enableVideoStream(true);
       }
     },
     10000);
