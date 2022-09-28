@@ -64,6 +64,10 @@ const WALLPAPER = { };
         let iframewin = document.querySelector('iframe').contentWindow;
         try {
           iframewin.enableRenderGenerator(false);
+          // TODO: do this before enableRenderGenerator
+          let dst = document.querySelector('canvas#dst');
+          let data = dst.toDataURL();
+          iframewin.changeCanvasSeedTextureURL(data);
         } catch (e) {
           // nop
         }
@@ -461,12 +465,12 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
-  let iframewin = document.querySelector('iframe');
+  let iframewin = document.querySelector('iframe').contentWindow;
   this.disabled='disabled';
   let video = document.querySelector('button#video').textContent;
   if (video==='ビデオ') {
     try {
-      iframewin.executeCommandSaveImage()
+      iframewin.executeCommandSaveImage();
     } catch (e) {
       console.log('CORS limitation: '+e);
     }
@@ -479,7 +483,7 @@ function init(callback) {
     ()=>{
       try {
         iframewin.enableVideoSteam(false);
-        iframewin.executeCommandSaveImage()
+        iframewin.executeCommandSaveImage();
       } catch (e) {
         console.log('CORS limitation: '+e);
       }
