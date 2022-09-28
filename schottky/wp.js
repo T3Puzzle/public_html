@@ -55,7 +55,7 @@ const WALLPAPER = { };
         let dst = document.querySelector('canvas#dst');
         let data = dst.toDataURL();
         iframewin.changeCanvasSeedTextureURL(data);
-      },2000);
+      },5000);
 
     } catch (e) {
       console.log(e);
