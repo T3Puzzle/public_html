@@ -30,11 +30,12 @@ const WALLPAPER = { };
   function loadIframe (ev) {
     try {
       let iframewin = document.querySelector('iframe').contentWindow;
-if(false){
+if(!false){
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
 console.log(111);
       iframewin.changeCanvasSeedTextureURL(data);
+alert(1);
 }
 
       let video = document.querySelector('button#video').textContent;
@@ -64,7 +65,11 @@ console.log(111);
         WALLPAPER.timeOutStatus=0;
         console.log('end');
         let iframewin = document.querySelector('iframe').contentWindow;
-        iframewin.enableRenderGenerator(false);
+        try {
+          iframewin.enableRenderGenerator(false);
+        } catch (e) {
+          // nop
+        }
       }
     }
   }
