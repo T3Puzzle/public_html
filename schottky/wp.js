@@ -4,6 +4,7 @@ const WALLPAPER = { };
   const src_scope = new PaperScope();
   const dst_scope = new PaperScope();
   WALLPAPER.dst_scope = dst_scope;
+  WALLPAPER.timeOutStatus = 0;
   WALLPAPER.full = false;
   WALLPAPER.origin = [0.75,0.5];
   WALLPAPER.width = 300;
@@ -37,7 +38,6 @@ const WALLPAPER = { };
         iframewin.enableRenderGenerator(true);
         let iframecanvas = iframewin.document.querySelector('canvas#canvas2d');
         let timer = 1000*20;
-        WALLPAPER.timeOutStatus = 0;
         WALLPAPER.timeOutStatus++;
         window.setTimeout(checkTimeOut,timer);
         iframecanvas.addEventListener('click',()=>{
