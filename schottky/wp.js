@@ -64,10 +64,6 @@ const WALLPAPER = { };
         let iframewin = document.querySelector('iframe').contentWindow;
         try {
           iframewin.enableRenderGenerator(false);
-          // TODO: do this before enableRenderGenerator
-          let dst = document.querySelector('canvas#dst');
-          let data = dst.toDataURL();
-          iframewin.changeCanvasSeedTextureURL(data);
         } catch (e) {
           // nop
         }
@@ -336,8 +332,8 @@ function draw(type) {
     }
     let data = dst.toDataURL();
     try {
-console.log(222);
-      document.querySelector('iframe').contentWindow.changeCanvasSeedTextureURL(data);
+      let iframewin = document.querySelector('iframe').contentWindow;
+      iframewin.changeCanvasSeedTextureURL(data);
     } catch (e) {
       console.log(e);
     }
@@ -465,11 +461,11 @@ function init(callback) {
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
   onclick="
-  let iframewin = document.querySelector('iframe').contentWindow;
   this.disabled='disabled';
   let video = document.querySelector('button#video').textContent;
   if (video==='ビデオ') {
     try {
+      let iframewin = document.querySelector('iframe').contentWindow;
       iframewin.executeCommandSaveImage();
     } catch (e) {
       console.log('CORS limitation: '+e);
@@ -481,6 +477,7 @@ function init(callback) {
     }
     window.setTimeout(
     ()=>{
+      let iframewin = document.querySelector('iframe').contentWindow;
       try {
         iframewin.enableVideoSteam(false);
         iframewin.executeCommandSaveImage();
@@ -522,7 +519,6 @@ function init(callback) {
     iframewin.executeCommandResetScene();
     let dst = document.querySelector('canvas#dst');
     let data = dst.toDataURL();
-console.log(333);
     iframewin.changeCanvasSeedTextureURL(data);
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
