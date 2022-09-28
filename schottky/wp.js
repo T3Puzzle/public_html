@@ -1,4 +1,3 @@
-
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -8,7 +7,7 @@ const WALLPAPER = { };
   WALLPAPER.origin = [0.75,0.5];
   WALLPAPER.width = 300;
   WALLPAPER.height = 400;
-  WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0&allowDeleteComponents=false';
+  WALLPAPER.qsdefault = '&displayMode=iframe&backgroundColor=1,1,1,1&generatorBoundaryColor=0,0,0&allowDeleteComponent=false';
   WALLPAPER.transform = '&scale=5,1,10&translateX=1&translateY=-0.5';
   if (/full/.test(document.location.search)) {
     WALLPAPER.full = true;
@@ -59,7 +58,7 @@ const WALLPAPER = { };
       WALLPAPER.timeOutStatus--;
       if (WALLPAPER.timeOutStatus===0) {
         console.log('end');
-        // TODO: iframewin.enableRenderGenerator(false);
+        iframewin.enableRenderGenerator(false);
       }
     }
   }
