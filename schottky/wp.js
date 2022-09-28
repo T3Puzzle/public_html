@@ -29,11 +29,13 @@ const WALLPAPER = { };
 
   function loadIframe (ev) {
     try {
+      let iframewin = document.querySelector('iframe').contentWindow;
+if(false){
       let dst = document.querySelector('canvas#dst');
       let data = dst.toDataURL();
-      let iframewin = document.querySelector('iframe').contentWindow;
 console.log(111);
       iframewin.changeCanvasSeedTextureURL(data);
+}
 
       let video = document.querySelector('button#video').textContent;
       if (video!=='ビデオ') {
