@@ -503,11 +503,18 @@ function init(callback) {
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
   onclick="
   let iframe = document.querySelector('iframe');
+  let iframewin = iframe.contentWindow;
+  let url = iframe.src;
+  try {
+    url = iframe.executeCommandCopyURL();
+  } catch (e) {
+    // nop
+  }
   if (this.textContent==='ビデオ') {
-    iframe.src = iframe.src.replace(/OrbitSeed/g,'VideoOrbit');
+    iframe.src = url.replace(/OrbitSeed/g,'VideoOrbit');
     this.textContent = 'ネ　コ';
   } else {
-    iframe.src = iframe.src.replace(/VideoOrbit/g,'OrbitSeed');
+    iframe.src = url.replace(/VideoOrbit/g,'OrbitSeed');
     this.textContent = 'ビデオ';
   }
   " >ビデオ</button>`);
