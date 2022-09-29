@@ -707,6 +707,7 @@ function init(callback) {
       a.style['border-radius'] = '5px';
       a.style['padding'] = '10px 10px';
       a.style['text-decoration'] = 'none';
+      a.style['white-space'] = 'nowrap';
       xid++;
     });
   }
