@@ -31,7 +31,7 @@ const WALLPAPER = { };
   function loadIframe (ev) {
     try {
       let iframewin = document.querySelector('iframe').contentWindow;
-      let video = document.querySelector('button#video').textContent;
+      let video = document.querySelector('a#video').textContent;
       if (video!=='ビデオ') {
          iframewin.enableRenderGenerator(false);
       } else {
@@ -451,23 +451,13 @@ function init(callback) {
 `);
   }
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
-<switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="30px">
-      <datalist>
-        <option value="blue"></option>
-        <option value="green"></option>
-        <option value="pink"></option>
-        <option value="mint"></option>
-      </datalist>
-    </switch-text>
-`);
 
-  let buttonStyle = `style="margin-left:10px;color:white;font-size:12pt;border-radius: 5px; padding: 5px; text-decoration: none;background-color: black;border: none;"`;
+  let buttonStyle = `style="margin-left:5px;font-size:120%;background-color:black;color:white;border-radius:5px;padding:10px 10px;text-decoration:none;white-space:nowrap;"`;
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<a href="#" ${buttonStyle}
   onclick="
   this.disabled='disabled';
-  let video = document.querySelector('button#video').textContent;
+  let video = document.querySelector('a#video').textContent;
   if (video==='ビデオ') {
     try {
       let iframewin = document.querySelector('iframe').contentWindow;
@@ -498,9 +488,9 @@ function init(callback) {
     },
     10000);
   }
-  " >撮影</button>`);
+  " >撮影</a>`);
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button id="video" ${buttonStyle}
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<a href="#" id="video" ${buttonStyle}
   onclick="
   let iframe = document.querySelector('iframe');
   let iframewin = iframe.contentWindow;
@@ -517,10 +507,10 @@ function init(callback) {
     iframe.src = url.replace(/VideoOrbit/g,'OrbitSeed');
     this.textContent = 'ビデオ';
   }
-  " >ビデオ</button>`);
+  " >ビデオ</a>`);
 
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<button ${buttonStyle}
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',` <a href="#"${buttonStyle}
   onclick="
   WALLPAPER.dst_scope.project.clear();
   [document.querySelector('canvas#dst')].map(c=>{
@@ -535,7 +525,7 @@ function init(callback) {
   } catch (e) {
     document.querySelector('iframe').src = document.querySelector('iframe').src;
   }
-  " >やり直し</button>`);
+  " >やり直し</a>`);
 
 
   WALLPAPER.input = {}; 
@@ -560,7 +550,17 @@ function init(callback) {
     }
   });
 
-  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<input style="margin-left:10px;" id="title" disabled="disabled" value=""><br/>');
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
+<switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="30px">
+      <datalist>
+        <option value="blue"></option>
+        <option value="green"></option>
+        <option value="pink"></option>
+        <option value="mint"></option>
+      </datalist>
+    </switch-text><br/>
+`);
+  WALLPAPER.svgbase.insertAdjacentHTML('afterend','<input style="margin-left:10px;" id="title" disabled="disabled" value="">');
 
   [document.querySelector('select[name="detail"]')].map(s=>{
     if (s) {
@@ -702,6 +702,7 @@ function init(callback) {
       });
       menu.insertAdjacentHTML('beforeend',' ');
       menu.insertAdjacentElement('beforeend',a);
+      a.style['font-size'] = '120%';
       a.style['background-color'] = color;
       a.style['color'] = 'white';
       a.style['border-radius'] = '5px';
@@ -714,7 +715,7 @@ function init(callback) {
 function getSeed () {
   let bbox = getBBox();
   let seed = 'VideoOrbit';
-  let video = document.querySelector('button#video').textContent;
+  let video = document.querySelector('a#video').textContent;
   if (video==='ビデオ') {
     seed = 'OrbitSeed';
   }
