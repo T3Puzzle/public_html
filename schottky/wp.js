@@ -450,6 +450,9 @@ function init(callback) {
 </div>
 `);
   }
+  window.addEventListener('resize',()=>{
+    draw('bbox');
+  });
 
 
   let buttonStyle = `style="margin-left:5px;font-size:120%;background-color:black;color:white;border-radius:5px;padding:10px 10px;text-decoration:none;white-space:nowrap;"`;
@@ -538,7 +541,7 @@ function init(callback) {
     input.setAttribute('min','0.5');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
-    input.value = 1;
+    input.value = 1.3;
     input.addEventListener('change',(ev)=>{
       redraw(ev);_view();
     });
