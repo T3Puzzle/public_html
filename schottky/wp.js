@@ -548,7 +548,11 @@ function init(callback) {
     input.name = p;
     WALLPAPER.input[p] = input; 
     input.type = 'range';
-    input.style['margin'] = '10px 20px';
+    if (isSmartPhone) {
+      input.style['margin'] = '30px 20px';
+    } else {
+      input.style['margin'] = '15px 30px';
+    }
     input.setAttribute('min','0.5');
     input.setAttribute('max','2');
     input.setAttribute('step','0.1');
