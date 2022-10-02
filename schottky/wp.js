@@ -457,12 +457,15 @@ function init(callback) {
   let isSmartPhone=false;
   if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
     isSmartPhone = true;
+  } else if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
+    isSmartPhone = true;
   }
 
   let fontSize = 'font-size:120%;';
   if (isSmartPhone) {
-    fontSize = 'font-size:140%;';
+    fontSize = 'font-size:160%;';
   }
+
   let buttonStyle = `style="${fontSize}margin-left:5px;background-color:black;color:white;border-radius:5px;padding:10px 10px;text-decoration:none;white-space:nowrap;"`;
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<a href="#" ${buttonStyle}
@@ -563,7 +566,7 @@ function init(callback) {
 
   let paintSize = '30px';
   if (isSmartPhone) {
-    paintSize = '40px';
+    paintSize = '50px';
   }
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
 <switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="${paintSize}">
