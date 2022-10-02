@@ -454,8 +454,16 @@ function init(callback) {
     draw('bbox');
   });
 
+  let isSmartPhone=false;
+  if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
+    isSmartPhone = true;
+  }
 
-  let buttonStyle = `style="margin-left:5px;font-size:120%;background-color:black;color:white;border-radius:5px;padding:10px 10px;text-decoration:none;white-space:nowrap;"`;
+  let fontSize = 'font-size:120%;';
+  if (isSmartPhone) {
+    fontSize = 'font-size:140%;';
+  }
+  let buttonStyle = `style="${fontSize}margin-left:5px;background-color:black;color:white;border-radius:5px;padding:10px 10px;text-decoration:none;white-space:nowrap;"`;
 
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`<a href="#" ${buttonStyle}
   onclick="
@@ -553,8 +561,12 @@ function init(callback) {
     }
   });
 
+  let paintSize = '30px';
+  if (isSmartPhone) {
+    paintSize = '40px';
+  }
   WALLPAPER.svgbase.insertAdjacentHTML('afterend',`
-<switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="30px">
+<switch-text onchange="WALLPAPER.paint = this.value;" value="blue" size="${paintSize}">
       <datalist>
         <option value="blue"></option>
         <option value="green"></option>
