@@ -507,14 +507,8 @@ function init(callback) {
   onclick="
   let iframe = document.querySelector('iframe');
   let iframewin = iframe.contentWindow;
-  let url = null;
-  try {
-    url = iframewin.executeCommandGetURL();
-    console.log(url);
-  } catch (e) {
-    url = iframe.src;
-    // nop
-  }
+  let url = iframewin.executeCommandGetURL();
+  url += '&displayMode=iframe';
   if (this.textContent==='ビデオ') {
     iframe.src = url.replace(/OrbitSeed/g,'VideoOrbit');
     this.textContent = 'ネ　コ';
