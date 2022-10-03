@@ -507,10 +507,12 @@ function init(callback) {
   onclick="
   let iframe = document.querySelector('iframe');
   let iframewin = iframe.contentWindow;
-  let url = iframe.src;
+  let url = null;
   try {
     url = iframewin.executeCommandCopyURL();
+    console.log(url);
   } catch (e) {
+    url = iframe.src;
     // nop
   }
   if (this.textContent==='ビデオ') {
