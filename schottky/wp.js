@@ -509,7 +509,7 @@ function init(callback) {
   let iframewin = iframe.contentWindow;
   let url = null;
   try {
-    url = iframewin.executeCommandCopyURL();
+    url = iframewin.executeCommandGetURL();
     console.log(url);
   } catch (e) {
     url = iframe.src;
