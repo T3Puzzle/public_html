@@ -1,4 +1,3 @@
-
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -510,7 +509,7 @@ function init(callback) {
   let iframewin = iframe.contentWindow;
   let url = iframe.src;
   try {
-    url = iframe.executeCommandCopyURL();
+    url = iframewin.executeCommandCopyURL();
   } catch (e) {
     // nop
   }
