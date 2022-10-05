@@ -1,3 +1,4 @@
+
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -508,7 +509,6 @@ function init(callback) {
   let iframe = document.querySelector('iframe');
   let iframewin = iframe.contentWindow;
   let url = iframewin.executeCommandGetURL();
-  url += '&displayMode=iframe';
   if (this.textContent==='ビデオ') {
     iframe.src = url.replace(/OrbitSeed/g,'VideoOrbit');
     this.textContent = 'ネ　コ';
