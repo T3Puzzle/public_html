@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</style>
+</head>
+<body>
+<div id="container">
+	<video width="300" autoplay="true">
+	
+	</video>
+</div>
+<script>
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      document.querySelector('video').srcObject = stream;
+    })
+    .catch(function (e) {
+      document.body.insertAdjacentHTML('beforeend','エラー: '+e);
+    });
+} else {
+  document.body.insertAdjacentHTML('beforeend','注意: カメラなし');
+}
+</script>
+<script>
+// https://stackoverflow.com/questions/49267764/how-to-get-the-video-card-driver-name-using-javascript-browser-side
+function getVideoCardInfo() {
+  const gl = document.createElement('canvas').getContext('webgl');
+  if (!gl) {
+    return {
+      error: "no webgl",
+    };
+  }
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  return debugInfo ? {
+    vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+    renderer:  gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL),
+  } : {
+    error: "no WEBGL_debug_renderer_info",
+  };
+}
+
+document.body.insertAdjacentHTML('beforeend',JSON.stringify(getVideoCardInfo()));
+</script>
+</body>
+</html>
