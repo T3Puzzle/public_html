@@ -1,4 +1,3 @@
-
 const WALLPAPER = { };
 (()=>{with(paper){
   const src_scope = new PaperScope();
@@ -51,11 +50,15 @@ const WALLPAPER = { };
       let data = dst.toDataURL();
       iframewin.changeCanvasSeedTextureURL(data);
 
-      window.setTimeout(()=>{
-        let dst = document.querySelector('canvas#dst');
-        let data = dst.toDataURL();
-        iframewin.changeCanvasSeedTextureURL(data);
-      });
+      if (/once/.test(window.location.search)) {
+         // once
+      } else {
+        window.setTimeout(()=>{
+          let dst = document.querySelector('canvas#dst');
+          let data = dst.toDataURL();
+          iframewin.changeCanvasSeedTextureURL(data);
+        });
+      }
 
     } catch (e) {
       console.log(e);
