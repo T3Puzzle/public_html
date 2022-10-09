@@ -19,13 +19,15 @@
       let data = dst.toDataURL();
       iframewin.changeCanvasSeedTextureURL(data);
 
-      if (/twice/.test(window.location.search)) {
+      if (/twice=(\d+)/.test(window.location.search)) {
+        let duration = parseInt(RegExp.$1,10);
         console.log('twice');
+        
         window.setTimeout(()=>{
           let dst = document.querySelector('canvas#dst');
           let data = dst.toDataURL();
           iframewin.changeCanvasSeedTextureURL(data);
-        });
+        },duration);
       }
     } catch (e) {
       console.log(e);
