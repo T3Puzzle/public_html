@@ -24,7 +24,7 @@
         console.log('twice');
         
         window.setTimeout(()=>{
-          let dst = document.querySelector('canvas#dst');
+          let dst = document.querySelector('canvas');
           let data = dst.toDataURL();
           iframewin.changeCanvasSeedTextureURL(data);
         },duration);
