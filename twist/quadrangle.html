@@ -7,7 +7,8 @@
 <script>
 (()=>{with(paper){
 const PARAM = {
-  point: { x:null, y:null}
+  point: { x:null, y:null},
+  point2: { x:null, y:null}
 };
 window.addEventListener('load',()=>{setup(paper.setup(document.getElementById('myCanvas')));paper.view.draw();});
 function setup() {
@@ -15,7 +16,11 @@ function setup() {
   let tool = new Tool();
   tool.onMouseDrag = (e)=>{
     project.clear();
-    drawQuadrangle(e.point);
+    if (norm(sub(e.point,PARAM.point))<=norm(sub(e.point,PARAM.point2))) {
+      drawQuadrangle(e.point,PARAM.point2);
+    } else {
+      drawQuadrangle(PARAM.point,e.point);
+    }
   }
   document.querySelector('input[name="theta"]').addEventListener('change',
     (e)=> {
@@ -24,17 +29,19 @@ function setup() {
     }
   );
 }
-function drawQuadrangle(_point) {
+function drawQuadrangle(_point,_point2) {
   const WIDTH  = paper.project.view.viewSize.width;
   const HEIGHT = paper.project.view.viewSize.height;
   const CENTERX = WIDTH/2;
   const CENTERY = HEIGHT/2;
   let x;
   let y;
+  let x2;
+  let y2;
   if (_point==null) {
     if (PARAM.point.x==null) {
       x = CENTERX; 
-      y = CENTERY-100; 
+      y = CENTERY-150/2; 
     } else {
       x = PARAM.point.x;
       y = PARAM.point.y;
@@ -43,14 +50,30 @@ function drawQuadrangle(_point) {
     x=_point.x;
     y=_point.y;
   }
+  if (_point2==null) {
+    if (PARAM.point2.x==null) {
+      x2 = CENTERX; 
+      y2 = CENTERY+150/2; 
+    } else {
+      x2 = PARAM.point2.x;
+      y2 = PARAM.point2.y;
+    }
+  } else {
+    x2=_point2.x;
+    y2=_point2.y;
+  }
   PARAM.point.x = x;
   PARAM.point.y = y;
+  PARAM.point2.x = x2;
+  PARAM.point2.y = y2;
   let D_p = new Point(x,y);
-  let A_p = new Point(CENTERX, CENTERY);
-  let B_p = new Point(CENTERX+100, CENTERY);
-  let C_p = new Point(CENTERX+100, CENTERY-100);
+  let B_p = new Point(x2,y2);
+  let A_p = new Point(CENTERX-150/2, CENTERY);
+  let C_p = new Point(CENTERX+150/2, CENTERY);
   let circle = new Shape.Circle(D_p,4);
   circle.fillColor = 'red';
+  let circle2 = new Shape.Circle(B_p,4);
+  circle2.fillColor = 'blue';
   let quadrangle = new Path();
   quadrangle.strokeColor = 'black';
   quadrangle.add(A_p);
@@ -58,46 +81,65 @@ function drawQuadrangle(_point) {
   quadrangle.add(C_p);
   quadrangle.add(D_p);
   quadrangle.closed = true;
+  let AB_v = sub(B_p,A_p);
+  let AC_v = sub(C_p,A_p);
+  let AD_v = sub(D_p,A_p);
+  let BA_v = sub(A_p,B_p);
+  let BC_v = sub(C_p,B_p);
+  let BD_v = sub(D_p,B_p);
+  let CA_v = sub(A_p,C_p);
+  let CB_v = sub(B_p,C_p);
+  let CD_v = sub(D_p,C_p);
+  let DA_v = sub(A_p,D_p);
+  let DB_v = sub(B_p,D_p);
+  let DC_v = sub(C_p,D_p);
 
-  let theta = parseFloat(document.querySelector('input[name="theta"]').value)*Math.PI/180;
   let LEN = 1000;
   let NEL = 150;
 
+  let theta = parseFloat(document.querySelector('input[name="theta"]').value)*Math.PI/180;
+
+  let A_b = Math.acos(dot(CA_v,BA_v)/norm(CA_v)/norm(BA_v));
+  let A_c = Math.acos(dot(CA_v,DA_v)/norm(CA_v)/norm(DA_v));
+  let C_b = Math.acos(dot(AC_v,BC_v)/norm(AC_v)/norm(BC_v));
+  let C_c = Math.acos(dot(AC_v,DC_v)/norm(AC_v)/norm(DC_v));
+
+  let rad = -A_b+theta;
   let A_l = new Path();
   A_l.strokeColor = 'black';
   A_l.add(A_p);
-  A_l.add(new Point(A_p.x-LEN*Math.cos(theta),A_p.y+LEN*Math.sin(theta)));
+  A_l.add(new Point(A_p.x-LEN*Math.cos(rad),A_p.y+LEN*Math.sin(rad)));
 
   let B_m = new Path();
   B_m.strokeColor = 'black';
   B_m.add(B_p);
-  B_m.add(new Point(B_p.x-LEN*Math.cos(theta),B_p.y+LEN*Math.sin(theta)));
+  B_m.add(new Point(B_p.x-LEN*Math.cos(rad),B_p.y+LEN*Math.sin(rad)));
 
+
+  let dar =-A_b-theta;
   let B_n = new Path();
   B_n.strokeColor = 'lightgrey';
   B_n.add(B_p);
-  B_n.add(new Point(B_p.x-NEL*Math.cos(theta),B_p.y-NEL*Math.sin(theta)));
+  B_n.add(new Point(B_p.x-NEL*Math.cos(dar),B_p.y+NEL*Math.sin(dar)));
 
+  let eps = -Math.PI/2+C_b+theta;
   let B_l = new Path();
   B_l.strokeColor = 'black';
   B_l.add(B_p);
-  B_l.add(new Point(B_p.x+LEN*Math.sin(theta),B_p.y+LEN*Math.cos(theta)));
+  B_l.add(new Point(B_p.x+LEN*Math.sin(eps),B_p.y+LEN*Math.cos(eps)));
 
   let C_m = new Path();
   C_m.strokeColor = 'black';
   C_m.add(C_p);
-  C_m.add(new Point(C_p.x+LEN*Math.sin(theta),C_p.y+LEN*Math.cos(theta)));
+  C_m.add(new Point(C_p.x+LEN*Math.sin(eps),C_p.y+LEN*Math.cos(eps)));
 
+  let spe = -Math.PI/2+C_b-theta;
   let C_n = new Path();
   C_n.strokeColor = 'lightgrey';
   C_n.add(C_p);
-  C_n.add(new Point(C_p.x-NEL*Math.sin(theta),C_p.y+NEL*Math.cos(theta)));
+  C_n.add(new Point(C_p.x+NEL*Math.sin(spe),C_p.y+NEL*Math.cos(spe)));
 
-  let BC_v = new Point(B_p.x-C_p.x,B_p.y-C_p.y);
-  let DC_v = new Point(D_p.x-C_p.x,D_p.y-C_p.y);
-  let C_a = Math.acos(dot(BC_v,DC_v)/norm(BC_v)/norm(DC_v));
-
-  let phi = theta + (Math.PI/2 - C_a);
+  let phi = theta - C_c;
 
   let C_l = new Path();
   C_l.strokeColor = 'black';
@@ -105,29 +147,25 @@ function drawQuadrangle(_point) {
   C_l.add(new Point(C_p.x+LEN*Math.cos(phi),C_p.y-LEN*Math.sin(phi)));
 
   let D_m = new Path();
-  D_m.strokeColor = 'blue';
+  D_m.strokeColor = 'black';
   D_m.add(D_p);
   D_m.add(new Point(D_p.x+LEN*Math.cos(phi),D_p.y-LEN*Math.sin(phi)));
 
-  let ihp = - theta + (Math.PI/2 - C_a);
+  let ihp = - theta - C_c;
 
   let D_n = new Path();
   D_n.strokeColor = 'lightgrey';
   D_n.add(D_p);
   D_n.add(new Point(D_p.x+NEL*Math.cos(ihp),D_p.y-NEL*Math.sin(ihp)));
 
-  let DA_v = new Point(D_p.x-A_p.x,D_p.y-A_p.y);
-  let BA_v = new Point(B_p.x-A_p.x,B_p.y-A_p.y);
-  let A_a = Math.acos(dot(DA_v,BA_v)/norm(DA_v)/norm(BA_v));
-
-  let delta = theta + (A_a);
+  let delta = theta + (A_c);
 
   let A_m = new Path();
   A_m.strokeColor = 'black';
   A_m.add(A_p);
   A_m.add(new Point(A_p.x+LEN*Math.cos(delta),A_p.y-LEN*Math.sin(delta)));
 
-  let alted = -theta + (A_a);
+  let alted = -theta + (A_c);
 
   let A_n = new Path();
   A_n.strokeColor = 'lightgrey';
@@ -135,18 +173,19 @@ function drawQuadrangle(_point) {
   A_n.add(new Point(A_p.x+NEL*Math.cos(alted),A_p.y-NEL*Math.sin(alted)));
 
   let D_l = new Path();
-  D_l.strokeColor = 'red';
+  D_l.strokeColor = 'black';
   D_l.add(D_p);
   D_l.add(new Point(D_p.x+LEN*Math.cos(delta),D_p.y-LEN*Math.sin(delta)));
 
-  let CD_v = new Point(C_p.x-D_p.x,C_p.y-D_p.y);
-  let AD_v = new Point(A_p.x-D_p.x,A_p.y-D_p.y);
   let D_a = Math.acos(dot(CD_v,AD_v)/norm(CD_v)/norm(AD_v));
 
   let MD_v = vec(D_m);
   let LD_v = vec(D_l);
   let D_q = Math.acos(dot(MD_v,LD_v)/norm(MD_v)/norm(LD_v));
   console.log(D_a+D_q);
+}
+function sub(s,e) {
+  return new Point(e.x-s.x,e.y-s.y);
 }
 function vec(path) {
   let s = path.firstSegment.point;
@@ -163,7 +202,7 @@ function norm (v) {
 </script>
 </head>
 <body>
-  θ:<input type="range" name="theta" min="0" max="45" value="30">
+  θ:<input type="range" name="theta" min="0" max="45" value="45">
 <p>
   <canvas id="myCanvas" width="600" height="600" style="border:solid 1px #404040;"></canvas>
 </body>
