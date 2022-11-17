@@ -94,20 +94,9 @@ function drawQuadrangle(_point) {
   C_l.add(new Point(C_p.x+LEN*Math.cos(phi),C_p.y-LEN*Math.sin(phi)));
 
   let D_m = new Path();
-  D_m.strokeColor = 'black';
+  D_m.strokeColor = 'blue';
   D_m.add(D_p);
   D_m.add(new Point(D_p.x+LEN*Math.cos(phi),D_p.y-LEN*Math.sin(phi)));
-
-  let CD_v = new Point(C_p.x-D_p.x,C_p.y-D_p.y);
-  let AD_v = new Point(A_p.x-D_p.x,A_p.y-D_p.y);
-  let D_a = Math.acos(dot(CD_v,AD_v)/norm(CD_v)/norm(AD_v));
-
-  let psi = theta + (Math.PI - D_a);
-
-  let D_l = new Path();
-  D_l.strokeColor = 'blue';
-  D_l.add(D_p);
-  D_l.add(new Point(D_p.x+LEN*Math.cos(psi),D_p.y-LEN*Math.sin(psi)));
 
   let DA_v = new Point(D_p.x-A_p.x,D_p.y-A_p.y);
   let BA_v = new Point(B_p.x-A_p.x,B_p.y-A_p.y);
@@ -120,10 +109,24 @@ function drawQuadrangle(_point) {
   A_m.add(A_p);
   A_m.add(new Point(A_p.x+LEN*Math.cos(delta),A_p.y-LEN*Math.sin(delta)));
 
-  let D_n = new Path();
-  D_n.strokeColor = 'red';
-  D_n.add(D_p);
-  D_n.add(new Point(D_p.x+LEN*Math.cos(delta),D_p.y-LEN*Math.sin(delta)));
+  let D_l = new Path();
+  D_l.strokeColor = 'red';
+  D_l.add(D_p);
+  D_l.add(new Point(D_p.x+LEN*Math.cos(delta),D_p.y-LEN*Math.sin(delta)));
+
+  let CD_v = new Point(C_p.x-D_p.x,C_p.y-D_p.y);
+  let AD_v = new Point(A_p.x-D_p.x,A_p.y-D_p.y);
+  let D_a = Math.acos(dot(CD_v,AD_v)/norm(CD_v)/norm(AD_v));
+
+  let MD_v = vec(D_m);
+  let LD_v = vec(D_l);
+  let D_q = Math.acos(dot(MD_v,LD_v)/norm(MD_v)/norm(LD_v));
+  console.log(D_a+D_q);
+}
+function vec(path) {
+  let s = path.firstSegment.point;
+  let e = path.lastSegment.point;
+  return new Point(e.x-s.x,e.y-s.y);
 }
 function dot(u,v) {
   return (u.x*v.x+u.y*v.y);
