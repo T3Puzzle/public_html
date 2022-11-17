@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+<script>
+(()=>{with(paper){
+const PARAM = {
+  point: { x:null, y:null}
+};
+window.addEventListener('load',()=>{setup(paper.setup(document.getElementById('myCanvas')));paper.view.draw();});
+function setup() {
+  drawQuadrangle();
+  let tool = new Tool();
+  tool.onMouseDrag = (e)=>{
+    project.clear();
+    drawQuadrangle(e.point);
+  }
+  document.querySelector('input[name="theta"]').addEventListener('change',
+    (e)=> {
+       project.clear();
+      drawQuadrangle(e.point);
+    }
+  );
+}
+function drawQuadrangle(_point) {
+  const WIDTH  = paper.project.view.viewSize.width;
+  const HEIGHT = paper.project.view.viewSize.height;
+  const CENTERX = WIDTH/2;
+  const CENTERY = HEIGHT/2;
+  let x;
+  let y;
+  if (_point==null) {
+    if (PARAM.point.x==null) {
+      x = CENTERX; 
+      y = CENTERY-100; 
+    } else {
+      x = PARAM.point.x;
+      y = PARAM.point.y;
+    }
+  } else {
+    x=_point.x;
+    y=_point.y;
+  }
+  PARAM.point.x = x;
+  PARAM.point.y = y;
+  let D_p = new Point(x,y);
+  let A_p = new Point(CENTERX, CENTERY);
+  let B_p = new Point(CENTERX+100, CENTERY);
+  let C_p = new Point(CENTERX+100, CENTERY-100);
+  let circle = new Shape.Circle(D_p,4);
+  circle.fillColor = 'red';
+  let quadrangle = new Path();
+  quadrangle.strokeColor = 'black';
+  quadrangle.add(A_p);
+  quadrangle.add(B_p);
+  quadrangle.add(C_p);
+  quadrangle.add(D_p);
+  quadrangle.closed = true;
+
+  let theta = parseFloat(document.querySelector('input[name="theta"]').value)*Math.PI/180;
+  let LEN = 1000;
+  let NEL = 150;
+
+  let A_l = new Path();
+  A_l.strokeColor = 'black';
+  A_l.add(A_p);
+  A_l.add(new Point(A_p.x-LEN*Math.cos(theta),A_p.y+LEN*Math.sin(theta)));
+
+  let B_m = new Path();
+  B_m.strokeColor = 'black';
+  B_m.add(B_p);
+  B_m.add(new Point(B_p.x-LEN*Math.cos(theta),B_p.y+LEN*Math.sin(theta)));
+
+  let B_n = new Path();
+  B_n.strokeColor = 'lightgrey';
+  B_n.add(B_p);
+  B_n.add(new Point(B_p.x-NEL*Math.cos(theta),B_p.y-NEL*Math.sin(theta)));
+
+  let B_l = new Path();
+  B_l.strokeColor = 'black';
+  B_l.add(B_p);
+  B_l.add(new Point(B_p.x+LEN*Math.sin(theta),B_p.y+LEN*Math.cos(theta)));
+
+  let C_m = new Path();
+  C_m.strokeColor = 'black';
+  C_m.add(C_p);
+  C_m.add(new Point(C_p.x+LEN*Math.sin(theta),C_p.y+LEN*Math.cos(theta)));
+
+  let C_n = new Path();
+  C_n.strokeColor = 'lightgrey';
+  C_n.add(C_p);
+  C_n.add(new Point(C_p.x-NEL*Math.sin(theta),C_p.y+NEL*Math.cos(theta)));
+
+  let BC_v = new Point(B_p.x-C_p.x,B_p.y-C_p.y);
+  let DC_v = new Point(D_p.x-C_p.x,D_p.y-C_p.y);
+  let C_a = Math.acos(dot(BC_v,DC_v)/norm(BC_v)/norm(DC_v));
+
+  let phi = theta + (Math.PI/2 - C_a);
+
+  let C_l = new Path();
+  C_l.strokeColor = 'black';
+  C_l.add(C_p);
+  C_l.add(new Point(C_p.x+LEN*Math.cos(phi),C_p.y-LEN*Math.sin(phi)));
+
+  let D_m = new Path();
+  D_m.strokeColor = 'blue';
+  D_m.add(D_p);
+  D_m.add(new Point(D_p.x+LEN*Math.cos(phi),D_p.y-LEN*Math.sin(phi)));
+
+  let ihp = - theta + (Math.PI/2 - C_a);
+
+  let D_n = new Path();
+  D_n.strokeColor = 'lightgrey';
+  D_n.add(D_p);
+  D_n.add(new Point(D_p.x+NEL*Math.cos(ihp),D_p.y-NEL*Math.sin(ihp)));
+
+  let DA_v = new Point(D_p.x-A_p.x,D_p.y-A_p.y);
+  let BA_v = new Point(B_p.x-A_p.x,B_p.y-A_p.y);
+  let A_a = Math.acos(dot(DA_v,BA_v)/norm(DA_v)/norm(BA_v));
+
+  let delta = theta + (A_a);
+
+  let A_m = new Path();
+  A_m.strokeColor = 'black';
+  A_m.add(A_p);
+  A_m.add(new Point(A_p.x+LEN*Math.cos(delta),A_p.y-LEN*Math.sin(delta)));
+
+  let alted = -theta + (A_a);
+
+  let A_n = new Path();
+  A_n.strokeColor = 'lightgrey';
+  A_n.add(A_p);
+  A_n.add(new Point(A_p.x+NEL*Math.cos(alted),A_p.y-NEL*Math.sin(alted)));
+
+  let D_l = new Path();
+  D_l.strokeColor = 'red';
+  D_l.add(D_p);
+  D_l.add(new Point(D_p.x+LEN*Math.cos(delta),D_p.y-LEN*Math.sin(delta)));
+
+  let CD_v = new Point(C_p.x-D_p.x,C_p.y-D_p.y);
+  let AD_v = new Point(A_p.x-D_p.x,A_p.y-D_p.y);
+  let D_a = Math.acos(dot(CD_v,AD_v)/norm(CD_v)/norm(AD_v));
+
+  let MD_v = vec(D_m);
+  let LD_v = vec(D_l);
+  let D_q = Math.acos(dot(MD_v,LD_v)/norm(MD_v)/norm(LD_v));
+  console.log(D_a+D_q);
+}
+function vec(path) {
+  let s = path.firstSegment.point;
+  let e = path.lastSegment.point;
+  return new Point(e.x-s.x,e.y-s.y);
+}
+function dot(u,v) {
+  return (u.x*v.x+u.y*v.y);
+}
+function norm (v) {
+  return Math.sqrt(v.x*v.x+v.y*v.y)
+}
+}})();
+</script>
+</head>
+<body>
+  θ:<input type="range" name="theta" min="0" max="45" value="30">
+<p>
+  <canvas id="myCanvas" width="600" height="600" style="border:solid 1px #404040;"></canvas>
+</body>
+</html>
