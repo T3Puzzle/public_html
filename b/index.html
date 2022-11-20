@@ -290,7 +290,6 @@ div.menu {
   };
   function updateEmailBySelect(form) {
     let search = location.search;
-    console.log(search);
     if (!search) {
       return;
     }
@@ -308,13 +307,11 @@ div.menu {
         let group = form.querySelector('select[name="group"]').value;
         if (group !== '') {
           let email = form.querySelector('input[name="email"]');
-          console.log(email);
           email.value = 'info+'+[qs,grade,group,index].join('_')+'@tessellation.jp';
           email.onchange();
         }
       }
     }
-    console.log(11111);
   }
   function updateEmailByUnique(form) {
     let search = location.search;
