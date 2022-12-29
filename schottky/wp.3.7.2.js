@@ -690,11 +690,22 @@ function init(callback) {
     let xid=0;
     _wps.map(g=>{
       let a = document.createElement('a');
-      let color = /:(red|blue|green|orange):/.exec(Object.keys(g)[0])[1];
+      let color = null;
+      let colorCheck = /:(red|blue|green|orange):/.exec(Object.keys(g)[0]);
+      if (colorCheck) {
+        color = colorCheck[1];
+      }
       if (!color) {
         color = 'gray';
       }
-      let title = /(^IH\d+|^[0-9]+\.[^\s]+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])[1];
+      let title = null;
+      let titleCheck = /(^IH\d+|^[0-9]+\.[^\s]+|^[A-Z][a-zA-Z0-9]+$)/.exec(Object.keys(g)[0])
+      if (titleCheck) {
+        title = titleCheck[1];
+      }
+      if (!title) {
+        title = Object.keys(g);
+      }
       a.innerText = title;
       if ('2.回転'===(title)) {
         title += "&maxIterations=40";
