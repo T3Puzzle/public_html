@@ -378,19 +378,19 @@ img.mint {
 }
 */
 
-img.blue { filter:brightness(1)saturate(1) hue-rotate(100deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+img.blue { filter:brightness(1)saturate(1) hue-rotate(120deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.pink {
-  filter: saturate(1) hue-rotate(230deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+  filter: saturate(1) hue-rotate(230deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.green {
-  filter:brightness(1) saturate(1) hue-rotate(20deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+  filter:brightness(1) saturate(1) hue-rotate(20deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.mint {
-  filter:brightness(1.4) saturate(50%) hue-rotate(35deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+  filter:brightness(1.4) saturate(50%) hue-rotate(35deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.white {
-  filter:brightness(1000)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+  filter:brightness(1000)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.white--once {
   cursor:help;
