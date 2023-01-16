@@ -378,7 +378,7 @@ img.mint {
 }
 */
 
-img.blue { filter:brightness(1)saturate(1) hue-rotate(120deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
+img.blue { filter:brightness(1)saturate(1) hue-rotate(100deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
 }
 img.pink {
   filter: saturate(1) hue-rotate(230deg)drop-shadow(0 0 0.12rem rgba(120,120,120,0.5));
