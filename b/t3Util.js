@@ -363,7 +363,7 @@ img.hide {
 }
 /*
 https://developer.mozilla.org/ja/docs/Web/CSS/filter-function/hue-rotate()
-*/
+
 
 img.blue { filter:brightness(1.05)saturate(120%) hue-rotate(100deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
 }
@@ -375,6 +375,19 @@ img.green {
 }
 img.mint {
   filter:brightness(1.20) saturate(130%) hue-rotate(70deg)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
+}
+*/
+
+img.blue { filter:brightness(1)saturate(1) hue-rotate(100deg)drop-shadow(0 0 0.2rem black);
+}
+img.pink {
+  filter: saturate(1) hue-rotate(230deg)drop-shadow(0 0 0.2rem black);
+}
+img.green {
+  filter:brightness(1) saturate(1) hue-rotate(20deg)drop-shadow(0 0 0.2rem black);
+}
+img.mint {
+  filter:brightness(1.4) saturate(50%) hue-rotate(35deg)drop-shadow(0 0 0.2rem black);
 }
 img.white {
   filter:brightness(1000)drop-shadow(0 0 0.12rem rgba(100,100,100,0.7));
