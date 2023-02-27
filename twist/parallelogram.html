@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+<script>
+(()=>{with(paper){
+let lines = [];
+window.addEventListener('load',()=>{setup(paper.setup(document.getElementById('myCanvas')));paper.view.draw();});
+function setup() {
+  drawQuadrangle();
+  let tool = new Tool();
+  document.querySelector('button#save').addEventListener('click',
+    ()=> {
+      let svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">'
+      +lines.join('')+'</svg>';
+      let anchor = document.querySelector('a#download');
+      anchor.href = 'data:image/svg+xml,'+encodeURIComponent(svg);
+      anchor.click();
+    }
+  );
+  document.querySelector('input[name="alpha"]').addEventListener('change',
+    (e)=> {
+       project.clear();
+       drawQuadrangle();
+    }
+  );
+}
+function addLine (color,p1,p2) {
+  let col = '#000';
+  if (color=='{ red: 1, green: 0, blue: 0 }') { col = '#f00';}
+  if (color=='{ red: 0, green: 0, blue: 1 }') { col = '#00f';}
+  lines.push(`<line stroke="${col}" opacity="1" x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"/>`);
+}
+function drawQuadrangle() {
+  lines.length = 0;
+  const WIDTH  = paper.project.view.viewSize.width;
+  const HEIGHT = paper.project.view.viewSize.height;
+  const CENTERX = WIDTH/2;
+  const CENTERY = HEIGHT/2;
+  const UNIT = 75;
+
+  let alpha = parseFloat(document.querySelector('input[name="alpha"]').value)*Math.PI/180;
+  let theta = Math.asin(Math.sin(alpha)/Math.sqrt(2));
+  let cosa = Math.cos(alpha);
+  let sina = Math.sin(alpha);
+  let k = (-cosa+Math.sqrt(cosa*cosa+1))*UNIT;
+
+  let A_p = new Point(CENTERX-UNIT/2, CENTERY);
+  let B_p = new Point(CENTERX+UNIT/2, CENTERY);
+  let C_p = new Point(B_p.x+k*cosa,B_p.y-k*sina);
+  let D_p = new Point(A_p.x+k*cosa,A_p.y-k*sina);
+  let quadrangle = new Path();
+  quadrangle.strokeColor = 'red';
+  quadrangle.add(A_p);
+  quadrangle.add(B_p);
+  quadrangle.add(C_p);
+  quadrangle.add(D_p);
+  quadrangle.closed = true;
+  addLine(quadrangle.strokeColor,A_p,B_p);
+  addLine(quadrangle.strokeColor,B_p,C_p);
+  addLine(quadrangle.strokeColor,C_p,D_p);
+  addLine(quadrangle.strokeColor,D_p,A_p);
+
+  let AB_v = sub(B_p,A_p);
+  let AC_v = sub(C_p,A_p);
+  let AD_v = sub(D_p,A_p);
+  let BA_v = sub(A_p,B_p);
+  let BC_v = sub(C_p,B_p);
+  let BD_v = sub(D_p,B_p);
+  let CA_v = sub(A_p,C_p);
+  let CB_v = sub(B_p,C_p);
+  let CD_v = sub(D_p,C_p);
+  let DA_v = sub(A_p,D_p);
+  let DB_v = sub(B_p,D_p);
+  let DC_v = sub(C_p,D_p);
+
+  let LEN = 300;
+  let NEL = 150;
+
+
+  let A_d = Math.acos(dot(DA_v,BA_v)/norm(DA_v)/norm(BA_v));
+  let A_b = Math.acos(dot(CA_v,BA_v)/norm(CA_v)/norm(BA_v));
+  let A_c = Math.acos(dot(CA_v,DA_v)/norm(CA_v)/norm(DA_v));
+  let C_b = Math.acos(dot(AC_v,BC_v)/norm(AC_v)/norm(BC_v));
+  let C_c = Math.acos(dot(AC_v,DC_v)/norm(AC_v)/norm(DC_v));
+
+  //let rad = +A_d-theta;
+  let rad = theta;
+  let A_l = new Path();
+  A_l.strokeColor = 'red';
+  A_l.add(A_p);
+  let A_w = (new Point(A_p.x-LEN*Math.cos(rad),A_p.y+LEN*Math.sin(rad)));
+  A_l.add(A_w);
+  addLine(A_l.strokeColor,A_p,A_w);
+
+  let B_m = new Path();
+  B_m.strokeColor = 'blue';
+  B_m.add(B_p);
+  let B_w = (new Point(B_p.x-LEN*Math.cos(rad),B_p.y+LEN*Math.sin(rad)));
+  B_m.add(B_w);
+  addLine(B_m.strokeColor,B_p,B_w);
+
+
+
+  //let eps = -Math.PI/2+C_b+theta;
+  let eps = (alpha+theta-Math.PI/2);
+  let B_l = new Path();
+  B_l.strokeColor = 'red';
+  B_l.add(B_p);
+  let B_z = (new Point(B_p.x+LEN*Math.sin(eps),B_p.y+LEN*Math.cos(eps)));
+  B_l.add(B_z);
+  addLine(B_l.strokeColor,B_p,B_z);
+
+
+  let C_m = new Path();
+  C_m.strokeColor = 'blue';
+  C_m.add(C_p);
+  let C_w =(new Point(C_p.x+LEN*Math.sin(eps),C_p.y+LEN*Math.cos(eps)));
+  C_m.add(C_w);
+  addLine(C_m.strokeColor,C_p,C_w);
+
+  //let phi = theta - C_c;
+  let phi = theta;
+
+  let C_l = new Path();
+  C_l.strokeColor = 'red';
+  C_l.add(C_p);
+  let C_z = (new Point(C_p.x+LEN*Math.cos(phi),C_p.y-LEN*Math.sin(phi)));
+  C_l.add(C_z);
+  addLine(C_l.strokeColor,C_p,C_z);
+
+  let D_m = new Path();
+  D_m.strokeColor = 'blue';
+  D_m.add(D_p);
+  let D_w=(new Point(D_p.x+LEN*Math.cos(phi),D_p.y-LEN*Math.sin(phi)));
+  D_m.add(D_w);
+  addLine(D_m.strokeColor,D_p,D_w);
+
+  let ihp = - theta - C_c;
+
+ // let delta = theta + (A_c);
+  let delta = (alpha+theta);
+
+  let A_m = new Path();
+  A_m.strokeColor = 'blue';
+  A_m.add(A_p);
+  let A_z = (new Point(A_p.x+LEN*Math.cos(delta),A_p.y-LEN*Math.sin(delta)));
+  A_m.add(A_z);
+  addLine(A_m.strokeColor,A_p,A_z);
+
+  let alted = -theta + (A_c);
+
+  let D_l = new Path();
+  D_l.strokeColor = 'red';
+  D_l.add(D_p);
+  D_z=(new Point(D_p.x+LEN*Math.cos(delta),D_p.y-LEN*Math.sin(delta)));
+  D_l.add(D_z);
+  addLine(D_l.strokeColor,D_p,D_z);
+
+  let D_a = Math.acos(dot(CD_v,AD_v)/norm(CD_v)/norm(AD_v));
+
+  let MD_v = vec(D_m);
+  let LD_v = vec(D_l);
+  let D_q = Math.acos(dot(MD_v,LD_v)/norm(MD_v)/norm(LD_v));
+  //console.log(D_a+D_q);
+  let Z_l = new Path();
+  Z_l.strokeColor = 'black';
+  Z_l.add(A_w);
+  Z_l.add(B_w);
+  Z_l.add(B_z);
+  Z_l.add(C_w);
+  Z_l.add(C_z);
+  Z_l.add(D_w);
+  Z_l.add(D_z);
+  Z_l.add(A_z);
+  Z_l.closed = true;
+  addLine(Z_l.strokeColor,A_w,B_w);
+  addLine(Z_l.strokeColor,B_w,B_z);
+  addLine(Z_l.strokeColor,B_z,C_w);
+  addLine(Z_l.strokeColor,C_w,C_z);
+  addLine(Z_l.strokeColor,C_z,D_w);
+  addLine(Z_l.strokeColor,D_w,D_z);
+  addLine(Z_l.strokeColor,D_z,A_z);
+  addLine(Z_l.strokeColor,A_z,A_w);
+}
+function sub(s,e) {
+  return new Point(e.x-s.x,e.y-s.y);
+}
+function vec(path) {
+  let s = path.firstSegment.point;
+  let e = path.lastSegment.point;
+  return new Point(e.x-s.x,e.y-s.y);
+}
+function dot(u,v) {
+  return (u.x*v.x+u.y*v.y);
+}
+function norm (v) {
+  return Math.sqrt(v.x*v.x+v.y*v.y)
+}
+}})();
+</script>
+</head>
+<body>
+  α:<input type="range" name="alpha" min="0" max="180" value="90">
+  <button id="save">save</button>
+<p>
+  <canvas id="myCanvas" width="600" height="600" style="border:solid 1px #404040;"></canvas>
+  <a style="display:none;" id="download" download="download"></a>
+</body>
+</html>
