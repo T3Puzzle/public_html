@@ -41,7 +41,7 @@ function drawQuadrangle() {
   const CENTERX = WIDTH/2;
   const CENTERY = HEIGHT/2;
   const UNIT = 50;
-  let LEN = 500;
+  const LEN = 500;
 
   let alpha = parseFloat(document.querySelector('input[name="alpha"]').value)*Math.PI/180;
   let theta = Math.asin(Math.sin(alpha)/Math.sqrt(2));
@@ -51,7 +51,7 @@ function drawQuadrangle() {
 
   let A_p = new Point(CENTERX-UNIT/2, CENTERY);
   let B_p = new Point(CENTERX+UNIT/2, CENTERY);
-  let C_p = new Point(B_p.x+k*cosa,B_p.y-k*sina);
+  let C_p = new Point(B_p.x-k*cosa,B_p.y-k*sina);
   let D_p = new Point(A_p.x+k*cosa,A_p.y-k*sina);
   let quadrangle = new Path();
   quadrangle.strokeColor = 'red';
@@ -105,7 +105,7 @@ function drawQuadrangle() {
 
 
   //let eps = -Math.PI/2+C_b+theta;
-  let eps = (alpha+theta-Math.PI/2);
+  let eps = (-alpha+theta+Math.PI/2);
   let B_l = new Path();
   B_l.strokeColor = 'red';
   B_l.add(B_p);
