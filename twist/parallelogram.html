@@ -21,9 +21,17 @@ function setup() {
       anchor.click();
     }
   );
+  document.querySelector('input[name="number"]').addEventListener('change',
+    (e)=> {
+       project.clear();
+       document.querySelector('input[name="alpha"]').value = e.target.value;
+       drawQuadrangle();
+    }
+  );
   document.querySelector('input[name="alpha"]').addEventListener('change',
     (e)=> {
        project.clear();
+       document.querySelector('input[name="number"]').value = e.target.value;
        drawQuadrangle();
     }
   );
@@ -204,6 +212,7 @@ function norm (v) {
 </head>
 <body>
   α:<input type="range" name="alpha" min="0" max="180" value="90">
+  <input type="number" name="number" value="90" style="width:35px;">
   <button id="save">save</button>
 <p>
   <canvas id="myCanvas" width="600" height="600" style="border:solid 1px #404040;"></canvas>
