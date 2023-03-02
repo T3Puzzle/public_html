@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<button>C4</button>
+<button>C#4</button>
+<button>D4</button>
+<button>D#4</button>
+<button>E4</button>
+<button>F4</button>
+<button>F#4</button>
+<button>G4</button>
+<button>G#4</button>
+<button>A4</button>
+<button>A#4</button>
+<button>B4</button>
+<button>C5</button>
+<button>stop</button>
+<script>
+const hash = {};
+let started = null;
+Array.from(document.querySelectorAll('button')).map(b=>{
+  let text = b.textContent;
+  if (/[A-G]#*[0-9]+/.test(text) && !(text in hash)) {
+    hash[text] = new Tone.Oscillator({
+      type:'square',
+      frequency: text,
+      volume: -16
+    }).toDestination();
+  }
+  b.addEventListener('click',e=> {
+    if (started) {
+       hash[started].stop();
+    }
+    if (text!=='stop') {
+      hash[text].start();
+      started = text;
+    } else {
+      started = null;
+    }
+  });
+});
+</script>
+</body>
+</html>
