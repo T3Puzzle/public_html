@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<input name="val" type="range" value="-1" step="1" min="-1" max="12">
+<script>
+const osc = new Tone.Oscillator({
+  type:'square',
+  frequency: 440,
+  volume: -16
+}).toDestination();
+document.querySelector('input[name="val"]').addEventListener('change',e=>{
+  let val = e.target.value;
+console.log(val);
+  if (val>=0) {
+    osc.set({frequency : 440*Math.pow(2,val/12)});
+    osc.start();
+  } else {
+    osc.stop();
+  }
+});
+
+</script>
+</body>
+</html>
