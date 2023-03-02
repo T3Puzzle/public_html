@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<button>C4,E4,G4</button>
+<button>F4,A4,C5</button>
+<button>G4,B4,D5</button>
+<button>stop</button>
+<script>
+const synth = new Tone.PolySynth().toMaster();
+const hash = {};
+Array.from(document.querySelectorAll('button')).map(b=>{
+  let text = b.textContent;
+  if (/[A-G]#*[0-9]+/.test(text) && !(text in hash)) {
+    hash[text] = text.split(',');
+  }
+  b.addEventListener('click',e=> {
+    synth.triggerAttackRelease(hash[text],'4n');
+  },false);
+});
+</script>
+</body>
+</html>
