@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<button onclick="start()">start</button>
+<button onclick="stop()">stop</button>
+<script>
+const toneMeter = new Tone.Meter({ channels: 2 });
+Tone.Destination.chain(toneMeter);
+
+makeChannel('Guiter 0','comping1', 1);
+makeChannel('Guiter 1','comping2', -1);
+makeChannel('Guiter 2','comping3', 0.25);
+makeChannel('Guiter 3','comping4', -0.25);
+
+function start () {
+  Tone.Transport.start();
+  console.log('start');
+}
+function stop () {
+  Tone.Transport.stop();
+  console.log('stop');
+}
+function makeChannel (name,url,pan) {
+  const channel = new Tone.Channel({
+    pan
+  }).toDestination();
+  const player = new Tone.Player({
+    url: `https://tonejs.github.io/audio/berklee/${url}.mp3`,
+    loop: true,
+  }).sync().start(0);
+  player.connect(channel);
+}
+</script>
+</body>
+</html>

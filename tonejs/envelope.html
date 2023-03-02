@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+<button onclick="start()">start</button>
+<button onclick="stop()">stop</button>
+<script>
+const env = new Tone.AmplitudeEnvelope({
+  attack: 0.11,
+  decay: 0.21,
+  sustain: 0.5,
+  release: 1.2,
+}).toDestination();
+const osc = new Tone.Oscillator({
+  partials: [3,2,1],
+  type:'custom',
+  frequency: 'C#4',
+  volume: -8,
+}).connect(env).start();
+
+function start () {
+  Tone.start();
+  env.triggerAttack();
+  console.log('start');
+}
+function stop () {
+  env.triggerRelease();
+  console.log('stop');
+}
+</script>
+</body>
+</html>
