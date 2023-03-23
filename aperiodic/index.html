@@ -18,17 +18,21 @@
    touch-action: none;
    -webkit-user-select: none;
    margin-left:0px;
+   margin-right:0px;
    margin-top:5px;
  }
  dd {
    margin-left:10px;
    font-size: 25px;
  }
+ div {
+   text-align: center;
  }
 </style>
 </head>
 <body onload="updateSvg()">
-<dd>Aperiodic Tile Deformation</dd>
+<div>
+<h1>Aperiodic Tile Deformation</h1>
 <dd>Shape:<input type="range" name="a" value="0.366025" min="0" max="1" step="0.01" onchange="updateSvg()">
  Rotate:<input type="range" name="ori" value="0" min="0" max="1" step="0.01" onchange="updateSvg()">
 </dd>
@@ -38,11 +42,11 @@
 <button onclick="tile(0.5)">(1,1)</button>
 <button onclick="tile(0.633975)">(√3,1)</button>
 <button onclick="tile(0.8)">(4,1)</button>
-<button onclick="downloadSvg()">SVG download</button>
+</div>
 <a style="display:none;" id="download" download="download"></a>
 <p/>
-<svg id="draw" width="600" height="400" style="border-style:solid;border-width:1px;border-coloir:black;">
-  <g transform="translate(200,120)scale(120)">
+<svg id="draw" width="600" height="500" style="border-style:solid;border-width:1px;border-coloir:black;">
+  <g transform="translate(180,160)scale(140)">
   <g id="rot" transform="rotate(0,0,0)">
   <path id="shape" d="M0 -1 L2 -0.7 L 1 0.7 Z" style="fill:none;stroke:black;stroke-width:0.01" />
   <circle id="c2" r="0.03" cx="0" cy="0" fill="red"/>
@@ -51,6 +55,7 @@
   </g>
   </g>
 </svg>
+<button onclick="downloadSvg()">SVG download</button>
 <script>
 const path = document.querySelector('svg#draw path#shape');
 const s = document.querySelector('svg#draw circle#s');
