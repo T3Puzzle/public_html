@@ -3,10 +3,10 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.5, minimum-scale=0.5, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.6, minimum-scale=0.6, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
-<body onload="updateSvg()">
+<body onload="updateSvg()" style="user-select: none;">
 <dd>Shape:<input type="range" name="a" value="0.366025" min="0" max="1" step="0.01" onchange="updateSvg()">
 <dd>Rotate:<input type="range" name="ori" value="0" min="0" max="1" step="0.01" onchange="updateSvg()">
 <p/>
@@ -37,7 +37,7 @@ const rot = document.querySelector('svg#draw g#rot');
 const input_a = document.querySelector('input[name="a"]');
 const input_ori = document.querySelector('input[name="ori"]');
 document.addEventListener('DOMContentLoaded', () => {
-  bodyMovePrevent();
+  //bodyMovePrevent();
 });
 function updateSvg(){
   let val = parseFloat(input_a.value);
