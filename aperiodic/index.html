@@ -5,6 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.6, minimum-scale=0.6, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
 <style>
  button {
    background-color: yellow;
@@ -43,53 +44,60 @@
 <button onclick="download()">SVG download</button>
 <a style="display:none;" id="a_download" download="download"></a>
 <p/>
-<svg width="600" height="500" style="border-style:solid;border-width:1px;border-coloir:black;">
-  <g transform="translate(180,160)scale(140)">
-  <g id="g_rot" transform="rotate(0,0,0)">
-  <path id="path_shape" d="M0 -1 L2 -0.7 L 1 0.7 Z" style="fill:none;stroke:black;stroke-width:0.01" />
-  <circle id="circle_2" r="0.03" cx="0" cy="0" fill="red"/>
-  <circle id="circle_7" r="0.03" cx="0" cy="0" fill="green"/>
-  <circle id="circle_11" r="0.03" cx="0" cy="0" fill="blue"/>
-  </g>
-  </g>
-</svg>
+<canvas id="canvas_draw" width="600" height="500" style="border:solid 1px #404040;"></canvas>
 </div>
 <script>
+let scope;
+let last_rot=0;
+const OFFSET_X = 120;
+const OFFSET_Y = 100;
+const SCALE = 140;
 function setup() {
   bodyMovePrevent();
+  paper.setup(canvas_draw);
+  paper.view.zoom = SCALE;
+  paper.view.center =(new paper.Point(OFFSET_X/SCALE,OFFSET_Y/SCALE));
   draw();
+  let tool = new paper.Tool();
+  tool.onMouseDrag = (e)=> {
+    draw();
+  }
+  paper.view.draw();
 }
 function draw(){
+  paper.project.clear();
   let val = parseFloat(input_a.value);
   let a = val;
   let b = 1-val;
   let shape = genShape(a,b);
-  let d = [];
-  let dd = [];
+  let dd = new paper.Path();;
   shape.map(sh=>{
     sh[1] += parseFloat(b);
-    d.push(sh[1]+' '+sh[0]);
-    dd.push([sh[1],sh[0]]);
+    dd.add(new paper.Point(sh[1],sh[0]));
   });
-  setCircle(circle_2,dd[2]);
-  setCircle(circle_7,dd[7]);
-  setCircle(circle_11,dd[11]);
+  dd.closed = true;
+  dd.strokeWidth = 0.01;
+  dd.strokeColor = 'black';
+  dd.fillColor = 'black';
+  setCircle(dd.segments[2].point,'red');
+  setCircle(dd.segments[7].point,'green');
+  setCircle(dd.segments[11].point,'blue');
   setRotation(dd);
-  path_shape.setAttribute('d','M'+d.join('L')+'Z');
 }
 function setRotation (dd) {
   let rot = 360*parseFloat(input_rot.value);
-  let avg = [
-    (dd[2][0]+dd[7][0]+dd[11][0])/3,
-    (dd[2][1]+dd[7][1]+dd[11][1])/3,
-  ];
-  g_rot.setAttribute('transform',`rotate(${rot},${avg[0]},${avg[1]})`);
+  let diff = rot-last_rot;
+  let avg = new paper.Point( 
+    (dd.segments[2].point.x+dd.segments[7].point.x+dd.segments[11].point.x)/3,
+    (dd.segments[2].point.y+dd.segments[7].point.y+dd.segments[11].point.y)/3,
+  );
+  paper.view.rotate(diff,avg);
+  last_rot = rot;
 }
-function setCircle(circle,yx,fill) {
-  circle.setAttribute('cx',yx[0]);
-  circle.setAttribute('cy',yx[1]);
+function setCircle(yx,fill) {
+  let circle = new paper.Shape.Circle(yx,0.03);
   if (fill) {
-    circle.setAttribute('fill',fill);
+    circle.fillColor =fill;
   }
 }
 function tile(val) {
@@ -97,8 +105,11 @@ function tile(val) {
   input_a.dispatchEvent(new Event('change'));
 }
 function download() {
-  let svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">'
-      +path_shape.closest('svg').innerHTML+'</svg>';
+  const WIDTH = paper.project.view.viewSize.width;
+  const HEIGHT = paper.project.view.viewSize.height;
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500">
+${paper.project.exportSVG().innerHTML}
+</svg>`;
   a_download.href = 'data:image/svg+xml,'+encodeURIComponent(svg);
   a_download.click();
 }
