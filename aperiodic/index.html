@@ -5,10 +5,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.6, minimum-scale=0.6, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+ button {
+   background-color: yellow;
+   color: black;
+   text-align: center;
+   font-size: 25px;
+   margin-left:3px;
+ }
+ body {
+   user-select: none;
+   touch-action: none;
+   -webkit-user-select: none;
+   margin-left:0px;
+   margin-top:5px;
+ }
+ dd {
+   margin-left:10px;
+   font-size: 25px;
+ }
+ }
+</style>
 </head>
-<body onload="updateSvg()" style="user-select: none;">
+<body onload="updateSvg()">
+<dd>Aperiodic Tile Deformation</dd>
 <dd>Shape:<input type="range" name="a" value="0.366025" min="0" max="1" step="0.01" onchange="updateSvg()">
-<dd>Rotate:<input type="range" name="ori" value="0" min="0" max="1" step="0.01" onchange="updateSvg()">
+ Rotate:<input type="range" name="ori" value="0" min="0" max="1" step="0.01" onchange="updateSvg()">
+</dd>
 <p/>
 <button onclick="tile(0.2)">(1,4)</button>
 <button onclick="tile(0.366025)">(1,√3)</button>
