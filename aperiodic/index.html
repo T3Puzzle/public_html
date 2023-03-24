@@ -165,6 +165,7 @@ function setup() {
         paint.onMouseUp = ev=> {
           canvas_div.style.cursor = 'default';
           endTimer(ev);
+         
         }
         paint.onDoubleClick = ev=> {
           endTimer(ev);
@@ -172,19 +173,17 @@ function setup() {
             ev.target.remove();
           }
           cnt_tiles-=3;
-console.log(cnt_tiles);
           if (cnt_tiles<=0) {
             clearPaint();
             cnt_tiles = 0;
           } 
         }
         function startTimer (ev) {
-return;
           timerCount = 0;
           let timerId = setInterval(()=>{
-             timerCount+=0.015;
+             timerCount+=0.025;
              if (timerCount>=1) {
-               if (paint) {
+               if (paint && paint.remove) {
                  paint.remove();
                  paint = null;
                  cnt_tiles--;
@@ -192,13 +191,12 @@ return;
                canvas_div.style.cursor = 'grab';
                endTimer(ev);
              }
-          });
-          ev.target.name = timerId;
+          },10);
+          ev.target.name = 'paint_'+timerId.toString();
         }
         function endTimer(ev) {
-return;
-          if (ev.target.name!=='paint') {
-            clearInterval(ev.target.name);
+          if (/^paint_(\d+)$/.test(ev.target.name)) {
+            clearInterval(parseInt(RegExp.$1,10));
           }
         }
       }
