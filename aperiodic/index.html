@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.6, minimum-scale=0.6, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-full.min.js"></script>
 <style>
  input[type=range] {
   height: 50px;
@@ -96,7 +96,7 @@ vertical-align: 15px;
 <body onload="setup()">
 <div>
 <h1>Aperiodic Tile Designer</h1>
-<a href="https://www.tessellation.jp/aperiodic">www.tessellation.jp/aperiodic (Yoshi Araki)</a>
+<a href="https://www.t3puzzle.com/aperiodic">www.t3puzzle.com/aperiodic (Yoshiaki Araki)</a>
 <dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.03" max="0.95" step="0.01" onchange="draw()">
  <label>Rotate:</label><input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
@@ -135,7 +135,6 @@ function setup() {
   paper.setup(canvas_draw);
   paper.view.zoom = SCALE;
   paper.view.center =(new paper.Point(CENTER_X,CENTER_Y));
-
   clearPaint();
   let tool = new paper.Tool();
   tool.onMouseDown = e=> {
@@ -153,48 +152,54 @@ function setup() {
         button_download.removeAttribute('disabled');
         button_download.classList.remove('button_disabled');
         cnt_tiles++;
-        let timerId = 0;
         let timerCount = 0;
         paint.onMouseDown = ev=> {
           startTimer(ev);
         }
         paint.onMouseDrag = ev=> {
-          endTimer();
+          endTimer(ev);
           if (timerCount>=1) {
-            //ev.target.position = ev.target.position.add(ev.point.subtract(ev.lastPoint));
+            ev.target.position = ev.target.position.add(ev.delta);
           }
         }
         paint.onMouseUp = ev=> {
           canvas_div.style.cursor = 'default';
-          endTimer();
+          endTimer(ev);
         }
         paint.onDoubleClick = ev=> {
-          endTimer();
-          ev.target.remove();
+          endTimer(ev);
+          if (ev.target.remove) {
+            ev.target.remove();
+          }
           cnt_tiles-=3;
-          if (cnt_tiles<0) {
+console.log(cnt_tiles);
+          if (cnt_tiles<=0) {
             clearPaint();
             cnt_tiles = 0;
           } 
         }
         function startTimer (ev) {
+return;
           timerCount = 0;
-          timerId = setInterval(()=>{
+          let timerId = setInterval(()=>{
              timerCount+=0.015;
              if (timerCount>=1) {
-               console.log(111);
                if (paint) {
                  paint.remove();
                  paint = null;
                  cnt_tiles--;
                }
                canvas_div.style.cursor = 'grab';
-               endTimer();
+               endTimer(ev);
              }
           });
+          ev.target.name = timerId;
         }
-        function endTimer() {
-          if (timerId) {clearInterval(timerId);}
+        function endTimer(ev) {
+return;
+          if (ev.target.name!=='paint') {
+            clearInterval(ev.target.name);
+          }
         }
       }
     }
