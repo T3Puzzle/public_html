@@ -10,7 +10,7 @@
  input[type=range] {
   height: 50px;
   -webkit-appearance: none;
-  width: 150px;
+  width: 200px;
  }
  input[type=range]:focus {
   outline: none;
@@ -97,7 +97,7 @@ vertical-align: 15px;
 <div>
 <h1>Aperiodic Tile Designer</h1>
 <a href="https://www.tessellation.jp/aperiodic">www.tessellation.jp/aperiodic (Yoshi Araki)</a>
-<dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.05" max="0.95" step="0.01" onchange="draw()">
+<dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.03" max="0.95" step="0.01" onchange="draw()">
  <label>Rotate:</label><input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
 <p/>
@@ -151,6 +151,7 @@ function setup() {
       }
     }
     paint.name = 'paint';
+    paint.strokeCap = 'round';
     paint.strokeColor = penColor;
     paint.strokeWidth = 0.1;
     paint.add(e.point);
