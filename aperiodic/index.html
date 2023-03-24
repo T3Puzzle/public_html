@@ -7,15 +7,15 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
 <style>
-input[type=range] {
+ input[type=range] {
   height: 50px;
   -webkit-appearance: none;
   width: 150px;
-}
-input[type=range]:focus {
+ }
+ input[type=range]:focus {
   outline: none;
-}
-input[type=range]::-webkit-slider-runnable-track {
+ }
+ input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 10px;
   cursor: pointer;
@@ -24,38 +24,49 @@ input[type=range]::-webkit-slider-runnable-track {
   background: #98b0ed;
   border-radius: 5px;
   border: 1px solid #000000;
-}
-input[type=range]::-webkit-slider-thumb {
+ }
+ input[type=range]::-webkit-slider-thumb {
+   box-shadow: 1px 1px 1px #000000;
+   border: 2px solid white;
+   height: 43px;
+   width: 25px;
+   border-radius: 12px;
+   background: #001280;
+   cursor: pointer;
+   -webkit-appearance: none;
+   margin-top: -17.5px;
+ }
+ input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #707dcc;
+ }
+ input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
   box-shadow: 1px 1px 1px #000000;
-  border: 2px solid white;
-  height: 43px;
-  width: 25px;
-  border-radius: 12px;
+  background: #98b0ed;
+  border-radius: 5px;
+  border: 1px solid #000000;
+ }
+ input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #000000;
+  border: 1px solid #000000;
+  height: 30px;
+  width: 15px;
+  border-radius: 5px;
   background: #001280;
   cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -17.5px;
-}
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #707dcc;
-}
-/*
- input {
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  background: #707dcc;
-  height: 6px;
-  width: 150px;
-  border-radius: 10px;
  }
-*/
  button {
    background-color:#001280; 
    color: white;
    text-align: center;
    font-size: 25px;
    border-color:#001280;
+ }
+ button.button_disabled {
+   background-color:#98b0ed; 
  }
  body {
    color: #001280;
@@ -85,7 +96,7 @@ vertical-align: 15px;
 <body onload="setup()">
 <div>
 <h1>Aperiodic Tile Designer</h1>
-<a href="https://www.tessellation.jp/aperiodic">www.tessellation.jp/aperiodic (Yoshiaki Araki)</a>
+<a href="https://www.tessellation.jp/aperiodic">www.tessellation.jp/aperiodic (Yoshi Araki)</a>
 <dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.05" max="0.95" step="0.01" onchange="draw()">
  <label>Rotate:</label><input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
@@ -94,22 +105,24 @@ vertical-align: 15px;
 <button onclick="setTile(0.4975)">(1,1.01)</button>
 <button onclick="setTile(0.633975)">(√3,1)</button>
 <button onclick="clearPaint()">clear</button>
-<button id="button_download" onclick="download()">download</button>
+<button id="button_download" disabled class="button_disabled" onclick="download()">download</button>
 <a style="display:none;" id="a_download" download="download"></a>
 <p/>
 <div id="canvas_div">
-<canvas id="canvas_draw" width="600" height="500" style="border:solid 1px #404040;"></canvas>
+<canvas id="canvas_draw" width="600" height="600" style="border:solid 1px #404040;"></canvas>
 </div>
 </div>
 <script>
 let tile = null;
+let cnt_tiles=0;
 let last_rot=0;
-const SCALE = 140;
+let last_zoom=Math.sqrt(1.860986476636446);
+const SCALE = 230;
 const OFFSET_X = 120;
 const OFFSET_Y = 100;
 const CENTER_X = OFFSET_X/SCALE;
 const CENTER_Y = OFFSET_Y/SCALE;
-const BGSIZE = 7;
+const BGSIZE = 12;
 let penColor = '#001280';
 let tileColor = '#ffffff';
 let paints = [];
@@ -129,6 +142,10 @@ function setup() {
     if (e.item) {
       if (!/^(tile|bg)$/.test(e.item.name)) {
         toBeRemoved = e.item;
+        cnt_tiles--;
+        if (cnt_tiles===0) {
+          clearPaint();
+        } 
       }
     }
     paint.name = 'paint';
@@ -146,6 +163,9 @@ function setup() {
       toBeRemoved.remove();
     } else {
       paint.add(e.point);
+      button_download.removeAttribute('disabled');
+      button_download.classList.remove('button_disabled');
+      cnt_tiles++;
     }
   }
   paper.view.draw();
@@ -163,9 +183,9 @@ function clearPaint() {
   tile = new paper.Path();
   tile.name = 'tile';
   tile.closed = true;
-  //tile.strokeWidth = 0.01;
-  //tile.strokeColor = tileColor;
   tile.fillColor = tileColor;
+  button_download.setAttribute('disabled','');
+  button_download.classList.add('button_disabled');
   draw();
 }
 function draw(){
@@ -188,14 +208,19 @@ function draw(){
   setRotation(tile);
 }
 function setRotation (dd) {
-  let rot = 360*parseFloat(input_rot.value);
-  let diff = rot-last_rot;
   let avg = new paper.Point( 
     (dd.segments[2].point.x+dd.segments[7].point.x+dd.segments[11].point.x)/3,
     (dd.segments[2].point.y+dd.segments[7].point.y+dd.segments[11].point.y)/3,
   );
-  paper.view.rotate(diff,avg);
+  paper.view.center = avg;
+  let rot = 360*parseFloat(input_rot.value);
+  let zoom = Math.sqrt(Math.abs(tile.area));
+  let diff_rot = rot-last_rot;
+  let diff_zoom = last_zoom/zoom;
+  paper.view.rotate(diff_rot,avg);
+  paper.view.zoom *= diff_zoom;
   last_rot = rot;
+  last_zoom = zoom;
 }
 function setTile(val) {
   input_a.value = val;
@@ -210,7 +235,7 @@ function download() {
   if (false) {
     const WIDTH = paper.project.view.viewSize.width;
     const HEIGHT = paper.project.view.viewSize.height;
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500">
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
 ${paper.project.exportSVG().innerHTML}
 </svg>`;
     a_download.href = 'data:image/svg+xml,'+encodeURIComponent(svg);
