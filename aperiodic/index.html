@@ -7,14 +7,24 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
 <style>
+ input {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background: #707dcc;
+  height: 6px;
+  width: 150px;
+  border-radius: 10px;
+ }
  button {
-   background-color: yellow;
-   color: black;
+   background-color:#001280; 
+   color: white;
    text-align: center;
    font-size: 25px;
-   margin-left:3px;
+   border-color:#001280;
  }
  body {
+   color: #001280;
    user-select: none;
    touch-action: none;
    -webkit-user-select: none;
@@ -29,60 +39,116 @@
  div {
    text-align: center;
  }
+ h1 {
+   margin-top: 0px;
+   margin-bottom: 0px;
+ }
 </style>
 </head>
 <body onload="setup()">
 <div>
-<h1>Aperiodic Tile Deformation</h1>
-<dd>Shape:<input type="range" id="input_a" value="0.366025" min="0" max="1" step="0.01" onchange="draw()">
+<h1>Aperiodic Tile Designer</h1>
+<dd>Shape:<input type="range" id="input_a" value="0.366025" min="0.05" max="0.95" step="0.01" onchange="draw()">
  Rotate:<input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
 <p/>
-<button onclick="tile(0.366025)">(1,√3)</button>
-<button onclick="tile(0.5)">(1,1)</button>
-<button onclick="tile(0.633975)">(√3,1)</button>
+<button onclick="setTile(0.366025)">(1,√3)</button>
+<button onclick="setTile(0.4975)">(1,1.01)</button>
+<button onclick="setTile(0.633975)">(√3,1)</button>
 <button onclick="download()">SVG download</button>
 <a style="display:none;" id="a_download" download="download"></a>
 <p/>
 <canvas id="canvas_draw" width="600" height="500" style="border:solid 1px #404040;"></canvas>
 </div>
 <script>
-let scope;
+let tile = null;
 let last_rot=0;
+const SCALE = 140;
 const OFFSET_X = 120;
 const OFFSET_Y = 100;
-const SCALE = 140;
+const CENTER_X = OFFSET_X/SCALE;
+const CENTER_Y = OFFSET_Y/SCALE;
+const BGSIZE = 7;
+let penColor = '#001280';
+let tileColor = '#ffffff';
+let paints = [];
 function setup() {
   bodyMovePrevent();
   paper.setup(canvas_draw);
   paper.view.zoom = SCALE;
-  paper.view.center =(new paper.Point(OFFSET_X/SCALE,OFFSET_Y/SCALE));
+  paper.view.center =(new paper.Point(CENTER_X,CENTER_Y));
+
+  (bg=>{
+    bg.sendToBack();
+    bg.fillColor = penColor;
+  })(new paper.Path.Rectangle({
+    point: [CENTER_X-BGSIZE/2,CENTER_Y-BGSIZE/2],
+    size: [BGSIZE,BGSIZE],
+  }));
+
+  tile = new paper.Path();
+  tile.name = 'tile';
+  tile.closed = true;
+  //tile.strokeWidth = 0.01;
+  //tile.strokeColor = tileColor;
+  tile.fillColor = tileColor;
   draw();
   let tool = new paper.Tool();
-  tool.onMouseDrag = (e)=> {
-    draw();
+  let paint = null;
+  let toBeRemoved = null;
+  tool.onMouseDown = e=> {
+    if (e.item) {
+      if (e.item.name !== 'tile') {
+        toBeRemoved = e.item;
+      }
+    }
+    paint = new paper.Path();
+    paint.name = 'paint';
+    paint.strokeColor = penColor;
+    paint.strokeWidth = 0.05;
+    paint.add(e.point);
   }
+  tool.onMouseDrag  = e=>{
+    toBeRemoved = null;
+    paint.add(e.point);
+    paint.smooth();
+  }
+  tool.onMouseUp = e=>{
+    if (toBeRemoved) {
+      toBeRemoved.remove();
+    } else {
+      paint.add(e.point);
+    }
+  }
+/*
+  tool.onMouseEnter = e=>{
+    if (e.item && e.item.name==='paint') {
+      console.log(222);
+    } else if (e.item && e.item.name==='tile') {
+      console.log(111);
+    }
+  }
+*/
   paper.view.draw();
 }
 function draw(){
-  paper.project.clear();
+  const DIFF = 1.01;
+  const EPS = 0.5-(1/(1+DIFF));
   let val = parseFloat(input_a.value);
+  if (0<=val-0.5 && val-0.5<EPS) {
+    val = 0.5+EPS;
+  } else if (0<=0.5-val && 0.5-val<EPS) {
+    val = 0.5-EPS;
+  }
   let a = val;
   let b = 1-val;
   let shape = genShape(a,b);
-  let dd = new paper.Path();;
+  tile.removeSegments();
   shape.map(sh=>{
     sh[1] += parseFloat(b);
-    dd.add(new paper.Point(sh[1],sh[0]));
+    tile.add(new paper.Point(sh[1],sh[0]));
   });
-  dd.closed = true;
-  dd.strokeWidth = 0.01;
-  dd.strokeColor = 'black';
-  dd.fillColor = 'black';
-  setCircle(dd.segments[2].point,'red');
-  setCircle(dd.segments[7].point,'green');
-  setCircle(dd.segments[11].point,'blue');
-  setRotation(dd);
+  setRotation(tile);
 }
 function setRotation (dd) {
   let rot = 360*parseFloat(input_rot.value);
@@ -94,13 +160,7 @@ function setRotation (dd) {
   paper.view.rotate(diff,avg);
   last_rot = rot;
 }
-function setCircle(yx,fill) {
-  let circle = new paper.Shape.Circle(yx,0.03);
-  if (fill) {
-    circle.fillColor =fill;
-  }
-}
-function tile(val) {
+function setTile(val) {
   input_a.value = val;
   input_a.dispatchEvent(new Event('change'));
 }
