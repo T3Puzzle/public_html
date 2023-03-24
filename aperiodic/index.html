@@ -115,6 +115,7 @@ vertical-align: 15px;
 <script>
 let tile = null;
 let cnt_tiles=0;
+let touch_item=null;
 let last_rot=0;
 let last_zoom=Math.sqrt(1.860986476636446);
 const SCALE = 230;
@@ -140,6 +141,7 @@ function setup() {
   tool.onMouseDown = e=> {
     paint = new paper.Path();
     if (e.item) {
+      touch_item = e.item;
       if (!/^(tile|bg)$/.test(e.item.name)) {
         toBeRemoved = e.item;
         cnt_tiles--;
@@ -163,9 +165,14 @@ function setup() {
       toBeRemoved.remove();
     } else {
       paint.add(e.point);
-      button_download.removeAttribute('disabled');
-      button_download.classList.remove('button_disabled');
-      cnt_tiles++;
+      if (touch_item.name === 'bg' &&
+        tile.getIntersections(paint).length===0) {
+        paint.remove();
+      } else {
+        button_download.removeAttribute('disabled');
+        button_download.classList.remove('button_disabled');
+        cnt_tiles++;
+      }
     }
   }
   paper.view.draw();
