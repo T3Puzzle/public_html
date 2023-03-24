@@ -101,9 +101,9 @@ vertical-align: 15px;
  <label>Rotate:</label><input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
 <p/>
-<button onclick="setTile(0.366025)">(1,√3)</button>
-<button onclick="setTile(0.4975)">(1,1.01)</button>
-<button onclick="setTile(0.633975)">(√3,1)</button>
+<button onclick="setTile(0.366025)">Hat?</button>
+<button onclick="setTile(0.4975)">Turtle?</button>
+<button onclick="setTile(0.633975)">Penguin?</button>
 <button onclick="clearPaint()">clear</button>
 <button id="button_download" disabled class="button_disabled" onclick="download()">download</button>
 <a style="display:none;" id="a_download" download="download"></a>
@@ -128,7 +128,7 @@ const CENTER_Y = OFFSET_Y/SCALE;
 const BGSIZE = 12;
 let penColor = '#001280';
 let tileColor = '#ffffff';
-let paints = [];
+let paint = null;
 function setup() {
   bodyMovePrevent();
   treatDownloadButton();
@@ -138,27 +138,64 @@ function setup() {
 
   clearPaint();
   let tool = new paper.Tool();
-  let paint = null;
-  let toBeRemoved = null;
   tool.onMouseDown = e=> {
     if (e.item) {
       touch_item = e.item;
       if (touch_item.name==='bg') {
         touch_bg_point=new paper.Point(e.point);
       } else {
-        if (touch_item.name!=='tile') {
-          toBeRemoved = e.item;
-          cnt_tiles--;
-          if (cnt_tiles===0) {
-            clearPaint();
-          } 
-        }
         paint = new paper.Path();
         paint.name = 'paint';
         paint.strokeCap = 'round';
         paint.strokeColor = penColor;
         paint.strokeWidth = 0.1;
         paint.add(e.point);
+        button_download.removeAttribute('disabled');
+        button_download.classList.remove('button_disabled');
+        cnt_tiles++;
+        let timerId = 0;
+        let timerCount = 0;
+        paint.onMouseDown = ev=> {
+          startTimer(ev);
+        }
+        paint.onMouseDrag = ev=> {
+          endTimer();
+          if (timerCount>=1) {
+            //ev.target.position = ev.target.position.add(ev.point.subtract(ev.lastPoint));
+          }
+        }
+        paint.onMouseUp = ev=> {
+          canvas_div.style.cursor = 'default';
+          endTimer();
+        }
+        paint.onDoubleClick = ev=> {
+          endTimer();
+          ev.target.remove();
+          cnt_tiles-=3;
+          if (cnt_tiles<0) {
+            clearPaint();
+            cnt_tiles = 0;
+          } 
+        }
+        function startTimer (ev) {
+          timerCount = 0;
+          timerId = setInterval(()=>{
+             timerCount+=0.015;
+             if (timerCount>=1) {
+               console.log(111);
+               if (paint) {
+                 paint.remove();
+                 paint = null;
+                 cnt_tiles--;
+               }
+               canvas_div.style.cursor = 'grab';
+               endTimer();
+             }
+          });
+        }
+        function endTimer() {
+          if (timerId) {clearInterval(timerId);}
+        }
       }
     }
   }
@@ -166,23 +203,13 @@ function setup() {
     if (touch_item.name === 'bg' ) {
       changeRotation(e);
     } else {
-      toBeRemoved = null;
-      paint.add(e.point);
-      paint.smooth();
+      if (paint) {
+        paint.add(e.point);
+        paint.smooth();
+      }
     }
   }
   tool.onMouseUp = e=>{
-    if (touch_item.name === 'bg' ) {
-       last_rot = tmp_rot;
-    } else {
-      if (toBeRemoved) {
-        toBeRemoved.remove();
-      } else {
-        button_download.removeAttribute('disabled');
-        button_download.classList.remove('button_disabled');
-        cnt_tiles++;
-      }
-    }
   }
   paper.view.draw();
 }
