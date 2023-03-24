@@ -116,6 +116,8 @@ vertical-align: 15px;
 let tile = null;
 let cnt_tiles=0;
 let touch_item=null;
+let touch_bg_point=null;
+let tmp_rot=0;
 let last_rot=0;
 let last_zoom=Math.sqrt(1.860986476636446);
 const SCALE = 230;
@@ -139,36 +141,42 @@ function setup() {
   let paint = null;
   let toBeRemoved = null;
   tool.onMouseDown = e=> {
-    paint = new paper.Path();
     if (e.item) {
       touch_item = e.item;
-      if (!/^(tile|bg)$/.test(e.item.name)) {
-        toBeRemoved = e.item;
-        cnt_tiles--;
-        if (cnt_tiles===0) {
-          clearPaint();
-        } 
+      if (touch_item.name==='bg') {
+        touch_bg_point=new paper.Point(e.point);
+      } else {
+        if (touch_item.name!=='tile') {
+          toBeRemoved = e.item;
+          cnt_tiles--;
+          if (cnt_tiles===0) {
+            clearPaint();
+          } 
+        }
+        paint = new paper.Path();
+        paint.name = 'paint';
+        paint.strokeCap = 'round';
+        paint.strokeColor = penColor;
+        paint.strokeWidth = 0.1;
+        paint.add(e.point);
       }
     }
-    paint.name = 'paint';
-    paint.strokeCap = 'round';
-    paint.strokeColor = penColor;
-    paint.strokeWidth = 0.1;
-    paint.add(e.point);
   }
   tool.onMouseDrag  = e=>{
-    toBeRemoved = null;
-    paint.add(e.point);
-    paint.smooth();
+    if (touch_item.name === 'bg' ) {
+      changeRotation(e);
+    } else {
+      toBeRemoved = null;
+      paint.add(e.point);
+      paint.smooth();
+    }
   }
   tool.onMouseUp = e=>{
-    if (toBeRemoved) {
-      toBeRemoved.remove();
+    if (touch_item.name === 'bg' ) {
+       last_rot = tmp_rot;
     } else {
-      paint.add(e.point);
-      if (touch_item.name === 'bg' &&
-        tile.getIntersections(paint).length===0) {
-        paint.remove();
+      if (toBeRemoved) {
+        toBeRemoved.remove();
       } else {
         button_download.removeAttribute('disabled');
         button_download.classList.remove('button_disabled');
@@ -213,21 +221,32 @@ function draw(){
     sh[1] += parseFloat(b);
     tile.add(new paper.Point(sh[1],sh[0]));
   });
-  setRotation(tile);
+  let this_rot = 360*parseFloat(input_rot.value);
+  let rot = this_rot-last_rot;
+  setRotation(rot);
+  last_rot = this_rot;
 }
-function setRotation (dd) {
+function changeRotation (e) {
+  let a = touch_bg_point.subtract(paper.view.center);
+  let b = e.point.subtract(paper.view.center);
+  let c = a.cross(b);
+  let degree = a.getAngle(b)%Math.PI;
+  if (c<0) {
+    degree *= -1;
+  }
+  tmp_rot = degree;
+  setRotation(tmp_rot);
+}
+function setRotation (rot) {
   let avg = new paper.Point( 
-    (dd.segments[2].point.x+dd.segments[7].point.x+dd.segments[11].point.x)/3,
-    (dd.segments[2].point.y+dd.segments[7].point.y+dd.segments[11].point.y)/3,
+    (tile.segments[2].point.x+tile.segments[7].point.x+tile.segments[11].point.x)/3,
+    (tile.segments[2].point.y+tile.segments[7].point.y+tile.segments[11].point.y)/3,
   );
   paper.view.center = avg;
-  let rot = 360*parseFloat(input_rot.value);
   let zoom = Math.sqrt(Math.abs(tile.area));
-  let diff_rot = rot-last_rot;
   let diff_zoom = last_zoom/zoom;
-  paper.view.rotate(diff_rot,avg);
+  paper.view.rotate(rot,avg);
   paper.view.zoom *= diff_zoom;
-  last_rot = rot;
   last_zoom = zoom;
 }
 function setTile(val) {
