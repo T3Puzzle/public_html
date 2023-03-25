@@ -478,8 +478,11 @@ function upload (filename,content) {
        BASE_IMAGE_URL+result.image_id,
     ];
     const TWEET_URL = BASE_TWEET_URL +encodeURIComponent(array.join('\n'))
-    //window.open(TWEET_URL);
-    location.href = TWEET_URL;
+    if (/tab/.test(location.search)) {
+      window.open(TWEET_URL);
+    } else {
+      location.href = TWEET_URL;
+    }
   }
   function fetch_upload(form, url, successCallback, errorCallback) {
     const body = new FormData(form);
