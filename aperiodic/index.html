@@ -98,14 +98,14 @@ vertical-align: 15px;
 <h1>Aperiodic Tile Designer</h1>
 <a href="https://www.t3puzzle.com/aperiodic">www.t3puzzle.com/aperiodic (Yoshiaki Araki)</a>
 <dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.03" max="0.95" step="0.01" onchange="draw()">
- <label>Rotate:</label><input type="range" id="input_rot" value="0" min="0" max="1" step="0.01" onchange="draw()">
+ <label>Rotate:</label><input type="range" id="input_rot" value="0.4444444" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
 <p/>
-<button onclick="setTile(0.366025)">Hat?</button>
-<button onclick="setTile(0.4975)">Turtle?</button>
-<button onclick="setTile(0.633975)">Penguin?</button>
-<button onclick="clearPaint()">clear</button>
-<button id="button_download" disabled class="button_disabled" onclick="download()">download</button>
+<button onclick="setTile(0.366025,160)">Hat?</button>
+<button onclick="setTile(0.4975,10)">Turtle?</button>
+<button onclick="setTile(0.633975,90)">Penguin?</button>
+<button onclick="clearPaint()">Clear</button>
+<button id="button_download" disabled class="button_disabled" onclick="download()">Download</button>
 <a style="display:none;" id="a_download" download="download"></a>
 <p/>
 <div id="canvas_div">
@@ -113,12 +113,11 @@ vertical-align: 15px;
 </div>
 </div>
 <script>
+let frame = null;
 let tile = null;
-let cnt_tiles=0;
+let cnt_paints=0;
 let touch_item=null;
 let touch_bg_point=null;
-let tmp_rot=0;
-let last_rot=0;
 let last_zoom=Math.sqrt(1.860986476636446);
 const SCALE = 230;
 const OFFSET_X = 120;
@@ -127,6 +126,7 @@ const CENTER_X = OFFSET_X/SCALE;
 const CENTER_Y = OFFSET_Y/SCALE;
 const BGSIZE = 12;
 let penColor = '#001280';
+let frameColor = '#98b0ed';
 let tileColor = '#ffffff';
 let paint = null;
 function setup() {
@@ -144,14 +144,15 @@ function setup() {
         touch_bg_point=new paper.Point(e.point);
       } else {
         paint = new paper.Path();
-        paint.name = 'paint';
+        paint.name = 'void';
         paint.strokeCap = 'round';
         paint.strokeColor = penColor;
         paint.strokeWidth = 0.1;
         paint.add(e.point);
         button_download.removeAttribute('disabled');
         button_download.classList.remove('button_disabled');
-        cnt_tiles++;
+        cnt_paints++;
+console.log(cnt_paints);
         let timerCount = 0;
         paint.onMouseDown = ev=> {
           startTimer(ev);
@@ -165,17 +166,16 @@ function setup() {
         paint.onMouseUp = ev=> {
           canvas_div.style.cursor = 'default';
           endTimer(ev);
-         
         }
         paint.onDoubleClick = ev=> {
           endTimer(ev);
           if (ev.target.remove) {
             ev.target.remove();
           }
-          cnt_tiles-=3;
-          if (cnt_tiles<=0) {
+          cnt_paints--;
+console.log(cnt_paints);
+          if (cnt_paints<=0) {
             clearPaint();
-            cnt_tiles = 0;
           } 
         }
         function startTimer (ev) {
@@ -186,7 +186,8 @@ function setup() {
                if (paint && paint.remove) {
                  paint.remove();
                  paint = null;
-                 cnt_tiles--;
+                 cnt_paints--;
+console.log(cnt_paints);
                }
                canvas_div.style.cursor = 'grab';
                endTimer(ev);
@@ -201,22 +202,38 @@ function setup() {
         }
       }
     }
+    frame.bringToFront();
   }
   tool.onMouseDrag  = e=>{
     if (touch_item.name === 'bg' ) {
       changeRotation(e);
     } else {
       if (paint) {
+        paint.name = 'paint';
         paint.add(e.point);
         paint.smooth();
       }
     }
+    frame.bringToFront();
   }
   tool.onMouseUp = e=>{
+    if (paint) {
+      if (paint.name === 'void') {
+        cnt_paints--;
+        if (cnt_paints<=0) {
+          clearPaint();
+        } 
+console.log(cnt_paints);
+        paint.remove();
+      }
+    }
+    paint = null;
+    frame.bringToFront();
   }
   paper.view.draw();
 }
 function clearPaint() {
+  cnt_paints = 0;
   paper.project.clear();
   (bg=>{
     bg.name = 'bg';
@@ -230,6 +247,11 @@ function clearPaint() {
   tile.name = 'tile';
   tile.closed = true;
   tile.fillColor = tileColor;
+  frame = new paper.Path();
+  frame.name = 'frame';
+  frame.closed = true;
+  frame.strokeColor = frameColor;
+  frame.strokeWidth = 0.02;
   button_download.setAttribute('disabled','');
   button_download.classList.add('button_disabled');
   draw();
@@ -246,15 +268,15 @@ function draw(){
   let a = val;
   let b = 1-val;
   let shape = genShape(a,b);
+  frame.removeSegments();
   tile.removeSegments();
   shape.map(sh=>{
     sh[1] += parseFloat(b);
+    frame.add(new paper.Point(sh[1],sh[0]));
     tile.add(new paper.Point(sh[1],sh[0]));
   });
-  let this_rot = 360*parseFloat(input_rot.value);
-  let rot = this_rot-last_rot;
+  let rot = 360*parseFloat(input_rot.value);
   setRotation(rot);
-  last_rot = this_rot;
 }
 function changeRotation (e) {
   let a = touch_bg_point.subtract(paper.view.center);
@@ -264,8 +286,9 @@ function changeRotation (e) {
   if (c<0) {
     degree *= -1;
   }
-  tmp_rot = degree;
-  setRotation(tmp_rot);
+  let rot = degree+paper.view.matrix.rotation;
+  input_rot.value = rot/360;
+  setRotation(rot);
 }
 function setRotation (rot) {
   let avg = new paper.Point( 
@@ -275,13 +298,15 @@ function setRotation (rot) {
   paper.view.center = avg;
   let zoom = Math.sqrt(Math.abs(tile.area));
   let diff_zoom = last_zoom/zoom;
-  paper.view.rotate(rot,avg);
+  paper.view.rotate(rot-paper.view.matrix.rotation,avg);
   paper.view.zoom *= diff_zoom;
   last_zoom = zoom;
 }
-function setTile(val) {
+function setTile(val,rot) {
   input_a.value = val;
   input_a.dispatchEvent(new Event('change'));
+  input_rot.value = rot/360;
+  setRotation(rot);
 }
 function treatDownloadButton () {
   if ("ontouchstart" in document.documentElement) {
