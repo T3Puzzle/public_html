@@ -317,7 +317,7 @@ function treatDownloadButton () {
   }
 }
 function download(filename) {
-  if (/svg/.test(location.search)) {
+  if (/svg/.test(location.hash)) {
     // download as svg
     const WIDTH = paper.project.view.viewSize.width;
     const HEIGHT = paper.project.view.viewSize.height;
@@ -478,7 +478,7 @@ function upload (filename,content) {
        BASE_IMAGE_URL+result.image_id,
     ];
     const TWEET_URL = BASE_TWEET_URL +encodeURIComponent(array.join('\n'))
-    if (/tab/.test(location.search)) {
+    if (/tab/.test(location.hash)) {
       window.open(TWEET_URL);
     } else {
       location.href = TWEET_URL;
