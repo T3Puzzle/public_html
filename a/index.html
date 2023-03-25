@@ -148,8 +148,16 @@ vertical-align: 15px;
 		paint = new paper.Path();
 		paint.name = 'void';
 		paint.strokeCap = 'round';
-		paint.strokeColor = penColor;
-		paint.strokeWidth = 0.065;
+                if (/penColor=([a-f\d]+)/.test(location.hash)) {
+		  paint.strokeColor = '#'+RegExp.$1;
+                } else {
+		  paint.strokeColor = penColor;
+                }
+                if (/penSize=([\d]+)/.test(location.hash)) {
+		  paint.strokeWidth = 0.001*parseFloat(RegExp.$1);
+                } else {
+		  paint.strokeWidth = 0.065;
+                }
 		paint.add(e.point);
 		button_download.removeAttribute('disabled');
 		button_download.classList.remove('button_disabled');
