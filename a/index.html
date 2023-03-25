@@ -317,7 +317,7 @@ function treatDownloadButton () {
   }
 }
 function download(filename) {
-  if (false) {
+  if (/svg/.test(location.search)) {
     // download as svg
     const WIDTH = paper.project.view.viewSize.width;
     const HEIGHT = paper.project.view.viewSize.height;
@@ -446,14 +446,14 @@ function upload (filename,content) {
   input_artist.value = getArtist();
   fetch_upload(form_upload, URL, 
   (result)=>{
-    if (confirm('Tweet your tile? Press "Cancel" to get a local copy')) {
-      try {
+    try {
+      if (confirm('Tweet your tile? Press "Cancel" to get a local copy')) {
         tweet(input_title.value,result);
-      } catch (e) {
-        console.log(e);
+      } else {
+        download(filename);
       }
-    } else {
-      download(title);
+    } catch(e) {
+      console.error(e);
     }
     button_download.removeAttribute('disabled');
     button_download.classList.remove('button_disabled');
