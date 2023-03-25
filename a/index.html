@@ -95,8 +95,8 @@ vertical-align: 15px;
 </head>
 <body onload="setup()">
 <div>
-<h1>Aperiodic Tile Designer</h1>
-<a href="https://www.t3puzzle.com/aperiodic">www.t3puzzle.com/aperiodic (Yoshiaki Araki)</a>
+<h1>Aperiodic Tile Maker</h1>
+<a href="https://www.t3puzzle.com/a">www.t3puzzle.com/a (Yoshiaki Araki)</a>
 <dd><label>Shape:</label><input type="range" id="input_a" value="0.366025" min="0.03" max="0.95" step="0.01" onchange="draw()">
  <label>Rotate:</label><input type="range" id="input_rot" value="0.4444444" min="0" max="1" step="0.01" onchange="draw()">
 </dd>
@@ -105,7 +105,7 @@ vertical-align: 15px;
 <button onclick="setTile(0.4975,10)">Turtle?</button>
 <button onclick="setTile(0.633975,90)">Penguin?</button>
 <button onclick="clearPaint()">Clear</button>
-<button id="button_download" disabled class="button_disabled" onclick="download()">Download</button>
+<button id="button_download" disabled class="button_disabled" onclick="save()">Save</button>
 <a style="display:none;" id="a_download" download="download"></a>
 <p/>
 <div id="canvas_div">
@@ -119,6 +119,7 @@ let cnt_paints=0;
 let touch_item=null;
 let touch_bg_point=null;
 let last_zoom=Math.sqrt(1.860986476636446);
+const APP = 'aperiodic';
 const SCALE = 230;
 const OFFSET_X = 120;
 const OFFSET_Y = 100;
@@ -151,6 +152,7 @@ function setup() {
         paint.add(e.point);
         button_download.removeAttribute('disabled');
         button_download.classList.remove('button_disabled');
+        button_download.textContent = 'Save';
         cnt_paints++;
 console.log(cnt_paints);
         let timerCount = 0;
@@ -254,6 +256,7 @@ function clearPaint() {
   frame.strokeWidth = 0.02;
   button_download.setAttribute('disabled','');
   button_download.classList.add('button_disabled');
+  button_download.textContent= 'Save';
   draw();
 }
 function draw(){
@@ -313,20 +316,48 @@ function treatDownloadButton () {
     button_download.style.display = 'none';
   }
 }
-function download() {
+function download(filename) {
   if (false) {
+    // download as svg
     const WIDTH = paper.project.view.viewSize.width;
     const HEIGHT = paper.project.view.viewSize.height;
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
 ${paper.project.exportSVG().innerHTML}
 </svg>`;
     a_download.href = 'data:image/svg+xml,'+encodeURIComponent(svg);
-    a_download.download = 'aperiodic.svg';
-  } else {
-    a_download.href = 'data:image/jpeg' +canvas_draw.toDataURL("image/jpeg", 0.5); 
-    a_download.download = 'aperiodic.jpg';
+    a_download.download = filename+'.svg';
+    a_download.click();
+  } else if (true) {
+    // download as jpeg
+    a_download.href = canvas_draw.toDataURL('image/jpeg', 0.5); 
+    a_download.download = filename+'.jpg';
+    a_download.click();
   }
-  a_download.click();
+}
+function save () {
+  button_download.setAttribute('disabled','');
+  button_download.classList.add('button_disabled');
+  button_download.textContent = 'Saving…';
+  let filename = a_download.download = dateNow()+'_'+getArtist();
+  if (false) {
+    download(filename);
+    button_download.removeAttribute('disabled');
+    button_download.classList.remove('button_disabled');
+    button_download.textContent = 'Save';
+  } else {
+    upload(
+      filename,
+      canvas_draw.toDataURL("image/jpeg", 0.5).slice('data:image/jpeg;base64,'.length)
+    );
+  }
+}
+function dateNow() {
+  return new Intl.DateTimeFormat('ja-JP', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Tokyo'
+  }).format(new Date()).replace(/[\s\/:]/g,'');
 }
 function bodyMovePrevent() {
   document.addEventListener('touchmove', e => e.preventDefault(), {
@@ -337,6 +368,7 @@ function bodyMovePrevent() {
   });
 }
 function genShape( a, b ) {
+  // converted from Craig's python script, patch.py.
   const hr3 = 0.5*Math.sqrt(3.0);
   const base_shape = [
     [0,0], [0,-hr3], [0.5,-hr3], [0.75, -0.5*hr3], [1.5, -hr3],
@@ -359,9 +391,115 @@ function genShape( a, b ) {
     ret.push( [ p[0]+sc*v[0], p[1]+sc*v[1] ] );
   }
   return ret
+  function dist( p, q ) {
+    return Math.sqrt( Math.pow((p[0]-q[0]),2) + Math.pow((p[1]-q[1]),2) );
+  }
 }
-function dist( p, q ) {
-  return Math.sqrt( Math.pow((p[0]-q[0]),2) + Math.pow((p[1]-q[1]),2) );
+function getArtist() {
+  let artist = localStorage.getItem(APP + '__INFO--ARTIST');
+  if (!artist) {
+    localStorage.setItem(APP + '__INFO--ARTIST', Math.random().toString(32).substring(2));
+  }
+  return artist;
+}
+function getAge() {
+  let age = localStorage.getItem(APP + '__INFO--AGE');
+  while (!age) {
+    age = prompt('How old are you? (Age)').trim();
+    if (/^\d+$/.test(age)) {
+      localStorage.setItem(APP + '__INFO--AGE', age);
+      return age;
+    } else {
+      age = null;
+    }
+  }
+  return age;
+}
+function getTitle() {
+  let title = null;
+  while (!title) {
+    title = prompt('Name this tile!').trim();
+    if (title.length>=3) {
+      return title;
+    } else {
+      title = null;
+    }
+  }
+}
+</script>
+<form id="form_upload" style="display:none;">
+<input id="input_artist" type="hidden" name="artist">
+<input id="input_age" type="hidden" name="age">
+<input id="input_title" type="hidden" name="title" value="">
+<input id="input_content" type="hidden" name="content" >
+<input id="input_filename" type="hidden" name="filename">
+</form>
+<script>
+function upload (filename,content) {
+  const BASE_URL = 'https://script.google.com/a/tessellation.jp/macros/s/';
+  const SCRIPT_ID = 'AKfycbwCLHJcWjUMn0qCNAwQ6oy4EuIO7oegr-uuPznIAbTbu7Wfddw9OvHtUGyQx0RvD0zd';
+  const URL = BASE_URL+SCRIPT_ID+'/exec';
+  input_title.value = getTitle();
+  input_age.value = getAge();
+  input_filename.value = filename+'.jpg';
+  input_content.value = content;
+  input_artist.value = getArtist();
+  fetch_upload(form_upload, URL, 
+  (result)=>{
+    if (confirm('Tweet your tile? Press "Cancel" to get a local copy')) {
+      try {
+        tweet(input_title.value,result);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      download(title);
+    }
+    button_download.removeAttribute('disabled');
+    button_download.classList.remove('button_disabled');
+    button_download.textContent = 'Save';
+  },
+  (error)=>{
+    if (confirm('Failed to save. Press "Cancel" to get a local copy.')) {
+      console.error(error);
+    } else {
+      download(filename);
+    }
+    button_download.removeAttribute('disabled');
+    button_download.classList.remove('button_disabled');
+    button_download.textContent = 'Save';
+  });
+  function tweet (title,result) {
+    const BASE_TWEET_URL = 'https://twitter.com/intent/tweet?text=';
+    const BASE_IMAGE_URL = 'http://drive.google.com/uc?id=';
+    let array = [
+       title,
+       '#AperiodicTileMaker',
+       BASE_IMAGE_URL+result.image_id,
+    ];
+    const TWEET_URL = BASE_TWEET_URL +encodeURIComponent(array.join('\n'))
+    //window.open(TWEET_URL);
+    location.href = TWEET_URL;
+  }
+  function fetch_upload(form, url, successCallback, errorCallback) {
+    const body = new FormData(form);
+    fetch(url, {
+        method: 'POST',
+        body: body,
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if (successCallback) {
+          successCallback(j);
+        }
+      }).catch(e => {
+        if (errorCallback) {
+          errorCallback(e);
+        }
+      });
+  }
 }
 </script>
 </body>
