@@ -8,7 +8,7 @@
 <style>
  button {
    text-align: center;
-   font-size: 25px;
+   font-size: 36px;
    margin-left:5px;
    margin-right:0px;
    margin-top:5px;
@@ -25,7 +25,7 @@
 </style>
 </head>
 <body onload="setup()">
-<button onClick="changeDisplay(0)">0</button><button onClick="changeDisplay(1)">A</button><button onClick="changeDisplay(2)" style="font-size:20px;">ﾗ</button>
+<button onClick="changeDisplay(0)">０</button><button onClick="changeDisplay(1)">Ａ</button><button onClick="changeDisplay(2)">ラ</button>
 <br/>
 <canvas id="myCanvas" width="600" height="800"></canvas>
 <script>
@@ -57,7 +57,7 @@ function draw () {
   const CX = LEFT*SIZE/2;
   const CY = 5*SIZE/2;
   paper.view.center = new paper.Point(CX,CY);
-  paper.view.zoom =15;
+  paper.view.zoom =22;
   //let circle = new paper.Path.Circle(paper.view.center,1);
   //circle.fillColor = 'blue';
 
