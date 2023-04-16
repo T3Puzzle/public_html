@@ -1,1 +1,149 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.6, minimum-scale=0.6, maximum-scale=1.0, user-scalable=no" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.js"></script>
+<script src="https://cdn.rawgit.com/gorhill/Javascript-Voronoi/3fe2165a/rhill-voronoi-core.js"></script>
+<style>
+ button {
+   text-align: center;
+   font-size: 25px;
+   margin-left:5px;
+   margin-right:0px;
+   margin-top:5px;
+ }
+ body {
+   color: #001280;
+   user-select: none;
+   touch-action: none;
+   -webkit-user-select: none;
+   margin-left:0px;
+   margin-right:0px;
+   margin-top:0px;
+ }
+</style>
+</head>
+<body onload="setup()">
+<button onClick="changeDisplay(0)">0</button><button onClick="changeDisplay(1)">A</button><button onClick="changeDisplay(2)" style="font-size:20px;">ﾗ</button>
+<br/>
+<canvas id="myCanvas" width="600" height="800"></canvas>
+<script>
+let display = 0;
+const voronoi =  new Voronoi()
+function changeDisplay (index) {
+  display = index;
+  clearPaint();
+  draw();
+}
+function setup () {
+  bodyMovePrevent();
+  paper.setup(myCanvas)
+  clearPaint();
+  draw();
+  paper.view.draw();
+}
+function clearPaint () {
+  paper.project.clear();
+}
+function draw () {
+  const Sign = ['A','B♭','B','C','C♯','D','E♭','E','F','F♯','G','G♯'];
+  const Jap = ['ﾗ','ｼ♭','ｼ','ﾄﾞ','ﾄﾞ♯','ﾚ','ﾐ♭','ﾐ','ﾌｧ','ﾌｧ♯','ｿ','ｿ♯'];
+  const WIDTH = paper.view.size.width
+  const HEIGHT = paper.view.size.height
+  const LEFT = 5/2/Math.sqrt(3);
+  const DOWN  = 5/2;
+  const SIZE = 30;
+  const CX = LEFT*SIZE/2;
+  const CY = 5*SIZE/2;
+  paper.view.center = new paper.Point(CX,CY);
+  paper.view.zoom =15;
+  //let circle = new paper.Path.Circle(paper.view.center,1);
+  //circle.fillColor = 'blue';
 
+  let sites = [];
+  let infos = [];
+  for(let i=0; i<SIZE; i++){
+    for(let j=0; j<SIZE; j++){
+     let x = LEFT*i;
+     let y = 5*j;
+     y += (i-SIZE/2)*DOWN;
+     let pt = new paper.Point(x, y)
+     sites.push(pt)
+     let id =(12*100-4*(i+2)-(j+1))%12;
+     let pty = pt.y+0.3;
+     let ptx = pt.x-0.3;
+     let fontSize = 1;
+     let value = id.toString();
+     if (display===1) {
+       value = Sign[id];
+       fontSize = 0.8;
+     } else if (display===2) {
+       value = Jap[id];
+       fontSize = 0.8;
+     }
+     if (value.length>1) {
+       ptx = pt.x-0.6;
+     }
+     let text = new paper.PointText(ptx,pty);
+     text.content = value;
+     text.fontSize = fontSize;
+     infos.push({id:id});
+    }
+  }
+  doVoronoi(sites,infos,func);
+  return;
+  function func (info) {
+    alert(info.id);
+  }
+  function doVoronoi(sites,infos,callback){
+    let diagram = voronoi.compute(sites, {
+      xl: 0,
+      xr: paper.view.center.x*2,
+      yt: paper.view.center.y/2,
+      yb: paper.view.center.y*3/2
+    })
+    if (diagram) {
+      for (let i = 0, l = sites.length; i < l; i++) {
+        let cell = diagram.cells[sites[i].voronoiId]
+        if (cell) {
+          let halfedges = cell.halfedges,
+            length = halfedges.length
+          if (length > 2) {
+            let points = []
+            for (let j = 0; j < length; j++) {
+              v = halfedges[j].getEndpoint()
+              points.push(new paper.Point(v))
+            }
+            createPath(points, infos[i],callback)
+          }
+        }
+      }
+    }
+    function createPath (points,info,callback) {
+      let path = new paper.Path()
+      path.closed = true
+      path.strokeColor = 'black'
+      path.strokeWidth = 0.1;
+      for (let i = 0, l = points.length; i < l; i++) {
+        path.add(points[i])
+      }
+      path.fillColor = 'red';
+      path.opacity = '0.1';
+      path.onClick = (ev)=> {
+        callback(info);
+      }
+    }
+  }
+}
+        function bodyMovePrevent() {
+          document.addEventListener('touchmove', e => e.preventDefault(), {
+            passive: false
+          });
+          document.addEventListener('mousewheel', e => e.preventDefault(), {
+            passive: false
+          });
+        }
+</script>
+</body>
+</html>
