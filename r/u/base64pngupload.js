@@ -42,7 +42,7 @@
     }
   }
 (()=>{
-  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbw1-Dr_NNqBgFkSXXU1eNKsh6MRoiWHnUlPGZjGAwWD_7BJ0E1_Hh4rRi8UPslyKYPG/exec';
+  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbwsBFLCp3-X-yIjNw-T1rd92yZxnVzjLSFfqz5bpie0PsSEPxSGPufu7rK3o1fneH3tig/exec';
   let emailreq = '';
   
   emailreq = 'required';
