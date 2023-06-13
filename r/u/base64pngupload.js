@@ -58,11 +58,15 @@
     id = location.search.replace(/^\?id=/,'');
   }
   let xid = '';
+  let contest = '';
   if (id) {
     xid = '?'+id;
+    if (/^h_/.test(id)) {
+      contest = 'hachi';
+    }
   }
   let input = `
-
+<input type="hidden" name="contest" value="${contest}" style="display:none;"/>
 <div class="classunique" style="display:none;">
           学籍番号: <input type="text" name="unique" pattern="^[a-zA-Z0-9]*$" value="" onchange="updateEmailByUnique(this.form)">
 </div>
@@ -183,7 +187,7 @@ form dl dd{
 必須事項を記入して下さい。<br/>
 応募作品、ねんれい、だいめい、おすまいの市区町村　＋　工夫した点は、<br/>
 コンテストに関連してウェブページやSNSなどで<br/>
-紹介させていただくことがあります。
+紹介させていただくことがあります。(メールアドレス除く)
 <p/>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
