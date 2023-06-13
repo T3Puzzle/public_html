@@ -183,7 +183,7 @@ form dl dd{
 必須事項を記入して下さい。<br/>
 応募作品、ねんれい、だいめい、おすまいの市区町村　＋　工夫した点は、<br/>
 コンテストに関連してウェブページやSNSなどで<br/>
-紹介させていただくことがあります。
+紹介させていただくことがあります。(メールアドレスを除く)
 <p/>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
@@ -193,6 +193,7 @@ form dl dd{
 <input type="hidden" name="filename" style="display:none;"/>
 <input type="hidden" name="type" style="display:none;"/>
 <input type="hidden" name="content" style="display:none;"/>
+<input type="hidden" name="contest" value="hachi" style="display:none;"/>
 ${input}
 </dl>
 <input type="submit" disabled="disabled" value="作品を応募" onclick="this.value='応募中...';" style="-webkit-appearance: none; appearance: none;
