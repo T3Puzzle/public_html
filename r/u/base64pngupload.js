@@ -158,7 +158,7 @@
 <dt>だいめい</dt>
 <dd><input name="title" size="34" required></dd>
 <dt>くふうしたこと</dt>
-<dd><textarea placeholder="おすまいの市区町村 ＋ くふうしたこと　&#010;保存した作品および記入内容は公開させていただくことがあります" cols="33" rows="3" name="text" required></textarea></dd>
+<dd><textarea placeholder="おすまいの市区町村 ＋ くふうしたこと　&#010;作品および記入内容は公開させていただくことがあります(メールアドレスを除く)" cols="33" rows="3" name="text" required></textarea></dd>
   `;
   document.body.insertAdjacentHTML('beforeend',`
 <style>
