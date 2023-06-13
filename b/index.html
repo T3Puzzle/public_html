@@ -293,6 +293,9 @@ div.menu {
     if (!search) {
       return;
     }
+    if (location.search==='?h_100') {
+      return;
+    }
     let qs = search.replace(/^\?/,'');
     if (!qs) {
       return;
@@ -316,6 +319,9 @@ div.menu {
   function updateEmailByUnique(form) {
     let search = location.search;
     if (!search) {
+      return;
+    }
+    if (location.search==='?h_100') {
       return;
     }
     let qs = search.replace(/^\?/,'');
@@ -616,7 +622,8 @@ div.menu {
       let inputgrade = dialog__form.querySelector('select[name="grade"]');
       let inputgroup = dialog__form.querySelector('select[name="group"]');
       let inputindex = dialog__form.querySelector('select[name="index"]');
-      if (location.search) {
+      
+      if (location.search && location.search !== '?h_100') {
         inputage.required = false;
         inputtitle.required = false;
         inputemail.value = '';
