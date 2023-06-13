@@ -58,11 +58,15 @@
     id = location.search.replace(/^\?id=/,'');
   }
   let xid = '';
+  let contest = '';
   if (id) {
     xid = '?'+id;
+    if (/^h_/.test(id)) {
+      contest = 'hachi';
+    }
   }
   let input = `
-
+<input type="hidden" name="contest" value="${contest}" style="display:none;"/>
 <div class="classunique" style="display:none;">
           学籍番号: <input type="text" name="unique" pattern="^[a-zA-Z0-9]*$" value="" onchange="updateEmailByUnique(this.form)">
 </div>
@@ -193,7 +197,6 @@ form dl dd{
 <input type="hidden" name="filename" style="display:none;"/>
 <input type="hidden" name="type" style="display:none;"/>
 <input type="hidden" name="content" style="display:none;"/>
-<input type="hidden" name="contest" value="hachi" style="display:none;"/>
 ${input}
 </dl>
 <input type="submit" disabled="disabled" value="作品を応募" onclick="this.value='応募中...';" style="-webkit-appearance: none; appearance: none;
