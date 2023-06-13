@@ -157,7 +157,7 @@
 <dd><input name="age" type="number" size="3"></dd>
 <dt>だいめい</dt>
 <dd><input name="title" size="34" required></dd>
-<dt>工夫した点</dt>
+<dt>おすまいの市区町村　＋　工夫した点</dt>
 <dd><textarea cols="33" rows="3" name="text" required></textarea></dd>
   `;
   document.body.insertAdjacentHTML('beforeend',`
@@ -181,7 +181,7 @@ form dl dd{
 <h2>T3コンテスト応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
-応募作品、ねんれい、だいめい、工夫した点は、<br/>
+応募作品、ねんれい、だいめい、おすまいの市区町村　＋　工夫した点は、<br/>
 コンテストに関連してウェブページやSNSなどで<br/>
 紹介させていただくことがあります。
 <p/>
