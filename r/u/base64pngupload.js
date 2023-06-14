@@ -168,7 +168,7 @@
 <dt>だいめい</dt>
 <dd><input name="title" size="34" required></dd>
 <dt>くふうしたこと</dt>
-<dd><textarea placeholder="おすまいの市区町村 ＋ くふうしたこと　&#010;作品および記入内容は公開させていただくことがあります(メールアドレスを除く)" cols="33" rows="3" name="text" required></textarea></dd>
+<dd><textarea placeholder="くふうしたこと　&#010;作品および記入内容は公開させていただくことがあります(メールアドレスを除く)" cols="33" rows="3" name="text" required></textarea></dd>
   `;
   document.body.insertAdjacentHTML('beforeend',`
 <style>
@@ -191,7 +191,7 @@ form dl dd{
 <h2>T3コンテスト応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
-応募作品、ねんれい、だいめい、おすまいの市区町村　＋　工夫した点は、<br/>
+応募作品、ねんれい、だいめい、工夫した点は、<br/>
 コンテストに関連してウェブページやSNSなどで<br/>
 紹介させていただくことがあります。(メールアドレス除く)
 <p/>
