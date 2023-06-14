@@ -915,7 +915,7 @@ document.currentScript.insertAdjacentHTML('beforebegin',`
       //
       filename.value = 'server_to_be_named.png';
       content.value = value;
-      if (location.search && /^h_/.test(location.search)) {
+      if (location.search && /^\?h_/.test(location.search)) {
         contest.value = 'hachi';
       } else {
         contest.value = '';
