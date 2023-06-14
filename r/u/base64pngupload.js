@@ -28,7 +28,7 @@
     if (!search) {
       return;
     }
-    if (search==='?id===h_100') {
+    if (search==='?id=h_100') {
       return;
     }
     let qs = search.replace(/^\?id=/,'');
