@@ -235,7 +235,7 @@ ${back}
       let inputgrade = document.querySelector('select[name="grade"]');
       let inputgroup = document.querySelector('select[name="group"]');
       let inputindex = document.querySelector('select[name="index"]');
-      if (location.search && /^\?id=/.test(location.search)) {
+      if (location.search && /^\?id=/.test(location.search) && location.search !== '?id=h_100') {
         inputage.required = false;
         inputtitle.required = false;
         inputtext.required = false;
