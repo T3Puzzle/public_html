@@ -95,16 +95,25 @@ div.menu {
     </grid-data>
   </datalist>
 </grid-puzzle>
-<script>document.currentScript.insertAdjacentHTML('beforebegin',`
+<script>{
+let contest = 'T3';
+let jump = 'https://www.t3puzzle.com/r/u/';
+let page = 'https://www.t3puzzle.com/contest';
+if (location.search && /^?h_/.test(location.search)) {
+  contest = 'ハチ公STEAM'
+  jump = 'https://www.t3puzzle.com/r/h/';
+  page = 'https://www.tessellation.jp/hachi';
+}
+document.currentScript.insertAdjacentHTML('beforebegin',`
 <dialog-modal id="dialog__help__modal">
   <template>
     <div style="margin-left:0px;width:320px;height:320px;">
-       <b> T3コンテスト実施中！</b><br/>
+       <b> ${contest}コンテスト実施中！</b><br/>
        アプリで作った作品を応募しよう！<br/>
-      応募方法は<a target="_blank" href="https://www.t3puzzle.com/contest">コンテストページへ</a><br/>
+      応募方法は<a target="_blank" href="${page}">コンテストページへ</a><br/>
       <br/>
       <b>うまく応募できない時は…</b><br/>
-      1) 画面キャプチャをとり、画像を<a target="_blank" href="https://www.t3puzzle.com/r/u/${location.search?'?id='+location.search.replace(/^\?/,''):''}">アップロードてください</a>
+      1) 画面キャプチャをとり、画像を<a target="_blank" href="${jump}${location.search?'?id='+location.search.replace(/^\?/,''):''}">アップロードてください</a>
       <br/>
       2) ChromeやGoogleアプリで開く<br/><br/>
       参考:<a target="_blank" href="https://twitter.com/i/events/1471748985274593284">アプリの使い方</a><br/>
@@ -112,7 +121,7 @@ div.menu {
   </template>
   </dialog-modal>
 `);
-</script>
+}</script>
 <dialog-modal id="dialog__form__modal">
   <template>
     <div id="dialog__src" style="margin-left:0px;width:320px;height:320px; background: rgb(200, 200, 200);"></div>
@@ -140,6 +149,7 @@ div.menu {
         <input name="filename" type="hidden">
         <input name="type" value="image/png" type="hidden">
         <input name="content" type="hidden">
+        <input name="contest" type="hidden">
         <input id="dialog__meta" name="meta" type="hidden">
         <label for="dialog__age">ねんれい:</label>
         <input required id="dialog__age" name="age" value="" type="number" min="0" max="150" style="width:35px;">
@@ -259,6 +269,7 @@ div.menu {
       <input name="type" value="image/png" type="hidden">
       <input id="load_meta" name="meta" type="hidden">
       <input name="content" type="hidden">
+      <input name="contest" type="hidden">
       <input id="load__age" name="age" type="hidden" min="0" max="150" style="width:35px;">
       <div style="display:inline-block;border-width:1px;">
         <div id="load__history" style="display:inline-block;">
@@ -884,6 +895,7 @@ div.menu {
     let filename = form.querySelector('input[name=filename]');
     let artist = form.querySelector('input[name=artist]');
     let content = form.querySelector('input[name=content]');
+    let contest = form.querySelector('input[name=contest]');
     let dataStr = form.querySelector('input[name=data]').value;
     submit.disabled = 'disable';
     if (submit.value==='ほぞんする') {
@@ -903,6 +915,11 @@ div.menu {
       //
       filename.value = 'server_to_be_named.png';
       content.value = value;
+      if (location.search && /^h_/.test(location.search)) {
+        contest.value = 'hachi';
+      } else {
+        contest.value = '';
+      }
       try {
         fetch_upload(form, OBJ,
           (json) => {
