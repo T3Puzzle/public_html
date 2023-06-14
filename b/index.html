@@ -245,7 +245,7 @@ document.currentScript.insertAdjacentHTML('beforebegin',`
         <div class="email">
         <input placeholder="コンテストおうぼ→メールアドレス入力" name="email" type="email" style="width:305px;margin-top:3px;border-width:1px;" onchange="if(!/^[a-zA-Z0-9\.\+-@_]+$/.test(this.value)){this.value='';}this.form.querySelector('input.submit').value=(this.value.trim())?'おうぼする':'ほぞんする';">
         </div>
-          <textarea placeholder="おすまいの市区町村 ＋ くふうしたこと　&#010;作品および記入内容は公開させていただくことがあります(メールアドレスを除く)" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
+          <textarea placeholder="くふうしたこと　&#010;作品および記入内容は公開させていただくことがあります(メールアドレスを除く)" name="note" rows="3" onchange="UPLOAD.note = this.value;" style="width:305px;margin-top:3px;display:block;font-size:90%;border-width:1px;"></textarea>
       </form>
   </template>
 </dialog-modal>
