@@ -188,12 +188,10 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<h2>ハチ公STEAMコンテスト応募</h2>
+<img width="600" src="./hachikosteamcontestlogo.png">
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
-応募作品、ねんれい、だいめい、工夫した点は、<br/>
-コンテストに関連してウェブページやSNSなどで<br/>
-紹介させていただくことがあります。(メールアドレスを除く)
+個人情報の取扱いについては<br/><a href="https://www.tessellation.jp/hachi">コンテストページ⧉</a>をご覧ください。
 <p/>
 <input id="ui" type="file" accept="image/*"/><br/>
 <canvas></canvas>
@@ -215,7 +213,7 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.tessellation.jp/hachi">コンテストページ</a>
+<li><a href="https://www.tessellation.jp/hachi">コンテストページ⧉</a>
 `);
 ;
   
