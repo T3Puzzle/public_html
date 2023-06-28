@@ -188,7 +188,7 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<img width="600" src="./hachikosteamcontestlogo.png">
+<img width="600" src="./hachikosteamcontestlogo.png"><br/>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
 個人情報の取扱いについては<br/><a href="https://www.tessellation.jp/hachi">コンテストページ⧉</a>をご覧ください。
