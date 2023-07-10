@@ -189,7 +189,8 @@ form dl dd{
 }
 </style>
 <img style="width:400px;" src="./hachikosteamcontestlogo.png"><br/>
-作品の画像ファイルを選択の上、<br/>
+<a href="./hachi_daishi.pdf">マンホール台紙⧉</a>にえがいた作品を撮影した<br/>
+画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
 個人情報の取扱いについては<br/><a href="https://www.tessellation.jp/hachi">コンテストページ⧉</a>をご覧ください。
 <p/>
@@ -213,6 +214,7 @@ ${input}
 </form>
 ${back}
 <p/>
+<li><a href="./hachi_daishi.pdf">マンホール台紙⧉</a>
 <li><a href="https://www.tessellation.jp/hachi">コンテストページ⧉</a>
 `);
 ;
