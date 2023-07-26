@@ -220,6 +220,13 @@ ${back}
 ;
   
   document.addEventListener('DOMContentLoaded',()=>{
+    
+    let form = document.querySelector('form');
+    form.addEventListener('submit',(e)=>{
+      alert(1);
+      return false;
+    });
+    
     let disp = document.querySelector('canvas');
     document.querySelector('input#ui').addEventListener('change', 
       (e)=>drawImage(e,disp,callback));
