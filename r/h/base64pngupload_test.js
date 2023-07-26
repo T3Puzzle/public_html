@@ -64,7 +64,7 @@
     id = location.search.replace(/^\?id=/,'');
   }
   let xid = '';
-  let contest = '';
+  let contest = 'hachi';//default
   if (id) {
     xid = '?'+id;
     if (/^h_/.test(id)) {
