@@ -223,8 +223,7 @@ ${back}
     
     let form = document.querySelector('form');
     form.addEventListener('submit',(e)=>{
-      let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzGw-6edyEg0kEsKsOAuaO8poq9F3j5xCUC4FlowRWkLm1SqpWyfU0S3VdwfOwRGz2p/exec
-';
+      let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzGw-6edyEg0kEsKsOAuaO8poq9F3j5xCUC4FlowRWkLm1SqpWyfU0S3VdwfOwRGz2p/exec';
       e.preventDefault();
       fetch(url,{
         method: 'POST',
