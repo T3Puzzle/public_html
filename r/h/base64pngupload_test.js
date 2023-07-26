@@ -223,8 +223,28 @@ ${back}
     
     let form = document.querySelector('form');
     form.addEventListener('submit',(e)=>{
-      alert(1);
-      return false;
+      let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzGw-6edyEg0kEsKsOAuaO8poq9F3j5xCUC4FlowRWkLm1SqpWyfU0S3VdwfOwRGz2p/exec
+';
+      e.preventDefault();
+      fetch(url,{
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if (successCallback) {
+          successCallback(j);
+        }
+      }).catch(e => {
+        if (errorCallback) {
+          errorCallback(e);
+        }
+      });
     });
     
     let disp = document.querySelector('canvas');
