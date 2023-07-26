@@ -227,9 +227,9 @@ ${back}
       e.preventDefault();
       fetch(url,{
         method: 'POST',
-        body: new FormData(form),
+        body: processFormData(new FormData(form)),
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         mode: 'cors',
         redirect: 'follow',
@@ -307,6 +307,13 @@ ${back}
   });
   return;
 
+  function processFormData (query) {
+    let list = [];
+    for (let [k,v] of query) {
+      list.push(encodeURIComponent(k)+'='+encodeURIComponent(v));
+    }
+    return list.join('&');
+  }
   function checkRegistered () {
     let artist = getArtist();
     return checkHash(artist);
