@@ -223,7 +223,7 @@ ${back}
     
     let form = document.querySelector('form');
     form.addEventListener('submit',(e)=>{
-      let url = 'http://localhost:3000';
+      let url = 'https://asia-northeast1-language-307105.cloudfunctions.net/uploadFilev1';
       e.preventDefault();
       fetch(url,{
         method: 'POST',
