@@ -236,13 +236,15 @@ ${back}
       })
       .then(r => r.json())
       .then(j => {
-        if (successCallback) {
-          successCallback(j);
+        if ('ok' in j) {
+          alert('応募完了');
+        } else {
+          alert('応募失敗');
         }
+        location.href = './i.html';
       }).catch(e => {
-        if (errorCallback) {
-          errorCallback(e);
-        }
+        alert('応募失敗');
+        location.href = './i.html';
       });
     });
     
