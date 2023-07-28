@@ -64,7 +64,7 @@
     id = location.search.replace(/^\?id=/,'');
   }
   let xid = '';
-  let contest = '';
+  let contest = 'hachi';//default
   if (id) {
     xid = '?'+id;
     if (/^h_/.test(id)) {
@@ -220,6 +220,34 @@ ${back}
 ;
   
   document.addEventListener('DOMContentLoaded',()=>{
+    
+    let form = document.querySelector('form');
+    form.addEventListener('submit',(e)=>{
+      let url = 'https://asia-northeast1-language-307105.cloudfunctions.net/uploadFilev1';
+      e.preventDefault();
+      fetch(url,{
+        method: 'POST',
+        body: processFormData(new FormData(form)),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        mode: 'cors',
+        redirect: 'follow',
+      })
+      .then(r => r.json())
+      .then(j => {
+        if ('ok' in j) {
+          alert('応募完了');
+        } else {
+          alert('応募失敗');
+        }
+        location.href = './';
+      }).catch(e => {
+        alert('応募失敗');
+        location.href = './';
+      });
+    });
+    
     let disp = document.querySelector('canvas');
     document.querySelector('input#ui').addEventListener('change', 
       (e)=>drawImage(e,disp,callback));
@@ -279,6 +307,13 @@ ${back}
   });
   return;
 
+  function processFormData (query) {
+    let list = [];
+    for (let [k,v] of query) {
+      list.push(encodeURIComponent(k)+'='+encodeURIComponent(v));
+    }
+    return list.join('&');
+  }
   function checkRegistered () {
     let artist = getArtist();
     return checkHash(artist);
