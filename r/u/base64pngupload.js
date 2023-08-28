@@ -243,6 +243,7 @@ ${back}
         inputemail.value = '';
         
         classemail.style.display = 'none';
+        inputemail.required = false;
         if (/0x0x$/.test(location.search)) {
           let qs = location.search.replace(/^\?id=/,'');
           inputemail.value = 'info+'+qs+'@tessellation.jp';
