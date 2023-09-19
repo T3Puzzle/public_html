@@ -394,8 +394,7 @@ document.currentScript.insertAdjacentHTML('beforebegin',`
     submitEvent: '',
     title: '',
     note: '',
-    url: 'https://asia-northeast1-language-307105.cloudfunctions.net/pnguploadv1'
-    //url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
+    url: 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbzNfVfpZuYhGT6XZ_0ElgV0ASYb2_Th1qOOjvBWUWssEPBGm3fM/exec'
   }
   let LOAD = {
     imageNode: null,
@@ -992,21 +991,12 @@ document.currentScript.insertAdjacentHTML('beforebegin',`
         });
     }
   }
-  function processFormData (query) {
-    let list = [];
-    for (let [k,v] of query) {
-      list.push(encodeURIComponent(k)+'='+encodeURIComponent(v));
-    }
-    return list.join('&');
-  }
+
   function fetch_upload(form, OBJ, successCallback, errorCallback) {
     const body = new FormData(form);
     fetch(OBJ.url, {
         method: 'POST',
-        body: processFormData(body),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        },
+        body: body,
         mode: 'cors',
         redirect: 'follow',
       })
