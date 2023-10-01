@@ -188,7 +188,7 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<img style="width:400px;" src="./t3summer2023logo.png"><br/>
+<img style="width:400px;" src="./t3contestlogo.png"><br/>
 <h2>T3コンテスト応募</h2>
 作品の画像ファイルを選択の上、<br/>
 必須事項を記入して下さい。<br/>
