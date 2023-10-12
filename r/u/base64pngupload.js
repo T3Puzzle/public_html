@@ -190,11 +190,8 @@ form dl dd{
 </style>
 <img style="width:400px;" src="./t3contestlogo.png"><br/>
 <h2>T3コンテスト応募</h2>
-作品の画像ファイルを選択の上、<br/>
-必須事項を記入して下さい。<br/>
-応募作品、ねんれい、だいめい、工夫した点は、<br/>
-コンテストに関連してウェブページやSNSなどで<br/>
-紹介させていただくことがあります。(メールアドレス除く)
+コンテスト募集要項はページ下をご覧ください。<br/>
+記入いただく内容はSNSなどで紹介させていただくことがあります。(メールアドレス除く)
 <p/>
 <input id="ui" type="file" accept="image/*"/>
 <br/>
@@ -217,8 +214,8 @@ ${input}
 </form>
 ${back}
 <p/>
-<li><a href="https://www.t3puzzle.com/contest">コンテストページ</a>
-<li><a href="https://www.t3puzzle.com/b/${xid}">T3パズル ウェブ版</a>
+<li><a href="https://www.t3puzzle.com/contest">コンテスト募集要項</a>
+<li><a href="https://www.t3puzzle.com/b/${xid}">webアプリ版を利用</a>
 `);
 ;
   
