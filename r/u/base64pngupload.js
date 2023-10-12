@@ -192,7 +192,7 @@ form dl dd{
 コンテスト募集要項はページ下のリンクをご覧ください。<br/>
 記入いただく内容はSNSなどで紹介させていただくことがあります。(メールアドレス除く)
 <p/>
-<input style="font-size:130%;font-weight:bold;" id="ui" type="file" accept="image/*"/>
+<input style="font-size:120%;font-weight:bold;" id="ui" type="file" accept="image/*"/>
 <br/>
 <canvas></canvas>
 
