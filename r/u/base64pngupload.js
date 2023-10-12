@@ -187,15 +187,6 @@ form dl dt{
 form dl dd{
   padding:3px 0;
 }
-label > input {
-display:none;
-}
-label {
-color: #ffffff; /* ラベルテキストの色を指定する */
-background-color: #006DD9;/* ラベルの背景色を指定する */
-padding: 10px; 
-border: double 4px #ffffff;
-}
 </style>
 <img style="width:400px;" src="./t3contestlogo.png"><br/>
 <h2>T3コンテスト応募</h2>
@@ -205,10 +196,7 @@ border: double 4px #ffffff;
 コンテストに関連してウェブページやSNSなどで<br/>
 紹介させていただくことがあります。(メールアドレス除く)
 <p/>
-<label for="file_upload">
-写真を選択して下さい
 <input id="ui" type="file" accept="image/*"/>
-</label>
 <br/>
 <canvas></canvas>
 
