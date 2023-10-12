@@ -189,15 +189,14 @@ form dl dd{
 }
 </style>
 <img style="width:400px;" src="./t3contestlogo.png"><br/>
-<h2>T3コンテスト応募</h2>
-コンテスト募集要項はページ下をご覧ください。<br/>
+コンテスト募集要項はページ下のリンクをご覧ください。<br/>
 記入いただく内容はSNSなどで紹介させていただくことがあります。(メールアドレス除く)
 <p/>
 <input style="font-size:130%;font-weight:bold;" id="ui" type="file" accept="image/*"/>
 <br/>
 <canvas></canvas>
 
-<form method="POST" action="${url}">
+<form method="POST" action="${url}" style="padding-left: 10px;">
 <dl>
 <input type="hidden" name="filename" style="display:none;"/>
 <input type="hidden" name="type" style="display:none;"/>
