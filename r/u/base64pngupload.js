@@ -189,8 +189,8 @@ form dl dd{
 }
 </style>
 <img style="width:400px;" src="./t3contestlogo.png"><br/>
-コンテスト募集要項はページ下のリンクをご覧ください。<br/>
-記入いただく内容はSNSなどで紹介させていただくことがあります。(メールアドレス除く)
+コンテスト募集要項はページ下をご覧ください。<br/>
+写真を選択の上、必要事項を記入し応募ください。
 <p/>
 <input style="font-size:120%;font-weight:bold;" id="ui" type="file" accept="image/*"/>
 <br/>
