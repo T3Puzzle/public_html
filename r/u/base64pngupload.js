@@ -204,6 +204,8 @@ form dl dd{
 <input type="hidden" name="content" style="display:none;"/>
 ${input}
 </dl>
+※写真は、ページ上の「ファイルを選択」ボタンで指定します。
+<br/>
 <input type="submit" disabled="disabled" value="作品を応募" onclick="this.value='応募中...';" style="-webkit-appearance: none; appearance: none;
   border: 0;
   border-radius: 5px;
