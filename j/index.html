@@ -8,13 +8,13 @@
   <script>
 /////////////
 let j_level = 1;
-const j_minlevel = 1;
+const j_minlevel = 0;
 const j_maxlevel = 4;
 let j_type = 0;
 const j_types = ['Z','I'];
 const j_colors = ['#ffcc77','#ffaaaa'];
 const j_scalefactor = (4+Math.sqrt(15));
-const j_scale = 10;
+const j_scale = 15;
 /////////////
 function draw(type,level) {
   if (type !==null) {
@@ -34,8 +34,8 @@ function load() {
  const seq = getSeq();
 console.log(seq);
  const color = j_colors[j_type];
- const scale = j_scale/Math.pow(j_scalefactor,j_level-1);
- s_base.innerHTML = `<g style="fill:${color};stroke:black;stroke-width:0.1;" transform="translate(150,450)scale(${scale})rotate(240)">`;
+ const scale = 1;// j_scale/Math.pow(j_scalefactor,j_level);
+ s_base.innerHTML = `<g style="fill:${color};stroke:black;stroke-width:0.1;" transform="translate(20,150)rotate(210)scale(${scale})">`;
  const coord = s_base.querySelector('g');
 ////////////
  const t = Math.sqrt(3);
