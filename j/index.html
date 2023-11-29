@@ -38,7 +38,7 @@ function load() {
  if (j_level==0) {
    scale /= 3;
  }
- s_base.innerHTML = `<g style="opacity:0.4;fill:${color};stroke:black;stroke-width:0.1;" transform="translate(30,250)rotate(210)scale(${scale})"><!--circle r="0.2" cx="0" cy="0" opacity="1" fill="black"></circle--><g id="s_coord" transform="translate(${-6*2-3/2},${-2*t*2+t/2})"></g></g>`;
+ s_base.innerHTML = `<g style="fill:${color};stroke:black;stroke-width:0.1;" transform="translate(30,250)rotate(210)scale(${scale})"><!--circle r="0.2" cx="0" cy="0" opacity="1" fill="black"></circle--><g id="s_coord" transform="translate(${-6*2-3/2},${-2*t*2+t/2})"></g></g>`;
 ////////////
  for (let si=0;si<seq.length;si+=4) {
    const type = seq[si+0];
