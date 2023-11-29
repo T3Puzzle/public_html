@@ -14,8 +14,9 @@ let j_type = 0;
 const j_types = ['Z','I'];
 const j_colors = ['#ffcc77','#ffaaaa'];
 const j_scalefactor = (4+Math.sqrt(15));
-const j_scale = 15;
+const j_scale = 150;
 /////////////
+const t = Math.sqrt(3);
 function draw(type,level) {
   if (type !==null) {
     j_type = type;
@@ -32,13 +33,13 @@ function load() {
 ////////////
  main();
  const seq = getSeq();
-console.log(seq);
  const color = j_colors[j_type];
- const scale = 1;// j_scale/Math.pow(j_scalefactor,j_level);
- s_base.innerHTML = `<g style="fill:${color};stroke:black;stroke-width:0.1;" transform="translate(20,150)rotate(210)scale(${scale})">`;
- const coord = s_base.querySelector('g');
+ let scale = j_scale/Math.pow(j_scalefactor,j_level);
+ if (j_level==0) {
+   scale /= 3;
+ }
+ s_base.innerHTML = `<g style="opacity:0.4;fill:${color};stroke:black;stroke-width:0.1;" transform="translate(30,250)rotate(210)scale(${scale})"><!--circle r="0.2" cx="0" cy="0" opacity="1" fill="black"></circle--><g id="s_coord" transform="translate(${-6*2-3/2},${-2*t*2+t/2})"></g></g>`;
 ////////////
- const t = Math.sqrt(3);
  for (let si=0;si<seq.length;si+=4) {
    const type = seq[si+0];
    const rot = -60*seq[si+1];
@@ -48,17 +49,16 @@ console.log(seq);
      name = 's_turtle';
      const tx=6;
      const ty=2*t;
-     coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
    } else if (type===3) {
      name = 's_hat';
      const tx=6;
      const ty=2*t;
-     coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
    }
   }
 }
 function getXY(x,y) {
-  const t = Math.sqrt(3);
   const X = x-y/2;
   const Y = -y*t/2;
   return [X+6,Y+2*t];
@@ -67,8 +67,6 @@ function getXY(x,y) {
 </head>
 <body onload="load()">
 <script>
-
-const t = Math.sqrt(3);
 const tp = [[0,0],[1,2],[0,2],[-1,1],[-2,2],[-4,1],[-6,0],[-7,-2],[-6,-2],[-6,-3],[-4,-2],[-3,-3],[-2,-2],[-2,-1]];
 const hp = [[0,0],[1,2],[0,2],[0,3],[-2,2],[-3,0],[-4,0],[-5,-1],[-4,-2],[-2,-1],[-2,-2],[-1,-2],[0,-2],[1,-1]];
 const tpoints = [];
