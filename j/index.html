@@ -31,8 +31,15 @@ function getSeq () {
 }
 function load() {
 ////////////
- main();
- const seq = getSeq();
+ let seq;
+ try {
+   main();
+   seq = getSeq();
+ } catch(e) {
+console.log(e);
+   seq = [];
+   h_textformat.textContent = '[]';
+ }
  const color = j_colors[j_type];
  let scale = j_scale/Math.pow(j_scalefactor,j_level);
  if (j_level==0) {
