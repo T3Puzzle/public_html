@@ -1,1 +1,153 @@
 <!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <!--script x-dummy>function main() {}</script-->
+  <script src="teavm/classes.js"></script>
+  <script>
+/////////////
+let j_level = 1;
+const j_minlevel = 0;
+const j_maxlevel = 4;
+let j_type = 0;
+const j_types = [
+ {name:'Z (1d)',value:0},
+ {name:'I (1d)',value:1},
+ {name:'A (1d)',value:10},
+ {name:'B (1d)',value:11},
+ {name:'C (1d)',value:12},
+ {name:'Rhomb (2d)',value:20},
+ {name:'Rose (2d)',value:21},
+ {name:'Bird (2d)',value:22},
+ {name:'L-prop (2d)',value:23},
+ {name:'S-prop (2d)',value:24},
+ {name:'Penguin (2d)',value:25},
+];
+const j_scalefactor = (4+Math.sqrt(15));
+const j_scale = 150;
+/////////////
+const colors = ['#ffcc77','#ffaaaa'];
+const t = Math.sqrt(3);
+function draw(type,level) {
+  if (type !==null) {
+    j_type = type;
+  }
+  if (level !==null) {
+    j_level = level;
+  }
+  load();
+}
+function getSeq () {
+ return JSON.parse(h_textformat.value);
+}
+function load() {
+////////////
+ let seq;
+ try {
+   main();
+   seq = getSeq();
+ } catch(e) {
+console.log(e);
+   seq = [];
+   h_textformat.textContent = '[]';
+ }
+ const color = colors[0];
+ let scale = j_scale/Math.pow(j_scalefactor,j_level);
+ if (j_level==0) {
+   scale /= 3;
+ }
+ s_base.innerHTML = `<g style="fill:${color};stroke:black;stroke-width:0.1;" transform="translate(30,250)rotate(210)scale(${scale})"><!--circle r="0.2" cx="0" cy="0" opacity="1" fill="black"></circle--><g id="s_coord" transform="translate(${-6*2-3/2},${-2*t*2+t/2})"></g></g>`;
+////////////
+ for (let si=0;si<seq.length;si+=4) {
+   const type = seq[si+0];
+   const rot = -60*seq[si+1];
+   const pos = getXY(seq[si+2],seq[si+3]);
+   let name='';
+   if (type===1) {
+     name = 's_turtle';
+     const tx=6;
+     const ty=2*t;
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
+   } else if (type===3) {
+     name = 's_hat';
+     const tx=6;
+     const ty=2*t;
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use xlink:href="#${name}"></use></g>`);
+   }
+  }
+}
+function getXY(x,y) {
+  const X = x-y/2;
+  const Y = -y*t/2;
+  return [X+6,Y+2*t];
+}
+</script>
+</head>
+<body onload="load()">
+<script>
+const tp = [[0,0],[1,2],[0,2],[-1,1],[-2,2],[-4,1],[-6,0],[-7,-2],[-6,-2],[-6,-3],[-4,-2],[-3,-3],[-2,-2],[-2,-1]];
+const hp = [[0,0],[1,2],[0,2],[0,3],[-2,2],[-3,0],[-4,0],[-5,-1],[-4,-2],[-2,-1],[-2,-2],[-1,-2],[0,-2],[1,-1]];
+const tpoints = [];
+for (let pi=0;pi<tp.length;pi++) {
+  tpoints.push(getXY(tp[pi][0],tp[pi][1]));
+}
+const hpoints = [];
+for (let pi=0;pi<hp.length;pi++) {
+  hpoints.push(getXY(hp[pi][0],hp[pi][1]));
+}
+document.write(`
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 800 800" style="background-color: #fafafa;">
+<symbol id="s_turtle" viewBox="0 0 800 800"><polygon points="${tpoints.join(' ')}"></polygon></symbol>
+<symbol id="s_hat" viewBox="0 0 800 800"><polygon points="${hpoints.join(' ')}"></polygon></symbol>
+<g id="s_base"></g>
+</svg>
+`);
+</script>
+
+<!---------------->
+<div x-panel-begin style="position:fixed;top:0;right:0;">
+<form>
+
+<script>((types)=>{
+const options=[];
+for(let ti=0;ti<types.length;ti++) {
+  const selected=ti===0?'selected':'';
+  options.push(`<option value="${types[ti].value}" ${selected}>${types[ti].name}</option>`);
+}
+document.write(`
+<label>
+Type: <select name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);this.form.querySelector('input[name=level').focus();">
+${options.join('')}
+</select>
+</label>
+`);})(j_types);</script>
+
+<br/>
+
+<script>((level,min,max)=>{
+document.write(`<label>
+Level:<span>${level}</span>
+<input name="level" autofocus type="range" min="${min}" max="${max}" value="${level}" onchange="h_level.textContent=this.value;this.closest('label').querySelector('span').innerText=this.value;draw(null,this.value);">
+</label>
+
+<div style="display:none;">
+<div id="h_type">${j_type}</div>
+<div id="h_level">${j_level}</div>
+</div>
+
+`);})(j_level,j_minlevel,j_maxlevel);</script>
+
+<br/>
+<textarea id="h_textformat" rows="50" cols="30" style="font-size:30%;height:20;">
+[
+1,0,0,0,
+3,5,-6,-6,
+0]
+</textarea>
+
+</div x-panel-end>
+<!---------------->
+
+</body>
+</html>
