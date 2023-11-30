@@ -113,9 +113,11 @@ for (let pi=0;pi<hp.length;pi++) {
 }
 document.write(`
 <svg id="h_svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200px" height="1200px" viewBox="0 0 1200 1200" style="background-color: #fafafa;">
+<g id="s_gtop">
 <symbol id="s_turtle" viewBox="0 0 1200 1200"><polygon points="${tpoints.join(' ')}"></polygon></symbol>
 <symbol id="s_hat" viewBox="0 0 1200 1200"><polygon points="${hpoints.join(' ')}"></polygon></symbol>
 <g id="s_base"></g>
+</g>
 </svg>
 `);
 </script>
@@ -165,16 +167,28 @@ Level:<span>${level}</span>
 <!---------------->
 
 <script>
-{
+((svg,gtop)=>{
  const s={d:false,x:0,y:0};
- const v=h_svg.viewBox.baseVal;
- h_svg.addEventListener('mousedown',e=>({d:s.d,x:s.x,y:s.y}={d:true,x:e.clientX,y:e.clientY}));
- h_svg.addEventListener('mousemove',e=>{if(s.d){
-   ({x:v.x,y:v.y}={x:v.x-e.clientX+s.x,y:v.y-e.clientY+s.y});
-   ({d:s.d,x:s.x,y:s.y}={d:true,x:e.clientX,y:e.clientY });
+ const vbox=svg.viewBox.baseVal;
+ let t={x:0,y:0,s:1};
+ function update(){s_gtop.setAttribute("transform",`translate(${t.x},${t.y})scale(${t.s})`);}
+ svg.addEventListener('mousedown',e=>Object.assign(s,{d:true,x:e.clientX,y:e.clientY}));
+ svg.addEventListener('mousemove',e=>{if(s.d){
+  Object.assign(t,{x:t.x+e.clientX-s.x,y:t.y+e.clientY-s.y});
+  Object.assign(s,{x:e.clientX,y:e.clientY});
+  update();
  }});
- ['mouseup','mouseleave'].forEach(e=>h_svg.addEventListener(e,()=>s.d=false));
-}
+ ['mouseup','mouseleave'].forEach(_=>svg.addEventListener(_,()=>s.d=false));
+ svg.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r = svg.getBoundingClientRect();
+  const sx=(e.clientX-r.left)/r.width*vbox.width+vbox.x;
+  const sy=(e.clientY-r.top)/r.height*vbox.height+vbox.y;
+  const ds=1-Math.sign(e.deltaY)*0.1;
+  Object.assign(t,{x:sx-(sx-t.x)*ds,y:sy-(sy-t.y)*ds,s:t.s*ds});
+  update();
+ });
+})(h_svg,s_gtop);
 </script>
 </body>
 </html>
