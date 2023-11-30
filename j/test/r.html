@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG Drag, Zoom, and Rotate Example</title>
+</head>
+<body>
+
+<svg id="h_svg" viewBox="0 0 400 300" width="400" height="300">
+    <g id="s_gtop">
+        <!-- Rectangle -->
+        <rect x="180" y="130" width="40" height="40" fill="blue" />
+    </g>
+</svg>
+<script>
+((svg, gtop) => {
+    const state = { dragging: false, startX: 0, startY: 0, rotation: 0 };
+    const viewBox = svg.viewBox.baseVal;
+    let transform = { x: 0, y: 0, scale: 1, rotate: 0 };
+
+    function updateTransform() {
+        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) scale(${transform.scale}) rotate(${transform.rotate},200,150)`);
+        console.log(`Event: Transform Updated, Center: (${transform.x}, ${transform.y}), Rotate: ${transform.rotate}, Scale: ${transform.scale}`);
+    }
+
+    // Gesture events for Safari
+    let initialScale = 1;
+    let initialRotation = 0;
+    svg.addEventListener('gesturestart', e => {
+        e.preventDefault();
+        initialScale = transform.scale;
+        initialRotation = transform.rotate;
+        console.log(`Event: Gesture Start`);
+    });
+
+    svg.addEventListener('gesturechange', e => {
+        e.preventDefault();
+        transform.scale = initialScale * e.scale;
+        transform.rotate = initialRotation + e.rotation;
+        updateTransform();
+        console.log(`Event: Gesture Change, Scale: ${transform.scale}, Rotate: ${transform.rotate}`);
+    });
+
+    svg.addEventListener('gestureend', e => {
+        e.preventDefault();
+        console.log(`Event: Gesture End`);
+    });
+
+    // Touch events for drag
+    svg.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            state.dragging = true;
+            state.startX = touch.clientX;
+            state.startY = touch.clientY;
+        }
+        e.preventDefault();
+    });
+
+    svg.addEventListener('touchmove', e => {
+        if (state.dragging && e.touches.length === 1) {
+            const touch = e.touches[0];
+            transform.x += touch.clientX - state.startX;
+            transform.y += touch.clientY - state.startY;
+            state.startX = touch.clientX;
+            state.startY = touch.clientY;
+            updateTransform();
+        }
+        e.preventDefault();
+    });
+
+    svg.addEventListener('touchend', () => {
+        state.dragging = false;
+    });
+
+})(h_svg, s_gtop);
+</script>
+</body>
+</html>
+
