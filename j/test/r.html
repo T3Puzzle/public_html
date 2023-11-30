@@ -15,10 +15,10 @@
 ((svg, gtop) => {
     const state = { dragging: false, startX: 0, startY: 0, rotation: 0 };
     const viewBox = svg.viewBox.baseVal;
-    let transform = { x: 0, y: 0, scale: 1, rotate: 0 };
+    let transform = { x: 0, y: 0, scale: 1, rotate: 0, centerX: 200, centerY: 150 };
 
     function updateTransform() {
-        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) scale(${transform.scale}) rotate(${transform.rotate},200,150)`);
+        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) scale(${transform.scale}) rotate(${transform.rotate},${transform.centerX},${transform.centerY})`);
         console.log(`Event: Transform Updated, Center: (${transform.x}, ${transform.y}), Rotate: ${transform.rotate}, Scale: ${transform.scale}`);
     }
 
@@ -29,6 +29,10 @@
         e.preventDefault();
         initialScale = transform.scale;
         initialRotation = transform.rotate;
+
+        // Update the center for rotation and scaling
+        transform.centerX = e.clientX;
+        transform.centerY = e.clientY;
         console.log(`Event: Gesture Start`);
     });
 
