@@ -8,7 +8,7 @@
 <svg id="h_svg" viewBox="0 0 800 1200" width="800" height="1200">
     <g id="s_gtop">
         <!-- Rectangle -->
-        <rect x="180" y="130" width="40" height="40" fill="red" />
+        <rect x="180" y="130" width="40" height="40" fill="pink" />
     </g>
 </svg>
 <script>
@@ -18,7 +18,7 @@
     let transform = { x: 0, y: 0, scale: 1, rotate: 0, centerX: viewBox.width/2, centerY: viewBox.height/2 };
 
     function updateTransform() {
-        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) scale(${transform.scale}) rotate(${transform.rotate},${transform.centerX},${transform.centerY})`);
+        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) translate(${transform.centerX},${transform.centerY}) scale(${transform.scale}) rotate(${transform.rotate}) translate(${-transform.centerX},${-transform.centerY})`);
     }
 
     function calculateMidPoint(touches) {
