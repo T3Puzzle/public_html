@@ -8,7 +8,7 @@
 <svg id="h_svg" viewBox="0 0 800 1200" width="800" height="1200">
     <g id="s_gtop">
         <!-- Rectangle -->
-        <rect x="180" y="130" width="40" height="40" fill="blue" />
+        <rect x="180" y="130" width="40" height="40" fill="red" />
     </g>
 </svg>
 <script>
@@ -37,8 +37,10 @@
 
         if (e.touches.length === 2) {
             const midPoint = calculateMidPoint(e.touches);
-            transform.centerX = midPoint.x;
-            transform.centerY = midPoint.y;
+
+            // 現在のスケールと移動量を考慮して中心点を調整
+            transform.centerX = (midPoint.x - transform.x) / transform.scale;
+            transform.centerY = (midPoint.y - transform.y) / transform.scale;
         }
     });
 
@@ -63,8 +65,10 @@
             state.startY = touch.clientY;
         } else if (e.touches.length === 2) {
             const midPoint = calculateMidPoint(e.touches);
-            transform.centerX = midPoint.x;
-            transform.centerY = midPoint.y;
+
+            // 現在のスケールと移動量を考慮して中心点を調整
+            transform.centerX = (midPoint.x - transform.x) / transform.scale;
+            transform.centerY = (midPoint.y - transform.y) / transform.scale;
         }
     });
 
@@ -79,8 +83,8 @@
             updateTransform();
         } else if (e.touches.length === 2) {
             const midPoint = calculateMidPoint(e.touches);
-            transform.centerX = midPoint.x;
-            transform.centerY = midPoint.y;
+            transform.centerX = (midPoint.x - transform.x) / transform.scale;
+            transform.centerY = (midPoint.y - transform.y) / transform.scale;
             // ここで拡大と回転の処理を行う
         }
     });
