@@ -19,7 +19,12 @@
 
     function updateTransform() {
         gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) scale(${transform.scale}) rotate(${transform.rotate},${transform.centerX},${transform.centerY})`);
-        console.log(`Event: Transform Updated, Center: (${transform.x}, ${transform.y}), Rotate: ${transform.rotate}, Scale: ${transform.scale}`);
+    }
+
+    function calculateMidPoint(touches) {
+        const x = (touches[0].clientX + touches[1].clientX) / 2;
+        const y = (touches[0].clientY + touches[1].clientY) / 2;
+        return { x, y };
     }
 
     // Gesture events for Safari
@@ -30,10 +35,11 @@
         initialScale = transform.scale;
         initialRotation = transform.rotate;
 
-        // Update the center for rotation and scaling
-        transform.centerX = e.clientX;
-        transform.centerY = e.clientY;
-        console.log(`Event: Gesture Start`);
+        if (e.touches.length === 2) {
+            const midPoint = calculateMidPoint(e.touches);
+            transform.centerX = midPoint.x;
+            transform.centerY = midPoint.y;
+        }
     });
 
     svg.addEventListener('gesturechange', e => {
@@ -41,26 +47,29 @@
         transform.scale = initialScale * e.scale;
         transform.rotate = initialRotation + e.rotation;
         updateTransform();
-        console.log(`Event: Gesture Change, Scale: ${transform.scale}, Rotate: ${transform.rotate}`);
     });
 
     svg.addEventListener('gestureend', e => {
         e.preventDefault();
-        console.log(`Event: Gesture End`);
     });
 
     // Touch events for drag
     svg.addEventListener('touchstart', e => {
+        e.preventDefault();
         if (e.touches.length === 1) {
             const touch = e.touches[0];
             state.dragging = true;
             state.startX = touch.clientX;
             state.startY = touch.clientY;
+        } else if (e.touches.length === 2) {
+            const midPoint = calculateMidPoint(e.touches);
+            transform.centerX = midPoint.x;
+            transform.centerY = midPoint.y;
         }
-        e.preventDefault();
     });
 
     svg.addEventListener('touchmove', e => {
+        e.preventDefault();
         if (state.dragging && e.touches.length === 1) {
             const touch = e.touches[0];
             transform.x += touch.clientX - state.startX;
@@ -68,8 +77,12 @@
             state.startX = touch.clientX;
             state.startY = touch.clientY;
             updateTransform();
+        } else if (e.touches.length === 2) {
+            const midPoint = calculateMidPoint(e.touches);
+            transform.centerX = midPoint.x;
+            transform.centerY = midPoint.y;
+            // ここで拡大と回転の処理を行う
         }
-        e.preventDefault();
     });
 
     svg.addEventListener('touchend', () => {
