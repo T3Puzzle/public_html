@@ -29,8 +29,8 @@ for (let ti=0;ti<j_types.length;ti++) {
   j_hash[j_types[ti].value] ={
     tx: j_types[ti].tx,
     ty: j_types[ti].ty,
-    ori:j_types[ti].ori,
-    s:j_types[ti].s,
+    ori:0*j_types[ti].ori,
+    s:1+0*j_types[ti].s,
   };
 }
 const j_scalefactor = (4+Math.sqrt(15));
