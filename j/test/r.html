@@ -11,7 +11,7 @@
 <body>
     <svg id="mySVG" width="100%" height="100%">
 	<g id="s_coord">
-        <rect id="myRect" x="150" y="150" width="200" height="200" fill="yellow" />
+        <rect id="myRect" x="150" y="150" width="200" height="200" fill="pink" />
 	</g>
         <rect id="s_marker" x="0" y="0" width="20" height="20" fill="red" />
 
@@ -47,7 +47,7 @@
 		let ME = initialX*(m.a-initialX)+initialY*(m.b-initialX)-initialX + m.e;
 		let MF = initialY*(m.d-initialY)+initialX*(m.d-initialX)-initialY + m.f;
 		coordInitialX = ME; 
-		coordInitialX = MF; 
+		coordInitialY = MF; 
 		coordInitialScale = MA;
 		coordInitialAngle = Math.atan2(MB, MA) * (180 / Math.PI);
             }
@@ -64,14 +64,14 @@
                 var distance = Math.sqrt(dx * dx + dy * dy);
                 var angle = Math.atan2(dy, dx);
 
-                var scale = coordInitialScale * distance / initialDistance;
-                var rotate = coordInitialAngle + (angle - initialAngle) * 180 / Math.PI;
+                var scale = distance / initialDistance;
+                var rotate = (angle - initialAngle) * 180 / Math.PI;
 
 		var x = coordInitialX + xCenter - initialX;
 		var y = coordInitialY + yCenter - initialY;
 
-                s_coord.setAttribute('transform', `translate(${x},${y}) translate(${xCenter},${yCenter}) scale(${scale}) rotate(${rotate}) translate(${-xCenter},${-yCenter})`);
-                s_marker.setAttribute('transform', `translate(${xCenter},${yCenter})translate(${xCenter},${yCenter})scale(${ distance / initialDistance})rotate(${(angle - initialAngle) * 180 / Math.PI})translate(${-xCenter},${-yCenter})`);
+                s_coord.setAttribute('transform', `translate(${x},${y}) translate(${xCenter},${yCenter}) scale(${coordInitialScale*scale}) rotate(${coordInitialAngle+rotate}) translate(${-xCenter},${-yCenter})`);
+                s_marker.setAttribute('transform', `translate(${xCenter},${yCenter})translate(${xCenter},${yCenter})scale(${scale})rotate(${rotate) translate(${-xCenter},${-yCenter})`);
             }
         });
 
