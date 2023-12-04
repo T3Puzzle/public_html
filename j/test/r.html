@@ -9,8 +9,8 @@
     </style>
 </head>
 <body>
-    <svg id="mySVG" width="200" height="200">
-        <rect id="myRect" x="50" y="50" width="100" height="100" fill="blue" />
+    <svg id="mySVG" width="500" height="500">
+        <rect id="myRect" x="150" y="150" width="200" height="200" fill="red" />
     </svg>
 
     <script>
@@ -20,6 +20,8 @@
         var initialDistance = 0;
         var initialAngle = 0;
         var initialScale = 1;
+        var initialX = 0;
+        var initialY = 0;
 
         svg.addEventListener('touchstart', function(event) {
             if (event.touches.length == 2) {
@@ -27,6 +29,9 @@
                 var dy = event.touches[1].pageY - event.touches[0].pageY;
                 initialDistance = Math.sqrt(dx * dx + dy * dy);
                 initialAngle = Math.atan2(dy, dx);
+                initialX = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+                initialY = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+                console.log('touchstart: initialDistance = ' + initialDistance + ', initialAngle = ' + initialAngle);
             }
         });
 
@@ -43,7 +48,8 @@
                 var scale = distance / initialDistance;
                 var rotate = (angle - initialAngle) * 180 / Math.PI;
 
-                rect.setAttribute('transform', 'translate(' + xCenter + ' ' + yCenter + ') scale(' + scale + ') rotate(' + rotate + ')');
+                rect.setAttribute('transform', 'translate(' + (xCenter - initialX) + ' ' + (yCenter - initialY) + ') scale(' + scale + ') rotate(' + rotate + ', ' + initialX + ', ' + initialY + ')');
+                console.log('touchmove: xCenter = ' + xCenter + ', yCenter = ' + yCenter + ', scale = ' + scale + ', rotate = ' + rotate);
             }
         });
 
@@ -51,6 +57,7 @@
             if (event.touches.length == 1) {
                 initialDistance = 0;
                 initialAngle = 0;
+                console.log('touchend: reset initialDistance and initialAngle');
             }
         });
     </script>
