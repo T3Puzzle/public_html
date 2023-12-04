@@ -42,10 +42,14 @@
                 initialX = (event.touches[0].pageX + event.touches[1].pageX) / 2;
                 initialY = (event.touches[0].pageY + event.touches[1].pageY) / 2;
 		let m = s_coord.getScreenCTM();
-		coordInitialX = m.e;
-		coordInitialX = m.f;
-		coordInitialScale = m.a;
-		coordInitialAngle = Math.atan2(m.b, m.a) * (180 / Math.PI);
+		let MA = m.a-initialX;
+		let MB = m.b-initialX; 
+		let ME = initialX*(m.a-initialX)+initialY*(m.b-initialX)-initialX + m.e;
+		let MF = initialY*(m.d-initialY)+initialX*(m.d-initialX)-initialY + m.f;
+		coordInitialX = ME; 
+		coordInitialX = MF; 
+		coordInitialScale = MA;
+		coordInitialAngle = Math.atan2(MB, MA) * (180 / Math.PI);
             }
         });
 
