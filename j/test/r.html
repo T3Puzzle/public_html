@@ -11,7 +11,7 @@
 <body>
     <svg id="mySVG" width="100%" height="100%">
 	<g id="s_coord">
-        <rect id="myRect" x="150" y="150" width="200" height="200" fill="blue" />
+        <rect id="myRect" x="150" y="150" width="200" height="200" fill="green" />
 	</g>
         <rect id="s_marker" x="0" y="0" width="20" height="20" fill="red" />
 
@@ -32,6 +32,8 @@
 	var coordInitialY = 0;
 	var coordInitialAngle = 0;
         var coordInitialScale = 1;
+	var mx;
+	var my;
 
         svg.addEventListener('touchstart', function(event) {
             if (event.touches.length == 2) {
@@ -41,6 +43,9 @@
                 initialAngle = Math.atan2(dy, dx);
                 initialX = (event.touches[0].pageX + event.touches[1].pageX) / 2;
                 initialY = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+		let n = s_marker.getScreenCTM();
+		mx = n.e;
+		my = n.f;
 		let m = s_coord.getScreenCTM();
 		let MA = m.a-initialX;
 		let MB = m.b-initialX; 
@@ -71,7 +76,7 @@
 		var y = coordInitialY + yCenter - initialY;
 
                 s_coord.setAttribute('transform', `translate(${x},${y}) translate(${xCenter},${yCenter}) scale(${coordInitialScale*scale}) rotate(${coordInitialAngle+rotate}) translate(${-xCenter},${-yCenter})`);
-                s_marker.setAttribute('transform', `translate(${xCenter},${yCenter})translate(${xCenter},${yCenter})scale(${1*scale})rotate(${rotate}) translate(${-xCenter},${-yCenter})`);
+                s_marker.setAttribute('transform', `translate(${xCenter},${yCenter})translate(${mx},${my})scale(${1*scale})rotate(${rotate}) translate(${-mx},${-my})`);
             }
         });
 
