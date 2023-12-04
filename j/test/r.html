@@ -10,7 +10,9 @@
 </head>
 <body>
     <svg id="mySVG" width="100%" height="100%">
-        <rect id="myRect" x="150" y="150" width="200" height="200" fill="green" />
+	<g id="s_coord">
+        <rect id="myRect" x="150" y="150" width="200" height="200" fill="blue" />
+	</g>
     </svg>
 
     <script>
@@ -22,9 +24,12 @@
 
         var initialDistance = 0;
         var initialAngle = 0;
-        var initialScale = 1;
         var initialX = 0;
         var initialY = 0;
+	var coordInitialX = 0;
+	var coordInitialY = 0;
+	var coordInitialAngle = 0;
+        var coordInitialScale = 1;
 
         svg.addEventListener('touchstart', function(event) {
             if (event.touches.length == 2) {
@@ -34,6 +39,11 @@
                 initialAngle = Math.atan2(dy, dx);
                 initialX = (event.touches[0].pageX + event.touches[1].pageX) / 2;
                 initialY = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+		let m = s_coord.getScreenCTM();
+		coordInitialX = m.e;
+		coordInitialX = m.f;
+		coordInitialScale = m.a;
+		coordInitialAngle = Math.atan2(m.b, m.a) * (180 / Math.PI);
             }
         });
 
@@ -48,10 +58,13 @@
                 var distance = Math.sqrt(dx * dx + dy * dy);
                 var angle = Math.atan2(dy, dx);
 
-                var scale = distance / initialDistance;
-                var rotate = (angle - initialAngle) * 180 / Math.PI;
+                var scale = coordInitialScale * distance / initialDistance;
+                var rotate = coordInitialAngle + (angle - initialAngle) * 180 / Math.PI;
 
-                rect.setAttribute('transform', `translate(${xCenter-initialX},${yCenter-initialY}) translate(${xCenter},${yCenter}) scale(${scale}) rotate(${rotate}) translate(${-xCenter},${-yCenter})`);
+		var x = coordInitialX + xCenter - initialX;
+		var y = coordInitialY + yCenter - initialY;
+
+                s_coord.setAttribute('transform', `translate(${x},${y}) translate(${xCenter},${yCenter}) scale(${scale}) rotate(${rotate}) translate(${-xCenter},${-yCenter})`);
             }
         });
 
