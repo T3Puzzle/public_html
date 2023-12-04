@@ -13,6 +13,8 @@
 	<g id="s_coord">
         <rect id="myRect" x="150" y="150" width="200" height="200" fill="blue" />
 	</g>
+        <rect id="s_marker" x="0" y="0" width="20" height="20" fill="red" />
+
     </svg>
 
     <script>
@@ -65,6 +67,7 @@
 		var y = coordInitialY + yCenter - initialY;
 
                 s_coord.setAttribute('transform', `translate(${x},${y}) translate(${xCenter},${yCenter}) scale(${scale}) rotate(${rotate}) translate(${-xCenter},${-yCenter})`);
+                s_marker.setAttribute('transform', `translate(${xCenter},${yCenter})`);
             }
         });
 
