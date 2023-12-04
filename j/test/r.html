@@ -28,7 +28,7 @@ h_svg.addEventListener('touchstart', function(e) {
     offset.s = u.s;
     const m = s_g1.getCTM();
     s_g1.setAttribute('matrix',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
-    s_g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0);
+    s_g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0)`);
     s_m.setAttribute('fill','red');
   }
 });
