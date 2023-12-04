@@ -1,100 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SVG Drag, Zoom, and Rotate Example</title>
+    <title>SVG Manipulation with Multitouch</title>
+    <style>
+        #mySVG {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
+    <svg id="mySVG" width="200" height="200">
+        <rect id="myRect" x="50" y="50" width="100" height="100" fill="blue" />
+    </svg>
 
-<svg id="h_svg" viewBox="0 0 800 1200" width="800" height="1200">
-    <g id="s_gtop">
-        <!-- Rectangle -->
-        <rect x="180" y="130" width="40" height="40" fill="pink" />
-    </g>
-</svg>
-<script>
-((svg, gtop) => {
-    const state = { dragging: false, startX: 0, startY: 0, rotation: 0 };
-    const viewBox = svg.viewBox.baseVal;
-    let transform = { x: 0, y: 0, scale: 1, rotate: 0, centerX: viewBox.width/2, centerY: viewBox.height/2 };
+    <script>
+        var svg = document.getElementById('mySVG');
+        var rect = document.getElementById('myRect');
 
-    function updateTransform() {
-        gtop.setAttribute("transform", `translate(${transform.x},${transform.y}) translate(${transform.centerX},${transform.centerY}) scale(${transform.scale}) rotate(${transform.rotate}) translate(${-transform.centerX},${-transform.centerY})`);
-    }
+        var initialDistance = 0;
+        var initialAngle = 0;
+        var initialScale = 1;
 
-    function calculateMidPoint(touches) {
-        const x = (touches[0].clientX + touches[1].clientX) / 2;
-        const y = (touches[0].clientY + touches[1].clientY) / 2;
-        return { x, y };
-    }
+        svg.addEventListener('touchstart', function(event) {
+            if (event.touches.length == 2) {
+                var dx = event.touches[1].pageX - event.touches[0].pageX;
+                var dy = event.touches[1].pageY - event.touches[0].pageY;
+                initialDistance = Math.sqrt(dx * dx + dy * dy);
+                initialAngle = Math.atan2(dy, dx);
+            }
+        });
 
-    // Gesture events for Safari
-    let initialScale = 1;
-    let initialRotation = 0;
-    svg.addEventListener('gesturestart', e => {
-        e.preventDefault();
-        initialScale = transform.scale;
-        initialRotation = transform.rotate;
+        svg.addEventListener('touchmove', function(event) {
+            if (event.touches.length == 2) {
+                var xCenter = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+                var yCenter = (event.touches[0].pageY + event.touches[1].pageY) / 2;
 
-        if (e.touches.length === 2) {
-            const midPoint = calculateMidPoint(e.touches);
+                var dx = event.touches[1].pageX - event.touches[0].pageX;
+                var dy = event.touches[1].pageY - event.touches[0].pageY;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+                var angle = Math.atan2(dy, dx);
 
-            // 現在のスケールと移動量を考慮して中心点を調整
-            transform.centerX = (midPoint.x - transform.x) / transform.scale;
-            transform.centerY = (midPoint.y - transform.y) / transform.scale;
-        }
-    });
+                var scale = distance / initialDistance;
+                var rotate = (angle - initialAngle) * 180 / Math.PI;
 
-    svg.addEventListener('gesturechange', e => {
-        e.preventDefault();
-        transform.scale = initialScale * e.scale;
-        transform.rotate = initialRotation + e.rotation;
-        updateTransform();
-    });
+                rect.setAttribute('transform', 'translate(' + xCenter + ' ' + yCenter + ') scale(' + scale + ') rotate(' + rotate + ')');
+            }
+        });
 
-    svg.addEventListener('gestureend', e => {
-        e.preventDefault();
-    });
-
-    // Touch events for drag
-    svg.addEventListener('touchstart', e => {
-        e.preventDefault();
-        if (e.touches.length === 1) {
-            const touch = e.touches[0];
-            state.dragging = true;
-            state.startX = touch.clientX;
-            state.startY = touch.clientY;
-        } else if (e.touches.length === 2) {
-            const midPoint = calculateMidPoint(e.touches);
-
-            // 現在のスケールと移動量を考慮して中心点を調整
-            transform.centerX = (midPoint.x - transform.x) / transform.scale;
-            transform.centerY = (midPoint.y - transform.y) / transform.scale;
-        }
-    });
-
-    svg.addEventListener('touchmove', e => {
-        e.preventDefault();
-        if (state.dragging && e.touches.length === 1) {
-            const touch = e.touches[0];
-            transform.x += touch.clientX - state.startX;
-            transform.y += touch.clientY - state.startY;
-            state.startX = touch.clientX;
-            state.startY = touch.clientY;
-            updateTransform();
-        } else if (e.touches.length === 2) {
-            const midPoint = calculateMidPoint(e.touches);
-            transform.centerX = (midPoint.x - transform.x) / transform.scale;
-            transform.centerY = (midPoint.y - transform.y) / transform.scale;
-            // ここで拡大と回転の処理を行う
-        }
-    });
-
-    svg.addEventListener('touchend', () => {
-        state.dragging = false;
-    });
-
-})(h_svg, s_gtop);
-</script>
+        svg.addEventListener('touchend', function(event) {
+            if (event.touches.length == 1) {
+                initialDistance = 0;
+                initialAngle = 0;
+            }
+        });
+    </script>
 </body>
 </html>
-
