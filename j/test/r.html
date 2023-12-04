@@ -12,7 +12,7 @@
     <svg id="h_svg" width="100%" height="100%">
       <g id="s_g0">
 	<g id="s_g1">
-          <rect x="150" y="150" width="200" height="200" fill="pink" />
+          <rect x="150" y="150" width="200" height="200" fill="green" />
 	</g>
       </g>
       <rect id="s_marker" x="0" y="0" width="20" height="20" fill="black" />
@@ -26,15 +26,17 @@ h_svg.addEventListener('touchstart', function(e) {
     const u = update(e,s_g0,null);
     offset.r = u.r;
     offset.s = u.s;
-    const m = s_g0.getCTM();
+    const m = s_g1.getCTM();
     s_g1.setAttribute('matrix',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
+    s_g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0);
     s_m.setAttribute('fill','red');
   }
 });
 h_svg.addEventListener('touchmove', function(e) {
   e.preDefault();
   if (e.touches.length === 2) {
-    update(e,s_g0,offset);
+    const u=update(e,s_g0,offset);
+    s_g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
     s_marker.setAttribute('transform',`translate(${cx},${cy}) scale(${scale}) rotate(${rotate})`);
   }
 });
@@ -51,17 +53,16 @@ h_svg.addEventListener('touchend', function(e) {
 function update(e,s_g0,offset) {
   const cx=(e.touches[0].pageX+e.touches[1].pageX)/2;
   const cy=(e.touches[0].pageY+e.touches[1].pageY)/2;
-  let r,s;
+  let or=0;
+  let os=1;
   if (offset) {
-    const dx=e.touches[1].pageX-e.touches[0].pageX;
-    const dy=e.touches[1].pageY-e.touches[0].pageY;
-    r=Math.atan2(dy,dx)*180/Math.PI - offset.r;
-    s=Math.sqrt(dx*dx+dy*dy)/offset.s;
-  } else {
-    r=0;
-    s=1;
+    or=offset.r;
+    os=offset.s;
   }
-  s_g0.setAttribute('transform',`translate(${cx},${cy})scale(${s})rotate(${r})`);
+  const dx=e.touches[1].pageX-e.touches[0].pageX;
+  const dy=e.touches[1].pageY-e.touches[0].pageY;
+  const r=Math.atan2(dy,dx)*180/Math.PI - or;
+  const s=Math.sqrt(dx*dx+dy*dy)/os;
   return {cx:cx,cy:cy,dx:dx,dy:dy,s:s,r:r};
 }
 /*
