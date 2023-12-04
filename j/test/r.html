@@ -10,7 +10,7 @@
 </head>
 <body>
     <svg id="mySVG" width="500" height="500">
-        <rect id="myRect" x="150" y="150" width="200" height="200" fill="red" />
+        <rect id="myRect" x="150" y="150" width="200" height="200" fill="green" />
     </svg>
 
     <script>
@@ -37,6 +37,8 @@
 
         svg.addEventListener('touchmove', function(event) {
             if (event.touches.length == 2) {
+                event.preventDefault();
+
                 var xCenter = (event.touches[0].pageX + event.touches[1].pageX) / 2;
                 var yCenter = (event.touches[0].pageY + event.touches[1].pageY) / 2;
 
