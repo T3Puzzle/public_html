@@ -80,7 +80,6 @@ console.log(e);
    const type = seq[si+0];
    const rot = -60*seq[si+1];
    const pos = getXY(seq[si+2],seq[si+3]);
-console.log(seq[si+4]);
    const col = j_hash[seq[si+4]].c;
    let name='';
    if (type===1) {
@@ -134,8 +133,8 @@ document.write(`
 <script>
 {
 let fsize=2.5;
-if ('ontouchstart' in window) {
- fsize=6;
+if (window.innerWidth/window.innerHeight<0.75) {
+ fsize=5.5;
 }
 document.write(`
 <style>
@@ -146,6 +145,7 @@ document.write(`
 `);
 }
 </script>
+<br/>
 <form>
 
 <script>((types)=>{
@@ -156,7 +156,6 @@ for(let ti=0;ti<types.length;ti++) {
 }
 document.write(`
 <label class="font">
-${window.innerWidth}
 Type: <select class="font" name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);">
 ${options.join('')}
 </select>
@@ -164,6 +163,8 @@ ${options.join('')}
 `);})(j_types);</script>
 
 <br/>
+<br/>
+
 
 <script>((level,min,max)=>{
 document.write(`<label class="font">
@@ -183,12 +184,22 @@ Level: <select class="font" name="level" onchange="h_level.textContent=this.valu
 `);})(j_level,j_minlevel,j_maxlevel);</script>
 
 <br/>
-<textarea id="h_textformat" rows="50" cols="30" style="font-size:30%;height:20;">
+<script>
+{
+let display='';
+if ('ontouchstart' in window) {
+  display='display:none;';
+}
+document.write(`
+<textarea id="h_textformat" rows="50" cols="30" style="${display}font-size:30%;height:20;">
 [
 1,0,0,0,
 3,5,-6,-6,
 0]
 </textarea>
+`);
+}
+</script>
 
 </div x-panel-end>
 <!---------------->
