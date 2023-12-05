@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SVG Manipulation with Multitouch</title>
-    <style>
-        #mySVG {
-            border: 1px solid black;
-        }
-    </style>
 </head>
 <body>
-    <svg id="h_svg" width="100%" height="100%">
+<svg id="h_svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 1200 1200">
       <g id="s_g0">
 	<g id="s_g1">
-          <rect x="150" y="150" width="200" height="200" fill="red" />
+          <rect x="150" y="150" width="200" height="200" fill="blue" />
 	</g>
       </g>
     </svg>
@@ -20,13 +14,13 @@
 h_svg.setAttribute('width', window.innerWidth);
 h_svg.setAttribute('height', window.innerHeight);
 
-((svg,g0,g1)=>{if('ontouchstart' in window){
-const offset={r:0,s:1};
-let initCount=0;
+((svg,g0,g1)=>{
+if('ontouchstart' in window){
+const offset={c:0,r:0,s:1};
 svg.addEventListener('touchstart',e=>{
   const u=update(e,null);
   if (!u) return;
-  initCount=u.cnt;
+  offset.c=u.cnt;
   Object.assign(offset,{r:u.r,s:u.s});
   const m=g1.getCTM();
   g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
@@ -34,14 +28,14 @@ svg.addEventListener('touchstart',e=>{
 });
 svg.addEventListener('touchmove',e=>{
   e.preventDefault();
-  if (initCount!==e.touches.length)return;
+  if (offset.c!==e.touches.length)return;
   const u=update(e,offset);
   if (!u) return;
   g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
 });
 svg.addEventListener('touchend',e=>{
-  if (initCount===0)return;
-  initCount=0;
+  if (offset.c===0)return;
+  offset.c=0;
   const u=update(e,offset);
   Object.assign(offset,{r:0,s:1});
   const m=g1.getCTM();
@@ -63,7 +57,28 @@ function update(e,offset) {
   const r=Math.atan2(dy,dx)*180/Math.PI-o.r;
   const s=Math.sqrt(dx*dx+dy*dy)/o.s;
   return {cx,cy,r,s,cnt};
-}}})(h_svg,s_g0,s_g1);
+}} else {
+ const s={d:false,x:0,y:0};
+ const vbox=svg.viewBox.baseVal;
+ let t={x:0,y:0,s:1};
+ function update(){g0.setAttribute("transform",`translate(${t.x},${t.y})scale(${t.s})`);}
+ svg.addEventListener('mousedown',e=>Object.assign(s,{d:true,x:e.clientX,y:e.clientY}));
+ svg.addEventListener('mousemove',e=>{if(s.d){
+  Object.assign(t,{x:t.x+e.clientX-s.x,y:t.y+e.clientY-s.y});
+  Object.assign(s,{x:e.clientX,y:e.clientY});
+  update();
+ }});
+ ['mouseup','mouseleave'].forEach(_=>svg.addEventListener(_,()=>s.d=false));
+ svg.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r = svg.getBoundingClientRect();
+  const sx=(e.clientX-r.left)/r.width*vbox.width+vbox.x;
+  const sy=(e.clientY-r.top)/r.height*vbox.height+vbox.y;
+  const ds=1-Math.sign(e.deltaY)*0.1;
+  Object.assign(t,{x:sx-(sx-t.x)*ds,y:sy-(sy-t.y)*ds,s:t.s*ds});
+  update();
+ });
+}})(h_svg,s_g0,s_g1);
 </script>
 </body>
 </html>
