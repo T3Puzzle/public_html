@@ -12,7 +12,7 @@
     <svg id="h_svg" width="100%" height="100%">
       <g id="s_g0">
 	<g id="s_g1">
-          <rect x="150" y="150" width="200" height="200" fill="red" />
+          <rect x="150" y="150" width="200" height="200" fill="blue" />
 	</g>
       </g>
     </svg>
@@ -21,7 +21,6 @@ h_svg.setAttribute('width', window.innerWidth);
 h_svg.setAttribute('height', window.innerHeight);
 
 ((svg,g0,g1)=>{if(true){
-alert(1);
 const offset={r:0,s:1};
 svg.addEventListener('touchstart',e=>{
   const u=update(e,null);
@@ -37,7 +36,7 @@ svg.addEventListener('touchmove',e=>{
   if (!u) return;
   g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
 });
-svg.addEventListener('touchend', e=>{
+svg.addEventListener('touchend',e=>{
   if (e.touches.length!==1)return;
   Object.assign(offset,{r:0,s:1});
   const m=g1.getCTM();
@@ -52,7 +51,11 @@ function update(e,offset) {
   const cx=(e.touches[0].pageX+e.touches[1].pageX)/2;
   const cy=(e.touches[0].pageY+e.touches[1].pageY)/2;
   const o={r:0,s:1};
-  offset?ObjectAssign(o,{r:offset.r,s:offset.s}):null;
+  if (offset) {
+    o.r=offset.r;
+    o.s=offset.s;
+  }
+  //offset?ObjectAssign(o,{r:offset.r,s:offset.s}):null;
   const dx=e.touches[1].pageX-e.touches[0].pageX;
   const dy=e.touches[1].pageY-e.touches[0].pageY;
   const r=Math.atan2(dy,dx)*180/Math.PI-o.r;
