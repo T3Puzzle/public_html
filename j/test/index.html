@@ -131,6 +131,11 @@ document.write(`
 
 <!---------------->
 <div x-panel-begin style="position:fixed;top:0;right:0;z-index:100;">
+<style>
+.font {
+  font-size: 20pt;
+}
+</style>
 <form>
 
 <script>((types)=>{
@@ -140,8 +145,8 @@ for(let ti=0;ti<types.length;ti++) {
   options.push(`<option value="${types[ti].value}" ${selected}>${types[ti].name}</option>`);
 }
 document.write(`
-<label>
-Type: <select name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);this.form.querySelector('input[name=level').focus();">
+<label class="font">
+Type: <select class="font" name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);this.form.querySelector('input[name=level').focus();">
 ${options.join('')}
 </select>
 </label>
@@ -150,7 +155,7 @@ ${options.join('')}
 <br/>
 
 <script>((level,min,max)=>{
-document.write(`<label>
+document.write(`<label class="font">
 Level:<span>${level}</span>
 <input name="level" autofocus type="range" min="${min}" max="${max}" value="${level}" onchange="h_level.textContent=this.value;this.closest('label').querySelector('span').innerText=this.value;draw(null,this.value);">
 </label>
