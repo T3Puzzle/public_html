@@ -131,11 +131,21 @@ document.write(`
 
 <!---------------->
 <div x-panel-begin style="position:fixed;top:0;right:0;z-index:100;">
+<script>
+{
+let fsize=2.5;
+if ('ontouchstart' in window) {
+ fsize=6;
+}
+document.write(`
 <style>
 .font {
-  font-size: 4vw;
+  font-size: ${fsize}vw;
 }
 </style>
+`);
+}
+</script>
 <form>
 
 <script>((types)=>{
@@ -146,7 +156,8 @@ for(let ti=0;ti<types.length;ti++) {
 }
 document.write(`
 <label class="font">
-Type: <select class="font" name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);this.form.querySelector('input[name=level').focus();">
+${window.innerWidth}
+Type: <select class="font" name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);">
 ${options.join('')}
 </select>
 </label>
@@ -156,8 +167,12 @@ ${options.join('')}
 
 <script>((level,min,max)=>{
 document.write(`<label class="font">
-Level:<span>${level}</span>
-<input name="level" autofocus type="range" min="${min}" max="${max}" value="${level}" onchange="h_level.textContent=this.value;this.closest('label').querySelector('span').innerText=this.value;draw(null,this.value);">
+Level: <select class="font" name="level" onchange="h_level.textContent=this.value;draw(null,this.value);">
+<option value="0">0</option>
+<option value="1" selected>1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+</select>
 </label>
 
 <div style="display:none;">
