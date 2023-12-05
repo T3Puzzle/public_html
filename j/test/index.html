@@ -71,8 +71,14 @@ console.log(e);
    scale /= 3;
  }
  scale *=  j_hash[j_type].s;
- const tx = 50 +j_hash[j_type].tx;
- const ty = 400+j_hash[j_type].ty;
+ let tx,ty;
+ if (window.innerWidth/window.innerHeight<0.75) {
+   tx = 100 +j_hash[j_type].tx;
+   ty = 700+j_hash[j_type].ty;
+ } else {
+   tx = 100 +j_hash[j_type].tx;
+   ty = 400+j_hash[j_type].ty;
+ }
  const ox = -12; 
  const oy = -3*t; 
  const ori=j_hash[j_type].ori +270;
