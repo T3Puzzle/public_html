@@ -12,7 +12,7 @@
     <svg id="h_svg" width="100%" height="100%">
       <g id="s_g0">
 	<g id="s_g1">
-          <rect x="150" y="150" width="200" height="200" fill="pink" />
+          <rect x="150" y="150" width="200" height="200" fill="red" />
 	</g>
       </g>
     </svg>
@@ -20,12 +20,12 @@
 h_svg.setAttribute('width', window.innerWidth);
 h_svg.setAttribute('height', window.innerHeight);
 
-((svg,g0,g1)=>{if('ontouchstart' in window){
+((svg,g0,g1)=>{if(true){
 alert(1);
 const offset={r:0,s:1};
 svg.addEventListener('touchstart',e=>{
-  if(e.touches.length!==2)return;
-  const u=update(e,g0,null);
+  const u=update(e,null);
+  if (!u) return;
   Object.assign(offset,{r:u.r,s:u.s});
   const m=g1.getCTM();
   g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
@@ -33,8 +33,8 @@ svg.addEventListener('touchstart',e=>{
 });
 svg.addEventListener('touchmove',e=>{
   e.preventDefault();
-  if(e.touches.length!==2)return;
-  const u=update(e,g0,offset);
+  const u=update(e,offset);
+  if (!u) return;
   g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
 });
 svg.addEventListener('touchend', e=>{
@@ -44,7 +44,11 @@ svg.addEventListener('touchend', e=>{
   g0.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e},${m.f})`);
   g1.setAttribute('transform',`matrix(1,0,0,1,0,0)`);
 });
-function update(e,g0,offset) {
+function update(e,offset) {
+  if(e.touches.length>2)return;
+  if(e.touches.length===1){
+    return {cx:e.touches[0].pageX,cy:e.touches[0].pageY,r:0,s:1};
+  }
   const cx=(e.touches[0].pageX+e.touches[1].pageX)/2;
   const cy=(e.touches[0].pageY+e.touches[1].pageY)/2;
   const o={r:0,s:1};
@@ -53,7 +57,7 @@ function update(e,g0,offset) {
   const dy=e.touches[1].pageY-e.touches[0].pageY;
   const r=Math.atan2(dy,dx)*180/Math.PI-o.r;
   const s=Math.sqrt(dx*dx+dy*dy)/o.s;
-  return {cx,cy,s,r};
+  return {cx,cy,r,s};
 }}})(h_svg,s_g0,s_g1);
 </script>
 </body>
