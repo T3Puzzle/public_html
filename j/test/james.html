@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <!--script x-dummy>function main() {}</script-->
+  <script src="teavm/classes.js"></script>
+  <script>
+/////////////
+let j_level = 1;
+const j_minlevel = 0;
+const j_maxlevel = 4;
+let j_type = 0;
+const j_types = [
+ {name:'Z (1d)',value:0, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'},
+ {name:'I (1d)',value:1, 	tx:0,ty:0,ori:0,s:2, c:'#9a83bc'},
+ {name:'aD (1d)',value:2, 	tx:0,ty:0,ori:0,s:2, c:'#92c94e'},
+ {name:'Xa (1d)',value:3, 	tx:0,ty:0,ori:0,s:2, c:'#70d0f5'},
+ {name:'A (1d)',value:10, 	tx:0,ty:0,ori:0,s:2, c:'#dee686'}, // =S
+ {name:'B (1d)',value:11, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'}, // =Z
+ {name:'C (1d)',value:12, 	tx:0,ty:0,ori:0,s:2, c:'#86eede'}, // =ZIZ
+ {name:'Rhomb (2d)',value:20, 	tx:400,ty:170,ori:60,s:0.45, c:'#999999'},
+ {name:'Bird (2d)',value:22, 	tx:300,ty:200,ori:0,s:0.75, c:'#aaaaaa'},
+ {name:'Bird2 (2d)',value:26, 	tx:250,ty:100,ori:0,s:0.085, c:'#aaaaaa'},
+ {name:'SProp (2d)',value:23, 	tx:350,ty:-30,ori:-60,s:0.20, c:'#bbbbbb'},
+ {name:'Rose (2d)',value:21, 	tx:300,ty:30,ori:-60,s:0.4, c:'#cccccc'},
+ {name:'Penguin (2d)',value:25, tx:375,ty:70,ori:60,s:0.09, c:'#dddddd'},
+ {name:'LProp (2d)',value:24, 	tx:250,ty:70,ori:60,s:0.15, c:'#eeeeee'},
+];
+const j_hash = {}; 
+for (let ti=0;ti<j_types.length;ti++) {
+  j_hash[j_types[ti].value] ={
+    tx: j_types[ti].tx,
+    ty: j_types[ti].ty,
+    ori:j_types[ti].ori,
+    s:  j_types[ti].s * 0.5,
+    c:  j_types[ti].c,
+  };
+}
+const j_scalefactor = (4+Math.sqrt(15));
+const j_scale = 150;
+/////////////
+const t = Math.sqrt(3);
+
+
+function draw(type,level) {
+  if (type !==null) {
+    j_type = type;
+    s_g0.setAttribute('transform','');
+    s_g1.setAttribute('transform','');
+  }
+  if (level !==null) {
+    j_level = level;
+  }
+  load();
+}
+function getSeq () {
+ return JSON.parse(h_textformat.value);
+}
+function load() {
+////////////
+ let seq;
+ try {
+   main();
+   seq = getSeq();
+ } catch(e) {
+console.log(e);
+   seq = [];
+   h_textformat.textContent = '[]';
+ }
+ let scale = j_scale/Math.pow(j_scalefactor,j_level);
+ if (j_level==0) {
+   scale /= 3;
+ }
+ scale *=  j_hash[j_type].s;
+ let tx,ty;
+ if (window.innerWidth/window.innerHeight<0.75) {
+   tx = 100 +j_hash[j_type].tx;
+   ty = 700+j_hash[j_type].ty;
+ } else {
+   tx = 100 +j_hash[j_type].tx;
+   ty = 400+j_hash[j_type].ty;
+ }
+ const ox = -12; 
+ const oy = -3*t; 
+ const ori=j_hash[j_type].ori +270;
+ s_base.innerHTML = `<g transform="translate(${tx},${ty})rotate(${ori})scale(${scale})"><g id="s_coord" style="stroke:black;stroke-width:0.1;" transform="translate(${ox},${oy})"></g><circle r="0.2" cx="0" cy="0" opacity="1" fill="blue"></circle></g>`;
+////////////
+ for (let si=0;si<seq.length-1;si+=5) {
+   const type = seq[si+0];
+   const rot = -60*seq[si+1];
+   const pos = getXY(seq[si+2],seq[si+3]);
+   const col = j_hash[seq[si+4]].c;
+   let name='';
+   if (type===1) {
+     name = 's_turtle';
+     const tx=6;
+     const ty=2*t;
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use style="fill:${col};" xlink:href="#${name}"></use></g>`);
+   } else if (type===3) {
+     name = 's_hat';
+     const tx=6;
+     const ty=2*t;
+     s_coord.insertAdjacentHTML('beforeend',`<g transform="translate(${pos[0]},${pos[1]})translate(${tx},${ty})rotate(${rot})translate(${-tx},${-ty})"><use style="fill:${col};" xlink:href="#${name}"></use></g>`);
+   }
+  }
+}
+function getXY(x,y) {
+  const X = x-y/2;
+  const Y = -y*t/2;
+  return [X+6,Y+2*t];
+}
+</script>
+</head>
+<body onload="load()">
+<script>
+const tp = [[0,0],[1,2],[0,2],[-1,1],[-2,2],[-4,1],[-6,0],[-7,-2],[-6,-2],[-6,-3],[-4,-2],[-3,-3],[-2,-2],[-2,-1]];
+const hp = [[0,0],[1,2],[0,2],[0,3],[-2,2],[-3,0],[-4,0],[-5,-1],[-4,-2],[-2,-1],[-2,-2],[-1,-2],[0,-2],[1,-1]];
+const tpoints = [];
+for (let pi=0;pi<tp.length;pi++) {
+  tpoints.push(getXY(tp[pi][0],tp[pi][1]));
+}
+const hpoints = [];
+for (let pi=0;pi<hp.length;pi++) {
+  hpoints.push(getXY(hp[pi][0],hp[pi][1]));
+}
+const w=window.innerWidth;
+const h=window.innerHeight;
+document.write(`
+<svg id="h_svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}px" height="${h}px" viewBox="0 0 ${w} ${h}" style="background-color: #fafafa;">
+<g id="s_g0">
+<g id="s_g1">
+<symbol id="s_turtle" viewBox="0 0 ${w} ${h}"><polygon points="${tpoints.join(' ')}"></polygon></symbol>
+<symbol id="s_hat" viewBox="0 0 ${w} ${h}"><polygon points="${hpoints.join(' ')}"></polygon></symbol>
+<g id="s_base"></g>
+</g></g>
+</svg>
+`);
+</script>
+
+<!---------------->
+<div x-panel-begin style="position:fixed;top:0;right:0;z-index:100;">
+<script>
+{
+let fsize=2.5;
+if (window.innerWidth/window.innerHeight<0.75) {
+ fsize=5.5;
+}
+document.write(`
+<style>
+.font {
+  font-size: ${fsize}vw;
+}
+</style>
+`);
+}
+</script>
+<br/>
+<form>
+
+<script>((types)=>{
+const options=[];
+for(let ti=0;ti<types.length;ti++) {
+  const selected=ti===0?'selected':'';
+  options.push(`<option value="${types[ti].value}" ${selected}>${types[ti].name}</option>`);
+}
+document.write(`
+<label class="font">
+Type: <select class="font" name="type" onchange="h_type.textContent=this.value;draw(parseInt(this.value,10),null);">
+${options.join('')}
+</select>
+</label>
+`);})(j_types);</script>
+
+<br/>
+<br/>
+
+
+<script>((level,min,max)=>{
+document.write(`<label class="font">
+Level: <select class="font" name="level" onchange="h_level.textContent=this.value;draw(null,this.value);">
+<option value="0">0</option>
+<option value="1" selected>1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+</select>
+</label>
+
+<div style="display:none;">
+<div id="h_type">${j_type}</div>
+<div id="h_level">${j_level}</div>
+</div>
+
+`);})(j_level,j_minlevel,j_maxlevel);</script>
+
+<br/>
+<script>
+{
+let display='';
+if ('ontouchstart' in window) {
+  display='display:none;';
+}
+document.write(`
+<textarea id="h_textformat" rows="50" cols="30" style="${display}font-size:30%;height:20;">
+[
+1,0,0,0,
+3,5,-6,-6,
+0]
+</textarea>
+`);
+}
+</script>
+
+</div x-panel-end>
+<!---------------->
+
+<script>
+((svg,g0,g1)=>{
+if('ontouchstart' in window){
+const offset={r:0,s:1};
+let initCount=0;
+svg.addEventListener('touchstart',e=>{
+  const u=update(e,null);
+  if (!u) return;
+  initCount=u.cnt;
+  Object.assign(offset,{r:u.r,s:u.s});
+  const m=g1.getCTM();
+  g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
+  g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0)`);
+});
+svg.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if (initCount!==e.touches.length)return;
+  const u=update(e,offset);
+  if (!u) return;
+  g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
+});
+svg.addEventListener('touchend',e=>{
+  if (initCount===0)return;
+  initCount=0;
+  const u=update(e,offset);
+  Object.assign(offset,{r:0,s:1});
+  const m=g1.getCTM();
+  g0.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e},${m.f})`);
+  g1.setAttribute('transform',`matrix(1,0,0,1,0,0)`);
+});
+function update(e,offset) {
+  if(e.touches.length>2)return;
+  const cnt=e.touches.length;
+  if(e.touches.length===1){
+    return {cx:e.touches[0].pageX,cy:e.touches[0].pageY,r:0,s:1,cnt:cnt};
+  }
+  const cx=(e.touches[0].pageX+e.touches[1].pageX)/2;
+  const cy=(e.touches[0].pageY+e.touches[1].pageY)/2;
+  const o={r:0,s:1};
+  offset?Object.assign(o,{r:offset.r,s:offset.s}):null;
+  const dx=e.touches[1].pageX-e.touches[0].pageX;
+  const dy=e.touches[1].pageY-e.touches[0].pageY;
+  const r=Math.atan2(dy,dx)*180/Math.PI-o.r;
+  const s=Math.sqrt(dx*dx+dy*dy)/o.s;
+  return {cx,cy,r,s,cnt};
+}
+} else {
+ const s={d:false,x:0,y:0};
+ const vbox=svg.viewBox.baseVal;
+ let t={x:0,y:0,s:1};
+ function update(){g0.setAttribute("transform",`translate(${t.x},${t.y})scale(${t.s})`);}
+ svg.addEventListener('mousedown',e=>Object.assign(s,{d:true,x:e.clientX,y:e.clientY}));
+ svg.addEventListener('mousemove',e=>{if(s.d){
+  Object.assign(t,{x:t.x+e.clientX-s.x,y:t.y+e.clientY-s.y});
+  Object.assign(s,{x:e.clientX,y:e.clientY});
+  update();
+ }});
+ ['mouseup','mouseleave'].forEach(_=>svg.addEventListener(_,()=>s.d=false));
+ svg.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r = svg.getBoundingClientRect();
+  const sx=(e.clientX-r.left)/r.width*vbox.width+vbox.x;
+  const sy=(e.clientY-r.top)/r.height*vbox.height+vbox.y;
+  const ds=1-Math.sign(e.deltaY)*0.1;
+  Object.assign(t,{x:sx-(sx-t.x)*ds,y:sy-(sy-t.y)*ds,s:t.s*ds});
+  update();
+ });
+}})(h_svg,s_g0,s_g1);
+</script>
+</body>
+</html>
