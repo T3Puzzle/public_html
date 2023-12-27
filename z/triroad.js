@@ -236,7 +236,7 @@ function getDxDy(i, j, k) {
   return { dx, dy };
 }
 function outOfFrame(i, j, k) {
-  if (!(0 <= i && i < 4 && 0 <= j && j <= 4)) {
+  if (!(0 <= i && i < 4 && 0 <= j && j < 4)) {
     return true;
   }
   if (k === 0) {
