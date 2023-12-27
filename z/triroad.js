@@ -59,7 +59,7 @@ window.addEventListener("load", () => {
           (ijk(old.i,old.j,old.k)!==ijk(i,j,k)&&(j_dup[ijk(i,j,k)]))) {
         colorT3(j_grab,'red'); 
       } else {
-        okT3(j_grab);
+        colorT3(j_grab,'green');
       }
     }
   };
@@ -69,7 +69,7 @@ window.addEventListener("load", () => {
     //console.log(ijk(old.i,old.j,old.k));
     let { i, j, k, s } = conv(event.point.x, event.point.y);
     if (j_event.grab) {
-      okT3(j_grab); 
+      resetT3(j_grab); 
       if (outOfFrame(i, j, k)) {
         j_grab.remove();
         delete j_dup[ijk(old.i,old.j,old.k)];
@@ -284,14 +284,19 @@ function kji (ijk) {
 function ijk (i,j,k) {
   return i+'_'+j+'_'+k;
 }
+
 function colorT3 (t3,color) {
   const base = t3.children[0];
   base.strokeColor = color;
+  if (base.strokeWidth===3) return;
   base.strokeWidth= 3;
+  t3.scaling =1.4;
 }
-function okT3 (t3) {
+function resetT3 (t3) {
   const base = t3.children[0];
+  if (base.strokeWidth===0) return;
   base.strokeWidth= 0;
+  t3.scaling=1/1.4;
 }
 function conv(xx, yy) {
   const xbase = (j_radius * 3) / 2;
