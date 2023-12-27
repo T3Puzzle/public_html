@@ -44,10 +44,11 @@ window.addEventListener("load", () => {
     if (j_adds.length===0) {
       if (j_event.item.data.type==='top') {
         j_grab = j_event.item.parent;
+        j_event.dx = j_grab.position.x-event.point.x;
+        j_event.dy = j_grab.position.y-event.point.y;
       }
     }
   };
-  tool.onMouseMove = function (event) {};
   tool.onMouseDrag = function (event) {
     let { i, j, k, s } = conv(event.point.x, event.point.y);
     if (j_adds.length>0) {
@@ -59,7 +60,14 @@ window.addEventListener("load", () => {
       // j_grab
       j_event.grab = true;
       j_grab.bringToFront();
-      j_grab.position = [event.point.x,event.point.y];
+      console.log(j_grab.rotation);
+      {
+        j_grab.position = [
+          j_event.dx + event.point.x,
+          j_event.dy + event.point.y
+        ];
+        //j_grab.position = [event.point.x,event.point.y];
+      }
       let old = conv(j_event.point.x, j_event.point.y);
       if (outOfFrame(i, j, k) ||
           (ijk(old.i,old.j,old.k)!==ijk(i,j,k)&&(j_dup[ijk(i,j,k)]))) {
@@ -177,7 +185,8 @@ function drawT3(i, j, k, s) {
   let grp = new paper.Group({
     children: [t3c, t3r, t3l, t3u],
     pivot: [0, 0],
-    opacity: 1
+    opacity: 1,
+    applyMatrix: false
   });
   grp.scaling = 0.87;
   grp.rotation = 30+180 * ((k + 1) % 2) + 120 * ((s-1)%3);
@@ -299,14 +308,13 @@ function colorT3 (t3,color) {
   if (base.strokeWidth===3) return;
   base.strokeWidth= 3;
   t3.opacity = 0.6;
-  //t3.scaling =1.4;
+  //t3.scale(1.4,1.4);
 }
 function resetT3 (t3) {
   const base = t3.children[0];
-  if (base.strokeWidth===0) return;
   base.strokeWidth= 0;
   t3.opacity = 1;
-  //t3.scaling=1/1.4;
+  //t3.scaling=0.87;
 }
 function conv(xx, yy) {
   const xbase = (j_radius * 3) / 2;
