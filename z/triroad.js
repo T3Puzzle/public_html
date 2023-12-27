@@ -2,8 +2,8 @@ const j_consts = getConsts();
 let j_count = 0;
 const j_color = "#59BCE0";
 const sq3 = Math.sqrt(3);
-const j_radius = 40;
-const j_offset = { x: 66, y: 80 };
+const j_radius = 69;
+const j_offset = { x: 67.5, y: -22 };
 let j_grab;
 let j_event;
 let j_dup = {};
@@ -113,18 +113,6 @@ window.addEventListener("load", () => {
     }
   };
 });
-function ijk (i,j,k) {
-  return i+'_'+j+'_'+k;
-}
-function colorT3 (t3,color) {
-  const base = t3.children[0];
-  base.strokeColor = color;
-  base.strokeWidth= 3;
-}
-function okT3 (t3) {
-  const base = t3.children[0];
-  base.strokeWidth= 0;
-}
 function drawT3(i, j, k, s) {
   let t3c = new paper.Path.RegularPolygon({
     center: [0, 0],
@@ -161,7 +149,7 @@ function drawT3(i, j, k, s) {
     opacity: 1
   });
   grp.scaling = 0.87;
-  grp.rotation = 180 * ((k + 1) % 2) - 120 * s;
+  grp.rotation = 30+180 * ((k + 1) % 2) - 120 * s;
   grp.data = { rot: k === 0 };
   const { dx, dy } = getDxDy(i, j, k);
   grp.position = [j_offset.x + dx, j_offset.y + dy];
@@ -175,67 +163,8 @@ function drawT3(i, j, k, s) {
   }
   return grp;
 }
-function toggleColor(t3) {
-  let color0 = t3.children[0].fillColor;
-  let color3 = t3.children[3].fillColor;
-  t3.children[0].fillColor = color3;
-  t3.children[1].fillColor = color3;
-  t3.children[2].fillColor = color3;
-  t3.children[3].fillColor = color0;
-}
-function conv(xx, yy) {
-  const xbase = j_radius * sq3;
-  const ybase = (j_radius * 3) / 2;
-  const ox = j_offset.x - xbase / 2;
-  const oy = j_offset.y - ybase / 3;
-  const x = xx - ox;
-  const y = yy - oy;
-  let j = Math.floor(y / ybase);
-  let dj = ((y - j * ybase + ybase) % ybase) / ybase;
-
-  const dx = y / sq3;
-  let ii = x - dx;
-  let i = Math.floor(ii / xbase);
-  let di = ((ii - i * xbase + xbase) % xbase) / xbase;
-
-  let k = 1;
-  let fx = ii - i * xbase;
-  if (xbase - fx > (2 * dx + xbase) % xbase) k = 0;
-  let s = 0;
-  if (k === 0) {
-    if (dj < 1 / 2) {
-      if (di < 1 / 2) {
-        s = 2;
-      } else {
-        s = 1;
-      }
-    } else {
-      s = 0;
-    }
-  } else {
-    if (dj < 1 / 2) {
-      s = 0;
-    } else {
-      if (di < 1 / 2) {
-        s = 1;
-      } else {
-        s = 2;
-      }
-    }
-  }
-  return { i, j, k, s };
-}
-function getDxDy(i, j, k) {
-  let dx = i * j_radius * sq3;
-  let dy = (j * j_radius * 3) / 2;
-  if (k % 2 == 1) {
-    dy += j_radius / 2;
-    dx += (j_radius * sq3) / 2;
-  }
-  dx += (j * (j_radius * sq3)) / 2;
-  return { dx, dy };
-}
 function outOfFrame(i, j, k) {
+  console.log(ijk(i,j,k));
   if (!(0 <= i && i < 4 && 0 <= j && j < 4)) {
     return true;
   }
@@ -268,18 +197,18 @@ function getConsts() {
   return { width, height };
 }
 function drawBackground() {
-  const background = new paper.Raster("https://www.t3puzzle.com/z/triroad.png");
+  const background = new paper.Raster("https://www.t3puzzle.com/z/triroadv.png");
   background.onLoad = function () {
     let bg = this;
     bg.position = [j_consts.width / 2, j_consts.height / 2];
-    bg.scaling = 0.236;
+    bg.scaling = 0.407;
     bg.sendToBack();
   };
 }
 /////////////////////////////
 function drawFrame() {
   // for adjust with background
-  return;
+  //return;
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       for (let k = 0; k < 2; k++) {
@@ -296,12 +225,86 @@ function setFrame(i, j, k) {
     pivot: [0, 0],
     sides: 3,
     radius: j_radius,
-    strokeColor: "#bbbbbb",
+    strokeColor: "#ffbbbb",
     strokeWidth: 3,
     strokeCap: "round",
     data: { type: "center" }
   });
   frame.scaling = 1;
-  frame.rotation = 180 * ((k + 1) % 2);
+  frame.rotation = 30+180 * ((k + 1) % 2);
   frame.position = [j_offset.x + dx, j_offset.y + dy];
+}
+
+function getDxDy(i, j, k) {
+  let dy = i * j_radius * sq3;
+  let dx = (j * j_radius * 3) / 2;
+  if (k % 2 == 1) {
+    dx += j_radius / 2;
+    dy += (j_radius * sq3) / 2;
+  }
+  dy += (j * (j_radius * sq3)) / 2;
+  return { dx, dy };
+}
+
+function toggleColor(t3) {
+  let color0 = t3.children[0].fillColor;
+  let color3 = t3.children[3].fillColor;
+  t3.children[0].fillColor = color3;
+  t3.children[1].fillColor = color3;
+  t3.children[2].fillColor = color3;
+  t3.children[3].fillColor = color0;
+}
+function ijk (i,j,k) {
+  return i+'_'+j+'_'+k;
+}
+function colorT3 (t3,color) {
+  const base = t3.children[0];
+  base.strokeColor = color;
+  base.strokeWidth= 3;
+}
+function okT3 (t3) {
+  const base = t3.children[0];
+  base.strokeWidth= 0;
+}
+function conv(xx, yy) {
+  const xbase = (j_radius * 3) / 2;
+  const ybase = j_radius * sq3;
+  const ox = j_offset.x - xbase / 3;
+  const oy = j_offset.y - ybase / 2;
+  const x = xx - ox;
+  const y = yy - oy;
+  let j = Math.floor(x / xbase);
+  let dj = ((x - j * xbase + xbase) % xbase) / xbase;
+
+  const dy = x / sq3;
+  let ii = y - dy;
+  let i = Math.floor(ii / ybase);
+  let di = ((ii - i * ybase + ybase) % ybase) / ybase;
+
+  let k = 1;
+  let fy = ii - i * ybase;
+  if (ybase - fy > (2 * dy + ybase) % ybase) k = 0;
+  let s = 0;
+  if (k === 0) {
+    if (dj < 1 / 2) {
+      if (di < 1 / 2) {
+        s = 2;
+      } else {
+        s = 1;
+      }
+    } else {
+      s = 0;
+    }
+  } else {
+    if (dj < 1 / 2) {
+      s = 0;
+    } else {
+      if (di < 1 / 2) {
+        s = 1;
+      } else {
+        s = 2;
+      }
+    }
+  }
+  return { i, j, k, s };
 }
