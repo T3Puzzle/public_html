@@ -208,7 +208,7 @@ function drawBackground() {
 /////////////////////////////
 function drawFrame() {
   // for adjust with background
-  //return;
+  return;
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       for (let k = 0; k < 2; k++) {
