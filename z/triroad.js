@@ -42,7 +42,9 @@ window.addEventListener("load", () => {
       item: hitResult.item
     };
     if (j_adds.length===0) {
-      j_grab = j_event.item.parent;
+      if (j_event.item.data.type==='top') {
+        j_grab = j_event.item.parent;
+      }
     }
   };
   tool.onMouseMove = function (event) {};
@@ -53,7 +55,7 @@ window.addEventListener("load", () => {
       if (j_adds[j_adds.length-1]!==ijk(i,j,k)) {
         j_adds.push(ijk(i,j,k));
       }
-    } else {
+    } else if (j_grab) {
       // j_grab
       j_event.grab = true;
       j_grab.bringToFront();
@@ -65,6 +67,8 @@ window.addEventListener("load", () => {
       } else {
         colorT3(j_grab,'green');
       }
+    } else {
+      j_event.grab = true;
     }
   };
   tool.onMouseUp = function (event) {
@@ -73,6 +77,7 @@ window.addEventListener("load", () => {
     //console.log(ijk(old.i,old.j,old.k));
     let { i, j, k, s } = conv(event.point.x, event.point.y);
     if (j_event.grab) {
+      if (!j_grab)　return;
       resetT3(j_grab); 
       if (outOfFrame(i, j, k)) {
         j_grab.remove();
@@ -293,13 +298,15 @@ function colorT3 (t3,color) {
   base.strokeColor = color;
   if (base.strokeWidth===3) return;
   base.strokeWidth= 3;
-  t3.scaling =1.4;
+  t3.opacity = 0.6;
+  //t3.scaling =1.4;
 }
 function resetT3 (t3) {
   const base = t3.children[0];
   if (base.strokeWidth===0) return;
   base.strokeWidth= 0;
-  t3.scaling=1/1.4;
+  t3.opacity = 1;
+  //t3.scaling=1/1.4;
 }
 function conv(xx, yy) {
   const xbase = (j_radius * 3) / 2;
