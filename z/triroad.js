@@ -5,6 +5,7 @@ const sq3 = Math.sqrt(3);
 const j_radius = 69;
 const j_offset = { x: 67.5, y: -22 };
 let j_grab;
+const j_adds = [];
 let j_event;
 let j_dup = {};
 
@@ -27,25 +28,33 @@ window.addEventListener("load", () => {
     });
     if (!hitResult) return;
 
-    conv(event.point.x, event.point.y);
+    let { i, j, k, s } = conv(event.point.x, event.point.y);
+    j_adds.length = 0;
+    if (!("type" in hitResult.item.data)){
+      j_adds.push(ijk(i,j,k));
+    }
     j_event = {
-      add: !("type" in hitResult.item.data),
       grab: false,
       point: event.point,
       item: hitResult.item
     };
-    if (!j_event.add) {
+    if (j_adds.length===0) {
       j_grab = j_event.item.parent;
     }
   };
   tool.onMouseMove = function (event) {};
   tool.onMouseDrag = function (event) {
-    if (j_grab) {
+    let { i, j, k, s } = conv(event.point.x, event.point.y);
+    if (j_adds.length>0) {
+      if (j_adds[j_adds.length-1]!==ijk(i,j,k)) {
+        j_adds.push(ijk(i,j,k));
+      }
+    } else {
+      // j_grab
       j_event.grab = true;
       j_grab.bringToFront();
       j_grab.position = [event.point.x,event.point.y];
       let old = conv(j_event.point.x, j_event.point.y);
-      let { i, j, k, s } = conv(event.point.x, event.point.y);
       if (outOfFrame(i, j, k) ||
           (ijk(old.i,old.j,old.k)!==ijk(i,j,k)&&(j_dup[ijk(i,j,k)]))) {
         colorT3(j_grab,'red'); 
@@ -84,18 +93,32 @@ window.addEventListener("load", () => {
         j_grab.position = [j_offset.x + dx, j_offset.y + dy];
       }
       return;
-    }
-    if (j_event.add) {
-      // triroad spepcific
-      {
-        if (outOfFrame(i, j, k)) return;
-        if (j_count % 2) {
-          s += 3;
+    } else if (j_adds.length>0) {
+      if (j_adds.length===1 && j_adds[0]===ijk(i,j,k)) {
+        // triroad spepcific
+        {
+          if (outOfFrame(i, j, k)) return;
+          if (j_count % 2) {
+            s += 3;
+          }
+          j_count++;
         }
-        j_count++;
+        j_dup[ijk(i,j,k)] = drawT3(i, j, k, s); 
+      } else {
+        // delete first
+        for (let ai=0;ai<j_adds.length;ai++) {
+          if ( j_adds[ai] in j_dup ) {
+            j_dup[j_adds[ai]].remove();
+            delete j_dup[j_adds[ai]];
+          }
+        }
+        // draw next
+        for (let ai=0;ai<j_adds.length;ai++) {
+          const t = kji(j_adds[ai]);
+          //TODO: determine s from j_adds sequence
+          j_dup[j_adds[ai]] = drawT3(t.i, t.j, t.k, 1); 
+        }
       }
-      j_dup[ijk(i,j,k)] = drawT3(i, j, k, s);
-      
     } else {
       const type = j_event.item.data.type;
       const t3 = j_event.item.parent;
@@ -253,6 +276,10 @@ function toggleColor(t3) {
   t3.children[1].fillColor = color3;
   t3.children[2].fillColor = color3;
   t3.children[3].fillColor = color0;
+}
+function kji (ijk) {
+  let a = ijk.split('_');
+  return {i:parseInt(a[0],10),j:parseInt(a[1],10),k:parseInt(a[2],10)};
 }
 function ijk (i,j,k) {
   return i+'_'+j+'_'+k;
