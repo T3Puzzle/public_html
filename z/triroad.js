@@ -126,12 +126,12 @@ window.addEventListener("load", () => {
       t3.bringToFront();
       if (type === "top") {
         toggleColor(t3);
+      } else if (type === "center") {
+        toggleColor(t3);
       } else if (type === "left") {
         t3.rotation += 120;
       } else if (type === "right") {
         t3.rotation -= 120;
-      } else if (type === "center") {
-        //
       }
     }
   };
@@ -172,7 +172,7 @@ function drawT3(i, j, k, s) {
     opacity: 1
   });
   grp.scaling = 0.87;
-  grp.rotation = 30+180 * ((k + 1) % 2) - 120 * s;
+  grp.rotation = 30+180 * ((k + 1) % 2) + 120 * ((s-1)%3);
   grp.data = { rot: k === 0 };
   const { dx, dy } = getDxDy(i, j, k);
   grp.position = [j_offset.x + dx, j_offset.y + dy];
