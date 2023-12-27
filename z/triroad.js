@@ -30,6 +30,9 @@ window.addEventListener("load", () => {
 
     let { i, j, k, s } = conv(event.point.x, event.point.y);
     j_adds.length = 0;
+    
+    if (outOfFrame(i, j, k)) return;
+    
     if (!("type" in hitResult.item.data)){
       j_adds.push(ijk(i,j,k));
     }
@@ -46,6 +49,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     let { i, j, k, s } = conv(event.point.x, event.point.y);
     if (j_adds.length>0) {
+      if (outOfFrame(i, j, k)) return;
       if (j_adds[j_adds.length-1]!==ijk(i,j,k)) {
         j_adds.push(ijk(i,j,k));
       }
@@ -97,7 +101,6 @@ window.addEventListener("load", () => {
       if (j_adds.length===1 && j_adds[0]===ijk(i,j,k)) {
         // triroad spepcific
         {
-          if (outOfFrame(i, j, k)) return;
           if (j_count % 2) {
             s += 3;
           }
