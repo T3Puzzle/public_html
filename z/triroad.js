@@ -93,6 +93,7 @@ window.addEventListener("load", () => {
         return;
       };
       if (j_dup[ijk(i,j,k)]) {
+        // move back to original place
         i=old.i;
         j=old.j;
         k=old.k;
@@ -100,15 +101,12 @@ window.addEventListener("load", () => {
         delete j_dup[ijk(old.i,old.j,old.k)];
         j_dup[ijk(i,j,k)] = j_grab;
       }
-      const { dx, dy } = getDxDy(i, j, k);
-      if ((k===0 && j_grab.data.rot)
-         ||(k===1 && !(j_grab.data.rot))) {
-        j_grab.position = [j_offset.x + dx, j_offset.y + dy];
-      } else {
-        j_grab.data.rot = !(j_grab.data.rot);
-        j_grab.rotation += 60;
-        j_grab.position = [j_offset.x + dx, j_offset.y + dy];
+      if (j_grab.data.flip) {
+        s+=3;
       }
+      j_grab.remove();
+      j_dup[ijk(i,j,k)] = drawT3(i, j, k, s);
+      
       return;
     } else if (j_adds.length>0) {
       if (j_adds.length===1 && j_adds[0]===ijk(i,j,k)) {
@@ -142,8 +140,10 @@ window.addEventListener("load", () => {
       t3.bringToFront();
       if (type === "top") {
         toggleColor(t3);
+        t3.data.flip = !(t3.data.flip);
       } else if (type === "center") {
         toggleColor(t3);
+        t3.data.flip = !(t3.data.flip);
       } else if (type === "left") {
         t3.rotation += 120;
       } else if (type === "right") {
@@ -190,7 +190,9 @@ function drawT3(i, j, k, s) {
   });
   grp.scaling = 0.87;
   grp.rotation = 30+180 * ((k + 1) % 2) + 120 * ((s-1)%3);
-  grp.data = { rot: k === 0 };
+  grp.data = {
+    flip: s>=3,
+  };
   const { dx, dy } = getDxDy(i, j, k);
   grp.position = [j_offset.x + dx, j_offset.y + dy];
   grp.onDoubleClick = function (event) {
@@ -198,7 +200,7 @@ function drawT3(i, j, k, s) {
     delete j_dup[ijk(i,j,k)];
     this.remove();
   };
-  if (s > 3) {
+  if (grp.data.flip) {
     toggleColor(grp);
   }
   return grp;
