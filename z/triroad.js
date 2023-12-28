@@ -12,12 +12,12 @@ import {
   dups,
   getT3ByStr,
   deleteT3ByStr,
-} from "https://codepen.io/alytile/pen/RwdPWjR.js";
+} from "libt3.js";
 import {
   drawBackground,
   drawFrame,
   outOfFrame
-} from "https://codepen.io/alytile/pen/YzgXyeq.js";
+} from "libtrioad.js";
 
 const j_paint = [];
 let j_count = 0;
