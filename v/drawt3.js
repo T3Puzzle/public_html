@@ -73,15 +73,54 @@ window.addEventListener("load", () => {
           drawT3(ijk, s);
         } else {
           let change = [];
+          let pnt = [j_paint[0]];
           for (let ai = 1; ai < j_paint.length; ai++) {
             const lt = parse(j_paint[ai - 1]);
             const t = parse(j_paint[ai]);
-            if (lt.i === t.i && lt.j === t.j) {
-              change.push("R");
-            } else if (lt.j === t.j && Math.abs(lt.i - t.i) === 1) {
-              change.push("L");
-            } else if (lt.i === t.i && Math.abs(lt.j - t.j) === 1) {
-              change.push("M");
+            if (lt.k !== t.k ) {
+              pnt.push(j_paint[ai]);
+            } else {
+              if (t.k===0) {
+                if (lt.j-t.j===1) {
+                  pnt.push(toStr({i:lt.i,j:lt.j-1,k:1}));
+                } else if (lt.i-t.i===1) {
+                  pnt.push(toStr({i:lt.i-1,j:lt.j,k:1}));
+                } else if (
+                  ((lt.i===t.i)&&(t.j-lt.j===1)) 
+                  ||
+                  ((lt.j===t.j)&&(t.i-lt.i===1)) 
+                ) {
+                  pnt.push(toStr({i:lt.i,j:lt.j,k:1}));
+                }
+              } else {
+                if (t.j-lt.j===1) {
+                  pnt.push(toStr({i:lt.i,j:lt.j+1,k:0}));
+                } else if (t.i-lt.i===1) {
+                  pnt.push(toStr({i:lt.i+1,j:lt.j,k:0}));
+                } else if (
+                  ((t.i===lt.i)&&(lt.j-t.j===1)) 
+                  ||
+                  ((t.j===lt.j)&&(lt.i-t.i===1)) 
+                ) {
+                  pnt.push(toStr({i:lt.i,j:lt.j,k:0}));
+                }             
+              }
+              pnt.push(j_paint[ai]);
+            }
+          }
+          for (let ai = 1; ai < pnt.length; ai++) {
+            const lt = parse(pnt[ai - 1]);
+            const t = parse(pnt[ai]);
+            if (lt.k !== t.k ) {
+              if (lt.i === t.i && lt.j === t.j) {
+               change.push("R");
+              } else if (lt.j === t.j && Math.abs(lt.i - t.i) === 1) {
+               change.push("L");
+              } else if (lt.i === t.i && Math.abs(lt.j - t.j) === 1) {
+               change.push("M");
+              } else {
+                change.push("X");
+              }
             } else {
               change.push("X");
             }
@@ -109,22 +148,9 @@ window.addEventListener("load", () => {
             color.push(color[color.length - 1]);
           }
           let mod = 0;
-        
-          let a0 = 0;
-          
-
-          if (false
-          //  !j_lastEvent.drag
-          ) {
-            for (let ai = 0; ai < j_paint.length; ai++) {
-             if (getT3ByStr(j_paint[ai])) {
-               deleteT3ByStr(j_paint[ai]);
-             } 
-            }
-          } else {
-          for (let ai = 0; ai < j_paint.length; ai++) {
-            if (getT3ByStr(j_paint[ai])) {
-              deleteT3ByStr(j_paint[ai]);
+          for (let ai = 0; ai < pnt.length; ai++) {
+            if (getT3ByStr(pnt[ai])) {
+              deleteT3ByStr(pnt[ai]);
             }
 
             if (ai > 0) {
@@ -132,9 +158,8 @@ window.addEventListener("load", () => {
                 mod = (mod + 3) % 6;
               }
             }
-            drawT3(parse(j_paint[ai]), color[ai] + mod);
+            drawT3(parse(pnt[ai]), color[ai] + mod);
           }
-        }
         }
       } else {
         arrangeT3(j_lastEvent.item);
