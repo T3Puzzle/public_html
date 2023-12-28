@@ -19,7 +19,8 @@ import {
 
 const j_paint = [];
 let j_lastEvent;
-let j_color = 0;
+let j_white = false;
+let j_top = false;
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
@@ -46,7 +47,8 @@ window.addEventListener("load", () => {
       if (!isT3(hitResult.item)) {
         j_paint.push(toStr(ijk));
       }
-      j_color = (j_lastEvent.item.fillColor.red===1);
+      j_top = !!isT3(hitResult.item,'top');
+      j_white = (j_lastEvent.item.fillColor.red===1);
     } catch (e) {
       h_warn.textContent = "down:" + e;
     }
@@ -57,6 +59,11 @@ window.addEventListener("load", () => {
       let { ijk, s } = coord(event.point);
       if (j_paint.length > 0) {
         if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
+          if (j_paint.length===1) {
+            if(!getShadowByStr(j_paint[0])) {
+              setShadow(parse(j_paint[0]));
+            }
+          }
           j_paint.push(toStr(ijk));
           if(!getShadowByStr(toStr(ijk))) {
             setShadow(ijk);
@@ -154,6 +161,9 @@ window.addEventListener("load", () => {
             color.push(color[color.length - 1]);
           }
           let mod = 0;
+          if (j_white===j_top) {
+            mod = 3;
+          }
           for (let ai = 0; ai < pnt.length; ai++) {
             if (getT3ByStr(pnt[ai])) {
               deleteT3ByStr(pnt[ai]);
@@ -161,7 +171,7 @@ window.addEventListener("load", () => {
             if (getShadowByStr(pnt[ai])) {
               deleteShadowByStr(pnt[ai]);
             }
-
+  
             if (ai > 0) {
               if (color[ai - 1] === color[ai]) {
                 mod = (mod + 3) % 6;
