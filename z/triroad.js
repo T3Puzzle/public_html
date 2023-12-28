@@ -12,12 +12,12 @@ import {
   dups,
   getT3ByStr,
   deleteT3ByStr,
-} from "libt3.js";
+} from "./libt3.js";
 import {
   drawBackground,
   drawFrame,
   outOfFrame
-} from "libtrioad.js";
+} from "./libtrioad.js";
 
 const j_paint = [];
 let j_count = 0;
