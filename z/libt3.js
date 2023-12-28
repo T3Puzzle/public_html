@@ -4,23 +4,36 @@ export {
   isT3,
   drawT3,
   colorT3,
-  resetT3,
   arrangeT3,
   coord,
   toStr,
   parse,
-  getDxDy
+  getDxDy,
+  dups,
+  getT3ByStr,
+  deleteT3ByStr,
 };
 
 const l_cst = getConsts();
 const SCALING_T3 = 0.87;
 const COLOR_T3 = "#59BCE0";
 const SQ3 = Math.sqrt(3);
-
+const DUP = {};
+function dups () {
+  console.log(Object.keys(DUP).map(k=>k+':'+!!(DUP[k])));
+}
+function deleteT3ByStr (str) {
+  if (DUP[str]) {
+    DUP[str].remove();
+    delete DUP[str];
+  }
+}
+function getT3ByStr (str) {
+  return DUP[str];
+}
 function getConsts() {
   const radius = 69;
   const offset = { x: 67.5, y: -22 };
-  const dup = {};
   const width = parseInt(
     window.getComputedStyle(h_canvas).getPropertyValue("width"),
     10
@@ -29,7 +42,7 @@ function getConsts() {
     window.getComputedStyle(h_canvas).getPropertyValue("height"),
     10
   );
-  return { width, height, radius, offset, dup };
+  return { width, height, radius, offset };
 }
 function isT3(item,hit) {
   if (!("hit" in item.data)) return null;
@@ -104,7 +117,7 @@ function drawT3(ijk, s) {
   if (grp.data.flip) {
     toggleColor(grp);
   }
-  l_cst.dup[toStr(ijk)] = grp;
+  DUP[toStr(ijk)] = grp;
   return grp;
 }
 function colorT3(t3, color) {
@@ -114,12 +127,6 @@ function colorT3(t3, color) {
   base.strokeWidth = 3;
   t3.opacity = 0.6;
   //t3.scale(1.4,1.4);
-}
-function resetT3(t3) {
-  const base = t3.children[0];
-  base.strokeWidth = 0;
-  t3.opacity = 1;
-  //t3.scaling=0.87;
 }
 function coord(xy) {
   const xbase = (l_cst.radius * 3) / 2;
