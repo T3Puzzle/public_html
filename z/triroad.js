@@ -12,17 +12,20 @@ import {
   dups,
   getT3ByStr,
   deleteT3ByStr,
+  ghostT3
 } from "./libt3.js";
 import {
   drawBackground,
   drawFrame,
+  setFrame,
   outOfFrame
 } from "./libtriroad.js";
 
-const j_paint = [];
+let j_place;
 let j_count = 0;
 let j_target;
 let j_lastEvent;
+let j_frame;
 
 function draw() {
   drawBackground();
@@ -34,6 +37,7 @@ window.addEventListener("load", () => {
   draw();
   tool.onMouseDown = function (event) {
     try {
+      if (j_frame) j_frame.remove();
       j_target = null;
       j_lastEvent = null;
       let hitResult = paper.project.hitTest(event.point, {
@@ -45,18 +49,23 @@ window.addEventListener("load", () => {
       if (!hitResult) return;
 
       let { ijk, s } = coord(event.point);
-      j_paint.length = 0;
+      j_place = null;
 
       if (outOfFrame(ijk)) return;
-      if (!isT3(hitResult.item)) {
-        j_paint.push(toStr(ijk));
+      if (isT3(hitResult.item)) {
+        j_frame = setFrame(ijk);
+      } else {
+        j_place = toStr(ijk);
+        j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
       }
       const delta = { x: 0, y: 0 };
-      if (j_paint.length === 0) {
+      if (!j_place) {
         if (isT3(hitResult.item, "top")) {
           j_target = isT3(hitResult.item);
           delta.x = j_target.position.x - event.point.x;
           delta.y = j_target.position.y - event.point.y;
+        } else {
+          j_place = toStr(ijk);
         }
       }
       j_lastEvent = {
@@ -71,15 +80,18 @@ window.addEventListener("load", () => {
   };
   tool.onMouseDrag = function (event) {
     try {
+      if (j_frame) j_frame.remove();
       if (!j_lastEvent) return;
       const old = coord(j_lastEvent.point).ijk;
       let { ijk, s } = coord(event.point);
-      if (j_paint.length > 0) {
+      if (j_place) {
         // not to include outside frame
         if (outOfFrame(ijk)) return;
-        // ignore same pieces
-        if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
-          j_paint.push(toStr(ijk));
+        j_place = toStr(ijk);
+        if (getT3ByStr(toStr(ijk))) {
+          j_frame = setFrame(ijk);
+        } else {
+          j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
         }
       } else if (j_target) {
         j_target.bringToFront();
@@ -104,34 +116,17 @@ window.addEventListener("load", () => {
   };
   tool.onMouseUp = function (event) {
     try {
+      if (j_frame) j_frame.remove();
       if (!j_lastEvent) return;
       const old = coord(j_lastEvent.point).ijk;
       let { ijk, s } = coord(event.point);
-      if (j_paint.length > 0) {
-        if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
-          {
-            if (j_count % 2) {
-              s += 3;
-            }
-            j_count++;
-          }
+      if (j_place) {
+        if (j_count % 2) {
+          s += 3;
+        }
+        j_count++;
+        if (!getT3ByStr(toStr(ijk))) {
           drawT3(ijk, s);
-        } else {
-          // delete first
-          for (let ai = 0; ai < j_paint.length; ai++) {
-            if (getT3ByStr(j_paint[ai])) {
-              deleteT3ByStr(j_paint[ai]);
-            }
-          }
-          // draw next
-          for (let ai = 0; ai < j_paint.length; ai++) {
-            const t = parse(j_paint[ai]);
-            if (getT3ByStr(j_paint[ai])) {
-              deleteT3ByStr(j_paint[ai])
-            }
-            //TODO: determine s from j_paint sequence
-            drawT3(t, 1);
-          }
         }
       } else {
         if (j_lastEvent.drag) {
