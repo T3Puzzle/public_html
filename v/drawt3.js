@@ -1,4 +1,7 @@
 import {
+  getShadowByStr,
+  deleteShadowByStr,
+  setShadow,
   getConsts,
   isT3,
   drawT3,
@@ -55,6 +58,9 @@ window.addEventListener("load", () => {
       if (j_paint.length > 0) {
         if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
           j_paint.push(toStr(ijk));
+          if(!getShadowByStr(toStr(ijk))) {
+            setShadow(ijk);
+          }
         }
       } else {
         j_paint.push(toStr(ijk));
@@ -151,6 +157,9 @@ window.addEventListener("load", () => {
           for (let ai = 0; ai < pnt.length; ai++) {
             if (getT3ByStr(pnt[ai])) {
               deleteT3ByStr(pnt[ai]);
+            }
+            if (getShadowByStr(pnt[ai])) {
+              deleteShadowByStr(pnt[ai]);
             }
 
             if (ai > 0) {
