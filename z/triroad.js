@@ -53,16 +53,12 @@ window.addEventListener("load", () => {
 
       if (outOfFrame(ijk)) return;
       if (isT3(hitResult.item)) {
-        j_frame = setFrame(ijk);
         j_place = toStr(ijk);
-      } else {
-        j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
       }
-      const delta = { x: 0, y: 0 };
+      j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
       j_lastEvent = {
         drag: false,
         point: event.point,
-        delta: delta,
         item: hitResult.item
       };
     } catch (e) {
@@ -82,11 +78,8 @@ window.addEventListener("load", () => {
 
       // not to include outside frame
       if (outOfFrame(ijk)) return;
-      if (getT3ByStr(toStr(ijk))) {
-        j_frame = setFrame(ijk);
-      } else {
-        j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
-      }
+      j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
+      
 
       j_lastEvent.drag = true;
     } catch (e) {
