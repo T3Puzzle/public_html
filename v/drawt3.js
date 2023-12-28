@@ -112,7 +112,10 @@ window.addEventListener("load", () => {
         
           let a0 = 0;
           
-          if (!j_lastEvent.drag) {
+
+          if (false
+          //  !j_lastEvent.drag
+          ) {
             for (let ai = 0; ai < j_paint.length; ai++) {
              if (getT3ByStr(j_paint[ai])) {
                deleteT3ByStr(j_paint[ai]);
