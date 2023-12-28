@@ -12,6 +12,7 @@ export {
   dups,
   getT3ByStr,
   deleteT3ByStr,
+  ghostT3,
 };
 
 const l_cst = getConsts();
@@ -70,7 +71,60 @@ function arrangeT3(item) {
   }
   return t3;
 }
+function setT3(ijk, s, opacity) {
+  const k = ijk.k;
+  let t3c = new paper.Path.RegularPolygon({
+    center: [0, 0],
+    rotation: 0,
+    sides: 3,
+    radius: l_cst.radius,
+    fillColor: COLOR_T3,
+    data: { hit: "center" }
+  });
+  let t3l = new paper.Path.RegularPolygon({
+    center: [(l_cst.radius * SQ3) / 4, l_cst.radius / 4],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: COLOR_T3,
+    data: { hit: "left" }
+  });
+  let t3r = new paper.Path.RegularPolygon({
+    center: [(-l_cst.radius * SQ3) / 4, l_cst.radius / 4],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: COLOR_T3,
+    data: { hit: "right" }
+  });
+  let t3u = new paper.Path.RegularPolygon({
+    center: [0, -l_cst.radius / 2],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: "white",
+    data: { hit: "top" }
+  });
+  let grp = new paper.Group({
+    children: [t3c, t3r, t3l, t3u],
+    pivot: [0, 0],
+    opacity: opacity,
+    applyMatrix: false
+  });
+  grp.scaling = SCALING_T3;
+  grp.rotation = 30 + 180 * ((k + 1) % 2) + 120 * ((s - 1) % 3);
+  grp.data = {
+    flip: s >= 3
+  };
+  const { dx, dy } = getDxDy(ijk);
+  grp.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
+  if (grp.data.flip) {
+    toggleColor(grp);
+  }
+  return grp;
+}
+function ghostT3(ijk,s) {
+  return setT3(ijk,s,0.4);
+}
 function drawT3(ijk, s) {
+  /*
   const k = ijk.k;
   let t3c = new paper.Path.RegularPolygon({
     center: [0, 0],
@@ -117,6 +171,8 @@ function drawT3(ijk, s) {
   if (grp.data.flip) {
     toggleColor(grp);
   }
+  */
+  const grp = setT3(ijk,s,1);
   DUP[toStr(ijk)] = grp;
   return grp;
 }
