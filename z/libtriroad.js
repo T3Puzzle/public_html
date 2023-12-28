@@ -1,5 +1,5 @@
 import { getConsts, getDxDy } from "./libt3.js";
-export { drawBackground, drawFrame, outOfFrame };
+export { drawBackground, drawFrame, setFrame, outOfFrame };
 
 const l_cst = getConsts();
 const SCALE_BG = 0.407;
@@ -59,11 +59,12 @@ function setFrame(ijk) {
     pivot: [0, 0],
     sides: 3,
     radius: l_cst.radius,
-    strokeColor: "#ffbbbb",
+    strokeColor: "#ff0000",
     strokeWidth: 3,
     strokeCap: "round"
   });
   frame.scaling = 1;
   frame.rotation = 30 + 180 * ((k + 1) % 2);
   frame.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
+  return frame;
 }
