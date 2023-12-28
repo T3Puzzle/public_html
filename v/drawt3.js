@@ -12,7 +12,7 @@ import {
   getT3ByStr,
   deleteT3ByStr,
   ghostT3
-} from "libt3.js";
+} from "./libt3.js";
 
 const j_paint = [];
 let j_lastEvent;
