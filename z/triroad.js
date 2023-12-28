@@ -54,20 +54,11 @@ window.addEventListener("load", () => {
       if (outOfFrame(ijk)) return;
       if (isT3(hitResult.item)) {
         j_frame = setFrame(ijk);
-      } else {
         j_place = toStr(ijk);
+      } else {
         j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
       }
       const delta = { x: 0, y: 0 };
-      if (!j_place) {
-        if (isT3(hitResult.item, "top")) {
-          j_target = isT3(hitResult.item);
-          delta.x = j_target.position.x - event.point.x;
-          delta.y = j_target.position.y - event.point.y;
-        } else {
-          j_place = toStr(ijk);
-        }
-      }
       j_lastEvent = {
         drag: false,
         point: event.point,
@@ -81,34 +72,22 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (j_frame) j_frame.remove();
+      if (j_place) {
+        deleteT3ByStr(j_place);
+        j_place = null;
+      }
       if (!j_lastEvent) return;
       const old = coord(j_lastEvent.point).ijk;
       let { ijk, s } = coord(event.point);
-      if (j_place) {
-        // not to include outside frame
-        if (outOfFrame(ijk)) return;
-        j_place = toStr(ijk);
-        if (getT3ByStr(toStr(ijk))) {
-          j_frame = setFrame(ijk);
-        } else {
-          j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
-        }
-      } else if (j_target) {
-        j_target.bringToFront();
-        {
-          j_target.position = [
-            j_lastEvent.delta.x + event.point.x,
-            j_lastEvent.delta.y + event.point.y
-          ];
-        }
-        if (outOfFrame(ijk)) {
-          colorT3(j_target, "red");
-        } else if (toStr(old) !== toStr(ijk) && getT3ByStr(toStr(ijk))) {
-          colorT3(j_target, "red");
-        } else {
-          colorT3(j_target, "green");
-        }
+
+      // not to include outside frame
+      if (outOfFrame(ijk)) return;
+      if (getT3ByStr(toStr(ijk))) {
+        j_frame = setFrame(ijk);
+      } else {
+        j_frame = ghostT3(ijk, s + 3 * (j_count % 2));
       }
+
       j_lastEvent.drag = true;
     } catch (e) {
       h_warn.textContent = "drag:" + e;
@@ -120,32 +99,19 @@ window.addEventListener("load", () => {
       if (!j_lastEvent) return;
       const old = coord(j_lastEvent.point).ijk;
       let { ijk, s } = coord(event.point);
-      if (j_place) {
-        if (j_count % 2) {
-          s += 3;
-        }
-        j_count++;
-        if (!getT3ByStr(toStr(ijk))) {
-          drawT3(ijk, s);
-        }
-      } else {
-        if (j_lastEvent.drag) {
-          if (!j_target) return;
-          deleteT3ByStr(toStr(old));
-          if (outOfFrame(ijk)) {
-            return;
-          }
-          if (j_target.data.flip) {
-            s += 3;
-          }
-          if (toStr(old) !== toStr(ijk) && getT3ByStr(toStr(ijk))) {
-            drawT3(old, s);
-          } else {
-            drawT3(ijk, s);
-          }
-        } else {
-          arrangeT3(j_lastEvent.item);
-        }
+
+      // not to include outside frame
+      if (outOfFrame(ijk)) return;
+      
+      if (!j_lastEvent.drag) {
+        arrangeT3(j_lastEvent.item);
+      }
+      if (j_count % 2) {
+        s += 3;
+      }
+      j_count++;
+      if (!getT3ByStr(toStr(ijk))) {
+        drawT3(ijk, s);
       }
     } catch (e) {
       h_warn.textContent = "up:" + e;
