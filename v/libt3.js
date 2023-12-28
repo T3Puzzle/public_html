@@ -1,4 +1,7 @@
 export {
+  getShadowByStr,
+  deleteShadowByStr,
+  setShadow,
   getConsts,
   isT3,
   drawT3,
@@ -19,14 +22,24 @@ const SCALING_T3 = 0.97;
 const COLOR_T3 = "#59BCE0";
 const SQ3 = Math.sqrt(3);
 const DUP = {};
+const SDUP = {};
 function dups () {
   console.log(Object.keys(DUP).map(k=>k+':'+!!(DUP[k])));
+}
+function deleteShadowByStr (str) {
+  if (SDUP[str]) {
+    SDUP[str].remove();
+    delete SDUP[str];
+  }
 }
 function deleteT3ByStr (str) {
   if (DUP[str]) {
     DUP[str].remove();
     delete DUP[str];
   }
+}
+function getShadowByStr (str) {
+  return SDUP[str];
 }
 function getT3ByStr (str) {
   return DUP[str];
@@ -69,6 +82,25 @@ function arrangeT3(item) {
     t3.rotation -= 120;
   }
   return t3;
+}
+
+function setShadow(ijk) {
+  const k = ijk.k;
+  const { dx, dy } = getDxDy(ijk);
+  const frame = new paper.Path.RegularPolygon({
+    center: [0, 0],
+    pivot: [0, 0],
+    sides: 3,
+    radius: l_cst.radius,
+    strokeColor: "#ff0000",
+    strokeWidth: 3,
+    strokeCap: "round"
+  });
+  frame.scaling = 1;
+  frame.rotation = 30 + 180 * ((k + 1) % 2);
+  frame.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
+  SDUP[toStr(ijk)] = frame;
+  return frame;
 }
 function setT3(ijk, s, opacity,scale) {
   const k = ijk.k;
@@ -118,7 +150,6 @@ function setT3(ijk, s, opacity,scale) {
     toggleColor(grp);
   }
   t3c.onClick = function (event) {
-    console.log(1111);
     deleteT3ByStr(toStr(coord(event.point).ijk));
   };
   return grp;
