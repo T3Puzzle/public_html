@@ -17,7 +17,7 @@ import {
   drawBackground,
   drawFrame,
   outOfFrame
-} from "./libtrioad.js";
+} from "./libtriroad.js";
 
 const j_paint = [];
 let j_count = 0;
