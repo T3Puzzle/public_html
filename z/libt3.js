@@ -1,0 +1,198 @@
+export {
+  toggleColor,
+  getConsts,
+  isT3,
+  drawT3,
+  colorT3,
+  resetT3,
+  arrangeT3,
+  coord,
+  toStr,
+  parse,
+  getDxDy
+};
+
+const l_cst = getConsts();
+const SCALING_T3 = 0.87;
+const COLOR_T3 = "#59BCE0";
+const SQ3 = Math.sqrt(3);
+
+function getConsts() {
+  const radius = 69;
+  const offset = { x: 67.5, y: -22 };
+  const dup = {};
+  const width = parseInt(
+    window.getComputedStyle(h_canvas).getPropertyValue("width"),
+    10
+  );
+  const height = parseInt(
+    window.getComputedStyle(h_canvas).getPropertyValue("height"),
+    10
+  );
+  return { width, height, radius, offset, dup };
+}
+function isT3(item,hit) {
+  if (!("hit" in item.data)) return null;
+  if (hit===null || hit===undefined) return item.parent;
+  if (hit===item.data.hit) {
+    return item;
+  } else {
+    return null;
+  }
+}
+function arrangeT3(item) {
+  const hit = item.data.hit;
+  const t3 = item.parent;
+
+  if (hit === "top") {
+    toggleColor(t3);
+    t3.data.flip = !t3.data.flip;
+  } else if (hit === "center") {
+    toggleColor(t3);
+    t3.data.flip = !t3.data.flip;
+  } else if (hit === "left") {
+    t3.rotation += 120;
+  } else if (hit === "right") {
+    t3.rotation -= 120;
+  }
+  return t3;
+}
+function drawT3(ijk, s) {
+  const k = ijk.k;
+  let t3c = new paper.Path.RegularPolygon({
+    center: [0, 0],
+    rotation: 0,
+    sides: 3,
+    radius: l_cst.radius,
+    fillColor: COLOR_T3,
+    data: { hit: "center" }
+  });
+  let t3l = new paper.Path.RegularPolygon({
+    center: [(l_cst.radius * SQ3) / 4, l_cst.radius / 4],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: COLOR_T3,
+    data: { hit: "left" }
+  });
+  let t3r = new paper.Path.RegularPolygon({
+    center: [(-l_cst.radius * SQ3) / 4, l_cst.radius / 4],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: COLOR_T3,
+    data: { hit: "right" }
+  });
+  let t3u = new paper.Path.RegularPolygon({
+    center: [0, -l_cst.radius / 2],
+    sides: 3,
+    radius: l_cst.radius / 2,
+    fillColor: "white",
+    data: { hit: "top" }
+  });
+  let grp = new paper.Group({
+    children: [t3c, t3r, t3l, t3u],
+    pivot: [0, 0],
+    opacity: 1,
+    applyMatrix: false
+  });
+  grp.scaling = SCALING_T3;
+  grp.rotation = 30 + 180 * ((k + 1) % 2) + 120 * ((s - 1) % 3);
+  grp.data = {
+    flip: s >= 3
+  };
+  const { dx, dy } = getDxDy(ijk);
+  grp.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
+  if (grp.data.flip) {
+    toggleColor(grp);
+  }
+  l_cst.dup[toStr(ijk)] = grp;
+  return grp;
+}
+function colorT3(t3, color) {
+  const base = t3.children[0];
+  base.strokeColor = color;
+  if (base.strokeWidth === 3) return;
+  base.strokeWidth = 3;
+  t3.opacity = 0.6;
+  //t3.scale(1.4,1.4);
+}
+function resetT3(t3) {
+  const base = t3.children[0];
+  base.strokeWidth = 0;
+  t3.opacity = 1;
+  //t3.scaling=0.87;
+}
+function coord(xy) {
+  const xbase = (l_cst.radius * 3) / 2;
+  const ybase = l_cst.radius * SQ3;
+  const ox = l_cst.offset.x - xbase / 3;
+  const oy = l_cst.offset.y - ybase / 2;
+  const x = xy.x - ox;
+  const y = xy.y - oy;
+  let j = Math.floor(x / xbase);
+  let dj = ((x - j * xbase + xbase) % xbase) / xbase;
+
+  const dy = x / SQ3;
+  let ii = y - dy;
+  let i = Math.floor(ii / ybase);
+  let di = ((ii - i * ybase + ybase) % ybase) / ybase;
+
+  let k = 1;
+  let fy = ii - i * ybase;
+  if (ybase - fy > (2 * dy + ybase) % ybase) k = 0;
+  let s = 0;
+  if (k === 0) {
+    if (dj < 1 / 2) {
+      if (di < 1 / 2) {
+        s = 2;
+      } else {
+        s = 1;
+      }
+    } else {
+      s = 0;
+    }
+  } else {
+    if (dj < 1 / 2) {
+      s = 0;
+    } else {
+      if (di < 1 / 2) {
+        s = 1;
+      } else {
+        s = 2;
+      }
+    }
+  }
+  const ijk = { i, j, k };
+  return { ijk, s };
+}
+function toStr(ijk) {
+  return ijk.i + "_" + ijk.j + "_" + ijk.k;
+}
+function parse(str) {
+  let a = str.split("_");
+  return {
+    i: parseInt(a[0], 10),
+    j: parseInt(a[1], 10),
+    k: parseInt(a[2], 10)
+  };
+}
+function getDxDy(ijk) {
+  const i = ijk.i;
+  const j = ijk.j;
+  const k = ijk.k;
+  let dy = i * l_cst.radius * SQ3;
+  let dx = (j * l_cst.radius * 3) / 2;
+  if (k % 2 == 1) {
+    dx += l_cst.radius / 2;
+    dy += (l_cst.radius * SQ3) / 2;
+  }
+  dy += (j * (l_cst.radius * SQ3)) / 2;
+  return { dx, dy };
+}
+function toggleColor(t3) {
+  const color0 = t3.children[0].fillColor;
+  const color3 = t3.children[3].fillColor;
+  t3.children[0].fillColor = color3;
+  t3.children[1].fillColor = color3;
+  t3.children[2].fillColor = color3;
+  t3.children[3].fillColor = color0;
+}
