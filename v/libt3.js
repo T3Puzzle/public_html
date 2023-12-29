@@ -84,7 +84,7 @@ function arrangeT3(item) {
   return t3;
 }
 
-function setShadow(ijk) {
+function setShadow(ijk,color) {
   const k = ijk.k;
   const { dx, dy } = getDxDy(ijk);
   const frame = new paper.Path.RegularPolygon({
@@ -92,10 +92,7 @@ function setShadow(ijk) {
     pivot: [0, 0],
     sides: 3,
     radius: l_cst.radius,
-    fillColor: "#ff0000",
-    strokeColor: "#ff0000",
-    strokeWidth: 3,
-    strokeCap: "round",
+    fillColor: color,
     opacity: 0.1,
   });
   frame.scaling = 1;
