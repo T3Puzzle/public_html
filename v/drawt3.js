@@ -36,6 +36,8 @@ window.addEventListener("load", () => {
   
   tool.onMouseDown = function (event) {
     try {
+      if (getMode()==='View') return;
+        
       j_lastEvent = null;
       let hitResult = paper.project.hitTest(event.point, {
         fill: true,
@@ -52,7 +54,6 @@ window.addEventListener("load", () => {
       };
       j_top = !!isT3(hitResult.item, "top");
       j_white = j_lastEvent.item.fillColor.red === 1;
-
       if (!isT3(hitResult.item)) {
         j_paint.push(toStr(ijk));
       }
@@ -62,6 +63,10 @@ window.addEventListener("load", () => {
   };
   tool.onMouseDrag = function (event) {
     try {
+      if (getMode()==='View') {
+		    paper.view.center = paper.view.center.subtract(event.point.subtract(event.downPoint));
+        return;
+      }
       if (!j_lastEvent) return;
       let { ijk, s } = coord(event.point);
       if (j_paint.length > 0) {
@@ -82,6 +87,8 @@ window.addEventListener("load", () => {
   };
   tool.onMouseUp = function (event) {
     try {
+      if (getMode()==='View') return;
+      
       if (!j_lastEvent) return;
       let { ijk, s } = coord(event.point);
       const mode = getMode();
@@ -223,9 +230,10 @@ window.addEventListener("load", () => {
 });
 
 function setBackground() {
+  const size=100;
   let background = new paper.Path.Rectangle({
-    point: [0, 0],
-    size: [paper.view.size.width, paper.view.size.height],
+    point: [-paper.view.size.width*size/2, -paper.view.size.height*size/2],
+    size: [paper.view.size.width*size, paper.view.size.height*size],
     fillColor: "#cccccc"
   });
   background.sendToBack();
@@ -234,7 +242,12 @@ function getMode() {
   if((' '+h_button.className+' ').indexOf(' c_eraser ') > -1){
     return 'Eraser';
   } else {
-    return 'Paint';
+    if (h_button.textContent==='✏️') {
+      return 'Paint';
+    } else if (h_button.textContent==='🔍') {
+      return 'View';
+    }
+    return null;
   }
 }
 function getShadowColor( ) {
