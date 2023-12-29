@@ -19,9 +19,21 @@
 </style>
   <canvas id="h_canvas" class="c_draw" style="position: absolute; left: 0px; top: 0px;">
   </canvas>
+
 <div style="position:absolute;left:15px;top:15px;z-index:200;">
-<button id="h_button" onClick="this.classList.toggle('c_eraser')" style="font-size:60px;border: none;background: none;">✏️</button>
+<button id="h_button" onClick="
+                            if(this.textContent==='🔍') {
+                               this.textContent='✏️';
+                            } else if (this.textContent==='✏️') {
+                               this.textContent='✏️ ';
+                               this.classList.add('c_eraser');
+                            } else if (this.textContent==='✏️ ') {
+                               this.textContent='🔍';
+                               this.classList.remove('c_eraser');
+                            }   
+                              " style="font-size:60px;border: none;background: none;">✏️</button>
 </div>
+    
 <br/>
 <p id="h_warn" style="position:absolute;z-index:100;"></p>   
 <script type="module" src="./drawt3.js"></script>
