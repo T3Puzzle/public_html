@@ -27,13 +27,13 @@ function dups () {
   console.log(Object.keys(DUP).map(k=>k+':'+!!(DUP[k])));
 }
 function deleteShadowByStr (str) {
-  if (SDUP[str]) {
+  if (str in SDUP) {
     SDUP[str].remove();
     delete SDUP[str];
   }
 }
 function deleteT3ByStr (str) {
-  if (DUP[str]) {
+  if (str in DUP) {
     DUP[str].remove();
     delete DUP[str];
   }
@@ -98,6 +98,9 @@ function setShadow(ijk,color) {
   frame.scaling = 1;
   frame.rotation = 30 + 180 * ((k + 1) % 2);
   frame.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
+  if (toStr(ijk) in SDUP) {
+    SDUP[toStr(ijk)].remove();
+  }
   SDUP[toStr(ijk)] = frame;
   return frame;
 }
@@ -160,6 +163,9 @@ function ghostT3(ijk,s,scale) {
 }
 function drawT3(ijk, s) {
   const grp = setT3(ijk,s,1,1);
+  if (toStr(ijk) in DUP) {
+    DUP[toStr(ijk)].remove();
+  }
   DUP[toStr(ijk)] = grp;
   return grp;
 }
