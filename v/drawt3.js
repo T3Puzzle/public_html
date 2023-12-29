@@ -13,8 +13,7 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} 
-from "./libt3.js";
+} from "./libt3.js";
 
 const j_paint = [];
 let j_lastEvent;
@@ -27,29 +26,38 @@ window.addEventListener("load", () => {
   setBackground();
   drawT3({ i: 3, j: 3, k: 0 }, 2);
   drawT3({ i: 3, j: 2, k: 1 }, 5);
-      document.addEventListener('touchmove', event => {
-		event.preventDefault();
-      }, {
+
+  h_zoom.callback = function (val) {
+    paper.view.zoom = val;
+  };
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      event.preventDefault();
+    },
+    {
       passive: false
-    });
-    document.addEventListener('mousewheel', event => {
- 		const oldZoom = paper.view.zoom;
-    let beta = 0.95;
-		if (event.deltaY > 0) beta = 1.05;
-		let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
-		let ctr = paper.view.center;
-		let pc = mpos.subtract(ctr);
-		paper.view.zoom /= beta;
-		paper.view.center = mpos.subtract(pc.multiply(beta));
-		event.preventDefault();
-    }, {
+    }
+  );
+  document.addEventListener(
+    "mousewheel",
+    (event) => {
+      const oldZoom = paper.view.zoom;
+      let beta = 0.95;
+      if (event.deltaY > 0) beta = 1.05;
+      let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
+      let ctr = paper.view.center;
+      let pc = mpos.subtract(ctr);
+      paper.view.zoom /= beta;
+      paper.view.center = mpos.subtract(pc.multiply(beta));
+      event.preventDefault();
+    },
+    {
       passive: false
-    });
-  
+    }
+  );
   tool.onMouseDown = function (event) {
     try {
-      if (getMode()==='View') return;
-        
       j_lastEvent = null;
       let hitResult = paper.project.hitTest(event.point, {
         fill: true,
@@ -75,45 +83,53 @@ window.addEventListener("load", () => {
   };
   tool.onMouseDrag = function (event) {
     try {
-      if (getMode()==='View') {
-		    paper.view.center = paper.view.center.subtract(event.point.subtract(event.downPoint));
-        return;
-      }
       if (!j_lastEvent) return;
-      let { ijk, s } = coord(event.point);
-      if (j_paint.length > 0) {
-        if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
-          if (j_paint.length === 1) {
-            setShadow(parse(j_paint[0]),getShadowColor());
-          }
-          j_paint.push(toStr(ijk));
-          setShadow(ijk,getShadowColor());
-        }
+      if (getMode() === "Place") {
+        paper.view.center = paper.view.center.subtract(
+          event.point.subtract(event.downPoint)
+        );
       } else {
-        j_paint.push(toStr(ijk));
-        j_lastEvent.drag = true;
+        let { ijk, s } = coord(event.point);
+        if (j_paint.length > 0) {
+          if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
+            if (j_paint.length === 1) {
+              setShadow(parse(j_paint[0]), getShadowColor());
+            }
+            j_paint.push(toStr(ijk));
+            setShadow(ijk, getShadowColor());
+          }
+        } else {
+          j_paint.push(toStr(ijk));
+        }
       }
+      j_lastEvent.drag = true;
     } catch (e) {
       h_warn.textContent = "drag:" + e;
     }
   };
   tool.onMouseUp = function (event) {
     try {
-      if (getMode()==='View') return;
-      
       if (!j_lastEvent) return;
       let { ijk, s } = coord(event.point);
       const mode = getMode();
-
+      // just in case
       for (let ai = 0; ai < j_paint.length; ai++) {
         deleteShadowByStr(j_paint[ai]);
       }
-      if (mode === "Eraser") {
+      if (mode === "Place") {
+        if (j_paint.length === 0 && !j_lastEvent.drag) {
+          arrangeT3(j_lastEvent.item);
+        } else if (j_paint.length === 1 && !j_lastEvent.drag) {
+          drawT3(ijk, s);
+        }
+      } else if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
           deleteT3ByStr(j_paint[ai]);
         }
       } else {
-        if (j_paint.length > 0) {
+        if (j_paint.length === 0) {
+          arrangeT3(j_lastEvent.item);
+        } else {
           if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
             drawT3(ijk, s);
           } else {
@@ -231,9 +247,8 @@ window.addEventListener("load", () => {
               drawT3(parse(pnt[ai]), color[ai] + mod);
             }
           }
-        } else {
-          arrangeT3(j_lastEvent.item);
         }
+        return;
       }
     } catch (e) {
       h_warn.textContent = "up:" + e;
@@ -242,30 +257,33 @@ window.addEventListener("load", () => {
 });
 
 function setBackground() {
-  const size=100;
+  const size = 100;
   let background = new paper.Path.Rectangle({
-    point: [-paper.view.size.width*size/2, -paper.view.size.height*size/2],
-    size: [paper.view.size.width*size, paper.view.size.height*size],
+    point: [
+      (-paper.view.size.width * size) / 2,
+      (-paper.view.size.height * size) / 2
+    ],
+    size: [paper.view.size.width * size, paper.view.size.height * size],
     fillColor: "#cccccc"
   });
   background.sendToBack();
 }
 function getMode() {
-  if((' '+h_button.className+' ').indexOf(' c_eraser ') > -1){
-    return 'Eraser';
+  if ((" " + h_button.className + " ").indexOf(" c_eraser ") > -1) {
+    return "Eraser";
   } else {
-    if (h_button.textContent==='✏️') {
-      return 'Paint';
-    } else if (h_button.textContent==='🔍') {
-      return 'View';
+    if (h_button.textContent === "✏️") {
+      return "Paint";
+    } else if (h_button.textContent === "👆") {
+      return "Place";
     }
     return null;
   }
 }
-function getShadowColor( ) {
-  if (getMode()==='Paint') {
-    return 'black';
+function getShadowColor() {
+  if (getMode() === "Paint") {
+    return "black";
   } else {
-    return 'red';
+    return "red";
   }
 }
