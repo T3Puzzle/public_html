@@ -104,28 +104,28 @@ function setShadow(ijk,color) {
   SDUP[toStr(ijk)] = frame;
   return frame;
 }
-function setT3(ijk, s, opacity,scale) {
+function setT3(ijk, s, opacity,scale,color) {
   const k = ijk.k;
   let t3c = new paper.Path.RegularPolygon({
     center: [0, 0],
     rotation: 0,
     sides: 3,
     radius: l_cst.radius,
-    fillColor: COLOR_T3,
+    fillColor: color,
     data: { hit: "center" }
   });
   let t3l = new paper.Path.RegularPolygon({
     center: [(l_cst.radius * SQ3) / 4, l_cst.radius / 4],
     sides: 3,
     radius: l_cst.radius / 2,
-    fillColor: COLOR_T3,
+    fillColor: color,
     data: { hit: "left" }
   });
   let t3r = new paper.Path.RegularPolygon({
     center: [(-l_cst.radius * SQ3) / 4, l_cst.radius / 4],
     sides: 3,
     radius: l_cst.radius / 2,
-    fillColor: COLOR_T3,
+    fillColor: color,
     data: { hit: "right" }
   });
   let t3u = new paper.Path.RegularPolygon({
@@ -159,10 +159,10 @@ function setT3(ijk, s, opacity,scale) {
   return grp;
 }
 function ghostT3(ijk,s,scale) {
-  return setT3(ijk,s,0.6,1.7);
+  return setT3(ijk,s,0.6,1.7,COLOR_T3);
 }
-function drawT3(ijk, s) {
-  const grp = setT3(ijk,s,1,1);
+function drawT3(ijk, s,color) {
+  const grp = setT3(ijk,s,1,1,color);
   if (toStr(ijk) in DUP) {
     DUP[toStr(ijk)].remove();
   }
