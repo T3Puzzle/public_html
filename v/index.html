@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=600, user-scalable=no">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   </head>
-  <body style="margin: 0px; padding: 0px; width: 100%; height: 100%;user-select: none;touch-action: none;-webkit-user-select: none;">
+  <body style="margin: 0px; padding: 0px; width: 100%; height: 100%;">
 <script src="https://cdn.jsdelivr.net/npm/paper@0.12.17/dist/paper-full.min.js"></script>
 
 <style>
@@ -22,16 +22,24 @@
 
 <div style="position:absolute;left:15px;top:15px;z-index:200;">
 <button id="h_button" onClick="
-                            if(this.textContent==='🔍') {
+                            if(this.textContent==='👆') {
                                this.textContent='✏️';
                             } else if (this.textContent==='✏️') {
                                this.textContent='✏️ ';
                                this.classList.add('c_eraser');
                             } else if (this.textContent==='✏️ ') {
-                               this.textContent='🔍';
+                               this.textContent='👆';
                                this.classList.remove('c_eraser');
                             }   
-                              " style="font-size:60px;border: none;background: none;">✏️</button>
+                              " class="c_emoji">✏️</button>
+
+  <input id="h_zoom" type="range" min="0.5" max="2.0" value="1.0" step="0.1"  onClick="this.callback(this.value);" style="width:10vw;height:2vw;"></input>
+
+  <script>
+  if(!('ontouchstart' in window)){
+   h_zoom.style.display='none';
+  }
+  </script>
 </div>
     
 <br/>
