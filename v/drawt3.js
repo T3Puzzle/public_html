@@ -30,13 +30,13 @@ window.addEventListener("load", () => {
     paper.view.rotation += 30;
   };
   h_zoomout.callback = function () {
-    if (paper.view.zoom<2) {
-      paper.view.zoom *= 1.05;
+    if (paper.view.zoom>0.3) {
+      paper.view.zoom /= 1.16;
     }
   };
   h_zoomin.callback = function () {
-    if (paper.view.zoom>0.5) {
-      paper.view.zoom *= 0.95;
+    if (paper.view.zoom<2.2) {
+      paper.view.zoom /= 0.86;
     }
   };
   document.addEventListener(
