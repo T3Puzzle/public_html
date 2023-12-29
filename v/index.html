@@ -17,16 +17,28 @@
     transform:rotate(-90deg);
   }
   .c_emoji {
-    font-size:60px;
     border: none;
     background: none; 
     user-select: none;
     touch-action: none;
     -webkit-user-select: none;
   }
+  .c_blue {
+    color:#59BCE0;
+  }
+  .c_green {
+    color:#7BC677;
+  }
+  .c_pink {
+    color:#F89ACD;
+  }
+  .c_mint {
+    color:#C1FAD2;
+  }
 </style>
   <canvas id="h_canvas" class="c_draw" style="position: absolute; left: 0px; top: 0px;">
   </canvas>
+
 
 <div style="position:absolute;left:15px;top:15px;z-index:200;">
 <button id="h_button" onClick="
@@ -39,16 +51,25 @@
                                this.textContent='👆';
                                this.classList.remove('c_eraser');
                             }   
-                              " class="c_emoji">✏️</button>
-
-  <input id="h_zoom" type="range" min="0.5" max="2.0" value="1.0" step="0.1"  onClick="this.callback(this.value);" style="width:10vw;height:2vw;"></input>
+                              " class="c_emoji" style="font-size:60px;">✏️</button>
+  <button id="h_color" class="c_emoji c_blue" style="font-size:70px;" onclick="
+    if ((' '+this.className+' ').indexOf(' c_blue ') > -1) {
+       this.classList.remove('c_blue');this.classList.add('c_green'); 
+    } else if ((' '+this.className+' ').indexOf(' c_green ') > -1) {
+       this.classList.remove('c_green');this.classList.add('c_pink'); 
+    } else if ((' '+this.className+' ').indexOf(' c_pink ') > -1) {
+       this.classList.remove('c_pink');this.classList.add('c_mint'); 
+    } else if ((' '+this.className+' ').indexOf(' c_mint ') > -1) {
+       this.classList.remove('c_mint');this.classList.add('c_blue');
+    }">⚫️</button>
+  <input id="h_zoom" type="range" min="0.5" max="2.0" value="1.0" step="0.1"  onClick="this.callback(this.value);" xstyle="width:10vw;height:2vw;"></input>
 
   <script>
   if(!('ontouchstart' in window)){
    h_zoom.style.display='none';
   }
   </script>
-</div>
+  </div>
     
 <br/>
 <p id="h_warn" style="position:absolute;z-index:100;"></p>   
