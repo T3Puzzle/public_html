@@ -26,6 +26,9 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   setBackground();
+  
+  drawT3({i:3,j:3,k:0},2);
+  drawT3({i:3,j:2,k:1},5);
   tool.onMouseDown = function (event) {
     try {
       j_lastEvent = null;
