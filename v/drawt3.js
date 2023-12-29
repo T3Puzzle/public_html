@@ -26,6 +26,8 @@ window.addEventListener("load", () => {
   setBackground();
   drawT3({ i: 3, j: 3, k: 0 }, 2,getT3Color());
   drawT3({ i: 3, j: 2, k: 1 }, 5,getT3Color());
+  paper.view.rotation = 30;
+  
   h_rotate.callback = function () {
     paper.view.rotation += 30;
   };
