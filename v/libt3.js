@@ -46,7 +46,7 @@ function getT3ByStr (str) {
 }
 function getConsts() {
   const radius = 50;
-  const offset = { x: 100, y: 0 };
+  const offset = { x: 100, y: 50 };
   const width = parseInt(
     window.getComputedStyle(h_canvas).getPropertyValue("width"),
     10
@@ -74,8 +74,8 @@ function arrangeT3(item) {
     toggleColor(t3);
     t3.data.flip = !t3.data.flip;
   } else if (hit === "center") {
-    //toggleColor(t3);
-    //t3.data.flip = !t3.data.flip;
+    toggleColor(t3);
+    t3.data.flip = !t3.data.flip;
   } else if (hit === "left") {
     t3.rotation += 120;
   } else if (hit === "right") {
@@ -92,9 +92,11 @@ function setShadow(ijk) {
     pivot: [0, 0],
     sides: 3,
     radius: l_cst.radius,
+    fillColor: "#ff0000",
     strokeColor: "#ff0000",
     strokeWidth: 3,
-    strokeCap: "round"
+    strokeCap: "round",
+    opacity: 0.1,
   });
   frame.scaling = 1;
   frame.rotation = 30 + 180 * ((k + 1) % 2);
@@ -149,9 +151,11 @@ function setT3(ijk, s, opacity,scale) {
   if (grp.data.flip) {
     toggleColor(grp);
   }
+  /*
   t3c.onClick = function (event) {
     deleteT3ByStr(toStr(coord(event.point).ijk));
   };
+  */
   return grp;
 }
 function ghostT3(ijk,s,scale) {
