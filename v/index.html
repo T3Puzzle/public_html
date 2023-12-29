@@ -22,14 +22,15 @@
   .c_emoji {
     border: none;
     margin: none;
-    padding-right: 30px;
-    padding-left: 0px;
-    padding-top: 0px;
-    padding-botton: 0px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 0vw;
+    padding-botton: 0vw;
     background: none; 
     user-select: none;
     touch-action: none;
     -webkit-user-select: none;
+    font-size:60px;
   }
   .c_blue {
     color:#59BCE0;
@@ -48,8 +49,8 @@
   </canvas>
 
 
-<div style="position:absolute;left:15px;top:15px;z-index:200;">
-<button id="h_button" class="c_emoji" style="font-size:60px;" onClick="
+<div style="position:absolute;left:15px;top:15px;z-index:200;background-color:white;">
+<button id="h_button" class="c_emoji" style="" onClick="
                             if(this.textContent==='👆') {
                                this.textContent='✏️';
                             } else if (this.textContent==='✏️') {
@@ -60,7 +61,7 @@
                                this.classList.remove('c_eraser');
                             }   
                               " >✏️</button>
-  <button id="h_color" class="c_emoji c_blue" style="font-size:60px;" onclick="
+  <button id="h_color" class="c_emoji c_blue" style="" onclick="
     if ((' '+this.className+' ').indexOf(' c_blue ') > -1) {
        this.classList.remove('c_blue');this.classList.add('c_green'); 
     } else if ((' '+this.className+' ').indexOf(' c_green ') > -1) {
@@ -69,10 +70,10 @@
        this.classList.remove('c_pink');this.classList.add('c_mint'); 
     } else if ((' '+this.className+' ').indexOf(' c_mint ') > -1) {
        this.classList.remove('c_mint');this.classList.add('c_blue');
-    }">●◆</button>
-  <button  id="h_rotate" class="c_emoji" style="font-size:60px;" onClick="this.callback();">↻</button>
-  <button id="h_zoomout" class="c_emoji" style="font-size:60px;" onClick="this.callback();">⬆</button>
-  <button id="h_zoomin" class="c_emoji" style="font-size:60px;" onClick="this.callback();">⬇</button>
+    }">▲</button>
+  <button  id="h_rotate" class="c_emoji" style="" onClick="this.callback();">↻</button>
+  <button id="h_zoomout" class="c_emoji" style="" onClick="this.callback();">⬆</button>
+  <button id="h_zoomin" class="c_emoji" style="" onClick="this.callback();">⬇</button>
 
   <script>
   if(!('ontouchstart' in window)){
