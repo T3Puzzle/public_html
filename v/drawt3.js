@@ -138,6 +138,8 @@ window.addEventListener("load", () => {
               change.push("X");
             }
           }
+          let circle = false;
+          let circlev = 0;
           let color = [];
           if (change.length === 1) {
             if (change[0] === "L") {
@@ -158,11 +160,36 @@ window.addEventListener("load", () => {
               }
             }
             color.unshift(color[0]);
-            color.push(color[color.length - 1]);
+            
+            if (color.length>=3) {
+              let c3=color[color.length-3];
+              let cc=[
+                change[change.length-1],
+                change[change.length-2],
+                change[change.length-3]
+              ];
+              cc.sort();
+              // circle
+              if (cc.sort().join('')==='LMR') {
+                circle = true;
+                circlev = c3;
+              }
+            }
+            if (circle) {
+              color.push(circlev);
+            } else {
+              color.push(color[color.length - 1]);
+            }
           }
           let mod = 0;
-          if (j_white===j_top) {
-            mod = 3;
+          if (circle) {
+            if (j_white!==j_top) {
+              mod = 3;
+            }
+          } else {
+            if (j_white===j_top) {
+              mod = 3;
+            }
           }
           for (let ai = 0; ai < pnt.length; ai++) {
             if (getT3ByStr(pnt[ai])) {
