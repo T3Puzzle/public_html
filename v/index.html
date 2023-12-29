@@ -75,7 +75,7 @@
   <button id="h_zoomin" class="c_emoji" style="font-size:3vw;" onClick="this.callback();">⬇</button>
 
   <script>
-  if(!!('ontouchstart' in window)){
+  if(!('ontouchstart' in window)){
    h_zoomout.style.display='none';
    h_zoomin.style.display='none';
   }
