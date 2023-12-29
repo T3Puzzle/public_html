@@ -45,7 +45,7 @@ function getT3ByStr (str) {
   return DUP[str];
 }
 function getConsts() {
-  const radius = 30;
+  const radius = 50;
   const offset = { x: 67.5, y: -22 };
   const width = parseInt(
     window.getComputedStyle(h_canvas).getPropertyValue("width"),
