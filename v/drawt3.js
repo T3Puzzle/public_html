@@ -28,14 +28,6 @@ window.addEventListener("load", () => {
   drawT3({ i: 3, j: 3, k: 0 }, 2);
   drawT3({ i: 3, j: 2, k: 1 }, 5);
       document.addEventListener('touchmove', event => {
-		const oldZoom = paper.view.zoom;
-    let beta = 0.95;
-		if (event.deltaY > 0) beta = 1.05;
-		let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
-		let ctr = paper.view.center;
-		let pc = mpos.subtract(ctr);
-		paper.view.zoom /= beta;
-		paper.view.center = mpos.subtract(pc.multiply(beta));
 		event.preventDefault();
       }, {
       passive: false
