@@ -24,8 +24,8 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   setBackground();
-  drawT3({ i: 3, j: 3, k: 0 }, 2);
-  drawT3({ i: 3, j: 2, k: 1 }, 5);
+  drawT3({ i: 3, j: 3, k: 0 }, 2,getT3Color());
+  drawT3({ i: 3, j: 2, k: 1 }, 5,getT3Color());
 
   h_zoom.callback = function (val) {
     paper.view.zoom = val;
@@ -120,7 +120,7 @@ window.addEventListener("load", () => {
         if (j_paint.length === 0 && !j_lastEvent.drag) {
           arrangeT3(j_lastEvent.item);
         } else if (j_paint.length === 1 && !j_lastEvent.drag) {
-          drawT3(ijk, s);
+          drawT3(ijk, s, getT3Color());
         }
       } else if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
@@ -131,7 +131,7 @@ window.addEventListener("load", () => {
           arrangeT3(j_lastEvent.item);
         } else {
           if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
-            drawT3(ijk, s);
+            drawT3(ijk, s, getT3Color());
           } else {
             let change = [];
             let pnt = [j_paint[0]];
@@ -244,7 +244,7 @@ window.addEventListener("load", () => {
                   mod = (mod + 3) % 6;
                 }
               }
-              drawT3(parse(pnt[ai]), color[ai] + mod);
+              drawT3(parse(pnt[ai]), color[ai] + mod, getT3Color());
             }
           }
         }
@@ -264,7 +264,7 @@ function setBackground() {
       (-paper.view.size.height * size) / 2
     ],
     size: [paper.view.size.width * size, paper.view.size.height * size],
-    fillColor: "#cccccc"
+    fillColor: "#dfdfdf"
   });
   background.sendToBack();
 }
@@ -286,4 +286,8 @@ function getShadowColor() {
   } else {
     return "red";
   }
+}
+function getT3Color () {
+  return window.getComputedStyle(h_color).getPropertyValue("color");
+  //return '#59BCE0';
 }
