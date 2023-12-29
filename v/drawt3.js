@@ -1,5 +1,4 @@
 import {
-  getShadowByStr,
   deleteShadowByStr,
   setShadow,
   getConsts,
@@ -12,11 +11,9 @@ import {
   parse,
   getDxDy,
   dups,
-  getT3ByStr,
   deleteT3ByStr,
   ghostT3
 } 
-// from "https://codepen.io/alytile/pen/xxBGdJJ.js";
 from "./libt3.js";
 
 const j_paint = [];
@@ -70,14 +67,10 @@ window.addEventListener("load", () => {
       if (j_paint.length > 0) {
         if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
           if (j_paint.length === 1) {
-            if (!getShadowByStr(j_paint[0])) {
-              setShadow(parse(j_paint[0]),getShadowColor());
-            }
+            setShadow(parse(j_paint[0]),getShadowColor());
           }
           j_paint.push(toStr(ijk));
-          if (!getShadowByStr(toStr(ijk))) {
-            setShadow(ijk,getShadowColor());
-          }
+          setShadow(ijk,getShadowColor());
         }
       } else {
         j_paint.push(toStr(ijk));
@@ -94,15 +87,11 @@ window.addEventListener("load", () => {
       const mode = getMode();
 
       for (let ai = 0; ai < j_paint.length; ai++) {
-        if (getShadowByStr(j_paint[ai])) {
-          deleteShadowByStr(j_paint[ai]);
-        }
+        deleteShadowByStr(j_paint[ai]);
       }
       if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
-          if (getT3ByStr(j_paint[ai])) {
-            deleteT3ByStr(j_paint[ai]);
-          }
+          deleteT3ByStr(j_paint[ai]);
         }
       } else {
         if (j_paint.length > 0) {
@@ -214,9 +203,7 @@ window.addEventListener("load", () => {
               }
             }
             for (let ai = 0; ai < pnt.length; ai++) {
-              if (getT3ByStr(pnt[ai])) {
-                deleteT3ByStr(pnt[ai]);
-              }
+              deleteT3ByStr(pnt[ai]);
               if (ai > 0) {
                 if (color[ai - 1] === color[ai]) {
                   mod = (mod + 3) % 6;
