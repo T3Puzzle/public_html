@@ -151,11 +151,9 @@ function setT3(ijk, s, opacity,scale,color) {
   if (grp.data.flip) {
     toggleColor(grp);
   }
-  /*
-  t3c.onClick = function (event) {
+  t3c.onDoubleClick = function (event) {
     deleteT3ByStr(toStr(coord(event.point).ijk));
   };
-  */
   return grp;
 }
 function ghostT3(ijk,s,scale) {
