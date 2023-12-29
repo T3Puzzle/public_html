@@ -26,9 +26,18 @@ window.addEventListener("load", () => {
   setBackground();
   drawT3({ i: 3, j: 3, k: 0 }, 2,getT3Color());
   drawT3({ i: 3, j: 2, k: 1 }, 5,getT3Color());
-
-  h_zoom.callback = function (val) {
-    paper.view.zoom = val;
+  h_rotate.callback = function () {
+    paper.view.rotation += 30;
+  };
+  h_zoomout.callback = function () {
+    if (paper.view.zoom<2) {
+      paper.view.zoom *= 1.05;
+    }
+  };
+  h_zoomin.callback = function () {
+    if (paper.view.zoom>0.5) {
+      paper.view.zoom *= 0.95;
+    }
   };
   document.addEventListener(
     "touchmove",
