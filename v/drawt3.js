@@ -15,7 +15,9 @@ import {
   getT3ByStr,
   deleteT3ByStr,
   ghostT3
-} from "./libt3.js";
+} 
+// from "https://codepen.io/alytile/pen/xxBGdJJ.js";
+from "./libt3.js";
 
 const j_paint = [];
 let j_lastEvent;
@@ -69,12 +71,12 @@ window.addEventListener("load", () => {
         if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
           if (j_paint.length === 1) {
             if (!getShadowByStr(j_paint[0])) {
-              setShadow(parse(j_paint[0]));
+              setShadow(parse(j_paint[0]),getShadowColor());
             }
           }
           j_paint.push(toStr(ijk));
           if (!getShadowByStr(toStr(ijk))) {
-            setShadow(ijk);
+            setShadow(ijk,getShadowColor());
           }
         }
       } else {
@@ -246,5 +248,12 @@ function getMode() {
     return 'Eraser';
   } else {
     return 'Paint';
+  }
+}
+function getShadowColor( ) {
+  if (getMode()==='Paint') {
+    return 'black';
+  } else {
+    return 'red';
   }
 }
