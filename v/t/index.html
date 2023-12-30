@@ -21,7 +21,7 @@
  
   <svg id="h_svg" class="c_draw" style="position: absolute; left: 0px; top: 0px;z-index:100;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480px" height="360px" viewBox="0 0 480 360">
     <g id="s_g0"><g id="s_g1">
-    <rect id="s_rect" x="90" y="100" width="200" height="100" fill="red"></rect>
+    <rect id="s_rect" x="90" y="100" width="200" height="100" fill="pink"></rect>
       </g></g>
       </svg>
 
@@ -53,8 +53,8 @@ svg.addEventListener('touchmove',e=>{
   let tt = u.r * Math.PI/180;
   let cc = Math.cos(tt);
   let ss = Math.sin(tt);
-  let aa = $u.s * cc;
-  let bb = $u.s * ss;
+  let aa = u.s * cc;
+  let bb = u.s * ss;
   g0.setAttribute('transform',`matrix(${aa},${bb},${-bb},${aa},${u.cx},${u.cy})`);
   h_canvas.callback(true,'touchmove',{a:aa,b:bb,c:-bb,d:aa,e:u.cx,f:u,cy},null);
 });
