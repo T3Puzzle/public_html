@@ -122,7 +122,7 @@ window.addEventListener("load", () => {
         cnt.push(1);
       } else {
         g0.applyMatrix = true;
-        g0.matrix = new Matrix(m0.a,m0.b,m0.c,m0.d,m0.e,m0.f);
+        g0.matrix = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.e,m0.f);
         g0.applyMatrix = false;
         cnt.push(2);
       }
@@ -130,7 +130,7 @@ window.addEventListener("load", () => {
         cnt.push(3);
       } else {
         g1.applyMatrix = true;
-        g1.matrix = new Matrix(m1.a,m1.b,m1.c,m1.d,m1.e,m1.f);
+        g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.e,m1.f);
         g1.applyMatrix = false;
         cnt.push(4);
       }
