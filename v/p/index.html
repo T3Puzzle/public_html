@@ -119,11 +119,10 @@
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
-  //let j_center = paper.view.center;
-  //let j_zoom = paper.view.zoom;
   const {g0,g1} = drawRectangle();
   h_canvas.getCTM = function () {
-    return g1.globalMatrix();
+    //return g1.globalMatrix();
+    return g1.viewMatrix();
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
@@ -141,7 +140,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "blue"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
