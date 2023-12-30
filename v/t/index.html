@@ -42,7 +42,7 @@ svg.addEventListener('touchstart',e=>{
   const m=g1.getCTM();
   g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
   g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0)`);
-  h_canvas.callback(true,[u.cx,u.cy],1,0,null,m);
+  h_canvas.callback(true,[u.cx,u.cy],1,0,null,{a:m.a,b:m.b,c:m.c,d:m.d,e:m.e-u.cx,f:m.f-u.cy});
 });
 svg.addEventListener('touchmove',e=>{
   e.preventDefault();
@@ -124,16 +124,15 @@ window.addEventListener("load", () => {
         g0.applyMatrix = true;
         g0.matrix = new Matrix(m0.a,m0.b,m0.c,m0.d,m0.e,m0.f);
         g0.applyMatrix = false;
-        cnt.push(1);
+        cnt.push(2);
       }
       if (m1===null) {
-          // skip
-        cnt.push(2);
+        cnt.push(3);
       } else {
         g1.applyMatrix = true;
         g1.matrix = new Matrix(m1.a,m1.b,m1.c,m1.d,m1.e,m1.f);
         g1.applyMatrix = false;
-        cnt.push(3);
+        cnt.push(4);
       }
       h_warn.textContent = 'update:'+cnt.join('');
     } else{
