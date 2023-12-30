@@ -131,7 +131,8 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      h_warn.textContent = 'update :'+type;
+      const m = h_canvas.getCTM();
+      h_warn.textContent = 'update :'+type +' '+ m.a+' '+m.b+' '+m.tx+' '+m.ty;
   }
 });
 
