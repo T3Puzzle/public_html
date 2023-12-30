@@ -29,6 +29,7 @@
   <p id="h_warn" style="position:absolute; left:0px;top:0px;z-index:200;">WARN:</p>
 </div>
 
+    
 <script>
 ((svg,g0,g1)=>{
 if('ontouchstart' in window){
@@ -41,16 +42,21 @@ svg.addEventListener('touchstart',e=>{
   Object.assign(offset,{r:u.r,s:u.s});
   const m=g1.getCTM();
   g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
-  g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(1)rotate(0)`);
-  h_canvas.callback(true,'touchstart',[u.cx,u.cy],1,0,null,{a:m.a,b:m.b,c:m.c,d:m.d,e:m.e-u.cx,f:m.f-u.cy});
+  g0.setAttribute('transform',`matrix(1,0,0,1,${u.cx},${u.cy})`);
+  h_canvas.callback(true,'touchstart',{a:1,b:0,c:0,d:1,e:u.cx,f:u.cy},{a:m.a,b:m.b,c:m.c,d:m.d,e:m.e-u.cx,f:m.f-u.cy});
 });
 svg.addEventListener('touchmove',e=>{
   e.preventDefault();
   if (initCount!==e.touches.length)return;
   const u=update(e,offset);
   if (!u) return;
-  g0.setAttribute('transform',`translate(${u.cx},${u.cy})scale(${u.s})rotate(${u.r})`);
-  h_canvas.callback(true,'touchmove',[u.cx,u.cy],u.s,u.r,null,null);
+  let tt = u.r * Math.PI/180;
+  let cc = Math.cos(tt);
+  let ss = Math.sin(tt);
+  let aa = $u.s * cc;
+  let bb = $u.s * ss;
+  g0.setAttribute('transform',`matrix(${aa},${bb},${-bb},${aa},${u.cx},${u.cy})`);
+  h_canvas.callback(true,'touchmove',{a:aa,b:bb,c:-bb,d:aa,e:u.cx,f:u,cy},null);
 });
 svg.addEventListener('touchend',e=>{
   if (initCount===0)return;
@@ -60,7 +66,7 @@ svg.addEventListener('touchend',e=>{
   const m=g1.getCTM();
   g0.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e},${m.f})`);
   g1.setAttribute('transform',`matrix(1,0,0,1,0,0)`);
-  h_canvas.callback(true,'touchend',null,null,null,m,{a:1,b:0,c:0,d:1,e:0,f:0});
+  h_canvas.callback(true,'touchend',m,{a:1,b:0,c:0,d:1,e:0,f:0});
 });
 function update(e,offset) {
   if(e.touches.length>2)return;
@@ -83,8 +89,8 @@ function update(e,offset) {
  const vbox=svg.viewBox.baseVal;
  let t={x:0,y:0,s:1};
  function update(type){
-   g0.setAttribute("transform",`translate(${t.x},${t.y})scale(${t.s})`);
-   h_canvas.callback(false,type,[t.x,t.y],t.s,0,null,null);
+   g0.setAttribute("transform",`matrix(${t.s},0,0,${t.s},${t.x},${t.y})`);
+   h_canvas.callback(false,type,{a:t.s,b:0,c:0,d:t.s,e:t.x,f:t.y},null);
  }
  svg.addEventListener('mousedown',e=>Object.assign(s,{d:true,x:e.clientX,y:e.clientY}));
  svg.addEventListener('mousemove',e=>{if(s.d){
@@ -104,6 +110,7 @@ function update(e,offset) {
  });
 }})(h_svg,s_g0,s_g1);
 </script>
+    
     <script>
 
 window.addEventListener("load", () => {
@@ -111,36 +118,14 @@ window.addEventListener("load", () => {
   //let j_center = paper.view.center;
   //let j_zoom = paper.view.zoom;
   const {g0,g1} = drawRectangle();
-  h_canvas.callback = function (multi,type,move,zoom,rotate,m0,m1) {
-    
-    if (multi) {
-      let cnt=[];
-      if (m0===null) {
-        g0.position = move;
-        g0.scaling = zoom;
-        g0.rotation = rotate;
-        cnt.push(1);
-      } else {
-        g0.applyMatrix = true;
+  h_canvas.callback = function (multi,type,m0,m1) {
+      if (m0!==null) {
         g0.matrix = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.e,m0.f);
-        g0.applyMatrix = false;
-        cnt.push(2);
       }
-      if (m1===null) {
-        cnt.push(3);
-      } else {
-        g1.applyMatrix = true;
+      if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.e,m1.f);
-        g1.applyMatrix = false;
-        cnt.push(4);
       }
-      h_warn.textContent = 'update :'+type+' '+cnt.join('');
-    } else{
-      g0.position = move;  
-      g0.scaling = zoom;
-      
-      h_warn.textContent = 'update: '+type;
-    }
+      h_warn.textContent = 'update :'+type;
   }
 });
 
@@ -156,12 +141,10 @@ function drawRectangle() {
   }
   let g1 = new paper.Group({
     children: [rect],
-    pivot: [0, 0],
     applyMatrix: false
   });
   let g0 = new paper.Group({
     children: [g1],
-    pivot: [0, 0],
     applyMatrix: false
   });  
   return {g0,g1};
