@@ -21,7 +21,7 @@
  
   <svg id="h_svg" class="c_draw" style="position: absolute; left: 0px; top: 0px;z-index:100;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480px" height="360px" viewBox="0 0 480 360">
     <g id="s_g0"><g id="s_g1">
-    <rect id="s_rect" x="90" y="100" width="200" height="100" fill="purple"></rect>
+    <rect id="s_rect" x="90" y="100" width="200" height="100" fill="red"></rect>
       </g></g>
       </svg>
 
@@ -69,7 +69,7 @@ svg.addEventListener('touchend',e=>{
   h_canvas.callback(true,'touchend',m,{a:1,b:0,c:0,d:1,e:0,f:0});
 });
 function update(e,offset) {
-  if(e.touches.length>2)return;
+  if(e.touches.length!==2)return;
   const cnt=e.touches.length;
   if(e.touches.length===1){
     return {cx:e.touches[0].pageX,cy:e.touches[0].pageY,r:0,s:1,cnt:cnt};
