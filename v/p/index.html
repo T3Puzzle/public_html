@@ -121,8 +121,8 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const {g0,g1} = drawRectangle();
   h_canvas.getCTM = function () {
-    //return g1.globalMatrix();
-    return g1.viewMatrix();
+    //return g1.globalMatrix;
+    return g1.viewMatrix;
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
