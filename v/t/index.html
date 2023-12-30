@@ -43,7 +43,7 @@ svg.addEventListener('touchstart',e=>{
   const m=g1.getCTM();
   g1.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e-u.cx},${m.f-u.cy})`);
   g0.setAttribute('transform',`matrix(1,0,0,1,${u.cx},${u.cy})`);
-  h_canvas.callback(true,'touchstart',{a:1,b:0,c:0,d:1,e:u.cx,f:u.cy},{a:m.a,b:m.b,c:m.c,d:m.d,e:m.e-u.cx,f:m.f-u.cy});
+  h_canvas.callback(true,'touchstart',{a:1,b:0,c:0,d:1,e:u.cx,f:u.cy},{a:m.a,b:m.b,c:m.c,d:m.d,e:m.e-u.cx,f:m.f-u.cy},m);
 });
 svg.addEventListener('touchmove',e=>{
   e.preventDefault();
@@ -56,7 +56,7 @@ svg.addEventListener('touchmove',e=>{
   let aa = u.s * cc;
   let bb = u.s * ss;
   g0.setAttribute('transform',`matrix(${aa},${bb},${-bb},${aa},${u.cx},${u.cy})`);
-  h_canvas.callback(true,'touchmove',{a:aa,b:bb,c:-bb,d:aa,e:u.cx,f:u.cy},null);
+  h_canvas.callback(true,'touchmove',{a:aa,b:bb,c:-bb,d:aa,e:u.cx,f:u.cy},null,null);
 });
 svg.addEventListener('touchend',e=>{
   if (initCount===0)return;
@@ -66,7 +66,7 @@ svg.addEventListener('touchend',e=>{
   const m=g1.getCTM();
   g0.setAttribute('transform',`matrix(${m.a},${m.b},${m.c},${m.d},${m.e},${m.f})`);
   g1.setAttribute('transform',`matrix(1,0,0,1,0,0)`);
-  h_canvas.callback(true,'touchend',m,{a:1,b:0,c:0,d:1,e:0,f:0});
+  h_canvas.callback(true,'touchend',m,{a:1,b:0,c:0,d:1,e:0,f:0},m);
 });
 function update(e,offset) {
   if(e.touches.length!==2)return;
@@ -115,18 +115,20 @@ function update(e,offset) {
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
-  //let j_center = paper.view.center;
-  //let j_zoom = paper.view.zoom;
   const {g0,g1} = drawRectangle();
-  h_canvas.callback = function (multi,type,m0,m1) {
+  h_canvas.callback = function (multi,type,m0,m1,m) {
       if (m0!==null) {
         g0.matrix = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.e,m0.f);
       }
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.e,m1.f);
       }
-      h_warn.textContent = 'update :'+type;
-  }
+      if (m) {
+        h_warn.textContent = 'update :'+type+' '+m.a+' '+m.b+' '+m.tx+' '+m.ty;
+      } else {
+        h_warn.textContent = 'update :'+type;
+      }
+    }
 });
 
 function drawRectangle() {
