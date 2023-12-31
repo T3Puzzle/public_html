@@ -124,12 +124,15 @@ window.addEventListener("load", () => {
   const {g0,g1} = drawRectangle();
   const j_ini = g1.viewMatrix;
   let j_last = null;
+
   h_canvas.getCTM = function () {
     if (!j_last) {
+      h_warn.textContent = j_init.a+' '+j_ini.b+' '+j_ini.tx+' '+j_ini.ty;
       return j_ini;
     } else {
       return j_ini.append(j_last);
     }
+    //return g1.viewMatrix;
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
@@ -138,13 +141,14 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         j_m1 = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      h_warn.textContent = 'update :'+type+':1';
+    
+//      h_warn.textContent = 'update :'+type+':1';
       let g = j_m0.append(j_m1.matrix);
-      h_warn.textContent = 'update :'+type+':2';
+//      h_warn.textContent = 'update :'+type+':2';
       paper.view.transform(j_ini.append(g));
-      h_warn.textContent = 'update :'+type+':3';
+//      h_warn.textContent = 'update :'+type+':3';
       j_last = g;
-      h_warn.textContent = 'update :'+type+':4';
+ //     h_warn.textContent = 'update :'+type+':4';
   }
 });
 
