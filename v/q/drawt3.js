@@ -116,7 +116,6 @@ window.addEventListener("load", () => {
     h_canvas.addEventListener('touchend', e => {
       try {
       if (!j_multitouching) return;
-      const u = update(e, offset);
       Object.assign(offset, {
         r: 0,
         s: 1
