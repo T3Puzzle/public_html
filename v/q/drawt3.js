@@ -21,6 +21,7 @@ let j_white = false;
 let j_top = false;
 let j_m0 = null, j_m1=null;
 let j_last = new paper.Matrix(1,0,0,1,0,0);
+let j_multitouching = false;
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
@@ -55,6 +56,7 @@ window.addEventListener("load", () => {
     };
     h_canvas.addEventListener('touchstart', e => {
       if (e.touches.length !== 2) return;
+      j_multitouching = true;
       e.preventDefault();
       const u = update(e, null);
       Object.assign(offset, {
@@ -113,6 +115,7 @@ window.addEventListener("load", () => {
         tx: 0,
         ty: 0
       });
+      j_multitouching = false;
     });
 
     function update(e, offset) {
@@ -183,6 +186,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (!j_lastEvent) return;
+      if (j_multitouching) return;
       if (getMode() === "Place") {
         paper.view.center = paper.view.center.subtract(
           event.point.subtract(event.downPoint)
@@ -210,6 +214,7 @@ window.addEventListener("load", () => {
   tool.onMouseUp = function (event) {
     try {
       if (!j_lastEvent) return;
+      if (j_multitouching) return;
       let { ijk, s } = coord(event.point);
       const mode = getMode();
       // just in case
