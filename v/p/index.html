@@ -136,7 +136,7 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      g = g0.matrix.append(g1.matrix);
+      //g = g0.matrix.append(g1.matrix);
       //h_warn.textContent = 'update :'+type;
   }
 });
@@ -146,7 +146,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "blue"
+    fillColor: "green"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
