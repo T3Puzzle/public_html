@@ -127,7 +127,7 @@ window.addEventListener("load", () => {
 
   h_canvas.getCTM = function () {
     if (!j_last) {
-      h_warn.textContent = j_init.a+' '+j_ini.b+' '+j_ini.tx+' '+j_ini.ty;
+      h_warn.textContent = j_ini.a+' '+j_ini.b+' '+j_ini.tx+' '+j_ini.ty;
       return j_ini;
     } else {
       return j_ini.append(j_last);
@@ -157,7 +157,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "pink"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
