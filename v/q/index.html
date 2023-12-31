@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=600, user-scalable=no">
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/destyle.css@1.0.15/destyle.css"
+/>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  </head>
+  <body style="margin: 0px; padding: 0px; width: 100%; height: 100%;user-select: none;touch-action: none;-webkit-user-select: none;">
+<script src="https://cdn.jsdelivr.net/npm/paper@0.12.17/dist/paper-full.min.js"></script>
+<style>
+  .c_draw {
+    width: 600px;
+    height: 1000px;
+  }
+  .c_eraser {
+    transform:rotate(-90deg);
+  }
+  .c_emoji {
+    border: none;
+    margin: none;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 0vw;
+    padding-botton: 0vw;
+    background: none; 
+    user-select: none;
+    touch-action: none;
+    -webkit-user-select: none;
+    font-size:60px;
+  }
+  .c_blue {
+    color:#59BCE0;
+  }
+  .c_green {
+    color:#7BC677;
+  }
+  .c_pink {
+    color:#F89ACD;
+  }
+  .c_mint {
+    color:#C1FAD2;
+  }
+</style>
+  <canvas id="h_canvas" class="c_draw" style="position: absolute; left: 0px; top: 0px;">
+  </canvas>
+
+
+<div style="position:absolute;left:15px;top:15px;z-index:200;background-color:white;">
+<button id="h_button" class="c_emoji" style="" onClick="
+                            if(this.textContent==='👆') {
+                               this.textContent='✏️';
+                            } else if (this.textContent==='✏️') {
+                               this.textContent='✏️ ';
+                               this.classList.add('c_eraser');
+                            } else if (this.textContent==='✏️ ') {
+                               this.textContent='👆';
+                               this.classList.remove('c_eraser');
+                            }   
+                              " >✏️</button>
+  <button id="h_color" class="c_emoji c_blue" style="" onclick="
+    if ((' '+this.className+' ').indexOf(' c_blue ') > -1) {
+       this.classList.remove('c_blue');this.classList.add('c_green'); 
+    } else if ((' '+this.className+' ').indexOf(' c_green ') > -1) {
+       this.classList.remove('c_green');this.classList.add('c_pink'); 
+    } else if ((' '+this.className+' ').indexOf(' c_pink ') > -1) {
+       this.classList.remove('c_pink');this.classList.add('c_mint'); 
+    } else if ((' '+this.className+' ').indexOf(' c_mint ') > -1) {
+       this.classList.remove('c_mint');this.classList.add('c_blue');
+    }">▲</button>
+  <button  id="h_rotate" class="c_emoji" style="" onClick="this.callback();">↻</button>
+  <script>
+  if(!('ontouchstart' in window)){
+   h_rotate.style.display='none';
+  }
+  </script>
+  </div>
+    
+<br/>
+<p id="h_warn" style="position:absolute;z-index:100;"></p>   
+<script type="module" src="./drawt3.js"></script>
+</body>
+</html>
