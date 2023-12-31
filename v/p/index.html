@@ -125,8 +125,8 @@ window.addEventListener("load", () => {
   h_canvas.getCTM = function () {
     let v=g1.viewMatrix;
     h_warn.textContent = 
-      'v:'+v.a.toFix(2)+' '+v.b.toFixed(2)+' '+v.tx.toFixed(2)+' '+v.ty.toFixed(2)+'\n'
-    + 'g:'+g.a.toFix(2)+' '+g.b.toFixed(2)+' '+g.tx.toFixed(2)+' '+g.ty.toFixed(2);
+      'v:'+v.a.toFixed(2)+' '+v.b.toFixed(2)+' '+v.tx.toFixed(2)+' '+v.ty.toFixed(2)+'\n'
+    + 'g:'+g.a.toFixed(2)+' '+g.b.toFixed(2)+' '+g.tx.toFixed(2)+' '+g.ty.toFixed(2);
     return v;
   }
   h_canvas.callback = function (multi,type,m0,m1) {
@@ -146,7 +146,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "red"
+    fillColor: "blue"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
