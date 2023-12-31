@@ -50,17 +50,7 @@
 
 
 <div style="position:absolute;left:15px;top:15px;z-index:200;background-color:white;">
-<button id="h_button" class="c_emoji" style="" onClick="
-                            if(this.textContent==='👆') {
-                               this.textContent='✏️';
-                            } else if (this.textContent==='✏️') {
-                               this.textContent='✏️ ';
-                               this.classList.add('c_eraser');
-                            } else if (this.textContent==='✏️ ') {
-                               this.textContent='👆';
-                               this.classList.remove('c_eraser');
-                            }   
-                              " >✏️</button>
+<button id="h_button" class="c_emoji" style="" onClick="this.classList.toggle('c_eraser');" >✏️</button>
   <button id="h_color" class="c_emoji c_blue" style="" onclick="
     if ((' '+this.className+' ').indexOf(' c_blue ') > -1) {
        this.classList.remove('c_blue');this.classList.add('c_green'); 
