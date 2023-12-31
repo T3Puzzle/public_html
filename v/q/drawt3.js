@@ -194,7 +194,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (!j_lastEvent) return;
-      h_warn.textContent = 'drag:multi='+j_multitouching;
+      //h_warn.textContent = 'drag:multi='+j_multitouching;
       if (j_multitouching) return;
       if (getMode() === "Place") {
         paper.view.center = paper.view.center.subtract(
@@ -223,14 +223,16 @@ window.addEventListener("load", () => {
   tool.onMouseUp = function (event) {
     try {
       if (!j_lastEvent) return;
-      h_warn.textContent = 'up:multi='+j_multitouching;
-      if (j_multitouching) return;
       let { ijk, s } = coord(event.point);
       const mode = getMode();
       // just in case
       for (let ai = 0; ai < j_paint.length; ai++) {
         deleteShadowByStr(j_paint[ai]);
       }
+      
+      //h_warn.textContent = 'up:multi='+j_multitouching;
+      if (j_multitouching) return;
+      
       if (mode === "Place") {
         if (j_paint.length === 0 && !j_lastEvent.drag) {
           arrangeT3(j_lastEvent.item);
