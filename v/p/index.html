@@ -134,11 +134,13 @@ window.addEventListener("load", () => {
         j_m1 = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
       //h_warn.textContent = 'update :'+type+':1';
-      let g = j_m0.appended(j_m1.matrix);
+      let g = j_m0.appended(j_m1);
     
     h_warn.textContent = 
-      'l:'+j_last.a.toFixed(2)+' '+j_last.b.toFixed(2)+' '+j_last.tx.toFixed(2)+' '+j_last.ty.toFixed(2)+'\n'
-    + 'g:'+g.a.toFixed(2)+' '+g.b.toFixed(2)+' '+g.tx.toFixed(2)+' '+g.ty.toFixed(2);
+      'l:'+j_last.a.toFixed(2)+' '+j_last.b.toFixed(2)+' '+j_last.tx.toFixed(2)+' '+j_last.ty.toFixed(2)+'<p/>'
++'0:'+j_m0.a.toFixed(2)+' '+j_m0.b.toFixed(2)+' '+j_m0.tx.toFixed(2)+' '+j_m0.ty.toFixed(2)+'<p/>'
++'1:'+j_m1.a.toFixed(2)+' '+j_m1.b.toFixed(2)+' '+j_m1.tx.toFixed(2)+' '+j_m1.ty.toFixed(2)+'<p/>'
+      + 'g:'+g.a.toFixed(2)+' '+g.b.toFixed(2)+' '+g.tx.toFixed(2)+' '+g.ty.toFixed(2);
       //h_warn.textContent = 'update :'+type+':2';
       paper.view.transform(g);
       //h_warn.textContent = 'update :'+type+':3';
@@ -152,7 +154,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "pink"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
