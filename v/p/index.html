@@ -121,8 +121,13 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   const {g0,g1} = drawRectangle();
+  let g = new paper.Matrix(1,0,0,1,0,0);
   h_canvas.getCTM = function () {
-    return g1.viewMatrix;
+    let v=g1.viewMatrix;
+    h_warn.textContent = 
+      'v:'+v.a.toFix(2)+' '+v.b.toFixed(2)+' '+v.tx.toFixed(2)+' '+v.ty.toFixed(2)+'\n'
+    + 'g:'+g.a.toFix(2)+' '+g.b.toFixed(2)+' '+g.tx.toFixed(2)+' '+g.ty.toFixed(2);
+    return v;
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
@@ -131,8 +136,8 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      
-      h_warn.textContent = 'update :'+type;
+      g = g0.matrix.append(g1.matrix);
+      //h_warn.textContent = 'update :'+type;
   }
 });
 
@@ -141,7 +146,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "blue"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
