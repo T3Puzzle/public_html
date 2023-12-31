@@ -88,8 +88,6 @@ window.addEventListener("load", () => {
       });
     });
     h_canvas.addEventListener('touchmove', e => {
-      
-        h_warn.textContent = 'touchMove:multi'+j_multitouching;
       if (e.touches.length !== 2) return;
       e.preventDefault();
       const u = update(e, offset);
@@ -108,10 +106,9 @@ window.addEventListener("load", () => {
       }, null);
     });
     h_canvas.addEventListener('touchend', e => {
-      
-        h_warn.textContent = 'touchEnd:multi'+j_multitouching;
+      try {
+        h_warn.textContent = 'touchEnd:11:multi='+j_multitouching;
       if (!multitouching) return;
-      
       const u = update(e, offset);
       Object.assign(offset, {
         r: 0,
@@ -128,7 +125,10 @@ window.addEventListener("load", () => {
       });
       j_multitouching = false;
       h_warn.textContent = 'touchEnd:multi=false';
-    });
+      } catch (e) {
+        h_warn.textContent = 'touchEnd: '+e;
+      }
+   });
 
     function update(e, offset) {
       const cx = (e.touches[0].pageX + e.touches[1].pageX) / 2;
