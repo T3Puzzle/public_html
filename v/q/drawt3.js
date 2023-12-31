@@ -204,12 +204,7 @@ window.addEventListener("load", () => {
     try {
       if (!j_lastEvent) return;
       if (j_multitouching) return;
-      if (getMode() === "Place") {
-        paper.view.center = paper.view.center.subtract(
-          event.point.subtract(event.downPoint)
-        );
-        j_last = paper.view.matrix;
-      } else {
+      {
         let { ijk, s } = coord(event.point);
         if (j_paint.length > 0) {
           if (j_paint[j_paint.length - 1] !== toStr(ijk)) {
@@ -240,13 +235,7 @@ window.addEventListener("load", () => {
       
       if (j_multitouching) return;
       
-      if (mode === "Place") {
-        if (j_paint.length === 0 && !j_lastEvent.drag) {
-          arrangeT3(j_lastEvent.item);
-        } else if (j_paint.length === 1 && !j_lastEvent.drag) {
-          drawT3(ijk, s, getT3Color());
-        }
-      } else if (mode === "Eraser") {
+      if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
           deleteT3ByStr(j_paint[ai]);
         }
@@ -396,12 +385,7 @@ function getMode() {
   if ((" " + h_button.className + " ").indexOf(" c_eraser ") > -1) {
     return "Eraser";
   } else {
-    if (h_button.textContent === "✏️") {
-      return "Paint";
-    } else if (h_button.textContent === "👆") {
-      return "Place";
-    }
-    return null;
+    return "Paint";
   }
 }
 function getShadowColor() {
