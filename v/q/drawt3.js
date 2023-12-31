@@ -106,8 +106,8 @@ window.addEventListener("load", () => {
       }, null);
     });
     h_canvas.addEventListener('touchend', e => {
-      if (e.touches.length !== 2) return;
-      e.preventDefault();
+      if (!multitouching) return;
+      
       const u = update(e, offset);
       Object.assign(offset, {
         r: 0,
