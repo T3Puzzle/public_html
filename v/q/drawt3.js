@@ -63,6 +63,7 @@ window.addEventListener("load", () => {
           deleteShadowByStr(j_paint[ai]);
         }
         j_paint.length=0;
+        j_lastEvent = null;
       }
       e.preventDefault();
       const u = update(e, null);
