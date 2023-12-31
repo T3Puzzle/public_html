@@ -55,6 +55,7 @@ window.addEventListener("load", () => {
       s: 1
     };
     h_canvas.addEventListener('touchstart', e => {
+     try {
       if (e.touches.length !== 2) return;
       {
         j_multitouching = true;
@@ -86,8 +87,12 @@ window.addEventListener("load", () => {
         tx: m.tx - u.cx,
         ty: m.ty - u.cy
       });
+      } catch (e) {
+        h_warn.textContent = 'touchStart: '+e;
+      }
     });
     h_canvas.addEventListener('touchmove', e => {
+      try {
       if (e.touches.length !== 2) return;
       e.preventDefault();
       const u = update(e, offset);
@@ -103,12 +108,14 @@ window.addEventListener("load", () => {
         d: aa,
         tx: u.cx,
         ty: u.cy
-      }, null);
+      }, null);      
+      } catch (e) {
+        h_warn.textContent = 'touchMove: '+e;
+      }
     });
     h_canvas.addEventListener('touchend', e => {
       try {
-        h_warn.textContent = 'touchEnd:11:multi='+j_multitouching;
-      if (!multitouching) return;
+      if (!j_multitouching) return;
       const u = update(e, offset);
       Object.assign(offset, {
         r: 0,
@@ -124,7 +131,6 @@ window.addEventListener("load", () => {
         ty: 0
       });
       j_multitouching = false;
-      h_warn.textContent = 'touchEnd:multi=false';
       } catch (e) {
         h_warn.textContent = 'touchEnd: '+e;
       }
