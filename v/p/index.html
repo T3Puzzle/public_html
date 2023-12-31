@@ -136,17 +136,38 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      //g = g0.matrix.append(g1.matrix);
+      g = mult(g0,g1);
       //h_warn.textContent = 'update :'+type;
   }
 });
-
+function mult (m0,m1){
+  let a0 = m0.a;
+  let b0 = m0.b;
+  let c0 = m0.c;
+  let d0 = m0.d;
+  let tx0 = m0.tx;
+  let ty0 = m0.ty;
+  let a1 = m1.a;
+  let b1 = m1.b;
+  let c1 = m1.c;
+  let d1 = m1.d;
+  let tx1 = m1.tx;
+  let ty1 = m1.ty;
+  return new paper.Matrix(
+    a0*a1+b1*c0,
+    a1*b0+b1*d0,
+    a0*c1+c0*d1,
+    b0*c1+d0*d1,
+    a0*tx1+c0*ty1,
+    b0*tx1+d0*ty1
+  );
+}
 function drawRectangle() {
   
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "green"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
