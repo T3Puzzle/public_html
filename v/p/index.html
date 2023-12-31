@@ -133,6 +133,8 @@ window.addEventListener("load", () => {
       }
       const m = h_canvas.getCTM();
       h_warn.textContent = 'update :'+type +' '+ m.a+' '+m.b+' '+m.tx+' '+m.ty;
+      let g = g0.append(g1);
+      paper.view.matrix = g;    
   }
 });
 
@@ -141,13 +143,13 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "red"
+    fillColor: "green"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
   }
   let g1 = new paper.Group({
-    children: [rect],
+    children: [],
     applyMatrix: false
   });
   let g0 = new paper.Group({
