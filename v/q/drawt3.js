@@ -62,7 +62,7 @@ window.addEventListener("load", () => {
           deleteShadowByStr(j_paint[ai]);
         }
         j_paint.length=0;
-        h_warn.textContent = 'touchStart:multi=true';
+        h_warn.textContent = 'touchStart:multi='+j_multitouching;
       }
       e.preventDefault();
       const u = update(e, null);
@@ -88,6 +88,8 @@ window.addEventListener("load", () => {
       });
     });
     h_canvas.addEventListener('touchmove', e => {
+      
+        h_warn.textContent = 'touchMove:multi'+j_multitouching;
       if (e.touches.length !== 2) return;
       e.preventDefault();
       const u = update(e, offset);
@@ -106,6 +108,8 @@ window.addEventListener("load", () => {
       }, null);
     });
     h_canvas.addEventListener('touchend', e => {
+      
+        h_warn.textContent = 'touchEnd:multi'+j_multitouching;
       if (!multitouching) return;
       
       const u = update(e, offset);
