@@ -122,6 +122,10 @@ window.addEventListener("load", () => {
   const tool = new paper.Tool();
   let j_m0 = null, j_m1=null;
   drawRectangle();
+	tool.onMouseDrag = function(event) {
+		paper.view.center = paper.view.center.subtract(event.point.subtract(event.downPoint));
+	}
+	
   let j_last = new paper.Matrix(1,0,0,1,0,0);
   h_canvas.getCTM = function () {
     return j_last;
@@ -144,7 +148,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "green"
+    fillColor: "blue"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
