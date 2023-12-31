@@ -120,41 +120,41 @@
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
+  let j_m0 = null, j_m1=null;
   const {g0,g1} = drawRectangle();
-  let g01 = new paper.Matrix(1,0,0,1,0,0);
-  let g10 = new paper.Matrix(1,0,0,1,0,0);
+  let j_last = new paper.Matrix(1,0,0,1,0,0);
   h_canvas.getCTM = function () {
-    let v=g1.viewMatrix;
-    h_warn.textContent = 
-      'v:'+v.a.toFixed(2)+' '+v.b.toFixed(2)+' '+v.tx.toFixed(2)+' '+v.ty.toFixed(2)+'\n'
-    + 'g01:'+g01.a.toFixed(2)+' '+g01.b.toFixed(2)+' '+g01.tx.toFixed(2)+' '+g01.ty.toFixed(2)+'\n'
-    + 'g10:'+g10.a.toFixed(2)+' '+g10.b.toFixed(2)+' '+g10.tx.toFixed(2)+' '+g10.ty.toFixed(2);
-    return v;
+    return j_last;
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
-        g0.matrix = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.tx,m0.ty);
+       j_m0 = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.tx,m0.ty);
       }
       if (m1!==null) {
-        g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
+        j_m1 = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      g01 = g0.matrix.appended(g1.matrix);
-      g10 = g1.matrix.appended(g0.matrix);
-      //h_warn.textContent = 'update :'+type;
+      h_warn.textContent = 'update :'+type+':1';
+      let g = j_m0.appended(j_m1.matrix);
+      h_warn.textContent = 'update :'+type+':2';
+      paper.view.transform(g);
+      h_warn.textContent = 'update :'+type+':3';
+      j_last = g;
+      h_warn.textContent = 'update :'+type+':4';
   }
 });
+
 function drawRectangle() {
   
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "pink"
+    fillColor: "green"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
   }
   let g1 = new paper.Group({
-    children: [rect],
+    children: [],
     applyMatrix: false
   });
   let g0 = new paper.Group({
