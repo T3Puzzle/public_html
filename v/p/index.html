@@ -131,10 +131,14 @@ window.addEventListener("load", () => {
       if (m1!==null) {
         g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
-      const m = h_canvas.getCTM();
-      h_warn.textContent = 'update :'+type +' '+ m.a+' '+m.b+' '+m.tx+' '+m.ty;
       let g = g0.append(g1);
-      paper.view.matrix = g;    
+      paper.view.matrix.a = g.a;
+      paper.view.matrix.b = g.b;
+      paper.view.matrix.c = g.c;
+      paper.view.matrix.d = g.d;
+      paper.view.matrix.tx = g.tx;
+      paper.view.matrix.ty = g.ty;
+      h_warn.textContent = 'update :'+type; 
   }
 });
 
@@ -143,7 +147,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "green"
+    fillColor: "pink"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
