@@ -56,7 +56,13 @@ window.addEventListener("load", () => {
     };
     h_canvas.addEventListener('touchstart', e => {
       if (e.touches.length !== 2) return;
-      j_multitouching = true;
+      {
+        j_multitouching = true;
+        for (let ai = 0; ai < j_paint.length; ai++) {
+          deleteShadowByStr(j_paint[ai]);
+        }
+        j_paint.length=0;
+      }
       e.preventDefault();
       const u = update(e, null);
       Object.assign(offset, {
