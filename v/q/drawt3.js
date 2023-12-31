@@ -62,6 +62,7 @@ window.addEventListener("load", () => {
           deleteShadowByStr(j_paint[ai]);
         }
         j_paint.length=0;
+        h_warn.textContent = 'touchStart:multi=true';
       }
       e.preventDefault();
       const u = update(e, null);
@@ -122,6 +123,7 @@ window.addEventListener("load", () => {
         ty: 0
       });
       j_multitouching = false;
+      h_warn.textContent = 'touchEnd:multi=false';
     });
 
     function update(e, offset) {
@@ -192,6 +194,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (!j_lastEvent) return;
+      h_warn.textContent = 'drag:multi='+j_multitouching;
       if (j_multitouching) return;
       if (getMode() === "Place") {
         paper.view.center = paper.view.center.subtract(
@@ -220,6 +223,7 @@ window.addEventListener("load", () => {
   tool.onMouseUp = function (event) {
     try {
       if (!j_lastEvent) return;
+      h_warn.textContent = 'up:multi='+j_multitouching;
       if (j_multitouching) return;
       let { ijk, s } = coord(event.point);
       const mode = getMode();
