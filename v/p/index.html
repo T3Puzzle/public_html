@@ -119,23 +119,32 @@
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
+  const tool = new paper.Tool();
+  let j_m0 = null, j_m1=null;
   const {g0,g1} = drawRectangle();
+  const j_ini = g1.viewMatrix;
+  let j_last = null;
   h_canvas.getCTM = function () {
-    //return g1.globalMatrix;
-    return g1.viewMatrix;
+    if (!j_last) {
+      return j_ini;
+    } else {
+      return j_ini.append(j_last);
+    }
   }
   h_canvas.callback = function (multi,type,m0,m1) {
       if (m0!==null) {
-        g0.matrix = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.tx,m0.ty);
+       j_m0 = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.tx,m0.ty);
       }
       if (m1!==null) {
-        g1.matrix = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
+        j_m1 = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
       }
+    
       h_warn.textContent = 'update :'+type+':1';
       let g = g0.matrix.append(g1.matrix);
       h_warn.textContent = 'update :'+type+':2';
       paper.view.transform(g);
       h_warn.textContent = 'update :'+type+':3';
+      j_last = g;
   }
 });
 
@@ -144,7 +153,7 @@ function drawRectangle() {
   let rect = new paper.Path.Rectangle({
     point: [100,100],
     size: [200,100],
-    fillColor: "blue"
+    fillColor: "red"
   });
   rect.onClick = function () {
     h_warn.textContent = (111);
