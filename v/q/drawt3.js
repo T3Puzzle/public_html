@@ -19,7 +19,7 @@ import {
   addZoomHandler
 } 
 //from "https://codepen.io/alytile/pen/oNVjBEK.js";
-from: "./libzoom.js";
+from "./libzoom.js";
 
 const j_paint = [];
 let j_lastEvent;
