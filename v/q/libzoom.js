@@ -2,7 +2,7 @@ export { addZoomHandler };
 
 function addZoomHandler(canvas, state, callback) {
   const j_zoom_min = 0.2;
-  const j_zoom_max = 3;
+  const j_zoom_max = 2;
   state.multitouching = false;
 
   if ("ontouchstart" in window) {
@@ -39,8 +39,10 @@ function addZoomHandler(canvas, state, callback) {
           r: u.r,
           s: u.s
         });
-        if (!(j_zoom_min < u.s && u.s < j_zoom_max)) {
-          return;
+        if (j_zoom_min > u.s ) { 
+          u.s = j_zoom_min;
+        } else if (u.s > j_zoom_max) {
+          u.s = j_zoom_max;
         }
         const m = canvas.getCTM();
         canvas.callback(
@@ -152,7 +154,7 @@ function addZoomHandler(canvas, state, callback) {
         }
         const newZoom = paper.view.zoom*beta;
         if (!(j_zoom_min < newZoom && newZoom < j_zoom_max)) {
-          return;
+          beta = 1;
         }
         let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
         let ctr = paper.view.center;
