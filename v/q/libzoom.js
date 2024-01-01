@@ -35,12 +35,7 @@ function addZoomHandler(canvas, state, callback) {
         callback();
         e.preventDefault();
         const u = update(e, null);
-        
-        if (j_zoom_min > u.s ) { 
-          u.s = j_zoom_min;
-        } else if (u.s > j_zoom_max) {
-          u.s = j_zoom_max;
-        }
+      
         Object.assign(offset, {
           r: u.r,
           s: u.s
@@ -75,13 +70,7 @@ function addZoomHandler(canvas, state, callback) {
         if (e.touches.length !== 2) return;
         e.preventDefault();
         const u = update(e, offset);
-        
-        if (j_zoom_min > u.s ) { 
-          u.s = j_zoom_min;
-        } else if (u.s > j_zoom_max) {
-          u.s = j_zoom_max;
-        }
-        
+      
         let tt = (u.r * Math.PI) / 180;
         let cc = Math.cos(tt);
         let ss = Math.sin(tt);
