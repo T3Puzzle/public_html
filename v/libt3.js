@@ -192,7 +192,9 @@ function coord(xy) {
 
   let k = 1;
   let fy = ii - i * ybase;
-  if (ybase - fy > (2 * dy + ybase) % ybase) k = 0;
+  let gy = (2 * dy + ybase)/ybase;
+  let hy = gy-Math.floor(gy);
+  if ((ybase - fy)/ybase > hy) k = 0;
   let s = 0;
   if (k === 0) {
     if (dj < 1 / 2) {
