@@ -5,7 +5,6 @@ import {
   isT3,
   drawT3,
   colorT3,
-  arrangeT3,
   coord,
   toStr,
   parse,
@@ -13,15 +12,26 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} from "./libt3.js";
+}
+//from "https://codepen.io/alytile/pen/xxBGdJJ.js";
+from "https://www.t3puzzle.com/v/libt3.js";
+import {
+  addZoomHandler
+} 
+//from "https://codepen.io/alytile/pen/oNVjBEK.js";
+from: "./libzoom.js";
 
 const j_paint = [];
 let j_lastEvent;
 let j_white = false;
 let j_top = false;
+let j_center = false;
+/*
 let j_m0 = null, j_m1=null;
 let j_last = new paper.Matrix(1,0,0,1,0,0);
-let j_multitouching = false;
+
+*/
+let j_state = {};
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
@@ -34,6 +44,15 @@ window.addEventListener("load", () => {
   h_rotate.callback = function () {
     paper.view.rotation += 30;
   };
+  
+  addZoomHandler (h_canvas, j_state, ()=>{
+        for (let ai = 0; ai < j_paint.length; ai++) {
+          deleteShadowByStr(j_paint[ai]);
+        }
+        j_paint.length=0;
+        j_lastEvent = null;
+  });
+  /*
   h_canvas.getCTM = function () {
     return j_last;
   }
@@ -175,6 +194,7 @@ window.addEventListener("load", () => {
       passive: false
     }
   );
+  */
   tool.onMouseDown = function (event) {
     try {
       j_lastEvent = null;
@@ -185,13 +205,16 @@ window.addEventListener("load", () => {
         stroke: false
       });
       if (!hitResult) return;
+      
       let { ijk, s } = coord(event.point);
+      
       j_paint.length = 0;
       j_lastEvent = {
         drag: false,
         item: hitResult.item
       };
       j_top = !!isT3(hitResult.item, "top");
+      j_center = !!isT3(hitResult.item, "center");
       j_white = j_lastEvent.item.fillColor.red === 1;
       if (!isT3(hitResult.item)) {
         j_paint.push(toStr(ijk));
@@ -203,7 +226,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (!j_lastEvent) return;
-      if (j_multitouching) return;
+      if (j_state.multitouching) return;
       {
         let { ijk, s } = coord(event.point);
         if (j_paint.length > 0) {
@@ -233,7 +256,7 @@ window.addEventListener("load", () => {
         deleteShadowByStr(j_paint[ai]);
       }
       
-      if (j_multitouching) return;
+      if (j_state.multitouching) return;
       
       if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
@@ -241,7 +264,15 @@ window.addEventListener("load", () => {
         }
       } else {
         if (j_paint.length === 0) {
-          arrangeT3(j_lastEvent.item);
+          if (j_center) {
+            deleteT3ByStr(toStr(ijk));
+          } else {
+            if (j_white) {
+              drawT3(ijk, s+3, getT3Color());
+            } else {
+              drawT3(ijk, s, getT3Color());
+            }
+          }
         } else {
           if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
             drawT3(ijk, s, getT3Color());
