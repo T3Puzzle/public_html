@@ -14,7 +14,7 @@ import {
   ghostT3
 }
 //from "https://codepen.io/alytile/pen/xxBGdJJ.js";
-from "https://www.t3puzzle.com/v/libt3.js";
+from "./libt3.js";
 import {
   addZoomHandler
 } 
@@ -23,15 +23,9 @@ from "./libzoom.js";
 
 const j_paint = [];
 let j_lastEvent;
-let j_white = false;
-let j_top = false;
-let j_center = false;
-/*
-let j_m0 = null, j_m1=null;
-let j_last = new paper.Matrix(1,0,0,1,0,0);
+let j_event;
 
-*/
-let j_state = {};
+const j_zoom = {};
 
 window.addEventListener("load", () => {
   paper.setup(h_canvas);
@@ -45,159 +39,18 @@ window.addEventListener("load", () => {
     paper.view.rotation += 30;
   };
   
-  addZoomHandler (h_canvas, j_state, ()=>{
+  addZoomHandler (h_canvas, j_zoom, ()=>{
         for (let ai = 0; ai < j_paint.length; ai++) {
           deleteShadowByStr(j_paint[ai]);
         }
         j_paint.length=0;
         j_lastEvent = null;
   });
-  /*
-  h_canvas.getCTM = function () {
-    return j_last;
-  }
-  h_canvas.callback = function (multi,type,m0,m1) {
-      if (m0!==null) {
-       j_m0 = new paper.Matrix(m0.a,m0.b,m0.c,m0.d,m0.tx,m0.ty);
-      }
-      if (m1!==null) {
-        j_m1 = new paper.Matrix(m1.a,m1.b,m1.c,m1.d,m1.tx,m1.ty);
-      }
-      let g = j_m0.appended(j_m1);
-      paper.view.matrix = g;
-      j_last = g;
-  }
-  // zoom/pan/rotate
-  if ('ontouchstart' in window) {
-    const offset = {
-      r: 0,
-      s: 1
-    };
-    h_canvas.addEventListener('touchstart', e => {
-     try {
-      if (e.touches.length !== 2) return;
-      {
-        j_multitouching = true;
-        for (let ai = 0; ai < j_paint.length; ai++) {
-          deleteShadowByStr(j_paint[ai]);
-        }
-        j_paint.length=0;
-        j_lastEvent = null;
-      }
-      e.preventDefault();
-      const u = update(e, null);
-      Object.assign(offset, {
-        r: u.r,
-        s: u.s
-      });
-      const m = h_canvas.getCTM();
-      h_canvas.callback(true, 'touchstart', {
-        a: 1,
-        b: 0,
-        c: 0,
-        d: 1,
-        tx: u.cx,
-        ty: u.cy
-      }, {
-        a: m.a,
-        b: m.b,
-        c: m.c,
-        d: m.d,
-        tx: m.tx - u.cx,
-        ty: m.ty - u.cy
-      });
-      } catch (e) {
-        h_warn.textContent = 'touchStart: '+e;
-      }
-    });
-    h_canvas.addEventListener('touchmove', e => {
-      try {
-      if (e.touches.length !== 2) return;
-      e.preventDefault();
-      const u = update(e, offset);
-      let tt = u.r * Math.PI / 180;
-      let cc = Math.cos(tt);
-      let ss = Math.sin(tt);
-      let aa = u.s * cc;
-      let bb = u.s * ss;
-      h_canvas.callback(true, 'touchmove', {
-        a: aa,
-        b: bb,
-        c: -bb,
-        d: aa,
-        tx: u.cx,
-        ty: u.cy
-      }, null);      
-      } catch (e) {
-        h_warn.textContent = 'touchMove: '+e;
-      }
-    });
-    h_canvas.addEventListener('touchend', e => {
-      try {
-      if (!j_multitouching) return;
-      Object.assign(offset, {
-        r: 0,
-        s: 1
-      });
-      const m = h_canvas.getCTM();
-      h_canvas.callback(true, 'touchend', m, {
-        a: 1,
-        b: 0,
-        c: 0,
-        d: 1,
-        tx: 0,
-        ty: 0
-      });
-      j_multitouching = false;
-      } catch (e) {
-        h_warn.textContent = 'touchEnd: '+e;
-      }
-   });
-
-    function update(e, offset) {
-      const cx = (e.touches[0].pageX + e.touches[1].pageX) / 2;
-      const cy = (e.touches[0].pageY + e.touches[1].pageY) / 2;
-      const o = {
-        r: 0,
-        s: 1
-      };
-      offset ? Object.assign(o, {
-        r: offset.r,
-        s: offset.s
-      }) : null;
-      const dx = e.touches[1].pageX - e.touches[0].pageX;
-      const dy = e.touches[1].pageY - e.touches[0].pageY;
-      const r = Math.atan2(dy, dx) * 180 / Math.PI - o.r;
-      const s = Math.sqrt(dx * dx + dy * dy) / o.s;
-      return {
-        cx,
-        cy,
-        r,
-        s
-      };
-    }
-  }  
-  document.addEventListener(
-    "mousewheel",
-    (event) => {
-      const oldZoom = paper.view.zoom;
-      let beta = 0.95;
-      if (event.deltaY > 0) beta = 1.05;
-      let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
-      let ctr = paper.view.center;
-      let pc = mpos.subtract(ctr);
-      paper.view.zoom /= beta;
-      paper.view.center = mpos.subtract(pc.multiply(beta));
-      event.preventDefault();
-    },
-    {
-      passive: false
-    }
-  );
-  */
+  
   tool.onMouseDown = function (event) {
     try {
       j_lastEvent = null;
+      j_event = null;
       let hitResult = paper.project.hitTest(event.point, {
         fill: true,
         tolerance: 5,
@@ -213,9 +66,13 @@ window.addEventListener("load", () => {
         drag: false,
         item: hitResult.item
       };
-      j_top = !!isT3(hitResult.item, "top");
-      j_center = !!isT3(hitResult.item, "center");
-      j_white = j_lastEvent.item.fillColor.red === 1;
+      j_event = {
+        top: !!isT3(hitResult.item, "top"),
+        center: !!isT3(hitResult.item, "center"),
+        left: !!isT3(hitResult.item, "left"),
+        right: !!isT3(hitResult.item, "right"),
+        white: (j_lastEvent.item.fillColor.red === 1)
+      };
       if (!isT3(hitResult.item)) {
         j_paint.push(toStr(ijk));
       }
@@ -226,7 +83,7 @@ window.addEventListener("load", () => {
   tool.onMouseDrag = function (event) {
     try {
       if (!j_lastEvent) return;
-      if (j_state.multitouching) return;
+      if (j_zoom.multitouching) return;
       {
         let { ijk, s } = coord(event.point);
         if (j_paint.length > 0) {
@@ -256,7 +113,7 @@ window.addEventListener("load", () => {
         deleteShadowByStr(j_paint[ai]);
       }
       
-      if (j_state.multitouching) return;
+      if (j_zoom.multitouching) return;
       
       if (mode === "Eraser") {
         for (let ai = 0; ai < j_paint.length; ai++) {
@@ -264,10 +121,10 @@ window.addEventListener("load", () => {
         }
       } else {
         if (j_paint.length === 0) {
-          if (j_center) {
+          if (j_event.center) {
             deleteT3ByStr(toStr(ijk));
           } else {
-            if (j_white) {
+            if (j_event.white) {
               drawT3(ijk, s+3, getT3Color());
             } else {
               drawT3(ijk, s, getT3Color());
@@ -373,11 +230,11 @@ window.addEventListener("load", () => {
             }
             let mod = 0;
             if (circle) {
-              if (j_white !== j_top) {
+              if (j_event.white !== j_event.top) {
                 mod = 3;
               }
             } else {
-              if (j_white === j_top) {
+              if (j_event.white === j_event.top) {
                 mod = 3;
               }
             }
