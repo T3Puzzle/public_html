@@ -239,6 +239,7 @@ window.addEventListener("load", () => {
         for (let ai = 0; ai < j_paint.length; ai++) {
           deleteT3ByStr(j_paint[ai]);
         }
+        h_button.classList.remove('c_eraser');
       } else {
         if (j_paint.length === 0) {
           arrangeT3(j_lastEvent.item);
