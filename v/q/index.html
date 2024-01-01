@@ -51,26 +51,38 @@
 
 <div style="position:absolute;left:15px;top:15px;z-index:200;background-color:white;">
 <button id="h_button" class="c_emoji" style="" onClick="this.classList.toggle('c_eraser');" >✏️</button>
-  <button id="h_color" class="c_emoji c_blue" style="" onclick="
-    if ((' '+this.className+' ').indexOf(' c_blue ') > -1) {
-       this.classList.remove('c_blue');this.classList.add('c_green'); 
-    } else if ((' '+this.className+' ').indexOf(' c_green ') > -1) {
-       this.classList.remove('c_green');this.classList.add('c_pink'); 
-    } else if ((' '+this.className+' ').indexOf(' c_pink ') > -1) {
-       this.classList.remove('c_pink');this.classList.add('c_mint'); 
-    } else if ((' '+this.className+' ').indexOf(' c_mint ') > -1) {
-       this.classList.remove('c_mint');this.classList.add('c_blue');
-    }">▲</button>
+  <button id="h_color" class="c_emoji c_blue" style="" onclick="switchColor(this);h_button.classList.remove('c_eraser');">▲</button>
   <button  id="h_rotate" class="c_emoji" style="" onClick="this.callback();">↻</button>
   <script>
   if(('ontouchstart' in window)){
    h_rotate.style.display='none';
+  }
+  function switchColor (color) {
+    if (checkCSS(color,'c_blue')) {
+       setColorCSS(color,'c_green'); 
+    } else if (checkCSS(color,'c_green')) {
+       setColorCSS(color,'c_pink'); 
+    } else if (checkCSS(color,'c_pink')) {
+       setColorCSS(color,'c_mint'); 
+    } else if (checkCSS(color,'c_mint')) {
+       setColorCSS(color,'c_blue');
+    }    
+  }
+  function setColorCSS (element,add) {
+    element.classList.remove('c_blue');
+    element.classList.remove('c_green');
+    element.classList.remove('c_pink');
+    element.classList.remove('c_mint');
+    element.classList.add(add);
+  }
+  function checkCSS (element,css) {
+    return (element.className.split(' ').indexOf(css)!==-1);
   }
   </script>
   </div>
     
 <br/>
 <p id="h_warn" style="position:absolute;z-index:300;"></p>   
-<script type="module" src="./drawt3.js?zzz"></script>
+<script type="module" src="./drawt3.js?xz"></script>
 </body>
 </html>
