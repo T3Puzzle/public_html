@@ -13,7 +13,7 @@ import {
   deleteT3ByStr,
   ghostT3
 } from "./libt3.js";
-import { addZoomHandler, resetZoom } from "./libzoom.js?x";
+import { addZoomHandler, resetZoom } from "./libzoom.js?xx";
 
 const j_zoom = {};
 const j_paint = [];
