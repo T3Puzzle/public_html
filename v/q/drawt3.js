@@ -13,8 +13,7 @@ import {
   deleteT3ByStr,
   ghostT3
 } from "./libt3.js";
-import { addZoomHandler } 
-  from "./libzoom.js";
+import { addZoomHandler } from "./libzoom.js";
 
 const j_zoom = {};
 const j_paint = [];
@@ -40,27 +39,29 @@ function mkPath(point) {
   let myPath = new paper.Path();
   myPath.strokeColor = "red";
   myPath.strokeWidth = 10;
-  myPath.add(point[0]);
   for (let pi = 0; pi < point.length; pi++) {
     myPath.add(point[pi]);
   }
   return myPath;
 }
-function drawFrame(range, path) {
+function drawFrame(range, path,fill) {
   let ret = [];
   let all = [];
   for (let i = range.i_min; i < range.i_max + 1; i++) {
     for (let j = range.j_min; j < range.j_max + 1; j++) {
       for (let k = 0; k < 2; k++) {
         const frame = setFrame({ i, j, k });
-        all.push(frame);
-        //if (path.contains(tap({i,j,k}))) {
-        //
-        //  frame.fillColor = "#0000ff";
-        //}
+        all.push(frame);       
         if (path.intersects(frame)) {
           ret.push(toStr({ i, j, k }));
-          //frame.fillColor = "#00ff00";
+          //if (fill) {
+          //  frame.fillColor = "#00ff00";
+          //}
+        } else if (fill) {
+          if (path.contains(tap({i,j,k}))) {
+            ret.push(toStr({ i, j, k }));
+            //frame.fillColor = "#0000ff";
+          }
         }
       }
     }
@@ -90,30 +91,15 @@ function setFrame(ijk) {
   return frame;
 }
 
-function getShape(paint) {
-  return;
-  /*
+function getFill(paint,point) {
+  
   if(paint.lenth===0){return;}
   const {i_min,i_max,j_min,j_max} = getIJRange(paint);
-  const myPath = mkPath(paint);
- const hash = {};
-  let dup = null;
-  for (let pi=0;pi<paint.length;pi++) {
-    if (!(paint[pi] in hash)) {
-      hash[paint[pi]]=pi;
-    } else {
-      dup = hash[paint[pi]];
-    }
-  }
-  // end is dup
-  if (hash[paint[paint.length-1]]!==paint.length-1) {
-    myPath.closed = true;
-  }
-  //myPath.closed = true;
+  const myPath = mkPath(point);
+
   myPath.smooth();
+  return drawFrame({i_min,i_max,j_min,j_max},myPath,true);
   
-  drawFrame({i_min,i_max,j_min,j_max},myPath);
-  */
 }
 function neighboring(lp, p) {
   try {
@@ -162,7 +148,7 @@ function interpolatePaint(pa, po, out, put) {
     }
     const { i_min, i_max, j_min, j_max } = getIJRange([pa.l, pa.n]);
     const myPath = mkPath([po.l, po.n]);
-    const array = drawFrame({ i_min, i_max, j_min, j_max }, myPath);
+    const array = drawFrame({ i_min, i_max, j_min, j_max }, myPath,false);
     let next = findNext(pa.l, array, out,put);
     let cnt=0;
     const max=100;
@@ -197,12 +183,11 @@ function tap(ijk) {
   }
   return [x, y];
 }
-function processPaint(print, point, down) {
+function processPaint(paint, point, down) {
   let change = [];
-  let shape = getShape(print);
-  for (let ai = 1; ai < print.length; ai++) {
-    const lt = parse(print[ai - 1]);
-    const t = parse(print[ai]);
+  for (let ai = 1; ai < paint.length; ai++) {
+    const lt = parse(paint[ai - 1]);
+    const t = parse(paint[ai]);
     if (lt.k !== t.k) {
       if (lt.i === t.i && lt.j === t.j) {
         change.push("R");
@@ -270,14 +255,14 @@ function processPaint(print, point, down) {
       mod = 3;
     }
   }
-  for (let ai = 0; ai < print.length; ai++) {
-    deleteT3ByStr(print[ai]);
+  for (let ai = 0; ai < paint.length; ai++) {
+    deleteT3ByStr(paint[ai]);
     if (ai > 0) {
       if (color[ai - 1] === color[ai]) {
         mod = (mod + 3) % 6;
       }
     }
-    drawT3(parse(print[ai]), color[ai] + mod, getT3Color());
+    drawT3(parse(paint[ai]), color[ai] + mod, getT3Color());
   }
 }
 
@@ -291,6 +276,10 @@ window.addEventListener("load", () => {
 
   h_rotate.callback = function () {
     paper.view.rotation += 30;
+  };
+  h_view.callback = function () {
+    paper.view.matrix = new paper.Matrix(1,0,0,1,0,0);
+    paper.view.rotation = 30;
   };
 
   addZoomHandler(h_canvas, j_zoom, () => {
@@ -368,8 +357,9 @@ window.addEventListener("load", () => {
       }
       if (j_zoom.multitouching) return;
       if (mode === "Eraser") {
-        for (let ai = 0; ai < j_paint.length; ai++) {
-          deleteT3ByStr(j_paint[ai]);
+        const to_delete = getFill(j_paint,j_point);
+        for (let ai = 0; ai < to_delete.length; ai++) {
+          deleteT3ByStr(to_delete[ai]);
         }
       } else {
         if (!j_down.drag) {
