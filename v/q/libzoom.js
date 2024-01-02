@@ -1,14 +1,20 @@
-export { addZoomHandler };
+export { addZoomHandler, resetZoom };
 
+let j_m0 = null,j_m1 = null;
+let j_last = new paper.Matrix(1, 0, 0, 1, 0, 0);
+function resetZoom () {
+  j_m0 = new paper.Matrix(1, 0, 0, 1, 0, 0);
+  j_m0 = new paper.Matrix(1, 0, 0, 1, 0, 0);
+  j_last = new paper.Matrix(1, 0, 0, 1, 0, 0);
+  paper.view.matrix = new paper.Matrix(1, 0, 0, 1, 0, 0);
+}
 function addZoomHandler(canvas, state, callback) {
   const j_zoom_min = 0.2;
-  const j_zoom_max = 2;
+  const j_zoom_max = 3;
   state.multitouching = false;
-
   if ("ontouchstart" in window) {
-    let j_m0 = null,
-      j_m1 = null;
-    let j_last = new paper.Matrix(1, 0, 0, 1, 0, 0);
+
+    
     canvas.getCTM = function (processTouchStart) {
       return j_last;
     };
@@ -35,7 +41,12 @@ function addZoomHandler(canvas, state, callback) {
         callback();
         e.preventDefault();
         const u = update(e, null);
-      
+        
+        if (j_zoom_min > u.s ) { 
+          u.s = j_zoom_min;
+        } else if (u.s > j_zoom_max) {
+          u.s = j_zoom_max;
+        }
         Object.assign(offset, {
           r: u.r,
           s: u.s
@@ -70,7 +81,12 @@ function addZoomHandler(canvas, state, callback) {
         if (e.touches.length !== 2) return;
         e.preventDefault();
         const u = update(e, offset);
-      
+        
+        if (j_zoom_min > u.s ) { 
+          u.s = j_zoom_min;
+        } else if (u.s > j_zoom_max) {
+          u.s = j_zoom_max;
+        }
         let tt = (u.r * Math.PI) / 180;
         let cc = Math.cos(tt);
         let ss = Math.sin(tt);
@@ -151,6 +167,7 @@ function addZoomHandler(canvas, state, callback) {
         }
         const newZoom = paper.view.zoom*beta;
         if (!(j_zoom_min < newZoom && newZoom < j_zoom_max)) {
+          //return;
           beta = 1;
         }
         let mpos = paper.view.viewToProject([event.offsetX, event.offsetY]);
