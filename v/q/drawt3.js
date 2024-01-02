@@ -13,7 +13,7 @@ import {
   deleteT3ByStr,
   ghostT3
 } from "./libt3.js";
-import { addZoomHandler } from "./libzoom.js";
+import { addZoomHandler, resetZoom } from "./libzoom.js?x";
 
 const j_zoom = {};
 const j_paint = [];
@@ -278,7 +278,7 @@ window.addEventListener("load", () => {
     paper.view.rotation += 30;
   };
   h_view.callback = function () {
-    paper.view.matrix = new paper.Matrix(1,0,0,1,0,0);
+    resetZoom();
     paper.view.rotation = 30;
   };
 
