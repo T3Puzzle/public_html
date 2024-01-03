@@ -26,20 +26,24 @@
 
   .c_painter {
     transform: rotate(30deg);
-    text-shadow:1px 3px 10px #ff9900;
+    text-shadow: 1px 3px 10px #ff9900;
   }
+
   .c_eraser {
     transform: rotate(30deg);
-    text-shadow:1px 3px 10px #ff9900;
+    text-shadow: 1px 3px 10px #ff9900;
   }
+
   .c_paver {
     transform: rotate(15deg);
-    text-shadow:1px 3px 10px #ff9900;
+    text-shadow: 1px 3px 10px #ff9900;
   }
+
   .c_picker {
     transform: rotate(15deg);
-    text-shadow:1px 3px 10px #ff9900;
+    text-shadow: 1px 3px 10px #ff9900;
   }
+
   .c_emoji {
     border: none;
     margin: none;
@@ -81,7 +85,7 @@
 <div class="c_full" style="margin-top:15px;margin-left:15px;z-index:200;background-color:white;">
 
   <button id="h_color" class="c_emoji c_blue" onclick="switchColor(this);">▲</button>
-  <button id="h_painter" class="c_emoji" onClick="
+  <button id="h_painter" class="c_emoji c_painter" onClick="
         
  h_eraser.classList.remove('c_eraser');
  h_paver.classList.remove('c_paver');  
@@ -93,21 +97,21 @@
  h_paver.classList.remove('c_paver');  
  h_picker.classList.remove('c_picker');                                                            
                                                           this.classList.toggle('c_eraser');">🧽</button>
-  
+
   <button id="h_paver" class="c_emoji" onclick="
 
  h_painter.classList.remove('c_painter');                                                 
  h_eraser.classList.remove('c_eraser');
  h_picker.classList.remove('c_picker');  
                                                 this.classList.toggle('c_paver');">⬣</button>
- 
+
   <button id="h_picker" class="c_emoji" onclick="
 
  h_painter.classList.remove('c_painter');                                             
  h_eraser.classList.remove('c_eraser'); 
  h_paver.classList.remove('c_paver');  
                                                 this.classList.toggle('c_picker');">⎔</button>
-  
+
   <button id="h_rotate" class="c_emoji" onClick="this.callback();">↻</button>
   <button id="h_view" class="c_emoji" onClick="this.callback();">⌖</button>
 
@@ -115,10 +119,14 @@
     if (('ontouchstart' in window)) {
       h_rotate.style.display = 'none';
     }
+
     function switchColor(color) {
-      if (h_eraser.className.split(" ").indexOf("c_eraser") > -1) {
+      const mode = getMode();
+      if (mode !== 'Painter') {
         h_eraser.classList.remove('c_eraser');
+        h_paver.classList.remove('c_paver');
         h_picker.classList.remove('c_picker');
+        h_painter.classList.add('c_painter');
       } else {
         if (checkCSS(color, 'c_blue')) {
           setColorCSS(color, 'c_green');
@@ -129,6 +137,18 @@
         } else if (checkCSS(color, 'c_mint')) {
           setColorCSS(color, 'c_blue');
         }
+      }
+    }
+
+    function getMode() {
+      if (h_eraser.className.split(" ").indexOf("c_eraser") > -1) {
+        return "Eraser";
+      } else if (h_paver.className.split(" ").indexOf("c_paver") > -1) {
+        return "Paver";
+      } else if (h_picker.className.split(" ").indexOf("c_picker") > -1) {
+        return "Picker";
+      } else {
+        return "Painter";
       }
     }
 
