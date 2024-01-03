@@ -259,38 +259,42 @@ function processPaint(paint, point, down, up) {
     color.push(color[color.length - 1]);
   }
 
-  let mod = 0;
-  /*
-  if (circle) {
-    if (down.white !== (down.type === "top")) {
-      mod = 3;
-    }
-  } else {
-    if (down.white === (down.type === "top")) {
-      mod = 3;
+  let mod = 3;
+  if (trimExtrapolated) {
+    paint.length = 2;
+    point.length = 2;
+  }
+  let direct;
+  {
+    const lp = (paint[0]);
+    const p = (paint[1]);
+    const lpp = parse(lp);
+    const pp = parse(p);
+    
+    if ((lpp.j===pp.j)&&lpp.i===pp.i) {
+      if(lpp.k>pp.k) { direct = 'up';} else { direct = 'down';}
+    } else if (lpp.j===pp.j) {
+      if(lpp.i>pp.i) { direct = 'right';} else { direct = 'left';}
+    } else if (lpp.i===pp.i) {
+      if(lpp.j<pp.j) { direct = 'right';} else { direct = 'left';}
     }
   }
-  */
-
   const first_k = parse(paint[0]).k;
   if (color[0] === 0) {
     // left
+    if (direct==='left') mod +=3;
+    if (direct==='down') mod +=3;
     if (first_k) mod += 3;
   } else if (color[0] === 1) {
     // right
     if (first_k ) mod += 3;
+    if (direct==='right') mod +=3;
+    if (direct==='down') mod +=3;
+    console.log(direct);
   } else if (color[0] === 2) {
     // top
-    if (!first_k) mod += 3;
-  }
-  //console.log(down.white);
-  if (!down.white) {
-    // mod +=3;
-  }
-
-  if (trimExtrapolated) {
-    paint.length = 2;
-    point.length = 2;
+    if (direct==='left') mod +=3;
+    if (first_k)  mod += 3;
   }
   for (let ai = 0; ai < paint.length; ai++) {
     deleteT3ByStr(paint[ai]);
@@ -303,7 +307,7 @@ function processPaint(paint, point, down, up) {
         mod = (mod + 3) % 6;
       }
     }
-    drawT3(parse(paint[ai]), color[ai] + mod, getT3Color());
+    drawT3(parse(paint[ai]), color[ai] + mod%6, getT3Color());
   }
 }
 function hit(point) {
