@@ -93,7 +93,7 @@ function setShadow(ijk,color) {
     sides: 3,
     radius: l_cst.radius,
     fillColor: color,
-    opacity: 0.1,
+    opacity: 0.25,
   });
   frame.scaling = 1;
   frame.rotation = 30 + 180 * ((k + 1) % 2);
