@@ -80,6 +80,7 @@
 </canvas>
 <div class="c_full" style="margin-top:15px;margin-left:15px;z-index:200;background-color:white;">
 
+  <button id="h_color" class="c_emoji c_blue" onclick="switchColor(this);">▲</button>
   <button id="h_painter" class="c_emoji" onClick="
         
  h_eraser.classList.remove('c_eraser');
@@ -107,7 +108,6 @@
  h_paver.classList.remove('c_paver');  
                                                 this.classList.toggle('c_picker');">⎔</button>
   
-  <button id="h_color" class="c_emoji c_blue" onclick="switchColor(this);">▲</button>
   <button id="h_rotate" class="c_emoji" onClick="this.callback();">↻</button>
   <button id="h_view" class="c_emoji" onClick="this.callback();">⌖</button>
 
