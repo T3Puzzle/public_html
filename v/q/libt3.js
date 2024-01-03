@@ -161,7 +161,7 @@ function ghostT3(ijk,s,scale) {
   return setT3(ijk,s,0.6,1.7,COLOR_T3);
 }
 function drawT3(ijk, s,color) {
-  const grp = setT3(ijk,s,0.6,1,color);
+  const grp = setT3(ijk,s,1,1,color);
   grp.data.s = s;
   grp.data.color = color;
   if (toStr(ijk) in DUP) {
