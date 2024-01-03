@@ -12,13 +12,12 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} from "https://codepen.io/alytile/pen/xxBGdJJ.js";
-//from "./libt3.js";
+} 
+  from "./libt3.js";
 import {
   addZoomHandler,
   resetZoom
-} from "https://codepen.io/alytile/pen/oNVjBEK.js";
-//from "./libzoom.js";
+} from "./libzoom.js";
 
 const j_zoom = {};
 const j_paint = [];
