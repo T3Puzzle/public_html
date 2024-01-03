@@ -46,7 +46,7 @@ function getT3ByStr (str) {
 }
 function getConsts() {
   const radius = 50;
-  const offset = { x: 100, y: 50 };
+  const offset = { x: 200, y: 50 };
   const width = parseInt(
     window.getComputedStyle(h_canvas).getPropertyValue("width"),
     10
@@ -154,13 +154,16 @@ function setT3(ijk, s, opacity,scale,color) {
   t3c.onDoubleClick = function (event) {
     deleteT3ByStr(toStr(coord(event.point).ijk));
   };
+  
   return grp;
 }
 function ghostT3(ijk,s,scale) {
   return setT3(ijk,s,0.6,1.7,COLOR_T3);
 }
 function drawT3(ijk, s,color) {
-  const grp = setT3(ijk,s,1,1,color);
+  const grp = setT3(ijk,s,0.6,1,color);
+  grp.data.s = s;
+  grp.data.color = color;
   if (toStr(ijk) in DUP) {
     DUP[toStr(ijk)].remove();
   }
