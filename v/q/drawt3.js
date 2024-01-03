@@ -12,8 +12,13 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} from "./libt3.js";
-import { addZoomHandler } from "./libzoom.js";
+} from "https://codepen.io/alytile/pen/xxBGdJJ.js";
+//from "./libt3.js";
+import {
+  addZoomHandler,
+  resetZoom
+} from "https://codepen.io/alytile/pen/oNVjBEK.js";
+//from "./libzoom.js";
 
 const j_zoom = {};
 const j_paint = [];
@@ -39,13 +44,12 @@ function mkPath(point) {
   let myPath = new paper.Path();
   myPath.strokeColor = "red";
   myPath.strokeWidth = 10;
-  myPath.add(point[0]);
   for (let pi = 0; pi < point.length; pi++) {
     myPath.add(point[pi]);
   }
   return myPath;
 }
-function drawFrame(range, path) {
+function drawFrame(range, path, fill) {
   let ret = [];
   let all = [];
   for (let i = range.i_min; i < range.i_max + 1; i++) {
@@ -53,13 +57,16 @@ function drawFrame(range, path) {
       for (let k = 0; k < 2; k++) {
         const frame = setFrame({ i, j, k });
         all.push(frame);
-        //if (path.contains(tap({i,j,k}))) {
-        //
-        //  frame.fillColor = "#0000ff";
-        //}
         if (path.intersects(frame)) {
           ret.push(toStr({ i, j, k }));
-          //frame.fillColor = "#00ff00";
+          //if (fill) {
+          //  frame.fillColor = "#00ff00";
+          //}
+        } else if (fill) {
+          if (path.contains(tap({ i, j, k }))) {
+            ret.push(toStr({ i, j, k }));
+            //frame.fillColor = "#0000ff";
+          }
         }
       }
     }
@@ -88,32 +95,17 @@ function setFrame(ijk) {
   frame.position = [l_cst.offset.x + dx, l_cst.offset.y + dy];
   return frame;
 }
+function getFill(paint, point) {
+  if (paint.lenth === 0) {
+    return;
+  }
+  const { i_min, i_max, j_min, j_max } = getIJRange(paint);
+  const myPath = mkPath(point);
 
-function getShape(paint) {
-  return;
-  /*
-  if(paint.lenth===0){return;}
-  const {i_min,i_max,j_min,j_max} = getIJRange(paint);
-  const myPath = mkPath(paint);
- const hash = {};
-  let dup = null;
-  for (let pi=0;pi<paint.length;pi++) {
-    if (!(paint[pi] in hash)) {
-      hash[paint[pi]]=pi;
-    } else {
-      dup = hash[paint[pi]];
-    }
-  }
-  // end is dup
-  if (hash[paint[paint.length-1]]!==paint.length-1) {
-    myPath.closed = true;
-  }
-  //myPath.closed = true;
   myPath.smooth();
-  
-  drawFrame({i_min,i_max,j_min,j_max},myPath);
-  */
+  return drawFrame({ i_min, i_max, j_min, j_max }, myPath, true);
 }
+
 function neighboring(lp, p) {
   try {
     const lt = parse(lp);
@@ -161,7 +153,7 @@ function interpolatePaint(pa, po, out, put) {
     }
     const { i_min, i_max, j_min, j_max } = getIJRange([pa.l, pa.n]);
     const myPath = mkPath([po.l, po.n]);
-    const array = drawFrame({ i_min, i_max, j_min, j_max }, myPath);
+    const array = drawFrame({ i_min, i_max, j_min, j_max }, myPath, false);
     let next = findNext(pa.l, array, out, put);
     let cnt = 0;
     const max = 100;
@@ -196,12 +188,11 @@ function tap(ijk) {
   }
   return [x, y];
 }
-function processPaint(print, point, down) {
+function processPaint(paint, point, down, up) {
   let change = [];
-  let shape = getShape(print);
-  for (let ai = 1; ai < print.length; ai++) {
-    const lt = parse(print[ai - 1]);
-    const t = parse(print[ai]);
+  for (let ai = 1; ai < paint.length; ai++) {
+    const lt = parse(paint[ai - 1]);
+    const t = parse(paint[ai]);
     if (lt.k !== t.k) {
       if (lt.i === t.i && lt.j === t.j) {
         change.push("R");
@@ -259,24 +250,48 @@ function processPaint(print, point, down) {
       color.push(color[color.length - 1]);
     }
   }
+
   let mod = 0;
+  /*
   if (circle) {
-    if ((down.white !== down.type) === "top") {
+    if (down.white !== (down.type === "top")) {
       mod = 3;
     }
   } else {
-    if ((down.white === down.type) === "top") {
+    if (down.white === (down.type === "top")) {
       mod = 3;
     }
   }
-  for (let ai = 0; ai < print.length; ai++) {
-    deleteT3ByStr(print[ai]);
+  */
+  const first_k = parse(paint[0]).k;
+
+  if (color[0] === 0) {
+    // left
+    if (first_k) mod += 3;
+  } else if (color[0] === 1) {
+    // right
+    if (first_k) mod += 3;
+  } else if (color[0] === 2) {
+    // top
+    if (!first_k) mod += 3;
+  }
+
+  if (!down.white) {
+    // mod +=3;
+  }
+
+  for (let ai = 0; ai < paint.length; ai++) {
+    deleteT3ByStr(paint[ai]);
     if (ai > 0) {
-      if (color[ai - 1] === color[ai]) {
+      // alternating neighboring colors
+      if (
+        color[ai - 1] === color[ai] &&
+        neighboring(paint[ai - 1], paint[ai])
+      ) {
         mod = (mod + 3) % 6;
       }
     }
-    drawT3(parse(print[ai]), color[ai] + mod, getT3Color());
+    drawT3(parse(paint[ai]), color[ai] + mod, getT3Color());
   }
 }
 function hit(point) {
@@ -305,14 +320,16 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   setBackground();
-  drawT3({ i: 3, j: 3, k: 0 }, 2, getT3Color());
-  drawT3({ i: 3, j: 2, k: 1 }, 5, getT3Color());
+  drawT3(coord(paper.view.center).ijk, 2, getT3Color());
   paper.view.rotation = 30;
 
   h_rotate.callback = function () {
     paper.view.rotation += 30;
   };
-
+  h_view.callback = function () {
+    resetZoom();
+    paper.view.rotation = 30;
+  };
   addZoomHandler(h_canvas, j_zoom, () => {
     for (let ai = 0; ai < j_paint.length; ai++) {
       deleteShadowByStr(j_paint[ai]);
@@ -330,12 +347,13 @@ window.addEventListener("load", () => {
       let { ijk, s } = coord(event.point);
       j_paint.length = 0;
       j_point.length = 0;
+      j_down = detect(hitResult);
       // place new
-      if (!isT3(hitResult.item)) {
+      j_down.first = !isT3(hitResult.item);
+      if (j_down.first) {
         j_paint.push(toStr(ijk));
         j_point.push(event.point);
       }
-      j_down = detect(hitResult);
     } catch (e) {
       h_warn.textContent = "down:" + e;
     }
@@ -375,8 +393,9 @@ window.addEventListener("load", () => {
       if (j_zoom.multitouching) return;
       const white = j_down.white ? 3 : 0;
       if (mode === "Eraser") {
-        for (let ai = 0; ai < j_paint.length; ai++) {
-          deleteT3ByStr(j_paint[ai]);
+        const to_delete = getFill(j_paint, j_point);
+        for (let ai = 0; ai < to_delete.length; ai++) {
+          deleteT3ByStr(to_delete[ai]);
         }
       } else {
         if (!j_down.drag) {
@@ -419,7 +438,7 @@ window.addEventListener("load", () => {
               // do nothing
             }
           } else {
-            processPaint(j_paint, j_point, j_down);
+            processPaint(j_paint, j_point, j_down, detect(hit()));
           }
         }
         return;
