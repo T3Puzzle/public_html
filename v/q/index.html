@@ -23,8 +23,22 @@
     width: 100%;
     height: 100%;
   }
+
+  .c_painter {
+    transform: rotate(30deg);
+    text-shadow:1px 3px 10px #ff9900;
+  }
   .c_eraser {
-    transform:rotate(180deg);
+    transform: rotate(30deg);
+    text-shadow:1px 3px 10px #ff9900;
+  }
+  .c_paver {
+    transform: rotate(15deg);
+    text-shadow:1px 3px 10px #ff9900;
+  }
+  .c_picker {
+    transform: rotate(15deg);
+    text-shadow:1px 3px 10px #ff9900;
   }
   .c_emoji {
     border: none;
@@ -33,65 +47,105 @@
     padding-left: 15px;
     padding-top: 0vw;
     padding-botton: 0vw;
-    background: none; 
+    background: none;
     user-select: none;
     touch-action: none;
     -webkit-user-select: none;
-    font-size:60px;
+    font-size: 60px;
   }
+
   .c_blue {
-    color:#59BCE0;
+    color: #59BCE0;
   }
+
   .c_green {
-    color:#7BC677;
+    color: #7BC677;
   }
+
   .c_pink {
-    color:#F89ACD;
+    color: #F89ACD;
   }
+
   .c_mint {
-    color:#C1FAD2;
+    color: #C1FAD2;
   }
+
   .c_full {
-    position: absolute; left: 0px; top: 0px
+    position: absolute;
+    left: 0px;
+    top: 0px
   }
 </style>
-  <canvas id="h_canvas" class="c_draw c_full" style="z-index:0;">
-  </canvas>
+<canvas id="h_canvas" class="c_draw c_full" style="z-index:0;">
+</canvas>
 <div class="c_full" style="margin-top:15px;margin-left:15px;z-index:200;background-color:white;">
-<button id="h_button" class="c_emoji" style="" onClick="this.classList.toggle('c_eraser');" >✏️</button>
-<button id="h_color" class="c_emoji c_blue" onclick="switchColor(this);h_button.classList.remove('c_eraser');">▲</button>
-<button  id="h_rotate" class="c_emoji" onClick="this.callback();">↻</button>
-<button id="h_view" class="c_emoji"
-        onClick="this.callback();">⌖</button>
 
-<script>
-  if(('ontouchstart' in window)){
-   h_rotate.style.display='none';
-  }
-  function switchColor (color) {
-    if (checkCSS(color,'c_blue')) {
-       setColorCSS(color,'c_green'); 
-    } else if (checkCSS(color,'c_green')) {
-       setColorCSS(color,'c_pink'); 
-    } else if (checkCSS(color,'c_pink')) {
-       setColorCSS(color,'c_mint'); 
-    } else if (checkCSS(color,'c_mint')) {
-       setColorCSS(color,'c_blue');
-    }    
-  }
-  function setColorCSS (element,add) {
-    element.classList.remove('c_blue');
-    element.classList.remove('c_green');
-    element.classList.remove('c_pink');
-    element.classList.remove('c_mint');
-    element.classList.add(add);
-  }
-  function checkCSS (element,css) {
-    return (element.className.split(' ').indexOf(css)!==-1);
-  }
+  <button id="h_painter" class="c_emoji" onClick="
+        
+ h_eraser.classList.remove('c_eraser');
+ h_paver.classList.remove('c_paver');  
+ h_picker.classList.remove('c_picker');                                                            
+                                                          this.classList.toggle('c_painter');">🖌️</button>
+  <button id="h_eraser" class="c_emoji" onClick="
+ 
+ h_painter.classList.remove('c_painter'); 
+ h_paver.classList.remove('c_paver');  
+ h_picker.classList.remove('c_picker');                                                            
+                                                          this.classList.toggle('c_eraser');">🧽</button>
+  
+  <button id="h_paver" class="c_emoji" onclick="
+
+ h_painter.classList.remove('c_painter');                                                 
+ h_eraser.classList.remove('c_eraser');
+ h_picker.classList.remove('c_picker');  
+                                                this.classList.toggle('c_paver');">⬣</button>
+ 
+  <button id="h_picker" class="c_emoji" onclick="
+
+ h_painter.classList.remove('c_painter');                                             
+ h_eraser.classList.remove('c_eraser'); 
+ h_paver.classList.remove('c_paver');  
+                                                this.classList.toggle('c_picker');">⎔</button>
+  
+  <button id="h_color" class="c_emoji c_blue" onclick="switchColor(this);">▲</button>
+  <button id="h_rotate" class="c_emoji" onClick="this.callback();">↻</button>
+  <button id="h_view" class="c_emoji" onClick="this.callback();">⌖</button>
+
+  <script>
+    if (('ontouchstart' in window)) {
+      h_rotate.style.display = 'none';
+    }
+    function switchColor(color) {
+      if (h_eraser.className.split(" ").indexOf("c_eraser") > -1) {
+        h_eraser.classList.remove('c_eraser');
+        h_picker.classList.remove('c_picker');
+      } else {
+        if (checkCSS(color, 'c_blue')) {
+          setColorCSS(color, 'c_green');
+        } else if (checkCSS(color, 'c_green')) {
+          setColorCSS(color, 'c_pink');
+        } else if (checkCSS(color, 'c_pink')) {
+          setColorCSS(color, 'c_mint');
+        } else if (checkCSS(color, 'c_mint')) {
+          setColorCSS(color, 'c_blue');
+        }
+      }
+    }
+
+    function setColorCSS(element, add) {
+      element.classList.remove('c_blue');
+      element.classList.remove('c_green');
+      element.classList.remove('c_pink');
+      element.classList.remove('c_mint');
+      element.classList.add(add);
+    }
+
+    function checkCSS(element, css) {
+      return (element.className.split(' ').indexOf(css) !== -1);
+    }
   </script>
-  </div> 
-<br/>
+</div>
+<br />
 <p id="h_warn" style="position:absolute;z-index:300;"></p>
 
 <!-- copy end here --->
