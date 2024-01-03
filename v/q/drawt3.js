@@ -12,7 +12,7 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} from "./libt3.js";
+} from "./libt3.js?xx";
 import {
   addZoomHandler,
   resetZoom
