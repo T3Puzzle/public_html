@@ -188,21 +188,24 @@ function tap(ijk) {
 }
 function processPaint(paint, point, down, up) {
   let change = [];
-  const first_k = parse(paint[0]).k;
-  let p_trim = false;
-  if (point.length===2){
-    const _f=point[0];
-    const _s=point[1];
+  let trimExtrapolated = false;
+  // extrapolate
+  if (point.length === 2) {
+    const dx= (point[1].x - point[0].x);
+    const dy=(point[1].y - point[0].y);
+    const norm = Math.sqrt(dx*dx+dy*dy);
+    const extra= l_cst.radius*2/norm;
     const _p = {
-      x:4*_s.x-3*_f.x,
-      y:4*_s.y-3*_f.y
+      x: point[1].x + extra * dx,
+      y: point[1].y + extra * dy
     };
     interpolatePaint(
       { l: paint[paint.length - 1], n: toStr(coord(_p).ijk) },
       { l: point[point.length - 1], n: _p },
-      paint,point
+      paint,
+      point
     );
-    p_trim=  (point.length>2);
+    trimExtrapolated = point.length > 2;
   }
   for (let ai = 1; ai < paint.length; ai++) {
     const lt = parse(paint[ai - 1]);
@@ -224,60 +227,36 @@ function processPaint(paint, point, down, up) {
   let circle = false;
   let circlev = 0;
   let color = [];
-  if (change.length === 1) {
-    
-    if (change[0] === "L") {
-      if (first_k) {
-        color = [2, 2];
-      } else {
-        color = [2, 2];
-      }
-    } else if (change[0] === "M") {
-      
-      if (first_k) {
-        color = [2, 2];
-      } else {
-        color = [2, 2];
-      }    
-    } else if (change[0] === "R") {
-      
-       if (first_k) {
-        color = [0, 0];
-      } else {
-        color = [1, 1];
-      }    
-    }
-  } else {
-    for (let ci = 1; ci < change.length; ci++) {
-      if ((change[ci - 1] + change[ci]).indexOf("R") == -1) {
-        color.push(2);
-      } else if ((change[ci - 1] + change[ci]).indexOf("L") == -1) {
-        color.push(1);
-      } else if ((change[ci - 1] + change[ci]).indexOf("M") == -1) {
-        color.push(0);
-      }
-    }
-    color.unshift(color[0]);
 
-    if (color.length >= 3) {
-      let c3 = color[color.length - 3];
-      let cc = [
-        change[change.length - 1],
-        change[change.length - 2],
-        change[change.length - 3]
-      ];
-      cc.sort();
-      // circle
-      if (cc.sort().join("") === "LMR") {
-        circle = true;
-        circlev = c3;
-      }
+  for (let ci = 1; ci < change.length; ci++) {
+    if ((change[ci - 1] + change[ci]).indexOf("R") == -1) {
+      color.push(2);
+    } else if ((change[ci - 1] + change[ci]).indexOf("L") == -1) {
+      color.push(1);
+    } else if ((change[ci - 1] + change[ci]).indexOf("M") == -1) {
+      color.push(0);
     }
-    if (circle) {
-      color.push(circlev);
-    } else {
-      color.push(color[color.length - 1]);
+  }
+  color.unshift(color[0]);
+
+  if (color.length >= 3) {
+    let c3 = color[color.length - 3];
+    let cc = [
+      change[change.length - 1],
+      change[change.length - 2],
+      change[change.length - 3]
+    ];
+    cc.sort();
+    // circle
+    if (cc.sort().join("") === "LMR") {
+      circle = true;
+      circlev = c3;
     }
+  }
+  if (circle) {
+    color.push(circlev);
+  } else {
+    color.push(color[color.length - 1]);
   }
 
   let mod = 0;
@@ -293,24 +272,25 @@ function processPaint(paint, point, down, up) {
   }
   */
 
+  const first_k = parse(paint[0]).k;
   if (color[0] === 0) {
     // left
     if (first_k) mod += 3;
   } else if (color[0] === 1) {
     // right
-    if (first_k) mod += 3;
+    if (first_k ) mod += 3;
   } else if (color[0] === 2) {
     // top
     if (!first_k) mod += 3;
   }
-
+  //console.log(down.white);
   if (!down.white) {
     // mod +=3;
   }
 
-  if (p_trim) {
-    paint.length=2;
-    point.length=2;
+  if (trimExtrapolated) {
+    paint.length = 2;
+    point.length = 2;
   }
   for (let ai = 0; ai < paint.length; ai++) {
     deleteT3ByStr(paint[ai]);
