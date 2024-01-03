@@ -12,8 +12,7 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} 
-  from "./libt3.js";
+} from "./libt3.js";
 import {
   addZoomHandler,
   resetZoom
@@ -189,6 +188,22 @@ function tap(ijk) {
 }
 function processPaint(paint, point, down, up) {
   let change = [];
+  const first_k = parse(paint[0]).k;
+  let p_trim = false;
+  if (point.length===2){
+    const _f=point[0];
+    const _s=point[1];
+    const _p = {
+      x:4*_s.x-3*_f.x,
+      y:4*_s.y-3*_f.y
+    };
+    interpolatePaint(
+      { l: paint[paint.length - 1], n: toStr(coord(_p).ijk) },
+      { l: point[point.length - 1], n: _p },
+      paint,point
+    );
+    p_trim=  (point.length>2);
+  }
   for (let ai = 1; ai < paint.length; ai++) {
     const lt = parse(paint[ai - 1]);
     const t = parse(paint[ai]);
@@ -210,12 +225,27 @@ function processPaint(paint, point, down, up) {
   let circlev = 0;
   let color = [];
   if (change.length === 1) {
+    
     if (change[0] === "L") {
-      color = [2, 2];
+      if (first_k) {
+        color = [2, 2];
+      } else {
+        color = [2, 2];
+      }
     } else if (change[0] === "M") {
-      color = [1, 1];
+      
+      if (first_k) {
+        color = [2, 2];
+      } else {
+        color = [2, 2];
+      }    
     } else if (change[0] === "R") {
-      color = [0, 0];
+      
+       if (first_k) {
+        color = [0, 0];
+      } else {
+        color = [1, 1];
+      }    
     }
   } else {
     for (let ci = 1; ci < change.length; ci++) {
@@ -262,7 +292,6 @@ function processPaint(paint, point, down, up) {
     }
   }
   */
-  const first_k = parse(paint[0]).k;
 
   if (color[0] === 0) {
     // left
@@ -279,6 +308,10 @@ function processPaint(paint, point, down, up) {
     // mod +=3;
   }
 
+  if (p_trim) {
+    paint.length=2;
+    point.length=2;
+  }
   for (let ai = 0; ai < paint.length; ai++) {
     deleteT3ByStr(paint[ai]);
     if (ai > 0) {
@@ -437,7 +470,7 @@ window.addEventListener("load", () => {
               // do nothing
             }
           } else {
-            processPaint(j_paint, j_point, j_down, detect(hit()));
+            processPaint(j_paint, j_point, j_down, detect(hit(event.point)));
           }
         }
         return;
