@@ -12,7 +12,7 @@ import {
   dups,
   deleteT3ByStr,
   ghostT3
-} from "./libt3.js?xx";
+} from "./libt3.js";
 import {
   addZoomHandler,
   resetZoom
@@ -313,7 +313,6 @@ function processPaint(paint, point, down, up) {
     if (first_k) mod += 3;
   }
   for (let ai = 0; ai < paint.length; ai++) {
-    deleteT3ByStr(paint[ai]);
     if (ai > 0) {
       // alternating neighboring colors
       if (
@@ -323,7 +322,7 @@ function processPaint(paint, point, down, up) {
         mod = (mod + 3) % 6;
       }
     }
-    drawT3(parse(paint[ai]), color[ai] + (mod % 6), getT3Color());
+    drawT3(parse(paint[ai]), color[ai] + (mod % 6), getT3Color(),true);
   }
 }
 function hit(point) {
@@ -443,7 +442,7 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   setBackground();
-  drawT3(coord(paper.view.center).ijk, 2, getT3Color());
+  drawT3(coord(paper.view.center).ijk, 2, getT3Color(),false);
   paper.view.rotation = 30;
 
   h_rotate.callback = function () {
@@ -491,10 +490,10 @@ window.addEventListener("load", () => {
           for (let pi = 0; pi < j_hex.length; pi++) {
             const pj = pi % 6;
             if (j_hex_ss.length === 0) {
-              drawT3(parse(j_hex[pi]), pj, getT3Color());
+              drawT3(parse(j_hex[pi]), pj, getT3Color(),false);
             } else {
               if (j_hex_ss[pj] !== undefined) {
-                drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj]);
+                drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj],false);
               }
             }
           }
@@ -539,10 +538,10 @@ window.addEventListener("load", () => {
               for (let pi = 0; pi < j_hex.length; pi++) {
                 const pj = pi % 6;
                 if (j_hex_ss.length === 0) {
-                  drawT3(parse(j_hex[pi]), pj, getT3Color());
+                  drawT3(parse(j_hex[pi]), pj, getT3Color(),false);
                 } else {
                   if (j_hex_ss[pj] !== undefined) {
-                    drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj]);
+                    drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj],false);
                   }
                 }
               }
@@ -605,7 +604,7 @@ window.addEventListener("load", () => {
           if (j_down.type === "center") {
             deleteT3ByStr(toStr(ijk));
           } else {
-            drawT3(ijk, s + white, getT3Color());
+            drawT3(ijk, s + white, getT3Color(),false);
           }
         } else {
           if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
@@ -615,25 +614,25 @@ window.addEventListener("load", () => {
               // do nothing
             } else if (j_down.type == "top") {
               if (up.type === "left") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
               } else if (up.type === "right") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
               } else {
                 // do nothing
               }
             } else if (j_down.type == "left") {
               if (up.type === "right") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
               } else if (up.type === "top") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
               } else {
                 // do nothing
               }
             } else if (j_down.type == "right") {
               if (up.type === "top") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
               } else if (up.type === "left") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color());
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
               } else {
                 // do nothing
               }
