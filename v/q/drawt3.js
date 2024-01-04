@@ -604,7 +604,11 @@ window.addEventListener("load", () => {
           if (j_down.type === "center") {
             deleteT3ByStr(toStr(ijk));
           } else {
-            drawT3(ijk, s + white, getT3Color(),false);
+            if (!j_down.white && j_down.type!=="top") {
+              drawT3(ijk, (s+3)%6, getT3Color(),false);
+            } else {
+              drawT3(ijk, s +white, getT3Color(),false);
+            }
           }
         } else {
           if (j_paint.length === 1 && j_paint[0] === toStr(ijk)) {
