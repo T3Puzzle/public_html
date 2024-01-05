@@ -170,6 +170,22 @@ function drawT3(ijk, _s,color,check) {
           if(s%3 !== DUP[toStr(ijk)].data.s) {
             s =  DUP[toStr(ijk)].data.s;
           }
+        } else {
+          if(s !== DUP[toStr(ijk)].data.s) {
+            if (s===0+3 && 1+3===DUP[toStr(ijk)].data.s) {
+              s= 2;
+            } else if (s===0+3 && 2+3===DUP[toStr(ijk)].data.s) {
+              s= 1;
+            } else if (s===1+3 && 0+3===DUP[toStr(ijk)].data.s) {
+              s= 2;
+            } else if (s===1+3 && 2+3===DUP[toStr(ijk)].data.s) {
+              s= 0;
+            } else if (s===2+3 && 0+3===DUP[toStr(ijk)].data.s) {
+              s= 1;
+            } else if (s===2+3 && 1+3===DUP[toStr(ijk)].data.s) {
+              s= 2;             
+            }
+          }          
         }
       }
     }
