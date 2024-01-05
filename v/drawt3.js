@@ -334,7 +334,7 @@ function hit(point) {
   });
 }
 function detect(hitResult) {
-  let type = "top";
+  let type = "empty";
   ["top", "center", "left", "right"].map((t) => {
     if (isT3(hitResult.item, t)) type = t;
   });
@@ -601,8 +601,11 @@ window.addEventListener("load", () => {
         }
       } else {
         if (!j_down.drag) {
+          
           if (j_down.type === "center") {
             deleteT3ByStr(toStr(ijk));
+          } else if (j_down.type === "empty") {
+            drawT3(ijk, (s+3)%6, getT3Color(),false);
           } else {
             if (!j_down.white && j_down.type!=="top") {
               drawT3(ijk, (s+3)%6, getT3Color(),false);
