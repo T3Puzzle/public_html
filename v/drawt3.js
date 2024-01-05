@@ -229,8 +229,7 @@ function processPaint(paint, point, down, up) {
       change.push("X");
     }
   }
-  let circle = false;
-  let circlev = 0;
+  console.log(change);
   let color = [];
 
   for (let ci = 1; ci < change.length; ci++) {
@@ -242,26 +241,52 @@ function processPaint(paint, point, down, up) {
       color.push(0);
     }
   }
-  color.unshift(color[0]);
-
-  if (color.length >= 3) {
-    let c3 = color[color.length - 3];
-    let cc = [
-      change[change.length - 1],
-      change[change.length - 2],
-      change[change.length - 3]
-    ];
-    cc.sort();
-    // circle
-    if (cc.sort().join("") === "LMR") {
-      circle = true;
-      circlev = c3;
+  // path begin
+  {
+    let curl = false;
+    let curlv = 0;
+    if (change.length >= 3) {
+      let cc = [change[0], change[1], change[2]];
+      cc.sort();
+      if (cc.sort().join("") === "LMR") {
+        curl = true;
+        const c12 = [color[0], color[1]];
+        [0, 1, 2].map((v) => {
+          if (c12.indexOf(v) === -1) curlv = v;
+        });
+      }
+    }
+    if (curl) {
+      // TODO:
+      color.unshift(curlv);
+    } else {
+      color.unshift(color[0]);
     }
   }
-  if (circle) {
-    color.push(circlev);
-  } else {
-    color.push(color[color.length - 1]);
+  // path end
+  {
+    let curl = false;
+    let curlv = 0;
+    if (change.length >= 3) {
+      let cc = [
+        change[change.length - 1],
+        change[change.length - 2],
+        change[change.length - 3]
+      ];
+      cc.sort();
+      if (cc.sort().join("") === "LMR") {
+        curl = true;
+        const c12 = [color[color.length - 1], color[color.length - 2]];
+        [0, 1, 2].map((v) => {
+          if (c12.indexOf(v) === -1) curlv = v;
+        });
+      }
+    }
+    if (curl) {
+      color.push(curlv);
+    } else {
+      color.push(color[color.length - 1]);
+    }
   }
 
   let mod = 3;
@@ -322,7 +347,7 @@ function processPaint(paint, point, down, up) {
         mod = (mod + 3) % 6;
       }
     }
-    drawT3(parse(paint[ai]), color[ai] + (mod % 6), getT3Color(),true);
+    drawT3(parse(paint[ai]), color[ai] + (mod % 6), getT3Color(), true);
   }
 }
 function hit(point) {
@@ -442,7 +467,7 @@ window.addEventListener("load", () => {
   paper.setup(h_canvas);
   const tool = new paper.Tool();
   setBackground();
-  drawT3(coord(paper.view.center).ijk, 2, getT3Color(),false);
+  drawT3(coord(paper.view.center).ijk, 2, getT3Color(), false);
   paper.view.rotation = 30;
 
   h_rotate.callback = function () {
@@ -490,10 +515,10 @@ window.addEventListener("load", () => {
           for (let pi = 0; pi < j_hex.length; pi++) {
             const pj = pi % 6;
             if (j_hex_ss.length === 0) {
-              drawT3(parse(j_hex[pi]), pj, getT3Color(),false);
+              drawT3(parse(j_hex[pi]), pj, getT3Color(), false);
             } else {
               if (j_hex_ss[pj] !== undefined) {
-                drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj],false);
+                drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj], false);
               }
             }
           }
@@ -538,10 +563,15 @@ window.addEventListener("load", () => {
               for (let pi = 0; pi < j_hex.length; pi++) {
                 const pj = pi % 6;
                 if (j_hex_ss.length === 0) {
-                  drawT3(parse(j_hex[pi]), pj, getT3Color(),false);
+                  drawT3(parse(j_hex[pi]), pj, getT3Color(), false);
                 } else {
                   if (j_hex_ss[pj] !== undefined) {
-                    drawT3(parse(j_hex[pi]), j_hex_ss[pj], j_hex_colors[pj],false);
+                    drawT3(
+                      parse(j_hex[pi]),
+                      j_hex_ss[pj],
+                      j_hex_colors[pj],
+                      false
+                    );
                   }
                 }
               }
@@ -601,16 +631,15 @@ window.addEventListener("load", () => {
         }
       } else {
         if (!j_down.drag) {
-          
           if (j_down.type === "center") {
             deleteT3ByStr(toStr(ijk));
           } else if (j_down.type === "empty") {
-            drawT3(ijk, (s+3)%6, getT3Color(),false);
+            drawT3(ijk, (s + 3) % 6, getT3Color(), false);
           } else {
-            if (!j_down.white && j_down.type!=="top") {
-              drawT3(ijk, (s+3)%6, getT3Color(),false);
+            if (!j_down.white && j_down.type !== "top") {
+              drawT3(ijk, (s + 3) % 6, getT3Color(), false);
             } else {
-              drawT3(ijk, s +white, getT3Color(),false);
+              drawT3(ijk, s + white, getT3Color(), false);
             }
           }
         } else {
@@ -621,25 +650,25 @@ window.addEventListener("load", () => {
               // do nothing
             } else if (j_down.type == "top") {
               if (up.type === "left") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(), false);
               } else if (up.type === "right") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(), false);
               } else {
                 // do nothing
               }
             } else if (j_down.type == "left") {
               if (up.type === "right") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(), false);
               } else if (up.type === "top") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(), false);
               } else {
                 // do nothing
               }
             } else if (j_down.type == "right") {
               if (up.type === "top") {
-                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 1) % 3) + white, getT3Color(), false);
               } else if (up.type === "left") {
-                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(),false);
+                drawT3(ijk, ((s + 2) % 3) + white, getT3Color(), false);
               } else {
                 // do nothing
               }
