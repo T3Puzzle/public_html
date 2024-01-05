@@ -160,22 +160,22 @@ function setT3(ijk, s, opacity,scale,color) {
 function ghostT3(ijk,s,scale) {
   return setT3(ijk,s,0.6,1.7,COLOR_T3);
 }
-function drawT3(ijk, s,color,check) {
-  let _s = s;
+function drawT3(ijk, _s,color,check) {
+  let s = _s;
   let grp;
   if (toStr(ijk) in DUP) {
     if (check) {
-      if (s>=3) {
+      if (_s>=3) {
         if (DUP[toStr(ijk)].data.s<3) {
-          if(_s%3 !== DUP[toStr(ijk)].data.s) {
-            _s =  DUP[toStr(ijk)].data.s;
+          if(s%3 !== DUP[toStr(ijk)].data.s) {
+            s =  DUP[toStr(ijk)].data.s;
           }
         }
       }
     }
     DUP[toStr(ijk)].remove();
   }
-  grp = setT3(ijk,_s,1,1,color);
+  grp = setT3(ijk,s,1,1,color);
   grp.data.s = s;
   grp.data.color = color;
   DUP[toStr(ijk)] = grp;
