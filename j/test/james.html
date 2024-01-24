@@ -12,20 +12,20 @@ const j_minlevel = 0;
 const j_maxlevel = 4;
 let j_type = 0;
 const j_types = [
- {name:'Z (1d)',value:0, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'},
- {name:'I (1d)',value:1, 	tx:0,ty:0,ori:0,s:2, c:'#9a83bc'},
- {name:'aD (1d)',value:2, 	tx:0,ty:0,ori:0,s:2, c:'#92c94e'},
- {name:'Xa (1d)',value:3, 	tx:0,ty:0,ori:0,s:2, c:'#70d0f5'},
- {name:'A (1d)',value:10, 	tx:0,ty:0,ori:0,s:2, c:'#dee686'}, // =S
- {name:'B (1d)',value:11, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'}, // =Z
- {name:'C (1d)',value:12, 	tx:0,ty:0,ori:0,s:2, c:'#86eede'}, // =ZIZ
- {name:'Rhomb (2d)',value:20, 	tx:400,ty:170,ori:60,s:0.45, c:'#999999'},
- {name:'Bird (2d)',value:22, 	tx:300,ty:200,ori:0,s:0.75, c:'#aaaaaa'},
- {name:'Bird2 (2d)',value:26, 	tx:250,ty:100,ori:0,s:0.085, c:'#aaaaaa'},
- {name:'SProp (2d)',value:23, 	tx:350,ty:-30,ori:-60,s:0.20, c:'#bbbbbb'},
- {name:'Rose (2d)',value:21, 	tx:300,ty:30,ori:-60,s:0.4, c:'#cccccc'},
- {name:'Penguin (2d)',value:25, tx:375,ty:70,ori:60,s:0.09, c:'#dddddd'},
- {name:'LProp (2d)',value:24, 	tx:250,ty:70,ori:60,s:0.15, c:'#eeeeee'},
+// {name:'Z (1d)',value:0, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'},
+// {name:'I (1d)',value:1, 	tx:0,ty:0,ori:0,s:2, c:'#9a83bc'},
+// {name:'aD (1d)',value:2, 	tx:0,ty:0,ori:0,s:2, c:'#92c94e'},
+// {name:'Xa (1d)',value:3, 	tx:0,ty:0,ori:0,s:2, c:'#70d0f5'},
+ {name:'S worm',value:11, 	tx:0,ty:0,ori:0,s:2, c:'#f28095'}, // =Z
+ {name:'M worm',value:10, 	tx:0,ty:0,ori:0,s:2, c:'#dee686'}, // =S
+ {name:'N worm',value:12, 	tx:0,ty:0,ori:0,s:2, c:'#86eede'}, // =ZIZ
+ {name:'PS region',value:20, 	tx:400,ty:170,ori:60,s:0.45, c:'#999999'}, // R
+ {name:'TM region',value:22, 	tx:300,ty:200,ori:0,s:0.75, c:'#aaaaaa'}, // Bird
+// {name:'Bird2 (2d)',value:26, 	tx:250,ty:100,ori:0,s:0.085, c:'#aaaaaa'}, 
+ {name:'TN region',value:23, 	tx:350,ty:-30,ori:-60,s:0.20, c:'#bbbbbb'}, // SProp
+ {name:'PT region',value:25, tx:375,ty:70,ori:60,s:0.09, c:'#dddddd'}, // Penguin
+ {name:'TT region',value:24, 	tx:250,ty:70,ori:60,s:0.15, c:'#eeeeee'}, // LProp
+ {name:'TP region',value:21, 	tx:300,ty:30,ori:-60,s:0.4, c:'#cccccc'}, // Rose
 ];
 const j_hash = {}; 
 for (let ti=0;ti<j_types.length;ti++) {
