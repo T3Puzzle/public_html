@@ -48,7 +48,7 @@
     }
   }
 (()=>{
-  let url = 'https://script.google.com/a/tessellation.jp/macros/s/AKfycbwsBFLCp3-X-yIjNw-T1rd92yZxnVzjLSFfqz5bpie0PsSEPxSGPufu7rK3o1fneH3tig/exec';
+  let url = SCRIPT_URL; // defined in index.html
   let emailreq = '';
   
   emailreq = 'required';
