@@ -188,7 +188,7 @@ form dl dd{
   padding:3px 0;
 }
 </style>
-<img style="width:400px;" src="./t3contestlogo.jpg"><br/>
+<img style="width:400px;" src="./t3contestbanner.jpg"><br/>
 コンテスト募集要項はページ下をご覧ください。<br/>
 写真を選択の上、必要事項を記入し応募ください。
 <p/>
