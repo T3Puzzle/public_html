@@ -1,0 +1,27 @@
+  :root {
+    --color-blue:#84BADF;
+    --color-green:#6E8947;
+    --color-pink:#C5B4DC;
+    --color-mint:#F2E1BF;
+    --color-gray:#D3D3D4;
+  }
+
+  .c_blue {
+    color: var(--color-blue);
+  }
+
+  .c_green {
+    color: var(--color-green);
+  }
+
+  .c_pink {
+    color: var(--color-pink);
+  }
+
+  .c_mint {
+    color: var(--color-mint);
+  }
+
+  .c_gray {
+    color: var(--color-gray);
+  }
