@@ -1,19 +1,27 @@
+  :root {
+    --color-blue:#84BADF;
+    --color-green:#6E8947;
+    --color-pink:#C5B4DC;
+    --color-mint:#F2E1BF;
+    --color-gray:#D3D3D4;
+  }
+
   .c_blue {
-    color: #84BADF;
+    color: var(--color-blue);
   }
 
   .c_green {
-    color: #6E8947;
+    color: var(--color-green);
   }
 
   .c_pink {
-    color: #C5B4DC;
+    color: var(--color-pink);
   }
 
   .c_mint {
-    color: #F2E1BF;
+    color: var(--color-mint);
   }
 
   .c_gray {
-    color: #D3D3D4;
+    color: var(--color-gray);
   }
