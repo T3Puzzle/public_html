@@ -124,6 +124,8 @@
         } else if (checkCSS(color, 'c_pink')) {
           setColorCSS(color, 'c_mint');
         } else if (checkCSS(color, 'c_mint')) {
+          setColorCSS(color, 'c_gray');
+        } else if (checkCSS(color, 'c_gray')) {
           setColorCSS(color, 'c_blue');
         }
       }
@@ -146,6 +148,7 @@
       element.classList.remove('c_green');
       element.classList.remove('c_pink');
       element.classList.remove('c_mint');
+      element.classList.remove('c_gray');
       element.classList.add(add);
     }
 
