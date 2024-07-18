@@ -695,7 +695,7 @@ function setBackground() {
       (-paper.view.size.height * size) / 2
     ],
     size: [paper.view.size.width * size, paper.view.size.height * size],
-    fillColor: "#FDFCF5"
+    fillColor: "#EFEDD7"
   });
   background.sendToBack();
 }
