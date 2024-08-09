@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ランダムカラー画像生成</title>
+</head>
+<body>
+    <a href="#" id="generate-link">画像生成とダウンロード</a>
+    <br>
+    <img id="color-image" src="" alt="ランダムカラー画像" style="display: block; margin-top: 10px;">
+    
+    <script>
+        document.getElementById('generate-link').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // 画像のサイズ
+            const width = 100;
+            const height = 100;
+
+            // ランダムな色を生成
+            const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
+            // Canvas要素を作成
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+
+            // Canvasにランダムな色を塗りつぶす
+            context.fillStyle = randomColor;
+            context.fillRect(0, 0, width, height);
+
+            // 画像データURLを取得
+            const dataURL = canvas.toDataURL('image/png');
+
+            // 画像を表示
+            document.getElementById('color-image').src = dataURL;
+
+            // PNGファイルとしてダウンロード
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'random-color.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>
+
