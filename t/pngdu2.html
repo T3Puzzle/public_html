@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Color PNG Generator and Uploader</title>
+    <style>
+        #canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Color PNG Generator</h1>
+    <button id="generate">Generate Random Color Image</button>
+    <br><br>
+    <input type="file" id="fileInput" accept="image/png">
+    <br><br>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <br>
+    <a id="downloadLink" href="#" download="random-color.png">Download PNG</a>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const downloadLink = document.getElementById('downloadLink');
+        const fileInput = document.getElementById('fileInput');
+        const generateButton = document.getElementById('generate');
+
+        function generateRandomColorImage() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, width, height);
+
+            // Create PNG image with metadata
+            const pngDataUrl = canvas.toDataURL('image/png');
+            const metadata = `color:${color};width:${width};height:${height}`;
+            const metadataBlob = new Blob([metadata], { type: 'text/plain' });
+
+            // Convert canvas image to Blob
+            fetch(pngDataUrl)
+                .then(response => response.blob())
+                .then(imageBlob => {
+                    const pngWithMetadata = new Blob([imageBlob, metadataBlob], { type: 'application/octet-stream' });
+                    const pngWithMetadataUrl = URL.createObjectURL(pngWithMetadata);
+                    downloadLink.href = pngWithMetadataUrl;
+                });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const dataUrl = e.target.result;
+                    const img = new Image();
+                    img.onload = function () {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+                        extractMetadata(file);
+                    };
+                    img.src = dataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function extractMetadata(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const arrayBuffer = e.target.result;
+                const view = new DataView(arrayBuffer);
+                
+                let offset = 8; // Skip PNG header
+                while (offset < view.byteLength) {
+                    const length = view.getUint32(offset);
+                    const type = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer, offset + 4, 4));
+                    if (type === 'tEXt') {
+                        const textData = new Uint8Array(arrayBuffer, offset + 8, length);
+                        const text = new TextDecoder().decode(textData);
+                        parseMetadata(text);
+                        break;
+                    }
+                    offset += length + 12; // Move to the next chunk
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parseMetadata(metadataText) {
+            const metadata = metadataText.split(';').reduce((acc, item) => {
+                const [key, value] = item.split(':');
+                acc[key] = value;
+                return acc;
+            }, {});
+
+            const { color, width, height } = metadata;
+
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        generateButton.addEventListener('click', generateRandomColorImage);
+        fileInput.addEventListener('change', handleFileSelect);
+    </script>
+</body>
+</html>
+
